@@ -29,13 +29,13 @@ namespace logic.systems.school.managment.Services
         public async Task<List<TuitionPayment>> GetTuitionInvoiceById(int payementId)
         {
 
-      
+
             var result = await db.PaymentTuitions.Include(x => x.Tuition)
                                                  .ThenInclude(x => x.Enrollment).ThenInclude(x => x.Student)
                                                  .Include(x => x.Tuition.TuitionFines)
                                                  .FirstOrDefaultAsync(x => x.Id == payementId);
 
-            var student = await db.Students.FirstOrDefaultAsync(x => x.Id ==result.Tuition.StudentId);
+            var student = await db.Students.FirstOrDefaultAsync(x => x.Id == result.Tuition.StudentId);
 
             var listOfResult = await db.PaymentTuitions.Include(x => x.Tuition)
                                                        .ThenInclude(x => x.Enrollment)
@@ -188,13 +188,10 @@ namespace logic.systems.school.managment.Services
             try
             {
                 var enrollments = await db.Enrollments.Select(x => x.Student).Where(x => x.Suspended).ToListAsync();
-
                 var results = new List<BeneficiariesSuspededReportDTO>();
-
 
                 if (enrollments is not null)
                 {
-
                     foreach (var s in enrollments)
                     {
                         var currentSchoolLevel = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Id == s.CurrentSchoolLevelId);
@@ -217,30 +214,63 @@ namespace logic.systems.school.managment.Services
                         var now = DateTime.Now;
 
                         // Volta para o primeiro dia do mês
-                        var currentMonthLastFeeDay = new DateTime(now.Year, now.Month, 25);
+                        //var currentMonthLastFeeDay = new DateTime(now.Year, now.Month, 25);
 
 
-                        now.AddMonths(24);
-                        var Tuituins = await db.Tuitions.Include(x => x.TuitionFines)
-                            .Where(x => x.StudentId == item.StudendId
-                            && !x.Paid
-                            && x.StartDate < currentMonthLastFeeDay
-                            )
-                            .ToArrayAsync();
+                        //now.AddMonths(24);
+                        var Tuituins = await db.Tuitions
+                                               .Include(x => x.TuitionFines)
+                                               .ThenInclude(x => x.TuitionFineDailies)
+                                               .Include(x => x.Enrollment)
+                                               .ThenInclude(x => x.Student)
+                                               .Where(x => x.StudentId == item.StudendId
+                                                        && !x.Paid
+                                                       && x.TuitionFines != null
+                                                      )
+                                                .ToArrayAsync();
+
+                      
 
                         foreach (var t in Tuituins)
                         {
                             var associatedLeve = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Id == t.AssociatedLevelId);
 
+
+                            var TotalFeeDaily = (decimal)0;
+
+                            if (t.TuitionFines != null)
+                            {
+                                if (t.TuitionFines.TuitionFineDailies != null || t.TuitionFines.TuitionFineDailies.Count() > 0)
+                                {
+                                    TotalFeeDaily = t.TuitionFines.TuitionFineDailies.Sum(x => x.FinesValue);
+                                }
+
+                            }
+
+                            var discount = (decimal)0;
+                            if (t.Enrollment.Student is not null)
+                            {
+
+                                if (t.Enrollment.Student.DiscountType == Student.DiscountPersonInCharge)
+                                {
+                                    discount = 100;
+                                }
+                                else if (t.Enrollment.Student.DiscountType == Student.DiscountTeacher)
+                                {
+                                    discount = 500;
+                                }
+                            }
+                            var _MonthTuitionValue = (getTuitionValueByschoolLevel(associatedLeve.Description) - discount); ;
+
                             suspendedInfo.Add(new BeneficiariesSuspededReportItemDTO()
                             {
                                 MonthTuition = t.MonthName + " - " + t.Year,
                                 AssociatedLevel = associatedLeve.Description,
-                                MonthTuitionValue = getTuitionValueByschoolLevel(associatedLeve.Description),
+                                MonthTuitionValue = _MonthTuitionValue,
                                 PaymentTerm_first = t.StartDate.AddDays(15).ToString("dd/MM/yyyy"),
                                 PaymentTerm_Secund = t.StartDate.AddDays(24).ToString("dd/MM/yyyy"),
                                 TuitionPaimentStatus = t.Paid ? "Pago" : "Não pago",
-                                MonthTuitionFee = 300
+                                MonthTuitionFee = (300 + TotalFeeDaily)
                             });
                         }
 
@@ -286,9 +316,7 @@ namespace logic.systems.school.managment.Services
 
             var Price_3500 = new List<string>()
             {
-                "Pré-escola A"  ,
-                "Pré-escola B"  ,
-                "Pré-escola C"
+                "Pré-escola"
             };
             var Price_4000 = new List<string>() { "1ª classe" };
             var Price_3700 = new List<string>()

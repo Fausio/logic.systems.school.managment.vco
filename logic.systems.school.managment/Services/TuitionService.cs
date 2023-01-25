@@ -286,8 +286,6 @@ namespace logic.systems.school.managment.Services
                             CreatedUSer = userid
                         };
 
-
-
                         await db.TuitionInvoices.AddAsync(invoice);
                         await db.SaveChangesAsync();
 
@@ -431,13 +429,51 @@ namespace logic.systems.school.managment.Services
         }
 
 
+        private async Task CheckFeeZiro()
+        {
+           var payments = await db.PaymentTuitions.Include(x => x.Tuition)
+                                                  .Where(x => x.PaymentWithoutVat == (decimal)0)
+                                                  .ToListAsync();
+
+            foreach (var item in payments)
+            {
+                var studant = await db.Students.Include(x => x.Enrollments)
+                                           .ThenInclude(x => x.Tuitions)
+                                           .Include(x => x.CurrentSchoolLevel)
+                                           .FirstOrDefaultAsync(x => x.Id == item.Tuition.StudentId);
+
+                var discount = (decimal)0; 
+             
+                if (studant is not null)
+                {
+                    if (studant.DiscountType == Student.DiscountPersonInCharge)
+                    {
+                        discount = 100;
+                    }
+                    else if (studant.DiscountType == Student.DiscountTeacher)
+                    {
+                        discount = 500;
+                    }
+
+                    item.PaymentWithoutVat = (getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount);
+                    item.VatOfPayment = VatCalc(item.PaymentWithoutVat);
+                    item.PaymentWithVat = item.VatOfPayment + item.PaymentWithoutVat;
+
+                    await db.PaymentTuitions.AddAsync(item);
+                    await db.SaveChangesAsync();
+                }
+
+            
+            }
+
+        }
 
 
 
         public async Task CheckFee(int? studantId, string userid)
         {
 
-
+            await CheckFeeZiro();
             var students = new List<Student>();
 
             if (studantId is not null && studantId > 0)
@@ -451,7 +487,7 @@ namespace logic.systems.school.managment.Services
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
             }
 
-            var now = DateTime.Now;
+            var now = DateTime.Now.AddMonths(2);
             foreach (Student student in students)
             {
 
@@ -518,7 +554,7 @@ namespace logic.systems.school.managment.Services
             {
                 // criar multa diaria de 25mt
                 // tudo: daily fee 
-                var now = DateTime.Now;
+                var now = DateTime.Now.AddMonths(2);
 
                 var tuitionDate = havetuitionFines.Tuition.StartDate.AddDays(24);
 

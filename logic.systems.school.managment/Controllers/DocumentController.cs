@@ -411,7 +411,7 @@ namespace logic.systems.school.managment.Controllers
                                       .Replace("{Classe}", "")
                                       .Replace("{ClasseRoom}", "")
                                       .Replace("{Year}", "")
-                                      .Replace("{payment}", "Total: " + (sumTotalEnroll+ itensTotals) + " MT"));
+                                      .Replace("{payment}", "Total: " + (sumTotalEnroll + itensTotals) + " MT"));
 
 
             var TableLinesIntoOneTring = string.Empty;
@@ -444,7 +444,6 @@ namespace logic.systems.school.managment.Controllers
 
             // update suspendes
             await _ITuitionService.CheckFee(0, currentUser.Id);
-            //    await _ITuitionService.AutomaticRegularization(0);
             List<BeneficiariesSuspededReportDTO> results = await _DocumentService.GetBeneficiariesSuspeded();
 
             return await GenerateSuspended(results, "Relatório de Estudantes Suspensos");
@@ -489,12 +488,30 @@ namespace logic.systems.school.managment.Controllers
 
 
             var line = 5;
+
+            worksheet.Cell(line, 1).Value = "Estudante";
+            worksheet.Cell(line, 2).Value = "Gênero";
+            worksheet.Cell(line, 3).Value = "Data de nascimento";
+            worksheet.Cell(line, 4).Value = "Classe actual";
+            worksheet.Cell(line, 5).Value = "Mensalidade";
+            worksheet.Cell(line, 6).Value = "Classe da mensalidade";
+            worksheet.Cell(line, 7).Value = "Valor da mesalidade";
+            worksheet.Cell(line, 8).Value = "Estado da mensalidade";
+            worksheet.Cell(line, 9).Value = "Primeiro prazo de pagamento";
+            worksheet.Cell(line, 10).Value = "Multa da mensalidade";
+            worksheet.Cell(line, 11).Value = "Segundo prazo de pagamento (data de suspensão)";
+
+            for (int i = 1; i <= 11; i++)
+            {
+                worksheet.Cell(line, i).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, i).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line, i).Style.Font.SetBold();
+            }
+
             foreach (var item in data)
             {
-                worksheet.Cell(line, 1).Value = "Estudante";
-                worksheet.Cell(line, 2).Value = "Gênero";
-                worksheet.Cell(line, 3).Value = "Data de nascimento";
-                worksheet.Cell(line, 4).Value = "Classe actual";
+
+
 
                 for (int i = 1; i <= 4; i++)
                 {
@@ -510,15 +527,12 @@ namespace logic.systems.school.managment.Controllers
                 worksheet.Cell(line, 3).Value = item.StudendBirthDate;
                 worksheet.Cell(line, 4).Value = item.StudentClassLevel;
 
+
+
+
                 line--;
 
-                worksheet.Cell(line, 5).Value = "Mensalidade";
-                worksheet.Cell(line, 6).Value = "Classe da mensalidade";
-                worksheet.Cell(line, 7).Value = "Valor da mesalidade";
-                worksheet.Cell(line, 8).Value = "Estado da mensalidade";
-                worksheet.Cell(line, 9).Value = "Primeiro prazo de pagamento";
-                worksheet.Cell(line, 10).Value = "Multa da mensalidade";
-                worksheet.Cell(line, 11).Value = "Segundo prazo de pagamento (data de suspensão)";
+
 
 
                 for (int i = 5; i <= 11; i++)
@@ -540,16 +554,16 @@ namespace logic.systems.school.managment.Controllers
                     worksheet.Cell(line, 10).Value = t.MonthTuitionFee;
                     worksheet.Cell(line, 11).Value = t.PaymentTerm_Secund;
 
-                    worksheet.Cell(line, 8).Style.Font.FontColor = XLColor.Red;
+                    //    worksheet.Cell(line, 8).Style.Font.FontColor = XLColor.Red;
 
                     line++;
                 }
 
 
-                for (int i = 1; i <= 11; i++)
-                {
-                    worksheet.Cell(line, i).Style.Fill.BackgroundColor = bgColorHeader;
-                }
+                // for (int i = 1; i <= 11; i++)
+                // {
+                //     worksheet.Cell(line, i).Style.Fill.BackgroundColor = bgColorHeader;
+                // }
 
                 line++;
             }
