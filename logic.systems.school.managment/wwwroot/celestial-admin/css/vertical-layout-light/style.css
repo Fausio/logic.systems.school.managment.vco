@@ -23562,15 +23562,15 @@ body.avgrund-active {
   /* Navbar color variations */
 }
 
-.navbar .navbar-brand-wrapper {
-  background: #ffffff;
-  transition: width 0.25s ease, background 0.25s ease;
-  -webkit-transition: width 0.25s ease, background 0.25s ease;
-  -moz-transition: width 0.25s ease, background 0.25s ease;
-  -ms-transition: width 0.25s ease, background 0.25s ease;
-  width: 255px;
-  height: 64px;
-}
+    .navbar .navbar-brand-wrapper {
+        background: #1b1b29;
+        transition: width 0.25s ease, background 0.25s ease;
+        -webkit-transition: width 0.25s ease, background 0.25s ease;
+        -moz-transition: width 0.25s ease, background 0.25s ease;
+        -ms-transition: width 0.25s ease, background 0.25s ease;
+        width: 255px;
+        height: 64px;
+    }
 
 .sidebar-dark .navbar .navbar-brand-wrapper {
   background: #ffffff;
