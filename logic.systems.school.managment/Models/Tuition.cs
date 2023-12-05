@@ -1,5 +1,8 @@
-﻿namespace logic.systems.school.managment.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace logic.systems.school.managment.Models
 {
+    [Table("Tuition")]
     public class Tuition : Common
     {
         public SchoolLevel AssociatedLevel { get; set; }

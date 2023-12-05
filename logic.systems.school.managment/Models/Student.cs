@@ -1,5 +1,8 @@
-﻿namespace logic.systems.school.managment.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace logic.systems.school.managment.Models
 {
+    [Table("Student")]
     public class Student : Common
     {
         // Properties 
