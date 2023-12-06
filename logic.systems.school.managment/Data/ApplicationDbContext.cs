@@ -75,6 +75,8 @@ namespace logic.systems.school.managment.Data
 
            public DbSet<Sponsor> Sponsors { get; set; }
 
+    public DbSet<SimpleEntity> SimpleEntitys { get; set; }
+
 
 
     }

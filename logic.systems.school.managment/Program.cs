@@ -1,5 +1,8 @@
 using logic.systems.school.managment.Data;
+using logic.systems.school.managment.Interface;
+using logic.systems.school.managment.Models;
 using logic.systems.school.managment.Seeds;
+using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +16,9 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+
+builder.Services.AddScoped<ICRUD<Student>, StudantService>();
 
 var app = builder.Build();
 

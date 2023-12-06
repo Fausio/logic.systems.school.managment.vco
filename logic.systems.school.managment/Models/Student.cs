@@ -5,9 +5,14 @@ namespace logic.systems.school.managment.Models
     [Table("Student")]
     public class Student : Common
     {
+
+         public const string genderM = "Masculino";
+         public const string genderF = "Feminino";
+
         // Properties  
         public string Name { get; set; }  
-        public DateTime BirthDate { get; set; } 
+        public DateTime BirthDate { get; set; }  
+        public string Gender { get; set; } 
         public string FatherName { get; set; }
         public string MatherName { get; set; } 
         public string PersonId { get; set; }
