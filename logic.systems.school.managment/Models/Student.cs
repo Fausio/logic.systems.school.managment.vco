@@ -7,9 +7,7 @@ namespace logic.systems.school.managment.Models
     {
         // Properties  
         public string Name { get; set; }  
-        public DateTime BirthDate { get; set; }
-
-
+        public DateTime BirthDate { get; set; } 
         public string FatherName { get; set; }
         public string MatherName { get; set; } 
         public string PersonId { get; set; }
