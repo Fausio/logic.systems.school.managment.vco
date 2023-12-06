@@ -21,26 +21,7 @@
         </div>
     </div>
 </div>
-
-@* Classe, ano
-
-Candidato ✅
-Data de nascimento  ✅
-Naturalidade, descrito, provincia,
-Sexo
-Nome do pai
-Nome da mae
-BI
-
-encarregado
-------------
-Nome do encarregado de Eduçacao
-Residencia de encaregado de educacao
-Educacao
-Conacto
-    casa
-    servicel
-    pessoal *@
+ 
 <form>
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
@@ -50,12 +31,12 @@ Conacto
                 <form class="needs-validation" novalidate>
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
-                            <label for="validationCustom01">Nome completo</label>
-                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                            <label for="">Nome completo</label>
+                            <input type="text" class="form-control" id=""  required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="validationCustom02">Data de Nasciento</label>
-                            <input type="date" class="form-control" id="validationCustom02" value="Otto" required>
+                            <label for="">Data de Nasciento</label>
+                            <input type="date" class="form-control" id="" value="Otto" required>
                         </div>
                     </div>
 
@@ -63,46 +44,62 @@ Conacto
 
                     <div class="form-row">
                         <div class="col-md-4 mb-3">
-                            <label for="validationCustom01">Nacionalidade</label>
-                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                            <label for="">Nacionalidade</label>
+                            <input type="text" class="form-control" id=""  required>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="validationCustom01">Província</label>
-                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                            <label for="">Província</label> 
+                            <select class="form-control form-control-lg pb-3 pt-3"  id="provinces">
+                                <option selected>... Escolha a Província </option>
+
+                                @foreach (OrgUnitProvince item in ViewBag.Provinces)
+                                {
+                                    <option value="@item.Id">@item.Description</option>
+                                }
+                               
+                            </select>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="validationCustom01">Destrito</label>
-                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                            <label for="">Destrito</label>
+                            <select class="form-control form-control-lg pb-3 pt-3" id="district">
+                                <option selected>... Escolha a Província </option>
+
+                                @foreach (OrgUnitProvince item in ViewBag.Provinces)
+                                {
+                                    <option value="@item.Id">@item.Description</option>
+                                }
+
+                            </select>
                         </div>
                     </div>
 
 
-                    <div class="form-row">
+                    <div class="form-row mb-3">
                         <div class="col-md-4">
-                            <label for="validationCustom02">Sexo</label>
-                            <select class="form-control form-control-lg pb-3 pt-3" aria-label="Default select example">
-                                <option selected>Open this select menu</option>
-                                <option value="1">Masculino</option>
-                                <option value="2">Feminino</option>
+                            <label for="">Sexo</label>
+                            <select class="form-control form-control-lg pb-3 pt-3">
+                                <option selected>... Escolha o Sexo</option> 
+                                  <option >Masculino</option>
+                                <option >Feminino</option>
                             </select>
                         </div>
                     </div> 
 
                     <div class="form-row">
                         <div class="col-md-4 mb-3">
-                            <label for="validationCustom01">BI</label>
-                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                            <label for="">BI</label>
+                            <input type="text" class="form-control" id=""  required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
-                            <label for="validationCustom01">Nome do pai</label>
-                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                            <label for="">Nome do pai</label>
+                            <input type="text" class="form-control" id=""  required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="validationCustom02">Nome da mãe</label>
-                            <input type="date" class="form-control" id="validationCustom02" value="Otto" required>
+                            <label for="">Nome da mãe</label>
+                            <input type="date" class="form-control" id="" value="Otto" required>
                         </div>
                     </div>
 
@@ -111,19 +108,19 @@ Conacto
 
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
-                            <label for="validationCustom01">Nome do encarregado de Educação</label>
-                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                            <label for="">Nome do encarregado de Educação</label>
+                            <input type="text" class="form-control" id=""  required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="validationCustom02">Residência do encarregado de educação.</label>
-                            <input type="date" class="form-control" id="validationCustom02" value="Otto" required>
+                            <label for="">Residência do encarregado de educação.</label>
+                            <input type="date" class="form-control" id="" value="Otto" required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
-                            <label for="validationCustom01">Contacto do encarregado de educação</label>
-                            <input type="text" placeholder="Casa/serviço ou numero pessoal" class="form-control" id="validationCustom01" value="Mark" required>
+                            <label for="">Contacto do encarregado de educação</label>
+                            <input type="text" placeholder="Casa/serviço ou numero pessoal" class="form-control" id=""  required>
                         </div>
                     </div>
  
@@ -144,33 +141,34 @@ Conacto
         </div>
     </div>
 </form>
+ 
 
 
-
-@* @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
+@section scripts {
     <script>
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function () {
-            'use strict';
-            window.addEventListener('load', function () {
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                var forms = document.getElementsByClassName('needs-validation');
-                // Loop over them and prevent submission
-                var validation = Array.prototype.filter.call(forms, function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-            }, false);
-        })();
-    </script> *@
-}
+        $(document).ready(function () {
+            // Quando uma categoria é selecionada, buscar os produtos correspondentes
+            $("#provinces").change(function () {
 
+                var ProvincesId = $("#provinces").val();
+
+                $.ajax({
+                    url: '/admin/GetDistricts',
+                    type: 'GET',
+                    data: { Id: ProvincesId },
+                    success: function (districts) {
+                        // Limpar e popular o dropdown de produtos
+                      
+                         $("#district").empty();
+                        $.each(districts, function (index, result) {
+                            $("#district").append($('<option>', {
+                                value: result.id,
+                                text: result.description
+                            })); 
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

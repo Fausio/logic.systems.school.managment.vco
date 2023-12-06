@@ -8,10 +8,12 @@ namespace logic.systems.school.managment.Controllers
     public class StudantController : Controller
     {
         private ICRUD<Student> _StudentService;
+        private IOrgUnit _IOrgUnitServiceService;
 
-        public StudantController(ICRUD<Student> StudentService)
+        public StudantController(ICRUD<Student> StudentService, IOrgUnit IOrgUnitServiceService)
         {
             this._StudentService = StudentService;
+            this._IOrgUnitServiceService = IOrgUnitServiceService;
         }
 
         public async Task<IActionResult> Index(int? pageNumber = 1, int? pageSize = 10)
@@ -31,7 +33,7 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
-                await PopulateForms(); 
+                await PopulateForms();
                 return View(new Student()
                 {
 
@@ -44,13 +46,15 @@ namespace logic.systems.school.managment.Controllers
             }
 
         }
-         
+
         private async Task PopulateForms()
         {
             ViewBag.Gender = new List<string>{
                 "Masculino",
                 "Feminino"
-            }; 
+            };
+
+            ViewBag.Provinces = await _IOrgUnitServiceService.GetOrgUnitProvinces();
         }
     }
 }
