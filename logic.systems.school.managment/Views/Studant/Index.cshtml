@@ -11,169 +11,77 @@
     </ol>
 </nav>
 
-<p>
-    <a class="mdc-button mdc-button--raised filled-button--success" asp-action="Create" asp-controller="member">
-        <i class="material-icons mdc-button__icon">add</i>
-        Cadastrar Membro
-    </a>
-</p>
 
-
-<form asp-action="Search" asp-controller="Member" asp-route-searchstring="sdfsdfsd" method="get">
-     
-    <div class="card mb-2">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-1 text-left">
-                    <button type="submit" class="mdc-button mdc-button--raised filled-button--dark mdc-ripple-upgraded" style="width:100%; height:45px">
-                        <i class="material-icons mdc-button__icon">search</i>
-                    </button>
-                </div>
-                <div class="col-md-11 ">
-                    <div class="mdc-text-field mdc-text-field--outlined mb-2">
-             @*            @Html.EditorFor(model => model.searchString, new { htmlAttributes = new { @class = "mdc-text-field__input"  } }) *@
-
-                        <div class="mdc-notched-outline">
-                            <div class="mdc-notched-outline__leading"></div>
-                            <div class="mdc-notched-outline__notch">
-                                <label for="text-field-hero-input" class="mdc-floating-label">Pesquisa</label>
-                            </div>
-                            <div class="mdc-notched-outline__trailing"></div>
-                        </div>
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0">  
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Pesquisar estudante pelo nome"  >
+                    <div class="input-group-append">
+                        <button class="btn btn-sm btn-light" type="button">Search</button>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
-
-</form>
-
-
-<div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
-    <div class="mdc-card p-0">
-
-
-        <div class="row justify-content-between">
-            <div class="col-4">
-                <h6 class="card-title card-padding pb-0">Lista de Membros</h6>
-            </div>
-            <div class="col-4">
-                <h2 class="card-title card-padding pb-0 text-right">@Model.pageSize de @Model.totalRecords Registros</h2>
-
-            </div>
-        </div>
-
-
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th class="text-left">Nome</th>
-                        <th class="text-left">Email</th>
-                        <th class="text-left">Data de Adesão</th>
-                        <th class="text-left">Categoria de Membro</th>
-                        <th class="text-left">Activo</th>
-                        <th class="text-left">Associação</th>
-                        <th class="text-left">Acções</th>
-                </thead>
-                <tbody>
-
-                    @foreach (var item in Model.records)
-                    {
-                        <tr>
-                            <td class="text-left"> @item.Name</td>
-                            <td class="text-left"> @item.Name</td>
-                            <td class="text-left"> @item.Name</td>
-                            <td class="text-left"> @item.Name</td>
-
-                            @if (true)
-                            {
-                                <td class="text-left">  <span class="badge badge-pill badge-success">Activo</span> </td>
-                            }
-                            else
-                            {
-                                <td class="text-left">  <span class="badge badge-pill badge-danger">Inactivo</span> </td>
-                            }
-
-                            <td class="text-left">Name</td>
-                            <td class="text-left">
-                                @Html.ActionLink("Visualizar", "Edit", "Member",   new { id = item.Id }, new { @class = "mdc-button mdc-button--raised filled-button--dark" })
-
-                            </td>
-
-                        </tr>
-                    }
-
-
-                </tbody>
-            </table>
-
-
-
-
-        </div>
-
-        <div class="row container">
-
-
-            <nav aria-label="..." class="ml-2">
-                <ul class="pagination">
-
-                    @{
-
-                        var btn_prev_disable_css = string.Empty;
-
-                        if (Model.pageNumber == 1)
-                        {
-                            btn_prev_disable_css = "display:none";
-                        }
-
-
-                        var btn_next_disable_css = string.Empty;
-
-                        if (Model.pageNumber == (Model.totalPages - 1))
-                        {
-                            btn_next_disable_css = "display:none";
-                        }
-
-                    }
-
-
-
-
-                    <li class="page-item" style="@btn_prev_disable_css">
-                        @Html.ActionLink(  "Anterior", "index", "Member",   new { pageNumber = (Model.pageNumber-1) }, new { @class =  "mdc-button mdc-button--raised filled-button--dark"  })
-                    </li>
-
-
-                    @for (int i = 1; i < Model.totalPages; i++)
-                    {
-                        var btn_active_page_css = "mdc-button mdc-button--outlined outlined-button--dark mdc-ripple-upgraded";
-
-                        if (i == Model.pageNumber)
-                        {
-                            btn_active_page_css = "mdc-button mdc-button--raised filled-button--success";
-                        }
-
-                        <li class="page-item ml-1 mr-1 ">
-
-                            @Html.ActionLink( i.ToString(), "index", "Member",   new { pageNumber = i }, new { @class =  @btn_active_page_css })
-
-                        </li>
-
-                    }
-
-
-
-                    <li class="page-item" style="@btn_next_disable_css">
-                        @Html.ActionLink(  "Proximo", "index", "Member",   new { pageNumber = (Model.pageNumber+1) }, new { @class =  "mdc-button mdc-button--raised filled-button--dark" })
-                    </li>
-                </ul>
-            </nav>
-
-        </div>
-    </div>
-
-
 </div>
+
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+        <div class="card-body pb-0">
+                <h4 class="card-title">Lista</h4>
+                <p class="card-description">   estudantes  </p>
+                <div class="table-responsive">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Estudante</th>
+                                    <th scope="col">Classe</th>
+                                    <th scope="col">Turma</th>
+                                    <th scope="col">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>
+                                        <label class="badge badge-success">Completed</label>
+                                    </td>
+                                    <td>  <i class="mdi mdi-headset"></i></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td> <label class="badge badge-danger">Pending</label></td>
+                                    <td>  <i class="mdi mdi-headset"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr />
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        </ul>
+                    </nav>
+                    </div>
+                    <br />
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+     
