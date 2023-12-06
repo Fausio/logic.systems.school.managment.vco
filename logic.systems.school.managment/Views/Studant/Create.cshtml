@@ -45,127 +45,120 @@ Conacto
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body pb-0">
-                <div class="row">
+
+
+                <form class="needs-validation" novalidate>
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label for="validationCustom01">Nome completo</label>
+                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="validationCustom02">Data de Nasciento</label>
+                            <input type="date" class="form-control" id="validationCustom02" value="Otto" required>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label for="validationCustom01">Nacionalidade</label>
+                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="validationCustom01">Província</label>
+                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="validationCustom01">Destrito</label>
+                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                        </div>
+                    </div>
+
+
+                    <div class="form-row mb-3">
+                        <div class="col-md-2">
+                            <label for="validationCustom02">Sexo</label>
+                            <select class="form-control" aria-label="Default select example">
+                                <option selected>Open this select menu</option>
+                                <option value="1">Masculino</option>
+                                <option value="2">Feminino</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Membership</label>
+                        <div class="col-sm-4">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios1" value="" checked>
+                                    Free
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios2" value="option2">
+                                    Professional
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-3">
+                            <label for="validationCustom01">BI</label>
+                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label for="validationCustom01">Nome do pai</label>
+                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="validationCustom02">Nome da mãe</label>
+                            <input type="date" class="form-control" id="validationCustom02" value="Otto" required>
+                        </div>
+                    </div>
+
+                    <hr />
+
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label for="validationCustom01">Nome do encarregado de Educação</label>
+                            <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="validationCustom02">Residência do encarregado de educação.</label>
+                            <input type="date" class="form-control" id="validationCustom02" value="Otto" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label for="validationCustom01">Contacto do encarregado de educação</label>
+                            <input type="text" placeholder="Casa/serviço ou numero pessoal" class="form-control" id="validationCustom01" value="Mark" required>
+                        </div>
+                    </div>
+ 
+
                     <span asp-validation-for="Name" class="text-danger"></span>
                     <span asp-validation-for="Gender" class="text-danger"></span>
-                    <div class="col-6">
 
-                        <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label">Nome completo</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="inputEmail3">
-                            </div>
+                    <hr />
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <button type="button" class="btn btn-info">Cadastrar</button>
                         </div>
-                        <div class="form-group row">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">Data de Nasciento</label>
-                            <div class="col-sm-10">
-                                <input type="date" class="form-control" id="inputPassword3">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">Naturalidade</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="inputPassword3">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">Província</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="inputPassword3">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">Destrito</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="inputPassword3">
-                            </div>
-                        </div>
-                        <fieldset class="form-group row">
-                            <legend class="col-form-label col-sm-2 float-sm-left pt-0">Sexo</legend>
-                            <div class="col-sm-10">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
-                                    <label class="form-check-label" for="gridRadios1">
-                                        Masculino
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
-                                    <label class="form-check-label" for="gridRadios2">
-                                        Feminino
-                                    </label>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <div class="form-group row">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">BI</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="inputPassword3">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">Nome do pai</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="inputPassword3">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">Nome da mãe</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="inputPassword3">
-                            </div>
-                        </div>
-
-                        @*                         <div class="form-group row">
-                        <div class="col-sm-10 offset-sm-2">
-                        <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="gridCheck1">
-                        <label class="form-check-label" for="gridCheck1">
-                        Example checkbox
-                        </label>
-                        </div>
-                        </div>
-                        </div> *@
-                        <div class="form-group row">
-                            <div class="col-sm-10">
-                                <button type="button" class="btn btn-info">Cadastrar</button>
-                            </div>
-                        </div>
-
                     </div>
-                    <div class="col-6">
-
-
-
-                        <div class="form-group row">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">Nome do encarregado de Educação</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="inputPassword3">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">Residência do encarregado de educação.</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="inputPassword3">
-                            </div>
-                        </div>  
-
-                        <div class="form-group row">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">Contacto do encarregado de educação .</label>
-                            <div class="col-sm-10">
-                                <input type="text" placeholder="Casa/serviço ou numero pessoal" class="form-control" id="inputPassword3">
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
+                </form>
+                 
 
             </div>
         </div>
@@ -174,8 +167,30 @@ Conacto
 
 
 
-@section Scripts {
+@* @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script> *@
 }
+
