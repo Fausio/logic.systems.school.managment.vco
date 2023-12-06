@@ -69,5 +69,11 @@ namespace logic.systems.school.managment.Data
         public DbSet<SchoolLevel> SchoolLevels { get; set; }
         public DbSet<Tuition> Tuitions { get; set; }
 
+
+        public DbSet<OrgUnitProvince> OrgUnitProvinces { get; set; }
+        public DbSet<OrgUnitDistrict> OrgUnitDistricts { get; set; }
+
+
+
     }
 }
