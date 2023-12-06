@@ -1,104 +1,181 @@
 ﻿@model logic.systems.school.managment.Models.Student
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Criar estudante";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
 }
 
-<h1>Create</h1>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="studant">Lista de Estudantess</a><</li>
+        <li class="breadcrumb-item active" aria-current="page">Cadastrar</li>
+    </ol>
+</nav>
 
-<h4>Student</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BirthDate" class="control-label"></label>
-                <input asp-for="BirthDate" class="form-control" />
-                <span asp-validation-for="BirthDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Gender" class="control-label"></label>
-                <input asp-for="Gender" class="form-control" />
-                <span asp-validation-for="Gender" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FatherName" class="control-label"></label>
-                <input asp-for="FatherName" class="form-control" />
-                <span asp-validation-for="FatherName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MatherName" class="control-label"></label>
-                <input asp-for="MatherName" class="form-control" />
-                <span asp-validation-for="MatherName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PersonId" class="control-label"></label>
-                <input asp-for="PersonId" class="form-control" />
-                <span asp-validation-for="PersonId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CurrentSchoolLevelId" class="control-label"></label>
-                <input asp-for="CurrentSchoolLevelId" class="form-control" />
-                <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DistrictId" class="control-label"></label>
-                <input asp-for="DistrictId" class="form-control" />
-                <span asp-validation-for="DistrictId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SponsorId" class="control-label"></label>
-                <input asp-for="SponsorId" class="form-control" />
-                <span asp-validation-for="SponsorId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedDate" class="control-label"></label>
-                <input asp-for="UpdatedDate" class="form-control" />
-                <span asp-validation-for="UpdatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Row" class="control-label"></label>
-                <input asp-for="Row" class="form-control" />
-                <span asp-validation-for="Row" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedUSer" class="control-label"></label>
-                <input asp-for="CreatedUSer" class="form-control" />
-                <span asp-validation-for="CreatedUSer" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedUSer" class="control-label"></label>
-                <input asp-for="UpdatedUSer" class="form-control" />
-                <span asp-validation-for="UpdatedUSer" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0 pt-1">
+            <h2>Cadastrar Estudante</h2>
+
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@* Classe, ano
+
+Candidato ✅
+Data de nascimento  ✅
+Naturalidade, descrito, provincia,
+Sexo
+Nome do pai
+Nome da mae
+BI
+
+encarregado
+------------
+Nome do encarregado de Eduçacao
+Residencia de encaregado de educacao
+Educacao
+Conacto
+    casa
+    servicel
+    pessoal *@
+<form>
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body pb-0">
+                <div class="row">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                    <div class="col-6">
+
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">Nome completo</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputEmail3">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword3" class="col-sm-2 col-form-label">Data de Nasciento</label>
+                            <div class="col-sm-10">
+                                <input type="date" class="form-control" id="inputPassword3">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputPassword3" class="col-sm-2 col-form-label">Naturalidade</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputPassword3">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputPassword3" class="col-sm-2 col-form-label">Província</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputPassword3">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputPassword3" class="col-sm-2 col-form-label">Destrito</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputPassword3">
+                            </div>
+                        </div>
+                        <fieldset class="form-group row">
+                            <legend class="col-form-label col-sm-2 float-sm-left pt-0">Sexo</legend>
+                            <div class="col-sm-10">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
+                                    <label class="form-check-label" for="gridRadios1">
+                                        Masculino
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
+                                    <label class="form-check-label" for="gridRadios2">
+                                        Feminino
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="form-group row">
+                            <label for="inputPassword3" class="col-sm-2 col-form-label">BI</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputPassword3">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputPassword3" class="col-sm-2 col-form-label">Nome do pai</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputPassword3">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputPassword3" class="col-sm-2 col-form-label">Nome da mãe</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputPassword3">
+                            </div>
+                        </div>
+
+                        @*                         <div class="form-group row">
+                        <div class="col-sm-10 offset-sm-2">
+                        <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="gridCheck1">
+                        <label class="form-check-label" for="gridCheck1">
+                        Example checkbox
+                        </label>
+                        </div>
+                        </div>
+                        </div> *@
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-primary">Sign in</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-6">
+
+
+
+                        <div class="form-group row">
+                            <label for="inputPassword3" class="col-sm-2 col-form-label">Nome do encarregado de Educação</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputPassword3">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputPassword3" class="col-sm-2 col-form-label">Residência do encarregado de educação.</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputPassword3">
+                            </div>
+                        </div>  
+
+                        <div class="form-group row">
+                            <label for="inputPassword3" class="col-sm-2 col-form-label">Contacto do encarregado de educação .</label>
+                            <div class="col-sm-10">
+                                <input type="text" placeholder="Casa/serviço ou numero pessoal" class="form-control" id="inputPassword3">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
