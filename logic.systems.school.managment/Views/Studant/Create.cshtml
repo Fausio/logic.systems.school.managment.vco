@@ -147,18 +147,13 @@
 @section scripts {
     <script>
         $(document).ready(function () {
-            // Quando uma categoria é selecionada, buscar os produtos correspondentes
-            $("#provinces").change(function () {
-
-                var ProvincesId = $("#provinces").val();
-
+            $("#provinces").change(function () { 
+                var ProvincesId = $("#provinces").val(); 
                 $.ajax({
                     url: '/admin/GetDistricts',
                     type: 'GET',
                     data: { Id: ProvincesId },
                     success: function (districts) {
-                        // Limpar e popular o dropdown de produtos
-                      
                          $("#district").empty();
                         $.each(districts, function (index, result) {
                             $("#district").append($('<option>', {
