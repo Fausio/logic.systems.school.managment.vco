@@ -73,6 +73,8 @@ namespace logic.systems.school.managment.Data
         public DbSet<OrgUnitProvince> OrgUnitProvinces { get; set; }
         public DbSet<OrgUnitDistrict> OrgUnitDistricts { get; set; }
 
+           public DbSet<Sponsor> Sponsors { get; set; }
+
 
 
     }
