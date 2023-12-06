@@ -6,12 +6,12 @@
 
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; } 
-        public  DataRowState row { get; set; }
+        public  DataRowState Row { get; set; }
 
 
         public Common()
         {
-            row = DataRowState.New;
+            Row = DataRowState.New;
         }
     }
 
