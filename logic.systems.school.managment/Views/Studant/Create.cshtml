@@ -22,7 +22,7 @@
     </div>
 </div>
 
-<form>
+<form asp-action="create" asp-controller="studant">
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body pb-0">
@@ -32,7 +32,7 @@
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                             <label for="">Nome completo</label>
-                            <input type="text" class="form-control" asp-for="Name" required>
+                            <input type="text" class="form-control" asp-for="Name" >
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -46,13 +46,14 @@
 
                     <div class="form-row">
                         <div class="col-md-4 mb-3">
-                            <label for="">Nacionalidade</label>
-                            <input type="text" class="form-control" id="" required>
+                            <label for="">Naturalidade</label>
+                            <input type="text" class="form-control" asp-for="Naturalness">
+                            <span asp-validation-for="Naturalness" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="">Província</label>
                             <select class="form-control form-control-lg pb-3 pt-3" id="provinces">
-                                <option selected>... Escolha a Província </option>
+                                
 
                                 @foreach (OrgUnitProvince item in ViewBag.Provinces)
                                 {
@@ -64,7 +65,7 @@
                         <div class="col-md-4 mb-3">
                             <label for="">Distrito</label>
                             <select class="form-control form-control-lg pb-3 pt-3" id="district" asp-for="DistrictId">
-                                <option selected>... Escolha a Província </option>
+                                <option selected>...</option>
 
                                 @foreach (OrgUnitProvince item in ViewBag.Provinces)
                                 {
@@ -80,10 +81,11 @@
                     <div class="form-row mb-3">
                         <div class="col-md-4">
                             <label for="">Sexo</label>    <span asp-validation-for="Gender" class="text-danger"></span>
-                            <select class="form-control form-control-lg pb-3 pt-3" asp-for="Gender">
-                                <option selected>... Escolha o Sexo</option>
-                                <option value="Masculino">Masculino</option>
-                                <option value="Feminino">Feminino</option>
+                            <select class="form-control form-control-lg pb-3 pt-3" asp-for="Gender">   
+                                @foreach (string item in ViewBag.Gender)
+                                {
+                                    <option value="@item">@item</option>
+                                } 
                             </select>
                             <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
@@ -104,7 +106,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="">Nome da mãe</label>
-                            <input class="form-control" id="" required>
+                            <input class="form-control" id="" >
                         </div>
                     </div>
 
@@ -119,7 +121,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="">Residência do encarregado de educação.</label>
-                            <input class="form-control" id="" required>
+                            <input class="form-control" id="" >
                         </div>
                     </div>
 

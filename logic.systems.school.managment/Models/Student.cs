@@ -18,14 +18,15 @@ namespace logic.systems.school.managment.Models
 
         [Required(ErrorMessage = "O campo sexo é obrigatório.")]
         public string Gender { get; set; } 
-        public string FatherName { get; set; }
-        public string MatherName { get; set; }
+        public string? FatherName { get; set; }
+        public string? MatherName { get; set; }
+        public string? Naturalness { get; set; }
         [Required(ErrorMessage = "O campo BI é obrigatório.")]
         public string PersonId { get; set; }
 
         // Relationship property
         public virtual SchoolLevel CurrentSchoolLevel { get; set; }
-        public int CurrentSchoolLevelId { get; set; } 
+        public int? CurrentSchoolLevelId { get; set; } 
         public virtual OrgUnitDistrict District { get; set; }
         [Required(ErrorMessage = "O campo distrito é obrigatório.")]
         public int DistrictId { get; set; }

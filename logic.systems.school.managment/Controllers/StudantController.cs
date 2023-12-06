@@ -54,6 +54,7 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
+                await PopulateForms();
                 if (ModelState.IsValid)
                 {
                     await PopulateForms();
