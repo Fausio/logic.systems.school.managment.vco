@@ -1,0 +1,26 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace logic.systems.school.managment.Models
+{
+    [Table("Sponsor")]
+    public class Sponsor : Common
+    {
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string Education { get; set; }
+
+        public List<Contacts> Contacts { get; set; }
+
+        public Sponsor()
+        {
+            this.Contacts = new List<Contacts>()
+            {
+                new Contacts() { ContactsType = Models.Contacts.Home},
+                new Contacts() { ContactsType = Models.Contacts.Wotk},
+                new Contacts() { ContactsType = Models.Contacts.pricate},
+            };
+
+
+        }
+    }
+}
