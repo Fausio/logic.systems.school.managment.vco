@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace logic.systems.school.managment.Models
 {
     [Table("Sponsor")]
     public class Sponsor : Common
     {
+        [Required(ErrorMessage = "O campo Nome do encarregado de Educação é obrigatório.")]
         public string Name { get; set; }
         public string Address { get; set; }
         public string Education { get; set; }
@@ -15,9 +17,7 @@ namespace logic.systems.school.managment.Models
         {
             this.Contacts = new List<Contacts>()
             {
-                new Contacts() { ContactsType = Models.Contacts.Home},
-                new Contacts() { ContactsType = Models.Contacts.Wotk},
-                new Contacts() { ContactsType = Models.Contacts.pricate},
+                new Contacts() {  }
             };
 
 

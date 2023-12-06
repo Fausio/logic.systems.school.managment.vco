@@ -21,7 +21,7 @@
         </div>
     </div>
 </div>
- 
+
 <form>
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
@@ -32,11 +32,13 @@
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                             <label for="">Nome completo</label>
-                            <input type="text" class="form-control" id=""  required>
+                            <input type="text" class="form-control" asp-for="Name" required>
+                            <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="">Data de Nasciento</label>
-                            <input type="date" class="form-control" id=""  required>
+                            <input type="date" class="form-control" asp-for="BirthDate">
+                            <span asp-validation-for="BirthDate" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -45,23 +47,11 @@
                     <div class="form-row">
                         <div class="col-md-4 mb-3">
                             <label for="">Nacionalidade</label>
-                            <input type="text" class="form-control" id=""  required>
+                            <input type="text" class="form-control" id="" required>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="">Província</label> 
-                            <select class="form-control form-control-lg pb-3 pt-3"  id="provinces">
-                                <option selected>... Escolha a Província </option>
-
-                                @foreach (OrgUnitProvince item in ViewBag.Provinces)
-                                {
-                                    <option value="@item.Id">@item.Description</option>
-                                }
-                               
-                            </select>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="">Destrito</label>
-                            <select class="form-control form-control-lg pb-3 pt-3" id="district">
+                            <label for="">Província</label>
+                            <select class="form-control form-control-lg pb-3 pt-3" id="provinces">
                                 <option selected>... Escolha a Província </option>
 
                                 @foreach (OrgUnitProvince item in ViewBag.Provinces)
@@ -70,36 +60,51 @@
                                 }
 
                             </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="">Distrito</label>
+                            <select class="form-control form-control-lg pb-3 pt-3" id="district" asp-for="DistrictId">
+                                <option selected>... Escolha a Província </option>
+
+                                @foreach (OrgUnitProvince item in ViewBag.Provinces)
+                                {
+                                    <option value="@item.Id">@item.Description</option>
+                                }
+
+                            </select>
+                            <span asp-validation-for="DistrictId" class="text-danger"></span>
                         </div>
                     </div>
 
 
                     <div class="form-row mb-3">
                         <div class="col-md-4">
-                            <label for="">Sexo</label>
-                            <select class="form-control form-control-lg pb-3 pt-3">
-                                <option selected>... Escolha o Sexo</option> 
-                                  <option >Masculino</option>
-                                <option >Feminino</option>
+                            <label for="">Sexo</label>    <span asp-validation-for="Gender" class="text-danger"></span>
+                            <select class="form-control form-control-lg pb-3 pt-3" asp-for="Gender">
+                                <option selected>... Escolha o Sexo</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Feminino">Feminino</option>
                             </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
-                    </div> 
+                    </div>
 
                     <div class="form-row">
                         <div class="col-md-4 mb-3">
                             <label for="">BI</label>
-                            <input type="text" class="form-control" id=""  required>
+                            <input type="text" class="form-control" asp-for="PersonId">
+                            <span asp-validation-for="PersonId" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                             <label for="">Nome do pai</label>
-                            <input type="text" class="form-control" id=""  required>
+                            <input type="text" class="form-control">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="">Nome da mãe</label>
-                            <input  class="form-control" id=""  required>
+                            <input class="form-control" id="" required>
                         </div>
                     </div>
 
@@ -109,57 +114,61 @@
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                             <label for="">Nome do encarregado de Educação</label>
-                            <input type="text" class="form-control" id=""  required>
+                            <input type="text" class="form-control" asp-for="Sponsor.Name">
+                            <span asp-validation-for="Sponsor.Name" class="text-danger"></span>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="">Residência do encarregado de educação.</label>
-                            <input   class="form-control" id=""  required>
+                            <input class="form-control" id="" required>
                         </div>
                     </div>
+
+
 
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                             <label for="">Contacto do encarregado de educação</label>
-                            <input type="text" placeholder="Casa/serviço ou numero pessoal" class="form-control" id=""  required>
+
+                            @for (int i = 0; i < Model.Sponsor.Contacts.Count(); i++)
+                            {
+                                <input type="text" placeholder="Casa/serviço ou numero pessoal" class="form-control" asp-for="Sponsor.Contacts[i].Number">
+                                <span asp-validation-for="Sponsor.Contacts[i].Number" class="text-danger"></span>
+                            }
+                          
                         </div>
                     </div>
- 
-
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                    <span asp-validation-for="Gender" class="text-danger"></span>
-
                     <hr />
                     <div class="form-group row">
                         <div class="col-sm-10">
-                            <button type="button" class="btn btn-info">Cadastrar</button>
+                            <button type="submit" class="btn btn-info">Cadastrar</button>
                         </div>
                     </div>
                 </form>
-                 
+
 
             </div>
         </div>
     </div>
 </form>
- 
+
 
 
 @section scripts {
     <script>
         $(document).ready(function () {
-            $("#provinces").change(function () { 
-                var ProvincesId = $("#provinces").val(); 
+            $("#provinces").change(function () {
+                var ProvincesId = $("#provinces").val();
                 $.ajax({
                     url: '/admin/GetDistricts',
                     type: 'GET',
                     data: { Id: ProvincesId },
                     success: function (districts) {
-                         $("#district").empty();
+                        $("#district").empty();
                         $.each(districts, function (index, result) {
                             $("#district").append($('<option>', {
                                 value: result.id,
                                 text: result.description
-                            })); 
+                            }));
                         });
                     }
                 });

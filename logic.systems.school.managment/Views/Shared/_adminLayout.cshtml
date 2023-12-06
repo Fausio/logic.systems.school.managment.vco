@@ -1,6 +1,11 @@
 ﻿<!DOCTYPE html> 
 <head>
-    <!-- Required meta tags -->
+ 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>@ViewData["Title"] - Cooperativa de ensino Kalimany</title>
@@ -17,6 +22,19 @@
     <link rel="stylesheet" href="~/celestial-admin/css/vertical-layout-light/style.css" />
     <!-- endinject -->
     <link rel="shortcut icon" href="~/celestial-admin/images/favicon.png" />
+    <style>
+        /* Estilize os selects com erro */
+        select.input-validation-error {
+            border: 1px solid #ff0000; /* Borda vermelha para indicar erro */
+            background-color: #ffeeee; /* Fundo vermelho claro para destacar o erro */
+        }
+
+        /* Estilize as mensagens de erro */
+        span.field-validation-error {
+            color: #ff0000; /* Cor do texto vermelho para mensagens de erro */
+        }
+
+    </style>
 </head>
 <body>
     <div class="container-scroller">

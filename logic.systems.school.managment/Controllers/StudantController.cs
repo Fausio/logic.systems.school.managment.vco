@@ -1,5 +1,6 @@
 ﻿using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
+using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Metrics;
 
@@ -33,11 +34,34 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
+
                 await PopulateForms();
                 return View(new Student()
                 {
 
                 });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(Models.Student model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    await PopulateForms();
+                    await _StudentService.Create(model, "");
+                    return RedirectToAction("Edit", model.Id);
+                }
+
+                return View(model);
             }
             catch (Exception)
             {
