@@ -13,14 +13,6 @@ namespace logic.systems.school.managment.Models
 
         public List<Contacts>? Contacts { get; set; }
 
-        public Sponsor()
-        {
-            this.Contacts = new List<Contacts>()
-            {
-                new Contacts() {  }
-            };
-
-
-        }
+       
     }
 }

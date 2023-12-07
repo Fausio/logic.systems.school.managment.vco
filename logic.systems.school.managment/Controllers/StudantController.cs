@@ -61,8 +61,8 @@ namespace logic.systems.school.managment.Controllers
                 {
                   
                     var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
-                    await PopulateForms();
-                    return RedirectToAction("Edit", result.Id);
+                    await PopulateForms(); 
+                    return RedirectToAction("edit", "studant", new { id = result.Id });
                 }
 
                 return View(model);
@@ -79,9 +79,10 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
-                var model = await _StudentService.Read(id); 
+                var model = await _StudentService.Read(id);
+                var result = StudantProfile.ToDTO(model);
                 await PopulateForms();
-                return View(StudantProfile.ToDTO(model));
+                return View(result);
             }
             catch (Exception)
             {
