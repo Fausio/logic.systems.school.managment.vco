@@ -48,6 +48,13 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider  .GetRequiredService<ApplicationDbContext>();
+
+    // Here is the migration executed
+    dbContext.Database.Migrate();
+}
 await SeedOrgUnit.Run();
 
 app.Run();
