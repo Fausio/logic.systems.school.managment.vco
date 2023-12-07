@@ -27,7 +27,10 @@ namespace logic.systems.school.managment.Dto
         public int DistrictId { get; set; }
 
 
-        #region MyRegion
+        [Required(ErrorMessage = "O campo classe é obrigatório.")]
+        public int CurrentSchoolLevelId { get; set; }
+
+        #region  Sponsor
         [Required(ErrorMessage = "O campo Nome do encarregado de Educação é obrigatório.")]
         public string SponsorName { get; set; }
         public string? SponsorAddress { get; set; }

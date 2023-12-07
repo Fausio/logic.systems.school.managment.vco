@@ -1,4 +1,5 @@
-﻿using logic.systems.school.managment.Dto;
+﻿using Humanizer;
+using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Models;
 
 namespace logic.systems.school.managment.Mapper.ManualMapper
@@ -21,6 +22,7 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
                     Naturalness = dTO.Naturalness,
                     PersonId = dTO.PersonId,
                     DistrictId = dTO.DistrictId, 
+                     CurrentSchoolLevelId = dTO.CurrentSchoolLevelId, 
                 };
                  
                 myClass.Sponsor.Name = dTO.SponsorName; 
@@ -61,6 +63,7 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
                     Naturalness = Class.Naturalness,
                     PersonId    = Class.PersonId,
                     DistrictId  = Class.DistrictId,
+                    CurrentSchoolLevelId = Class.CurrentSchoolLevelId,
                 };
 
                 dto.SponsorName         = Class.Sponsor.Name;

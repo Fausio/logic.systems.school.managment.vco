@@ -20,7 +20,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<ICRUD<Student>, StudantService>();
 builder.Services.AddScoped<IOrgUnit, OrgUnitService>();
- 
+builder.Services.AddScoped<ISempleEntityService, SempleEntityService>();
+                                                        
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

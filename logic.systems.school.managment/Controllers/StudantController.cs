@@ -12,11 +12,13 @@ namespace logic.systems.school.managment.Controllers
     {
         private ICRUD<Student> _StudentService;
         private IOrgUnit _IOrgUnitServiceService;
+        private ISempleEntityService _SempleEntityService;
 
-        public StudantController(ICRUD<Student> StudentService, IOrgUnit IOrgUnitServiceService)
+        public StudantController(ICRUD<Student> StudentService, IOrgUnit IOrgUnitServiceService, ISempleEntityService SempleEntityService)
         {
             this._StudentService = StudentService;
             this._IOrgUnitServiceService = IOrgUnitServiceService;
+            this._SempleEntityService = SempleEntityService;
         }
 
         public async Task<IActionResult> Index(int? pageNumber = 1, int? pageSize = 10)
@@ -35,8 +37,7 @@ namespace logic.systems.school.managment.Controllers
         public async Task<IActionResult> Create()
         {
             try
-            {
-
+            { 
                 await PopulateForms();
                 return View(new CreateStudantDTO()
                 {
@@ -59,9 +60,10 @@ namespace logic.systems.school.managment.Controllers
                 await PopulateForms();
                 if (ModelState.IsValid)
                 {
-                  
+
                     var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
-                    await PopulateForms(); 
+                    await PopulateForms();
+                    TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
                     return RedirectToAction("edit", "studant", new { id = result.Id });
                 }
 
@@ -81,7 +83,11 @@ namespace logic.systems.school.managment.Controllers
             {
                 var model = await _StudentService.Read(id);
                 var result = StudantProfile.ToDTO(model);
-                await PopulateForms();
+                await PopulateForms(); 
+                if (TempData.ContainsKey("MensagemSucess"))
+                {
+                    ViewBag.Mensagem = TempData["MensagemSucess"];
+                }
                 return View(result);
             }
             catch (Exception)
@@ -100,6 +106,7 @@ namespace logic.systems.school.managment.Controllers
             };
 
             ViewBag.Provinces = await _IOrgUnitServiceService.GetOrgUnitProvinces();
+            ViewBag.CurrentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
         }
     }
 }

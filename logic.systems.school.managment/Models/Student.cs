@@ -27,8 +27,7 @@ namespace logic.systems.school.managment.Models
         public string? Naturalness { get; set; }
         [Required(ErrorMessage = "O campo BI é obrigatório.")]
         public string PersonId { get; set; } 
-
- 
+         
         public virtual SimpleEntity CurrentSchoolLevel { get; set; }
         [Required(ErrorMessage = "O campo classe é obrigatório.")]
         public int CurrentSchoolLevelId { get; set; } 
