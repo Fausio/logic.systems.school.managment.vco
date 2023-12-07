@@ -8,19 +8,11 @@ namespace logic.systems.school.managment.Models
     {
         [Required(ErrorMessage = "O campo Nome do encarregado de Educação é obrigatório.")]
         public string Name { get; set; }
-        public string Address { get; set; }
-        public string Education { get; set; }
+        public string? Address { get; set; }
+        public string? Education { get; set; }
 
-        public List<Contacts> Contacts { get; set; }
+        public List<Contacts>? Contacts { get; set; }
 
-        public Sponsor()
-        {
-            this.Contacts = new List<Contacts>()
-            {
-                new Contacts() {  }
-            };
-
-
-        }
+       
     }
 }

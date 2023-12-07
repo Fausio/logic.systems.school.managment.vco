@@ -9,6 +9,7 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
         {
             try
             {
+                var s = dTO.SponsorContacts[0];
                 var myClass = new Student()
                 {
 
@@ -21,15 +22,18 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
                     PersonId = dTO.PersonId,
                     DistrictId = dTO.DistrictId, 
                 };
-
+                 
                 myClass.Sponsor.Name = dTO.SponsorName; 
                 myClass.Sponsor.Address = dTO.SponsorAddress; 
                 myClass.Sponsor.Education = dTO.SponsorEducation;
-                myClass.Sponsor.Contacts.Add(new Contacts()
+                myClass.Sponsor.Contacts  = new List<Contacts>()
                 {
+                   new Contacts()
+                   { 
                     ContactsType = "",
                     Number = dTO.SponsorContacts[0]
-                });
+                   }
+                };
 
                 return myClass;
             }
@@ -42,8 +46,10 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
 
         public static EditStudantDTO ToDTO(Student Class)
         {
+            
             try
             {  
+              
                 var dto = new EditStudantDTO()
                 {
                     id          = Class.Id,
