@@ -55,22 +55,25 @@
                                 </tr>
                             </thead>
                             <tbody>
+
+                                @foreach (var item in Model.records)
+                            {
                                 <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>
-                                        <label class="badge badge-success">Completed</label>
-                                    </td>
-                                    <td>  <i class="mdi mdi-headset"></i></td>
+                                    <th scope="row">@item.Id</th>
+                                    <td>xpto</td>
+                                    <td>xpto</td>
+                                    <td>xpto</td>
+                                    <td>   <label class="badge badge-danger">Pending</label></td>
                                 </tr>
-                                <tr>
+                            }
+                              
+                                 <tr>
                                     <th scope="row">2</th>
                                     <td>Mark</td>
                                     <td>Otto</td>
                                     <td> <label class="badge badge-danger">Pending</label></td>
                                     <td>  <i class="mdi mdi-headset"></i></td>
-                                </tr>
+                                </tr> 
                             </tbody>
                         </table>
                         <hr />
