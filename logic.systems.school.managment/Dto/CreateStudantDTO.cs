@@ -30,17 +30,14 @@ namespace logic.systems.school.managment.Dto
         #region MyRegion
         [Required(ErrorMessage = "O campo Nome do encarregado de Educação é obrigatório.")]
         public string SponsorName { get; set; }
-        public string SponsorAddress { get; set; }
-        public string SponsorEducation { get; set; }
+        public string? SponsorAddress { get; set; }
+        public string? SponsorEducation { get; set; }
 
-        public List<Contacts> Contacts { get; set; }
+        public string[] SponsorContacts { get; set; }  =   new string[] { "" };
 
-        public CreateStudantDTO()
-        {
-            this.Contacts = new List<Contacts>()
-            {
-                new Contacts() {  }
-            }; 
+    public CreateStudantDTO()
+        { 
+            this.BirthDate = DateTime.Now.AddYears(-21);
         }
         #endregion
 

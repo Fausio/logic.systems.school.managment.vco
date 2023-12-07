@@ -1,4 +1,5 @@
-﻿using logic.systems.school.managment.Interface;
+﻿using logic.systems.school.managment.Dto;
+using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
 using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +37,7 @@ namespace logic.systems.school.managment.Controllers
             {
 
                 await PopulateForms();
-                return View(new Student()
+                return View(new CreateStudantDTO()
                 {
 
                 });
@@ -50,7 +51,7 @@ namespace logic.systems.school.managment.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Models.Student model)
+        public async Task<IActionResult> Create(Dto.CreateStudantDTO model)
         {
             try
             {
@@ -58,11 +59,29 @@ namespace logic.systems.school.managment.Controllers
                 if (ModelState.IsValid)
                 {
                     await PopulateForms();
-                    await _StudentService.Create(model, "8e445865-a24d-4543-a6c6-9443d048cdb9");
-                    return RedirectToAction("Edit", model.Id);
+            //      await _StudentService.Create(model, "8e445865-a24d-4543-a6c6-9443d048cdb9");
+                    return RedirectToAction("Edit", 1);
                 }
 
                 return View(model);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            try
+            { 
+                await PopulateForms();
+                return View(new CreateStudantDTO()
+                {
+
+                });
             }
             catch (Exception)
             {

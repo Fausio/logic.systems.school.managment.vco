@@ -9,21 +9,21 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="studant">Lista de Estudantess</a><</li>
-        <li class="breadcrumb-item active" aria-current="page">Cadastrar</li>
+        <li class="breadcrumb-item active" aria-current="page">Actualizar</li>
     </ol>
 </nav>
 
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body pb-0 pt-2">
-            <h2>Cadastrar Estudante</h2>
+            <h2>Actualizar Estudante</h2>
 
         </div>
     </div>
 </div>
 @if (ViewData.ModelState.IsValid)
 {
-    
+ 
 }
 else
 {
@@ -50,7 +50,7 @@ else
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                             <label for="">Nome completo</label>
-                            <input type="text" class="form-control" asp-for="Name" >
+                            <input type="text" class="form-control" asp-for="Name">
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -71,7 +71,7 @@ else
                         <div class="col-md-4 mb-3">
                             <label for="">Província</label>
                             <select class="form-control form-control-lg pb-3 pt-3" id="provinces">
-                                
+
 
                                 @foreach (OrgUnitProvince item in ViewBag.Provinces)
                                 {
@@ -99,11 +99,11 @@ else
                     <div class="form-row mb-3">
                         <div class="col-md-4">
                             <label for="">Sexo</label>    <span asp-validation-for="Gender" class="text-danger"></span>
-                            <select class="form-control form-control-lg pb-3 pt-3" asp-for="Gender">   
+                            <select class="form-control form-control-lg pb-3 pt-3" asp-for="Gender">
                                 @foreach (string item in ViewBag.Gender)
                                 {
                                     <option value="@item">@item</option>
-                                } 
+                                }
                             </select>
                             <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
@@ -141,7 +141,7 @@ else
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="">Residência do encarregado de educação.</label>
-                            <input class="form-control" id="" >
+                            <input class="form-control" id="">
                         </div>
                     </div>
 
@@ -156,7 +156,7 @@ else
                                 <input type="text" placeholder="Casa/serviço ou numero pessoal" class="form-control" asp-for="SponsorContacts[i]">
                                 <span asp-validation-for="SponsorContacts[i]" class="text-danger"></span>
                             }
-                          
+
                         </div>
                     </div>
                     <hr />
@@ -198,6 +198,6 @@ else
                 });
             });
         });
-         
-    </script> 
+
+    </script>
 }
