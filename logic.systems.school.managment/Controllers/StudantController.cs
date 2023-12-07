@@ -1,5 +1,6 @@
 ﻿using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
+using logic.systems.school.managment.Mapper.ManualMapper;
 using logic.systems.school.managment.Models;
 using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -58,9 +59,10 @@ namespace logic.systems.school.managment.Controllers
                 await PopulateForms();
                 if (ModelState.IsValid)
                 {
+                  
+                    var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
                     await PopulateForms();
-            //      await _StudentService.Create(model, "8e445865-a24d-4543-a6c6-9443d048cdb9");
-                    return RedirectToAction("Edit", 1);
+                    return RedirectToAction("Edit", result.Id);
                 }
 
                 return View(model);
@@ -76,12 +78,10 @@ namespace logic.systems.school.managment.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             try
-            { 
+            {
+                var model = await _StudentService.Read(id); 
                 await PopulateForms();
-                return View(new CreateStudantDTO()
-                {
-
-                });
+                return View(StudantProfile.ToDTO(model));
             }
             catch (Exception)
             {
