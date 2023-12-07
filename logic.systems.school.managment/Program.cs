@@ -49,5 +49,6 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 await SeedOrgUnit.Run();
+await SeedSimpleEntity.Run();
 
 app.Run();

@@ -13,7 +13,7 @@ namespace logic.systems.school.managment.Services
         {
             try
             {
-               return  await db.SimpleEntitys.Where(x => x.type == type).ToListAsync(); 
+               return  await db.SimpleEntitys.Where(x => x.Type == type).ToListAsync(); 
             }
             catch (Exception)
             {
