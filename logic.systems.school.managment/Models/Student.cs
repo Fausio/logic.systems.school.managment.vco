@@ -28,20 +28,15 @@ namespace logic.systems.school.managment.Models
         [Required(ErrorMessage = "O campo BI é obrigatório.")]
         public string PersonId { get; set; }
 
-        // Relationship property
-        public virtual SchoolLevel CurrentSchoolLevel { get; set; }
-        public int? CurrentSchoolLevelId { get; set; } 
+        [Required(ErrorMessage = "O campo classe é obrigatório.")]
+        public int CurrentSchoolLevelId { get; set; } 
         public virtual OrgUnitDistrict District { get; set; }
         [Required(ErrorMessage = "O campo distrito é obrigatório.")]
         public int DistrictId { get; set; }
 
-        public virtual Sponsor Sponsor { get; set; }
-        public int SponsorId { get; set; }
-
-
-        public Student()
-        {
-                this.Sponsor = new Sponsor();
-        }
+        public virtual Sponsor Sponsor { get; set; } = new Sponsor();
+        public int SponsorId { get; set; } 
+        public List<Tuition> Tuitions { get; set; } = new List<Tuition>();
+         
     }
 }
