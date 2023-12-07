@@ -12,8 +12,8 @@ namespace logic.systems.school.managment.Models
          public  const string pricate = "Pessoal";
 
         [Required(ErrorMessage = "O campo Contacto do encarregado de educação é obrigatório.")]
-        public string Number { get; set; }
-        public string ContactsType { get; set; }
+        public string? Number { get; set; }
+        public string? ContactsType { get; set; }
 
         public virtual Sponsor Sponsor { get; set; }
         public int SponsorId { get; set; }
