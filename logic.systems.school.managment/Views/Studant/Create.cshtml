@@ -37,7 +37,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="">Data de Nasciento</label>
-                            <input type="date" class="form-control" asp-for="BirthDate">
+                            <input type="date" class="form-control date-input" asp-for="BirthDate">
                             <span asp-validation-for="BirthDate" class="text-danger"></span>
                         </div>
                     </div>
@@ -102,11 +102,13 @@
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                             <label for="">Nome do pai</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" asp-for="MatherName">
+                            <span asp-validation-for="MatherName" class="text-danger"></span>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="">Nome da mãe</label>
-                            <input class="form-control" id="" >
+                            <input class="form-control" asp-for="FatherName">
+                            <span asp-validation-for="FatherName" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -140,6 +142,7 @@
                         </div>
                     </div>
                     <hr />
+
                     <div class="form-group row">
                         <div class="col-sm-10">
                             <button type="submit" class="btn btn-info">Cadastrar</button>
@@ -153,6 +156,27 @@
     </div>
 </form>
 
+@if (ViewData.ModelState.IsValid)
+{
+    <div id="validation-summary" class="alert alert-success" role="alert">
+        Todas as validações passaram com sucesso.
+    </div>
+}
+else
+{
+    <div id="validation-summary" class="alert alert-danger" role="alert">
+        <p><strong>Por favor, corrija os seguintes erros:</strong></p>
+        <ul>
+            @foreach (var key in ViewData.ModelState.Keys)
+            {
+                foreach (var error in ViewData.ModelState[key].Errors)
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            }
+        </ul>
+    </div>
+}
 
 
 @section scripts {
@@ -176,5 +200,6 @@
                 });
             });
         });
-    </script>
+         
+    </script> 
 }

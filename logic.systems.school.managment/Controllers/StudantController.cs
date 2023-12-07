@@ -58,7 +58,7 @@ namespace logic.systems.school.managment.Controllers
                 if (ModelState.IsValid)
                 {
                     await PopulateForms();
-                    await _StudentService.Create(model, "");
+                    await _StudentService.Create(model, "8e445865-a24d-4543-a6c6-9443d048cdb9");
                     return RedirectToAction("Edit", model.Id);
                 }
 
