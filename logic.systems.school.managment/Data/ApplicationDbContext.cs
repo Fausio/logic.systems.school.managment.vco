@@ -71,7 +71,7 @@ namespace logic.systems.school.managment.Data
         }
 
         public DbSet<Student> Students { get; set; }
-        public DbSet<SchoolLevel> SchoolLevels { get; set; }
+        //public DbSet<SchoolLevel> SchoolLevels { get; set; }
         public DbSet<Tuition> Tuitions { get; set; }
 
 
