@@ -13,22 +13,7 @@ namespace logic.systems.school.managment.Services
     public class TuitionService : ITuitionService
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
-
-        public string GetMonthName(int month)
-        {
-            CultureInfo ptCulture = new CultureInfo("pt-BR");
-            DateTimeFormatInfo dtfi = DateTimeFormatInfo.GetInstance(ptCulture);
-            return dtfi.GetMonthName(month);
-        }
-        public async Task CreateByClassOfStudant(Student model)
-        {
-
-
-            // meses de estudo (1 de fevereiro a  dezembro) para decima e decima-segunda classe, devido aos exame.
-            // meses  de estudo de (1 de fevereiro a novembro) são todas as outras classes sem exame incluido sexta classe que tem exame.
-
-
-            var classesWithoutExame = new List<String>()
+        List<String> classesWithoutExame = new List<String>()
             {
                 "Pré-escola A",
                 "Pré-escola B",
@@ -45,12 +30,27 @@ namespace logic.systems.school.managment.Services
                 "10ª classe"
             };
 
-            var classesWithtExame = new List<String>()
+        List<String> classesWithtExame = new List<String>()
             {
               "11ª classe"  ,
               "12ª classe"
 
             };
+        public string GetMonthName(int month)
+        {
+            CultureInfo ptCulture = new CultureInfo("pt-BR");
+            DateTimeFormatInfo dtfi = DateTimeFormatInfo.GetInstance(ptCulture);
+            return dtfi.GetMonthName(month);
+        }
+        public async Task CreateByClassOfStudant(Student model)
+        {
+
+
+            // meses de estudo (1 de fevereiro a  dezembro) para decima e decima-segunda classe, devido aos exame.
+            // meses  de estudo de (1 de fevereiro a novembro) são todas as outras classes sem exame incluido sexta classe que tem exame.
+
+
+         
 
             if (classesWithtExame.Contains(model.CurrentSchoolLevel.Description))
             {
@@ -58,10 +58,16 @@ namespace logic.systems.school.managment.Services
                 string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
                 for (int i = 1; i < meses.Length + 1; i++)
                 {
+                    int daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, i+1);
+                    DateTime startDate = new DateTime(DateTime.Now.Year, i+1, 1);
+                    DateTime endDate = new DateTime(DateTime.Now.Year, i+1, daysInMonth);
+
                     tuitions.Add(new Tuition()
                     {
                         MonthNumber = i,
                         MonthName = meses[i - 1],
+                        StartDate = startDate ,
+                        EndDate = endDate ,
                         Year = DateTime.Now.Year,
                         StudentId = model.Id,
                         AssociatedLevelId = model.CurrentSchoolLevelId
@@ -72,16 +78,22 @@ namespace logic.systems.school.managment.Services
                 await db.Tuitions.AddRangeAsync(tuitions);
                 await db.SaveChangesAsync();
             }
-            if (classesWithoutExame.Contains(model.CurrentSchoolLevel.Description))
+            if (this.classesWithoutExame.Contains(model.CurrentSchoolLevel.Description))
             {
                 List<Tuition> tuitions = new List<Tuition>();
                 string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro" };
                 for (int i = 1; i < meses.Length + 1; i++)
                 {
+                    int daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, i + 1);
+                    DateTime startDate = new DateTime(DateTime.Now.Year, i + 1, 1);
+                    DateTime endDate = new DateTime(DateTime.Now.Year, i + 1, daysInMonth);
+
                     tuitions.Add(new Tuition()
                     {
                         MonthNumber = i,
                         MonthName = meses[i - 1],
+                        StartDate = startDate,
+                        EndDate = endDate,
                         Year = DateTime.Now.Year,
                         StudentId = model.Id,
                         AssociatedLevelId = model.CurrentSchoolLevelId
@@ -254,6 +266,36 @@ namespace logic.systems.school.managment.Services
                 return 0;
             }
         }
+
+      
+
+
+
+        public async Task CheckFee( )
+        {
+            var now = DateTime.Now;
+            var students = await db.Students.Include(x=> x.CurrentSchoolLevel).Include(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
+
+            foreach (Student student in students)
+            {
+                foreach (Tuition tuition in student.Tuitions)
+                {
+
+                    if (!tuition.Paid  && classesWithtExame.Contains(student.CurrentSchoolLevel.Description))
+                    { 
+                        string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
+                        foreach (var item in meses)
+                        {
+                            if (tuition.MonthName == item)
+                            {
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+         
 
     }
 }

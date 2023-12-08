@@ -145,12 +145,12 @@
 
                         <div class="row">
 
-                            <div class="col-md-4 col-sm-12">
+                            <div class="col-md-6 col-sm-12">
                                 <div class="table-responsive"> 
                                     <table class="MytabelaItens wideTable" id="tabelaItensPayments" border="1">
                                         <thead>
                                             <tr>
-                                                 <th>Pagamento</th>
+                                                 <th>Pagamento para a mensalidade</th>
                                                  <th>Data de Pagamento</th>
                                                  <th>Propina</th>
                                                  <th>Iva (5%)</th>
@@ -164,12 +164,13 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-12">
+                            <div class="col-md-6 col-sm-12">
                                 <div class="table-responsive">
                                     <table class="MytabelaItens" id="tabelaItens" border="1">
                                         <thead>
                                             <tr>
                                                 <th>Mensalidades a pagar (@ViewBag.CurrentSchoolLevel)</th>
+                                                <th>Data</th>
                                                 <th>Estado</th>
                                                 <!-- Adicione mais colunas conforme necessário -->
                                             </tr>
@@ -345,7 +346,12 @@
 
                     $.each(MyList, function (index, item) {
                         var newRow = $("<tr>");
-                        newRow.append("<td>" + item.monthName + "</td>");
+                        var formattedsDate = new Date(item.startDate).toLocaleDateString('pt-BR');
+                        var formattedeDate = new Date(item.endDate).toLocaleDateString('pt-BR');
+
+                        newRow.append("<td>" + item.monthName +    "</td>");
+                        newRow.append("<td>"  + formattedsDate + " a " + formattedeDate + "</td>");
+                 
                         if (item.paid) {
                             // Se verdadeiro, adicione a célula com a classe verde
                             newRow.append("<td><label class='badge badge-success'>Pago</label></td>");
@@ -365,10 +371,7 @@
             $.ajax({
                 url: "/tuition/IndexPaymentByStudantId?id=" + id,
                 type: "GET",
-                success: function (MyList) {
-
-                    console.log("MyList", MyList)
-                   
+                success: function (MyList) { 
                       $("#tabelaItensPayments tbody").empty();
                       // Adicione os novos itens à tabela na sua página
                       $.each(MyList, function (index, item) {
