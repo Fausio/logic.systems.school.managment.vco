@@ -1,0 +1,73 @@
+﻿
+table {
+    border-collapse: collapse;
+    width: 300px; /* Ajuste a largura conforme necessário */
+    margin: 20px; /* Adicione margem conforme necessário */
+}
+
+td, th {
+    padding: 8px;
+    text-align: left;
+     /*border-bottom: 1px solid #ddd;*/ /* Adiciona borda inferior em todas as células */
+}
+
+    td:first-child {
+        border-right: 1px solid #ddd; /* Adiciona borda direita na primeira coluna */
+        font-weight: bold;
+        text-align: right; /* Alinha o texto à direita na primeira célula */
+        padding-right: 10px; /* Adiciona algum espaço à direita para melhorar a aparência */
+    }
+
+tr:nth-child(even) {
+    /*background-color: #f2f2f2;*/
+}
+
+
+
+
+
+
+
+
+/* custom-style.css */
+
+/* Adicione estilos personalizados aqui */
+#tabs-container {
+    width: 60%;
+    margin: 50px auto;
+}
+
+    #tabs-container ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        background-color: #f1f1f1;
+    }
+
+    #tabs-container li {
+        float: left;
+    }
+
+        #tabs-container li a {
+            display: block;
+            color: #000;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+            #tabs-container li a:hover {
+                background-color: #ddd;
+            }
+
+.tab-content {
+    display: none;
+    padding: 20px;
+    border: 1px solid #ddd;
+}
+
+    .tab-content:first-child {
+        display: block;
+    }

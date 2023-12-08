@@ -73,7 +73,18 @@ namespace logic.systems.school.managment.Services
 
         }
 
+        public async Task<List<Tuition>> GetByStudantId(int StudantId)
+        {
+            try
+            {
+             return    await  db.Tuitions.Where(x => x.Id == StudantId).ToListAsync();
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+        }
     }
 }
 
