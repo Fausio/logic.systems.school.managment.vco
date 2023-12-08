@@ -1,4 +1,4 @@
-﻿@model logic.systems.school.managment.Dto.CreateStudantDTO
+﻿@model logic.systems.school.managment.Dto.EditStudantDTO
 
 @{
     ViewData["Title"] = "Cadastrar estudante";
@@ -9,18 +9,19 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="studant">Lista de Estudantess</a><</li>
-        <li class="breadcrumb-item active" aria-current="page">Cadastrar</li>
+        <li class="breadcrumb-item active" aria-current="page">Actualizar</li>
     </ol>
 </nav>
 
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body pb-0 pt-2">
-            <h2>Cadastrar Estudante</h2>
+            <h2>Actualizar Estudante</h2>
 
         </div>
     </div>
 </div>
+
 
 <form asp-action="create" asp-controller="studant">
     <div class="col-lg-12 grid-margin stretch-card">
@@ -38,9 +39,9 @@
                     </div>
                 }
                 <form class="needs-validation" novalidate>
-                    
-                @*     <fieldset class="border p-2">
-                        <legend class="w-auto">Your Legend</legend>
+
+                    @*     <fieldset class="border p-2">
+                    <legend class="w-auto">Your Legend</legend>
                     </fieldset>  *@
 
 
@@ -178,21 +179,23 @@
                             </div>
                         </div>
                     </fieldset>
-  
+
+
                     <fieldset class="border p-2">
-                        <legend class="w-auto">Ações</legend>
-                        <div class="template-demo">
+                        <legend class="w-auto">Ações</legend> 
+                        <div class="template-demo"> 
                             <button type="submit" class="btn btn-info btn-icon-text">
-                                Cadastrar
+                                Actualizar
                                 <i class="typcn typcn-edit btn-icon-append"></i>
                             </button>
-                            <a asp-action="index" asp-controller="studant" class="btn btn-light btn-icon-text">
-                                Ir para lista
+                            <a asp-action="edit" asp-controller="studant" asp-route-id="@Model.id" class="btn btn-light btn-icon-text">
+                                Voltar para detalhes 
                             </a>
 
                         </div>
                     </fieldset>
-                 
+
+
                 </form>
 
 
@@ -225,6 +228,6 @@
                 });
             });
         });
-         
-    </script> 
+
+    </script>
 }

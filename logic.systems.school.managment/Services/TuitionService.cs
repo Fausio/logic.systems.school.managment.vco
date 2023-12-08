@@ -50,6 +50,26 @@ namespace logic.systems.school.managment.Services
 
             };
 
+            if (classesWithtExame.Contains(model.CurrentSchoolLevel .Description))
+            {
+                List<Tuition> tuitions = new List<Tuition>();
+                string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
+                for (int i = 1; i < meses.Length + 1; i++)
+                {
+                    tuitions.Add(new Tuition()
+                    {
+                        MonthNumber = i,
+                        MonthName = meses[i - 1],
+                        Year = DateTime.Now.Year,
+                        StudentId = model.Id,
+                        AssociatedLevelId = model.CurrentSchoolLevelId
+
+                    });
+                }
+
+                await db.Tuitions.AddRangeAsync(tuitions);
+                await db.SaveChangesAsync();
+            }
             if (classesWithoutExame.Contains(model.CurrentSchoolLevel .Description))
             {
                 List<Tuition> tuitions = new List<Tuition>();
@@ -76,8 +96,8 @@ namespace logic.systems.school.managment.Services
         public async Task<List<Tuition>> GetByStudantId(int StudantId)
         {
             try
-            {
-             return    await  db.Tuitions.Where(x => x.Id == StudantId).ToListAsync();
+            { 
+                return await db.Tuitions.Where(x => x.StudentId == StudantId).ToListAsync();
             }
             catch (Exception)
             {

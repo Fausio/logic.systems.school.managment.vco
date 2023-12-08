@@ -11,14 +11,14 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="studant">Lista de Estudantess</a><</li>
-        <li class="breadcrumb-item active" aria-current="page">Cadastrar</li>
+        <li class="breadcrumb-item active" aria-current="page">Detalhes</li>
     </ol>
 </nav>
 
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body pb-0 pt-2">
-            <h2>Actualizar Estudante</h2>
+            <h2>Estudante</h2>
 
         </div>
     </div>
@@ -47,16 +47,16 @@
                     <p><strong>@ViewBag.Mensagem</strong></p>
                 </div>
 
-           
-                    <div class="row">
-                        <div class="col-md-6 col col-sm-12">
+
+                <div class="row">
+                    <div class="col-md-6 col col-sm-12">
                         <fieldset class="p-2">
                             <legend class="w-auto">Dados do estudante</legend>
                             <div class="table-responsive">
                                 <table>
                                     <tr>
                                         <td>Nome completo:</td>
-                                        <td>@Model.Name</td>
+                                        <td> <a asp-action="EditStudant" asp-controller="studant" asp-route-id="@Model.id">@Model.Name</a>
                                     </tr>
                                     <tr>
                                         <td>Data de Nasciento:</td>
@@ -94,8 +94,8 @@
                                 </table>
                             </div>
                         </fieldset>
-                        </div>
-                        <div class="col-md-6 col col-sm-12">
+                    </div>
+                    <div class="col-md-6 col col-sm-12">
                         <fieldset class="p-2">
                             <legend class="w-auto">Dados do encarregado de educação</legend>
                             <div class="table-responsive">
@@ -113,54 +113,60 @@
                                         <td>@Model.SponsorContacts[0]</td>
                                     </tr>
 
-                                   
+
                                 </table>
                             </div>
-                            </fieldset>
-                        </div>
+                        </fieldset>
                     </div>
-                   
-                
+                </div> 
+                 
 
- 
 
-                     
-                     
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active   nav-info" data-toggle="tab" href="#home">Mensalidades/Pagamentos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#menu1">Menu 1</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#menu2">Menu 2</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div id="home" class=" tab-pane active">
+                        
+                        <h3>HOME</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    </div>
+                    <div id="menu1" class=" tab-pane fade">
                         <br>
-                        <!-- Nav tabs -->
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#home">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#menu1">Menu 1</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#menu2">Menu 2</a>
-                            </li>
-                        </ul>
+                        <h3>Menu 1</h3>
+                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    </div>
+                    <div id="menu2" class=" tab-pane fade">
+                        <br>
+                        <h3>Menu 2</h3>
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                    </div>
+                </div>
 
-                        <!-- Tab panes -->
-                        <div class="tab-content">
-                            <div id="home" class="container tab-pane active">
-                                <br>
-                                <h3>HOME</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                            </div>
-                            <div id="menu1" class="container tab-pane fade">
-                                <br>
-                                <h3>Menu 1</h3>
-                                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                            </div>
-                            <div id="menu2" class="container tab-pane fade">
-                                <br>
-                                <h3>Menu 2</h3>
-                                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
-                            </div>
-                        </div>
-                    
-                     
 
+
+
+
+
+                <fieldset class="border pt-0">
+                    <legend class="w-auto">Ações</legend>
+                    <div class="template-demo">
+                        <a asp-action="index" asp-controller="studant"  class="btn btn-light btn-icon-text">
+                            Voltar para lista
+                        </a>
+                    </div>
+                </fieldset>
             </div>
 
 

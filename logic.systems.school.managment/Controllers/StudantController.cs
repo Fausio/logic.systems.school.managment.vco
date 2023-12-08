@@ -62,7 +62,6 @@ namespace logic.systems.school.managment.Controllers
                 await PopulateForms();
                 if (ModelState.IsValid)
                 {
-
                     var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
                     await _ITuitionService.CreateByClassOfStudant(result);
                     await PopulateForms();
@@ -91,6 +90,24 @@ namespace logic.systems.school.managment.Controllers
                 {
                     ViewBag.Mensagem = TempData["MensagemSucess"];
                 }
+                return View(result);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+
+  public async Task<IActionResult> EditStudant(int id)
+        {
+            try
+            {
+                var model = await _StudentService.Read(id);
+                var result = StudantProfile.ToDTO(model);
+                await PopulateForms();  
                 return View(result);
             }
             catch (Exception)
