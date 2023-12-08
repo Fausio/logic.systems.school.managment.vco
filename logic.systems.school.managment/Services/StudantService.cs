@@ -83,7 +83,7 @@ namespace logic.systems.school.managment.Services
                                              Id = u.Id,
                                              Name = u.Name, 
                                              CurrentSchoolLevel = u.CurrentSchoolLevel,
-
+                                             Suspended = u.Suspended,
 
                                          }).OrderBy(o => o.Name).ToListAsync();
 

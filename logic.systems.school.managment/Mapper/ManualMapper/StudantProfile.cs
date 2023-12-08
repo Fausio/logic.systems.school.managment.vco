@@ -22,7 +22,7 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
                     Naturalness = dTO.Naturalness,
                     PersonId = dTO.PersonId,
                     DistrictId = dTO.DistrictId, 
-                     CurrentSchoolLevelId = dTO.CurrentSchoolLevelId, 
+                    CurrentSchoolLevelId = dTO.CurrentSchoolLevelId, 
                 };
                  
                 myClass.Sponsor.Name = dTO.SponsorName; 
@@ -64,6 +64,7 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
                     PersonId    = Class.PersonId,
                     DistrictId  = Class.DistrictId,
                     CurrentSchoolLevelId = Class.CurrentSchoolLevelId,
+                    Suspended = Class.Suspended,
                 };
 
                 dto.SponsorName         = Class.Sponsor.Name;

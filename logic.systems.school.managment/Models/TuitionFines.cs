@@ -10,6 +10,9 @@ namespace logic.systems.school.managment.Models
 
         public decimal FinesValue { get; set; }
 
-
+        public TuitionFines()
+        {
+            FinesValue = 300;
+        }
     }
 }

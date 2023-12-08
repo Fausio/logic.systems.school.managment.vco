@@ -50,7 +50,7 @@ namespace logic.systems.school.managment.Services
             // meses  de estudo de (1 de fevereiro a novembro) são todas as outras classes sem exame incluido sexta classe que tem exame.
 
 
-         
+
 
             if (classesWithtExame.Contains(model.CurrentSchoolLevel.Description))
             {
@@ -58,16 +58,16 @@ namespace logic.systems.school.managment.Services
                 string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
                 for (int i = 1; i < meses.Length + 1; i++)
                 {
-                    int daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, i+1);
-                    DateTime startDate = new DateTime(DateTime.Now.Year, i+1, 1);
-                    DateTime endDate = new DateTime(DateTime.Now.Year, i+1, daysInMonth);
+                    int daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, i + 1);
+                    DateTime startDate = new DateTime(DateTime.Now.Year, i + 1, 1);
+                    DateTime endDate = new DateTime(DateTime.Now.Year, i + 1, daysInMonth);
 
                     tuitions.Add(new Tuition()
                     {
                         MonthNumber = i,
                         MonthName = meses[i - 1],
-                        StartDate = startDate ,
-                        EndDate = endDate ,
+                        StartDate = startDate,
+                        EndDate = endDate,
                         Year = DateTime.Now.Year,
                         StudentId = model.Id,
                         AssociatedLevelId = model.CurrentSchoolLevelId
@@ -267,37 +267,63 @@ namespace logic.systems.school.managment.Services
             }
         }
 
-      
 
 
 
-        public async Task CheckFee( )
+
+        public async Task CheckFee()
         {
             var now = DateTime.Now;
-            var students = await db.Students.Include(x=> x.CurrentSchoolLevel).Include(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
+            var students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
 
             foreach (Student student in students)
             {
                 foreach (Tuition tuition in student.Tuitions)
                 {
 
-                    if (!tuition.Paid  && classesWithtExame.Contains(student.CurrentSchoolLevel.Description))
+                    if (!tuition.Paid)
                     {
-                        int daysPassed = (int)(tuition.StartDate - tuition.EndDate).TotalDays;
 
-                        if (daysPassed >= 16 && daysPassed <= 25)
+
+                        if (now > tuition.StartDate.AddDays(15))
                         {
-                            Console.WriteLine("300 MT");
+                            var havetuitionFines = await db.TuitionFines.FirstOrDefaultAsync(x => x.TuitionId == tuition.Id);
+
+                            if (now >  tuition.StartDate.AddDays(14) && now <=  tuition.StartDate.AddDays(24) && havetuitionFines is null)
+                            {   // cria mutla de 300 se pagar entre dia 15 a 25
+                                //  Console.WriteLine("300 MT");
+                                var tuitionFines = new Models.TuitionFines()
+                                {
+                                    TuitionId = tuition.Id
+                                }; 
+                                await db.TuitionFines.AddAsync(tuitionFines);
+                                await db.SaveChangesAsync();
+                            } 
+                            else if (now > tuition.StartDate.AddDays(24) && !student.Suspended)
+                            {    // cria suspende se tiver passado 25 dias sem pagar a mensalidade
+                                //  Console.WriteLine("Suspenso");
+                                student.Suspended = true; 
+                                await db.SaveChangesAsync();
+                            }  
+                            else if (now > tuition.StartDate.AddDays(24) &&  student.Suspended && havetuitionFines is null)
+                            {   // cria multa se nao tiver suspenso e sem multa
+                                //  Console.WriteLine("300 MT");
+                                var tuitionFines = new Models.TuitionFines()
+                                {
+                                    TuitionId = tuition.Id
+                                };
+                                await db.TuitionFines.AddAsync(tuitionFines);
+                                await db.SaveChangesAsync();
+                            }
                         }
-                        else if (daysPassed > 25)
-                        {
-                            Console.WriteLine("Suspenso");
-                        } 
+                        
+                        
+                      
                     }
                 }
             }
         }
-         
+
 
     }
 }

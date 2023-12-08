@@ -63,8 +63,19 @@
                                         @*     <i class="typcn typcn-compass  text-success"></i> *@
                                         @item.Name </a> </td>
                                 <td>@item.CurrentSchoolLevel.Description</td>
-                                    <td>xpto</td>
-                                    <td>   <label class="badge badge-danger">Pago</label></td>
+                                <td> @item.Suspended</td>
+                                    <td>  
+                                    
+                                        @if (item.Suspended)
+                                    {
+                                        <label class="badge badge-danger">Suspenso</label>
+                                    }else
+                                    {
+                                        <label class="badge badge-success">Resolvido</label>
+                                    }
+                                       
+                                        
+                                    </td>
                                 </tr>
                             }
                               

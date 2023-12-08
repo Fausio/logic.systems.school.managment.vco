@@ -38,6 +38,12 @@
                         <p><strong>Por favor, corrija os seguintes erros:</strong></p>
                     </div>
                 }
+                @if (Model.Suspended)
+                {
+                    <div id="validation-summary" class="alert alert-danger" role="alert">
+                        <p><strong>Estudante suspenso devido a multas:</strong></p>
+                    </div>
+                }
                 <form class="needs-validation" novalidate>
 
                     @*     <fieldset class="border p-2">

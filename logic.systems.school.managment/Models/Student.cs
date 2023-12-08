@@ -12,7 +12,8 @@ namespace logic.systems.school.managment.Models
          public const string genderF = "Feminino";
 
         [Required(ErrorMessage = "O campo Nome é obrigatório.")]
-        public string Name { get; set; }
+         public string Name { get; set; }
+         public bool Suspended { get; set; }
 
         [Required(ErrorMessage = "O campo data de nascimento é obrigatório.")]  
         [UIHint("Data")]

@@ -15,7 +15,10 @@ namespace logic.systems.school.managment.Controllers
         private ISempleEntityService _SempleEntityService;
         private ITuitionService _ITuitionService;
 
-        public StudantController(ICRUD<Student> StudentService, IOrgUnit IOrgUnitServiceService, ISempleEntityService SempleEntityService, ITuitionService iTuitionService)
+        public StudantController(ICRUD<Student> StudentService,
+            IOrgUnit IOrgUnitServiceService,
+            ISempleEntityService SempleEntityService,
+            ITuitionService iTuitionService)
         {
             this._StudentService = StudentService;
             this._IOrgUnitServiceService = IOrgUnitServiceService;
