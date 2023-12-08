@@ -30,18 +30,8 @@
 <form asp-action="create" asp-controller="studant">
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
-            <div class="card-body pb-0">
-                <table>
-                    <tr>
-                        <td>Propriedade 1</td>
-                        <td>Valor 1</td>
-                    </tr>
-                    <tr>
-                        <td>Propriedade 2</td>
-                        <td>Valor 2</td>
-                    </tr>
-                    <!-- Adicione mais linhas conforme necessário -->
-                </table>
+            <div class="card-body ">
+
                 @if (ViewData.ModelState.IsValid)
                 {
 
@@ -52,296 +42,134 @@
                         <p><strong>Por favor, corrija os seguintes erros:</strong></p>
                     </div>
                 }
+
                 <div class="alert alert-success" role="alert" id="msg-summary" style="display: @(string.IsNullOrEmpty(ViewBag.Mensagem) ? "none" : "block")">
                     <p><strong>@ViewBag.Mensagem</strong></p>
                 </div>
 
-                <form class="needs-validation" novalidate>
+           
+                    <div class="row">
+                        <div class="col-md-6 col col-sm-12">
+                        <fieldset class="p-2">
+                            <legend class="w-auto">Dados do estudante</legend>
+                            <div class="table-responsive">
+                                <table>
+                                    <tr>
+                                        <td>Nome completo:</td>
+                                        <td>@Model.Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Data de Nasciento:</td>
+                                        <td>@Model.BirthDate.ToShortDateString()</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Naturalidade:</td>
+                                        <td>@Model.Naturalness</td>
+                                    </tr>
 
-                    @*     <fieldset class="border p-2">
-                    <legend class="w-auto">Your Legend</legend>
-                    </fieldset>  *@
-
-
-
-                    <fieldset class="border p-2">
-                        <legend class="w-auto">Dados do estudante</legend>
-                        <div class="form-row">
-                            <div class="col-md-6 mb-3">
-                                <label for="">Nome completo</label>
-                                <input type="text" class="form-control" asp-for="Name">
-                                <span asp-validation-for="Name" class="text-danger"></span>
+                                    <tr>
+                                        <td>Província/Distrito:</td>
+                                        <td>@Model.DistrictId  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sexo:</td>
+                                        <td>@Model.Gender  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>BI:</td>
+                                        <td>@Model.PersonId  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nome do pai:</td>
+                                        <td>@Model.FatherName  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nome da mãe:</td>
+                                        <td>@Model.MatherName  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Classe actual:</td>
+                                        <td>@Model.CurrentSchoolLevelId  </td>
+                                    </tr>
+                                </table>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="">Data de Nasciento</label>
-                                <input type="date" class="form-control date-input" asp-for="BirthDate">
-                                <span asp-validation-for="BirthDate" class="text-danger"></span>
-                            </div>
+                        </fieldset>
                         </div>
+                        <div class="col-md-6 col col-sm-12">
+                        <fieldset class="p-2">
+                            <legend class="w-auto">Dados do encarregado de educação</legend>
+                            <div class="table-responsive">
+                                <table>
+                                    <tr>
+                                        <td>Dados do encarregado de educação:</td>
+                                        <td>@Model.SponsorName</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Residência do encarregado de educação:</td>
+                                        <td>@Model.SponsorAddress</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Contacto do encarregado de educação:</td>
+                                        <td>@Model.SponsorContacts[0]</td>
+                                    </tr>
 
-
-
-                        <div class="form-row">
-                            <div class="col-md-4 mb-3">
-                                <label for="">Naturalidade</label>
-                                <input type="text" class="form-control" asp-for="Naturalness">
-                                <span asp-validation-for="Naturalness" class="text-danger"></span>
+                                   
+                                </table>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="">Província</label>
-                                <select class="form-control form-control-lg pb-3 pt-3" id="provinces">
-
-
-                                    @foreach (OrgUnitProvince item in ViewBag.Provinces)
-                                    {
-                                        <option value="@item.Id">@item.Description</option>
-                                    }
-
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="">Distrito</label>
-                                <select class="form-control form-control-lg pb-3 pt-3" id="district" asp-for="DistrictId">
-                                    <option selected>...</option>
-
-                                    @foreach (OrgUnitProvince item in ViewBag.Provinces)
-                                    {
-                                        <option value="@item.Id">@item.Description</option>
-                                    }
-
-                                </select>
-                                <span asp-validation-for="DistrictId" class="text-danger"></span>
-                            </div>
+                            </fieldset>
                         </div>
-
-
-                        <div class="form-row mb-3">
-                            <div class="col-md-4">
-                                <label for="">Sexo</label>    <span asp-validation-for="Gender" class="text-danger"></span>
-                                <select class="form-control form-control-lg pb-3 pt-3" asp-for="Gender">
-                                    @foreach (string item in ViewBag.Gender)
-                                    {
-                                        <option value="@item">@item</option>
-                                    }
-                                </select>
-                                <span asp-validation-for="Gender" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <label for="">BI</label>
-                                <input type="text" class="form-control" asp-for="PersonId">
-                                <span asp-validation-for="PersonId" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="col-md-6 mb-3">
-                                <label for="">Nome do pai</label>
-                                <input type="text" class="form-control" asp-for="MatherName">
-                                <span asp-validation-for="MatherName" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="">Nome da mãe</label>
-                                <input class="form-control" asp-for="FatherName">
-                                <span asp-validation-for="FatherName" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </fieldset>
-
-
-
-                    <fieldset class="border p-2">
-                        <legend class="w-auto">Dados do encarregado de educação</legend>
-                        <div class="form-row">
-                            <div class="col-md-6 mb-3">
-                                <label for="">Nome do encarregado de Educação</label>
-                                <input type="text" class="form-control" asp-for="SponsorName">
-                                <span asp-validation-for="SponsorName" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="">Residência do encarregado de educação.</label>
-                                <input class="form-control" asp-for="SponsorAddress">
-                                <span asp-validation-for="SponsorAddress" class="text-danger"></span>
-                            </div>
-                        </div>
-
-
-
-                        <div class="form-row">
-                            <div class="col-md-6 mb-3">
-                                <label for="">Contacto do encarregado de educação</label>
-
-                                @for (int i = 0; i < Model.SponsorContacts.Count(); i++)
-                                {
-                                    <input type="text" placeholder="Casa/serviço ou numero pessoal" class="form-control" asp-for="SponsorContacts[i]">
-                                    <span asp-validation-for="SponsorContacts[i]" class="text-danger"></span>
-                                }
-
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <fieldset class="border p-2">
-                        <legend class="w-auto">Dados pedagógicos</legend>
-                        <div class="form-row mb-3">
-                            <div class="col-md-4">
-                                <label for="">Classe</label>    <span asp-validation-for="Gender" class="text-danger"></span>
-                                <select class="form-control form-control-lg pb-3 pt-3" asp-for="CurrentSchoolLevelId">
-                                    <option selected>...</option>
-                                    @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
-                                    {
-                                        <option value="@item.Id">@item.Description</option>
-                                    }
-                                </select>
-                                <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <fieldset class="border p-2">
-                        <legend class="w-auto">Ações</legend>
-                        <div class="form-group row">
-                            <div class="col-sm-10">
-                                <button type="submit" class="btn btn-info">Cadastrar</button>
-                            </div>
-                        </div>
-                    </fieldset>
-                    <div id="tabs-container">
-                        <ul>
-                            <li><a href="#tab1">Tab 1</a></li>
-                            <li><a href="#tab2">Tab 2</a></li>
-                            <li><a href="#tab3">Tab 3</a></li>
-                        </ul>
-                        <div id="tab1" class="tab-content">Conteúdo da Tab 1</div>
-                        <div id="tab2" class="tab-content">Conteúdo da Tab 2</div>
-                        <div id="tab3" class="tab-content">Conteúdo da Tab 3</div>
                     </div>
+                   
                 
 
-                </form>
  
-            </div>
-          
 
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Contact</button>
-                </li>
-            </ul>
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
-            </div>
+                     
+                     
+                        <br>
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#home">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#menu1">Menu 1</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#menu2">Menu 2</a>
+                            </li>
+                        </ul>
 
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Home</button>
-                    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</button>
-                    <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
-                </div>
-            </nav>
-            <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">...</div>
-                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-                <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
-            </div>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div id="home" class="container tab-pane active">
+                                <br>
+                                <h3>HOME</h3>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                            </div>
+                            <div id="menu1" class="container tab-pane fade">
+                                <br>
+                                <h3>Menu 1</h3>
+                                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </div>
+                            <div id="menu2" class="container tab-pane fade">
+                                <br>
+                                <h3>Menu 2</h3>
+                                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                            </div>
+                        </div>
+                    
+                     
 
-            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Contact</button>
-                </li>
-            </ul>
-            <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">...</div>
-                <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">...</div>
-                <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
             </div>
 
-            <div class="d-flex align-items-start">
-                <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</button>
-                    <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</button>
-                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</button>
-                    <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
-                </div>
-                <div class="tab-content" id="v-pills-tabContent">
-                    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">...</div>
-                    <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">...</div>
-                    <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
-                    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
-                </div>
-            </div>
 
-            <!-- Nav tabs -->
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">Messages</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Settings</button>
-                </li>
-            </ul>
 
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-                <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-                <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">...</div>
-                <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
-            </div>
 
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">Messages</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Settings</button>
-                </li>
-            </ul>
-
-            <div class="tab-content">
-                <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-                <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-                <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">...</div>
-                <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
-            </div>
-
-            <script>
-                var firstTabEl = document.querySelector('#myTab li:last-child a')
-                var firstTab = new bootstrap.Tab(firstTabEl)
-
-                firstTab.show()
-            </script>
         </div>
     </div>
 </form>
 
- @* 
 
 @section scripts {
     <script>
@@ -405,4 +233,4 @@
 
 
     </script>
-} *@
+} 

@@ -107,7 +107,7 @@
                                 </select>
                                 <span asp-validation-for="Gender" class="text-danger"></span>
                             </div>
-                      
+
                             <div class="col-md-4 mb-3">
                                 <label for="">BI</label>
                                 <input type="text" class="form-control" asp-for="PersonId">
@@ -118,15 +118,32 @@
                         <div class="form-row">
                             <div class="col-md-6 mb-3">
                                 <label for="">Nome do pai</label>
-                                <input type="text" class="form-control" asp-for="MatherName">
-                                <span asp-validation-for="MatherName" class="text-danger"></span>
+                                <input type="text" class="form-control" asp-for="FatherName">
+                                <span asp-validation-for="FatherName" class="text-danger"></span>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="">Nome da mãe</label>
-                                <input class="form-control" asp-for="FatherName">
-                                <span asp-validation-for="FatherName" class="text-danger"></span>
+                                <input class="form-control" asp-for="MatherName">
+                                <span asp-validation-for="MatherName" class="text-danger"></span>
                             </div>
                         </div>
+
+                        <fieldset class="border p-2">
+                            <legend class="w-auto">Dados pedagógicos</legend>
+                            <div class="form-row mb-3">
+                                <div class="col-md-4">
+                                    <label for="">Classe actual</label>    <span asp-validation-for="Gender" class="text-danger"></span>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="CurrentSchoolLevelId">
+                                        <option selected>...</option>
+                                        @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
+                                        {
+                                            <option value="@item.Id">@item.Description</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </fieldset>
                     </fieldset>
 
 
@@ -140,7 +157,7 @@
                                 <span asp-validation-for="SponsorName" class="text-danger"></span>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="">Residência do encarregado de educação.</label>
+                                <label for="">Residência do encarregado de educação</label>
                                 <input class="form-control" asp-for="SponsorAddress">
                                 <span asp-validation-for="SponsorAddress" class="text-danger"></span>
                             </div>
@@ -161,23 +178,7 @@
                             </div>
                         </div>
                     </fieldset>
-
-                    <fieldset class="border p-2">
-                        <legend class="w-auto">Dados pedagógicos</legend>
-                        <div class="form-row mb-3">
-                            <div class="col-md-4">
-                                <label for="">Classe</label>    <span asp-validation-for="Gender" class="text-danger"></span>
-                                <select class="form-control form-control-lg pb-3 pt-3" asp-for="CurrentSchoolLevelId">
-                                    <option selected>...</option>
-                                    @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
-                                    {
-                                        <option value="@item.Id">@item.Description</option>
-                                    }
-                                </select>
-                                <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
-                            </div> 
-                        </div>
-                    </fieldset>
+ 
 
                     <fieldset class="border p-2">
                         <legend class="w-auto">Ações</legend>
