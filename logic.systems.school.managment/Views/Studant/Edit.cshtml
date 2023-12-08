@@ -354,10 +354,10 @@
                  
                         if (item.paid) {
                             // Se verdadeiro, adicione a célula com a classe verde
-                            newRow.append("<td><label class='badge badge-success'>Pago</label></td>");
+                            newRow.append("<td><label class='badge badge-success mt-0 mb-0'>Pago</label></td>");
                         } else {
                             // Se falso, adicione a célula com a classe vermelha
-                            newRow.append("<td><label class='badge badge-danger'>Não Pago</label></td>");
+                            newRow.append("<td><label class='badge badge-danger mt-0 mb-0'>Não Pago</label></td>");
                             $('#tuitionPayment').append('<option value="' + item.id + '">' + item.monthNumber + ' - ' + item.monthName + ' - ' + item.year + '</option>');
                         }
                         // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário

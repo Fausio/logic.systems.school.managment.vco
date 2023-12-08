@@ -22,7 +22,7 @@
 
 .MytabelaItens {
     border-collapse: collapse;
-    width: 500px; /* Ajuste a largura conforme necessário */
+    width: 100%; /* Ajuste a largura conforme necessário */
     margin-top:20px
     
 }
@@ -49,7 +49,7 @@
 }
     .wideTable th, .wideTable td {
         border: 1px solid #ddd;
-        padding: 8px;
+        padding: 6px;
         text-align: left;
     }
 
