@@ -46,6 +46,8 @@ namespace logic.systems.school.managment.Services
             try
             {
                 return await db.Students.Include(x => x.CurrentSchoolLevel)
+                                        .Include(x => x.District).ThenInclude(x => x.OrgUnitProvince)
+                                          .Include(x => x.Tuitions)
                                         .Include(x => x.Sponsor)
                                         .ThenInclude(x=> x.Contacts)
                                         .FirstOrDefaultAsync(x => x.Id == modelID && x.Row != Common.Deleted);

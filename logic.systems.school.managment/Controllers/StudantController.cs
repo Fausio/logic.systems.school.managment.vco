@@ -13,7 +13,7 @@ namespace logic.systems.school.managment.Controllers
         private ICRUD<Student> _StudentService;
         private IOrgUnit _IOrgUnitServiceService;
         private ISempleEntityService _SempleEntityService;
-  private ITuitionService _ITuitionService;
+        private ITuitionService _ITuitionService;
 
         public StudantController(ICRUD<Student> StudentService, IOrgUnit IOrgUnitServiceService, ISempleEntityService SempleEntityService, ITuitionService iTuitionService)
         {
@@ -39,7 +39,7 @@ namespace logic.systems.school.managment.Controllers
         public async Task<IActionResult> Create()
         {
             try
-            { 
+            {
                 await PopulateForms();
                 return View(new CreateStudantDTO()
                 {
@@ -85,7 +85,8 @@ namespace logic.systems.school.managment.Controllers
             {
                 var model = await _StudentService.Read(id);
                 var result = StudantProfile.ToDTO(model);
-                await PopulateForms(); 
+                await PopulateForms();
+                await PopuLateDetailsForm(model);
                 if (TempData.ContainsKey("MensagemSucess"))
                 {
                     ViewBag.Mensagem = TempData["MensagemSucess"];
@@ -101,13 +102,13 @@ namespace logic.systems.school.managment.Controllers
         }
 
 
-  public async Task<IActionResult> EditStudant(int id)
+        public async Task<IActionResult> EditStudant(int id)
         {
             try
             {
                 var model = await _StudentService.Read(id);
                 var result = StudantProfile.ToDTO(model);
-                await PopulateForms();  
+                await PopulateForms();
                 return View(result);
             }
             catch (Exception)
@@ -127,6 +128,16 @@ namespace logic.systems.school.managment.Controllers
 
             ViewBag.Provinces = await _IOrgUnitServiceService.GetOrgUnitProvinces();
             ViewBag.CurrentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
+
+
+        }
+
+        private async Task PopuLateDetailsForm(Student Student)
+        {
+            ViewBag.Province = Student.District.OrgUnitProvince.Description;
+            ViewBag.District = Student.District.Description;
+            ViewBag.CurrentSchoolLevel = Student.CurrentSchoolLevel.Description;
+            ViewBag.Tuitions = Student.Tuitions.Where(x => !x.Paid);
         }
     }
 }

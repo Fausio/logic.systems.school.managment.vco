@@ -9,7 +9,8 @@ namespace logic.systems.school.managment.Models
         public string MonthName { get; set; }
         public int Year { get; set; }
         public int StudentId { get; set; }
-        public int AssociatedLevelId { get; set; }    
+        public int AssociatedLevelId { get; set; }   
+        public bool Paid { get; set; }
     }
 }
 

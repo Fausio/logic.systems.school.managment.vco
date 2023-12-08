@@ -82,7 +82,7 @@ namespace logic.systems.school.managment.Data
         public DbSet<TuitionFines> TuitionFines { get; set; }
 
         public DbSet<SimpleEntity> SimpleEntitys { get; set; }
-    public DbSet<Payment> Payments { get; set; }
+         public DbSet<Payment> Payments { get; set; }
 
 
 

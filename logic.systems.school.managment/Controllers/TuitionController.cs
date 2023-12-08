@@ -1,4 +1,6 @@
-﻿using logic.systems.school.managment.Interface;
+﻿using logic.systems.school.managment.Dto;
+using logic.systems.school.managment.Interface;
+using logic.systems.school.managment.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace logic.systems.school.managment.Controllers
@@ -7,13 +9,26 @@ namespace logic.systems.school.managment.Controllers
     {
         private ITuitionService _ITuitionService;
 
-        public TuitionController(ITuitionService  ITuitionService )
+        public TuitionController(ITuitionService ITuitionService)
         {
-                this._ITuitionService = ITuitionService;
+            this._ITuitionService = ITuitionService;
         }
         public async Task<JsonResult> IndexByStudantId(int id)
         {
             var result = await _ITuitionService.GetByStudantId(id);
+            return Json(result);
+        }
+
+        public async Task<JsonResult> IndexPaymentByStudantId(int id)
+        {
+            var result = await _ITuitionService.GetPaymentsByStudantTuitionsId(id);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CreatePayment(CreatePaymentDTO data)
+        {
+            var result = await _ITuitionService.CreatePayment(data);
             return Json(result);
         }
     }

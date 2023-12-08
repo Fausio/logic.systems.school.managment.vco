@@ -3,5 +3,6 @@
     public class EditStudantDTO:CreateStudantDTO
     {
         public int id { get; set; }
+         
     }
 }
