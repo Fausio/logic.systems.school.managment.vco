@@ -282,15 +282,17 @@ namespace logic.systems.school.managment.Services
                 {
 
                     if (!tuition.Paid  && classesWithtExame.Contains(student.CurrentSchoolLevel.Description))
-                    { 
-                        string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
-                        foreach (var item in meses)
-                        {
-                            if (tuition.MonthName == item)
-                            {
+                    {
+                        int daysPassed = (int)(tuition.StartDate - tuition.EndDate).TotalDays;
 
-                            }
+                        if (daysPassed >= 16 && daysPassed <= 25)
+                        {
+                            Console.WriteLine("300 MT");
                         }
+                        else if (daysPassed > 25)
+                        {
+                            Console.WriteLine("Suspenso");
+                        } 
                     }
                 }
             }
@@ -300,7 +302,9 @@ namespace logic.systems.school.managment.Services
     }
 }
 
+//as mensalidades devem ser antecipadamente pagas no inicio de cada Mes, do dia 1 a dia15, apartir do dia 16 a 25 a multa é de 300
 
+//depois do dia 25 o aluno passa a ser suspenso
 
 
 
