@@ -21,6 +21,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ICRUD<Student>, StudantService>();
 builder.Services.AddScoped<IOrgUnit, OrgUnitService>();
 builder.Services.AddScoped<ISempleEntityService, SempleEntityService>();
+  builder.Services.AddScoped<ITuitionService, TuitionService>();
                                                         
 var app = builder.Build();
 

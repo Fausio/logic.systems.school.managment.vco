@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using logic.systems.school.managment.Data;
 
@@ -11,9 +12,10 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231207194715_TuitionFines")]
+    partial class TuitionFines
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,53 +137,6 @@ namespace logic.systems.school.managment.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OrgUnitProvince");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.Payment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUSer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("MonthlyFeeWithVat")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("MonthlyFeeWithoutVat")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Row")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TuitionId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUSer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("VatOfMonthlyFee")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TuitionId");
-
-                    b.ToTable("Payment");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.SimpleEntity", b =>
@@ -349,12 +304,11 @@ namespace logic.systems.school.managment.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MonthName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("MonthlyFeeWithVat")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("MonthNumber")
-                        .HasColumnType("int");
+                    b.Property<decimal>("MonthlyFeeWithoutVat")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Row")
                         .IsRequired()
@@ -363,13 +317,25 @@ namespace logic.systems.school.managment.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("TuitionDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedUSer")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Year")
+                    b.Property<decimal>("VatOfMonthlyFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("month")
+                        .HasColumnType("int");
+
+                    b.Property<int>("monthName")
+                        .HasColumnType("int");
+
+                    b.Property<int>("year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -639,17 +605,6 @@ namespace logic.systems.school.managment.Migrations
                         .IsRequired();
 
                     b.Navigation("OrgUnitProvince");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.Payment", b =>
-                {
-                    b.HasOne("logic.systems.school.managment.Models.Tuition", "Tuition")
-                        .WithMany()
-                        .HasForeignKey("TuitionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Tuition");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.Student", b =>

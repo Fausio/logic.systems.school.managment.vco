@@ -13,12 +13,14 @@ namespace logic.systems.school.managment.Controllers
         private ICRUD<Student> _StudentService;
         private IOrgUnit _IOrgUnitServiceService;
         private ISempleEntityService _SempleEntityService;
+  private ITuitionService _ITuitionService;
 
-        public StudantController(ICRUD<Student> StudentService, IOrgUnit IOrgUnitServiceService, ISempleEntityService SempleEntityService)
+        public StudantController(ICRUD<Student> StudentService, IOrgUnit IOrgUnitServiceService, ISempleEntityService SempleEntityService, ITuitionService iTuitionService)
         {
             this._StudentService = StudentService;
             this._IOrgUnitServiceService = IOrgUnitServiceService;
             this._SempleEntityService = SempleEntityService;
+            _ITuitionService = iTuitionService;
         }
 
         public async Task<IActionResult> Index(int? pageNumber = 1, int? pageSize = 10)
@@ -62,6 +64,7 @@ namespace logic.systems.school.managment.Controllers
                 {
 
                     var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
+                    await _ITuitionService.CreateByClassOfStudant(result);
                     await PopulateForms();
                     TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
                     return RedirectToAction("edit", "studant", new { id = result.Id });

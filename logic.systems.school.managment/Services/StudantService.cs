@@ -16,7 +16,7 @@ namespace logic.systems.school.managment.Services
                 model.CreatedUSer = CreatedById;
                 await db.Students.AddAsync(model);
                 await db.SaveChangesAsync();
-                return model;
+                return  await Read( model.Id);
             }
             catch (Exception)
             {
@@ -45,7 +45,8 @@ namespace logic.systems.school.managment.Services
         {
             try
             {
-                return await db.Students. Include(x=> x.Sponsor)
+                return await db.Students.Include(x => x.CurrentSchoolLevel)
+                                        .Include(x => x.Sponsor)
                                         .ThenInclude(x=> x.Contacts)
                                         .FirstOrDefaultAsync(x => x.Id == modelID && x.Row != Common.Deleted);
             }

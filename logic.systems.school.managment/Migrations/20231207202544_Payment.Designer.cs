@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using logic.systems.school.managment.Data;
 
@@ -11,9 +12,10 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231207202544_Payment")]
+    partial class Payment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -349,13 +351,6 @@ namespace logic.systems.school.managment.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MonthName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MonthNumber")
-                        .HasColumnType("int");
-
                     b.Property<string>("Row")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -369,7 +364,13 @@ namespace logic.systems.school.managment.Migrations
                     b.Property<string>("UpdatedUSer")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Year")
+                    b.Property<int>("month")
+                        .HasColumnType("int");
+
+                    b.Property<int>("monthName")
+                        .HasColumnType("int");
+
+                    b.Property<int>("year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
