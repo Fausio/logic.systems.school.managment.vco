@@ -53,7 +53,7 @@
                         <fieldset class="p-2">
                             <legend class="w-auto">Dados do estudante</legend>
                             <div class="table-responsive">
-                                <table>
+                                <table class="Mytable">
                                     <tr>
                                         <td>Nome completo:</td>
                                         <td> <a asp-action="EditStudant" asp-controller="studant" asp-route-id="@Model.id">@Model.Name</a>
@@ -99,7 +99,7 @@
                         <fieldset class="p-2">
                             <legend class="w-auto">Dados do encarregado de educação</legend>
                             <div class="table-responsive">
-                                <table>
+                                <table class="Mytable">
                                     <tr>
                                         <td>Dados do encarregado de educação:</td>
                                         <td>@Model.SponsorName</td>
@@ -138,9 +138,20 @@
                 <!-- Tab panes -->
                 <div class="tab-content">
                     <div id="home" class=" tab-pane active">
-                        
-                        <h3>HOME</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                        <div class="table-responsive">
+                        <table id="tabelaItens">
+                            <thead>
+                                <tr>
+                                    <th>Coluna1</th>
+                                    <th>Coluna2</th>
+                                    <!-- Adicione mais colunas conforme necessário -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Os itens da lista serão adicionados aqui -->
+                            </tbody>
+                        </table>
+                        </div>
                     </div>
                     <div id="menu1" class=" tab-pane fade">
                         <br>

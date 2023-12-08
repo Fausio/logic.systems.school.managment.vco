@@ -73,13 +73,14 @@ namespace logic.systems.school.managment.Services
             var models = new List<Student>();
 
 
-            models = await db.Students.Where(x => x.Row != Common.Deleted)
+            models = await db.Students.Include(x => x.CurrentSchoolLevel).Where(x => x.Row != Common.Deleted)
                                          .Skip(skip)
                                          .Take(pageSize)
                                          .Select(u => new Student()
                                          {
                                              Id = u.Id,
                                              Name = u.Name, 
+                                             CurrentSchoolLevel = u.CurrentSchoolLevel,
 
 
                                          }).OrderBy(o => o.Name).ToListAsync();

@@ -1,26 +1,25 @@
 ﻿
-table {
+.Mytable {
     border-collapse: collapse;
     width: 300px; /* Ajuste a largura conforme necessário */
     margin: 20px; /* Adicione margem conforme necessário */
 }
 
-td, th {
-    padding: 8px;
-    text-align: left;
-     /*border-bottom: 1px solid #ddd;*/ /* Adiciona borda inferior em todas as células */
-}
+   .Mytable td th {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd; /* Adiciona borda inferior em todas as células */
+    }
 
-    td:first-child {
+    .Mytable td:first-child {
         border-right: 1px solid #ddd; /* Adiciona borda direita na primeira coluna */
         font-weight: bold;
         text-align: right; /* Alinha o texto à direita na primeira célula */
         padding-right: 10px; /* Adiciona algum espaço à direita para melhorar a aparência */
+        height: 25px;
     }
 
-tr:nth-child(even) {
-    /*background-color: #f2f2f2;*/
-}
+
 
 
 
@@ -30,7 +29,6 @@ legend {
     font-size: 14px; /* Tamanho da fonte */
     color: #333; /* Cor do texto */
     /* Outras propriedades desejadas */
-  
 }
 
 
@@ -39,5 +37,3 @@ fieldset {
     border-top: 1px solid #ddd; /* Adicionar borda superior */
     padding: 10px; /* Espaçamento interno do fieldset */
 }
-
- 
