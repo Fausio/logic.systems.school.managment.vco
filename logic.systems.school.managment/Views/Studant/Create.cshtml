@@ -141,37 +141,58 @@
                                         }
                                     </select>
                                     <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
-                                </div>
+                                </div> 
+                                
 
                             </div>
-                            <div class="form-row form-check form-check-info">
-                                <div class="col-md-12" id="monthsDev">
-                                    <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">Inscrever todos os meses?</label>
-                                        <div class="col-sm-2">
-                                            <div class="form-check">
-                                                <label class="form-check-label">
-                                                    @* <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios1" value="@true" asp-for="EnroolAllMonths" onclick="hideMyMonthLabel()"> *@
-                                                    @Html.RadioButtonFor(model => model.EnroolAllMonths,true, new { id = "option1", onclick="hideMyMonthLabel()",@class = "form-check-input"})
-                                                    Sim
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <div class="form-check">
-                                                <label class="form-check-label">
-                                               @*      <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios2" value="@false" asp-for="EnroolAllMonths" data-toggle="modal" data-target="#meuModal">
-                                               *@
-                                                    @Html.RadioButtonFor(model => model.EnroolAllMonths,false, new { id = "option1", data_toggle = "modal", data_target = "#meuModal",@class = "form-check-input"})
 
-                                                    Não
-                                                </label>
-                                                <label id="MonthSelected">  </label>
+                            <div class="form-row mb-1">
+                                <div class="col-md-8">
+                                    <div class="form-row form-check form-check-info">
+                                        <div id="monthsDev">
+                                            <div class="form-group row">
+                                                <label class="col-md-3 col-form-label">Inscrever todos os meses?</label>
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            @* <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios1" value="@true" asp-for="EnroolAllMonths" onclick="hideMyMonthLabel()"> *@
+                                                            @Html.RadioButtonFor(model => model.EnroolAllMonths,true, new { id = "option1", onclick="hideMyMonthLabel()",@class = "form-check-input"})
+                                                            Sim
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            @*      <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios2" value="@false" asp-for="EnroolAllMonths"  @>
+                                                            *@
+                                                            @Html.RadioButtonFor(model => model.EnroolAllMonths,false, new { id = "option1", onclick="ShowMyClassesToStart()" ,@class = "form-check-input"})
+
+                                                            Não
+                                                        </label>
+                                                        <label id="MonthSelected">  </label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                              
+
                             </div>
+
+                            <div class="form-row mb-3">
+                                <div class="col-md-4" id="MyClassesToStart">
+                                    <label for="">Meses de início</label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" id="MyStartTuition" asp-for="StartTuition">
+                                        @foreach (Tuition item in Model.Tuitions)
+                                        {
+                                            <option value=@item.MonthNumber>@item.MonthNumber - @item.MonthName - @item.Year</option>
+                                        }
+                                    </select>
+                                </div>
+                                </div>
+
                         </fieldset>
                     </fieldset>
 
@@ -227,54 +248,14 @@
             </div>
         </div>
     </div>
-</form>
+
+ 
 
 
 
 
 
-<!-- Seu modal -->
-<div class="modal" id="meuModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
 
-            <!-- Conteúdo do modal -->
-            <div class="modal-header">
-                <h4 class="modal-title">Inscrição de meses</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-
-            <div class="modal-body">
-                <!-- Conteúdo do formulário aqui -->
-
-                <fieldset class="border p-2">
-                    <legend class="w-auto">Inscrever-se apartir do mês </legend>
-                    <div class="form-row mb-3">
-                        <div class="col-md-12 col-sm-12">
-                            <label for="">Meses de início</label>
-                            <select class="form-control form-control-lg pb-3 pt-3" id="MyStartTuition" asp-for="StartTuition">
-                                @foreach (Tuition item in Model.Tuitions)
-                                {
-                                    <option value="@(item.MonthNumber +"-"+ item.MonthName +"-"+ @item.Year)">@item.MonthNumber - @item.MonthName - @item.Year</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                </fieldset>
-                <fieldset class="border p-2">
-                    <legend class="w-auto">Ações</legend>
-                    <div class="template-demo">
-                        <button type="button" class="btn btn-success btn-icon-text" onclick="createStartTuition()">
-                            Definir Mês
-                        </button>
-                    </div>
-                </fieldset>
-
-            </div>
-
-        </div>
-    </div>
-</div>
 
 
 
@@ -283,24 +264,16 @@
     <script>
 
         function hideMyMonthLabel() {
-
-            $("#MonthSelected").hide();
+             
+            $("#MyClassesToStart").hide();
         }
 
-        function createStartTuition() { 
-            $('#meuModal').modal('hide');
+        function ShowMyClassesToStart() {
 
-            $("#MonthSelected").show();
-            $('#MonthSelected').html("<strong>Apartir de  " + $("#MyStartTuition").val() + " </strong>");
-            @Model.EnroolAllMonths = false;
+            $("#MyClassesToStart").show();
         }
 
-        // $(document).ready(function () {
-        //     $("#MyStartTuition").change(function () {
-        //         var ProvincesId = $("#MyStartTuition").val();
-        //         console.log("ProvincesId", ProvincesId);
-        //     });
-        // });
+        
 
         $(document).ready(function () {
             $("#provinces").change(function () {
@@ -328,8 +301,7 @@
                 // Verifique se a opção desejada está selecionada
                 if ($(this).val() === "...") {
                     // // Desabilite a div
-                    $("#monthsDev").prop("disabled", true);
-                    $("#monthsDev").css("background-color", "#e0e0e0");
+                    $("#monthsDev").prop("disabled", true); 
                     $("#monthsDev :input").prop("disabled", true);
                     hideMyMonthLabel();
                 } else {
@@ -343,13 +315,11 @@
 
             // Desabilite a div se a opção padrão não for selecionada
             if ($("#SelectSchoolLevel").val() === "...") {
-                $("#monthsDev").prop("disabled", true);
-                $("#monthsDev").css("background-color", "#e0e0e0");
+                $("#monthsDev").prop("disabled", true); 
                 $("#monthsDev :input").prop("disabled", true);
+                      hideMyMonthLabel();
             }
-
-
-            $("#MonthSelected").hide();
+             
         });
 
     </script>

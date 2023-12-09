@@ -46,7 +46,7 @@ namespace logic.systems.school.managment.Controllers
                 await PopulateForms();
                 return View(new CreateStudantDTO()
                 {
-
+                    EnroolAllMonths = true,
                 });
             }
             catch (Exception)
