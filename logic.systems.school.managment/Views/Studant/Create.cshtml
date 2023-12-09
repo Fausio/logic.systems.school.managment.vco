@@ -128,12 +128,12 @@
                             </div>
                         </div>
 
-                        <fieldset class="border p-2">
+                        <fieldset class="border p-2 pb-0">
                             <legend class="w-auto">Dados pedagógicos</legend>
-                            <div class="form-row mb-3">
+                            <div class="form-row mb-1">
                                 <div class="col-md-4">
                                     <label for="">Classe actual</label>    <span asp-validation-for="Gender" class="text-danger"></span>
-                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="CurrentSchoolLevelId">
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="CurrentSchoolLevelId" id="SelectSchoolLevel">
                                         <option selected>...</option>
                                         @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
                                         {
@@ -142,11 +142,34 @@
                                     </select>
                                     <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
                                 </div>
+                                
+                            </div>  
+                            <div class="form-row form-check form-check-info">
+                                <div class="col-md-12" id="monthsDev">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label">Inscrever todos os meses?</label>
+                                        <div class="col-sm-2">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios1" value="true"  asp-for="EnroolAllMonths">
+                                                    Sim
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios2" value="false" asp-for="EnroolAllMonths">
+                                                    Não
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> 
                             </div>
                         </fieldset>
                     </fieldset>
-
-
+ 
 
                     <fieldset class="border p-2">
                         <legend class="w-auto">Dados do encarregado de educação</legend>
@@ -205,6 +228,7 @@
 
 
 @section scripts {
+    <script src="~/celestial-admin/js/template.js"></script>
     <script>
         $(document).ready(function () {
             $("#provinces").change(function () {
@@ -225,6 +249,34 @@
                 });
             });
         });
-         
+
+        $(document).ready(function () {
+            // Adicione um evento de mudança ao seu elemento select
+            $("#SelectSchoolLevel").change(function () {
+                // Verifique se a opção desejada está selecionada
+                  if ($(this).val() === "...") {
+                   // // Desabilite a div
+                     $("#monthsDev").prop("disabled", true);
+                    $("#monthsDev").css("background-color", "#e0e0e0");
+                    $("#monthsDev :input").prop("disabled", true);
+                  } else {
+                   // // Caso contrário, habilite a div
+                   $("#monthsDev").prop("disabled", false);
+                    $("#monthsDev").css("background-color", "");
+                    $("#monthsDev :input").prop("disabled", false);
+                  }
+               
+            });
+
+            // Desabilite a div se a opção padrão não for selecionada
+            if ($("#SelectSchoolLevel").val() === "...") {
+                $("#monthsDev").prop("disabled", true);
+                $("#monthsDev").css("background-color", "#e0e0e0");
+                $("#monthsDev :input").prop("disabled", true);
+            }
+
+            console.log("SelectSchoolLevel", $("#SelectSchoolLevel").val())
+        });
+
     </script> 
 }

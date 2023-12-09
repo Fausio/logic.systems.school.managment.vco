@@ -38,11 +38,15 @@ namespace logic.systems.school.managment.Dto
 
         public string[] SponsorContacts { get; set; }  =   new string[] { "" };
 
-    public CreateStudantDTO()
+        public CreateStudantDTO()
         { 
             this.BirthDate = DateTime.Now.AddYears(-21);
         }
         #endregion
+
+        public bool EnroolAllMonths { get; set; } = true;
+
+
 
     }
 }
