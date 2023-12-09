@@ -62,17 +62,19 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
-                await PopulateForms();
-                if (ModelState.IsValid)
+                //await PopulateForms();
+                 if (ModelState.IsValid)
                 {
-                    var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
-                    await _ITuitionService.CreateByClassOfStudant(result);
-                    await PopulateForms();
-                    TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
-                    return RedirectToAction("edit", "studant", new { id = result.Id });
-                }
+                //    var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
+                //    await _ITuitionService.CreateByClassOfStudant(result);
+                //    
+                //    TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
+                //    return RedirectToAction("edit", "studant", new { id = result.Id });
+                 }
 
-                return View(model);
+                //return View(model);
+                await PopulateForms();
+                return View(new CreateStudantDTO());
             }
             catch (Exception)
             {
