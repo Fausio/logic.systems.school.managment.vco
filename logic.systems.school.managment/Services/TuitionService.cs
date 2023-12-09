@@ -42,7 +42,11 @@ namespace logic.systems.school.managment.Services
             DateTimeFormatInfo dtfi = DateTimeFormatInfo.GetInstance(ptCulture);
             return dtfi.GetMonthName(month);
         }
-        public async Task CreateByClassOfStudant(Student model)
+
+
+
+
+        public async Task CreateByClassOfStudant(Student model, int? startMonth = -99)
         {
 
 
@@ -58,21 +62,25 @@ namespace logic.systems.school.managment.Services
                 string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
                 for (int i = 1; i < meses.Length + 1; i++)
                 {
-                    int daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, i + 1);
-                    DateTime startDate = new DateTime(DateTime.Now.Year, i + 1, 1);
-                    DateTime endDate = new DateTime(DateTime.Now.Year, i + 1, daysInMonth);
-
-                    tuitions.Add(new Tuition()
+                    if (i + 1 > startMonth)
                     {
-                        MonthNumber = i,
-                        MonthName = meses[i - 1],
-                        StartDate = startDate,
-                        EndDate = endDate,
-                        Year = DateTime.Now.Year,
-                        StudentId = model.Id,
-                        AssociatedLevelId = model.CurrentSchoolLevelId
+                        int daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, i + 1);
+                        DateTime startDate = new DateTime(DateTime.Now.Year, i + 1, 1);
+                        DateTime endDate = new DateTime(DateTime.Now.Year, i + 1, daysInMonth);
 
-                    });
+                        tuitions.Add(new Tuition()
+                        {
+                            MonthNumber = i,
+                            MonthName = meses[i - 1],
+                            StartDate = startDate,
+                            EndDate = endDate,
+                            Year = DateTime.Now.Year,
+                            StudentId = model.Id,
+                            AssociatedLevelId = model.CurrentSchoolLevelId
+
+                        });
+                    }
+
                 }
 
                 await db.Tuitions.AddRangeAsync(tuitions);
@@ -84,21 +92,24 @@ namespace logic.systems.school.managment.Services
                 string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro" };
                 for (int i = 1; i < meses.Length + 1; i++)
                 {
-                    int daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, i + 1);
-                    DateTime startDate = new DateTime(DateTime.Now.Year, i + 1, 1);
-                    DateTime endDate = new DateTime(DateTime.Now.Year, i + 1, daysInMonth);
-
-                    tuitions.Add(new Tuition()
+                    if (i + 1 > startMonth)
                     {
-                        MonthNumber = i,
-                        MonthName = meses[i - 1],
-                        StartDate = startDate,
-                        EndDate = endDate,
-                        Year = DateTime.Now.Year,
-                        StudentId = model.Id,
-                        AssociatedLevelId = model.CurrentSchoolLevelId
+                        int daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, i + 1);
+                        DateTime startDate = new DateTime(DateTime.Now.Year, i + 1, 1);
+                        DateTime endDate = new DateTime(DateTime.Now.Year, i + 1, daysInMonth);
 
-                    });
+                        tuitions.Add(new Tuition()
+                        {
+                            MonthNumber = i,
+                            MonthName = meses[i - 1],
+                            StartDate = startDate,
+                            EndDate = endDate,
+                            Year = DateTime.Now.Year,
+                            StudentId = model.Id,
+                            AssociatedLevelId = model.CurrentSchoolLevelId
+
+                        });
+                    }
                 }
 
                 await db.Tuitions.AddRangeAsync(tuitions);
@@ -136,9 +147,9 @@ namespace logic.systems.school.managment.Services
                         {
                             tuitionsFines.Add(finded);
                         }
-                      
+
                     }
-                } 
+                }
 
                 return tuitionsFines;
             }
@@ -352,7 +363,6 @@ namespace logic.systems.school.managment.Services
                 }
             }
         }
-
 
     }
 }

@@ -5,8 +5,9 @@ namespace logic.systems.school.managment.Interface
 {
     public interface ITuitionService
     {
-         public Task CreateByClassOfStudant (Student model);
-         public Task<List<Tuition>> GetByStudantId (int StudantId);
+         public Task CreateByClassOfStudant (Student model, int? startManth = -99);
+         
+        public Task<List<Tuition>> GetByStudantId (int StudantId);
 
         public Task<List<Payment>> CreatePayment(CreatePaymentDTO dto);
         public Task<List<Payment>> GetPaymentsByStudantTuitionsId(int studentId);
