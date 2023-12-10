@@ -2,11 +2,13 @@
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 
 namespace logic.systems.school.managment.Services
 {
-    public class StudantService : ICRUD<Student>
+    public class StudantService : IstudantService
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
         public async Task<Student> Create(Student model, string CreatedById)
@@ -107,6 +109,65 @@ namespace logic.systems.school.managment.Services
         public Task<PaginationDTO<Student>> SearchRecord(string searchString)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<PaginationDTO<Student>> SearchRecord(string Name, int CurrentSchoolLevelId )
+        {
+            var data = new PaginationDTO<Student>();
+
+
+            if (!string.IsNullOrEmpty(Name) && CurrentSchoolLevelId > 0)
+            {
+                data.records = await db.Students.Include(x => x.Tuitions)
+                                        .ThenInclude(x => x.TuitionFines)
+                                        .Include(x => x.CurrentSchoolLevel)
+                                        .Where(x => x.Row != Common.Deleted && x.Name.Contains(Name) && x.CurrentSchoolLevelId == CurrentSchoolLevelId)
+                                         .Select(u => new Student()
+                                         {
+                                             Id = u.Id,
+                                             Name = u.Name,
+                                             CurrentSchoolLevel = u.CurrentSchoolLevel,
+                                             Suspended = u.Suspended,
+                                             haveFee = u.Tuitions.Any(x => !x.TuitionFines.Paid)
+                                         }).OrderBy(o => o.Name).ToListAsync();
+            }
+            else if (!string.IsNullOrEmpty(Name) && CurrentSchoolLevelId <= 0)
+            {
+                data.records = await db.Students.Include(x => x.Tuitions)
+                                        .ThenInclude(x => x.TuitionFines)
+                                        .Include(x => x.CurrentSchoolLevel)
+                                        .Where(x => x.Row != Common.Deleted && x.Name.Contains(Name))
+                                         .Select(u => new Student()
+                                         {
+                                             Id = u.Id,
+                                             Name = u.Name,
+                                             CurrentSchoolLevel = u.CurrentSchoolLevel,
+                                             Suspended = u.Suspended,
+                                             haveFee = u.Tuitions.Any(x => !x.TuitionFines.Paid)
+                                         }).OrderBy(o => o.Name).ToListAsync();
+
+            }
+            else if (string.IsNullOrEmpty(Name) && CurrentSchoolLevelId > 0)
+            {
+                data.records = await db.Students.Include(x => x.Tuitions)
+                                        .ThenInclude(x => x.TuitionFines)
+                                        .Include(x => x.CurrentSchoolLevel)
+                                        .Where(x => x.Row != Common.Deleted && x.CurrentSchoolLevelId == CurrentSchoolLevelId)
+                                         .Select(u => new Student()
+                                         {
+                                             Id = u.Id,
+                                             Name = u.Name,
+                                             CurrentSchoolLevel = u.CurrentSchoolLevel,
+                                             Suspended = u.Suspended,
+                                             haveFee = u.Tuitions.Any(x => !x.TuitionFines.Paid)
+                                         }).OrderBy(o => o.Name).ToListAsync();
+            }
+            else
+            {
+             data =   await ReadPagenation(1, 20);
+            }
+
+            return data;
         }
 
         public async Task<Student> Update(Student model, string UpdatedById)

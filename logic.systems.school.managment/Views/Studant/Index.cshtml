@@ -1,4 +1,4 @@
-﻿@model logic.systems.school.managment.Dto.PaginationDTO<logic.systems.school.managment.Models.Student>
+﻿@model logic.systems.school.managment.Dto.StudentPageDto
 
 @{
     ViewData["Title"] = "Estudantes";
@@ -10,37 +10,65 @@
         <li class="breadcrumb-item active" aria-current="page">Lista de Estudantes</li>
     </ol>
 </nav>
-
+<form asp-action="search" asp-controller="studant" > 
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body pb-0">
             <div class="row">
-                <div class="col-md-10 col-sm-6">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Pesquisar estudante pelo nome">
-                            <div class="input-group-append">
-                                <button class="btn btn-sm btn-light" type="button">Search</button>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Filtrar pelo pelo nome do estudante" asp-for="studentName">
+
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-2 col-sm-6">
-                    <a type="button" class="btn btn-info btn-icon-text" asp-action="create" asp-controller="studant">
-                        Cadastrar novo estudante
-                    </a>
+                <div class="col-md-4 col-sm-6">
+                    <div class="form-group">
+                        <div class="input-group">
+                           
+                                <select class="form-control form-control-lg pb-3 pt-2" asp-for="CurrentSchoolLevelId" id="SelectSchoolLevel">
+                                    <option selected>... Filtrar pela classe do estudante</option>
+                                    @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
+                                    {
+                                        <option value="@item.Id">@item.Description</option>
+                                    }
+                                </select> 
+                        </div>
+                    </div>
+                </div>  
+             
+                <div class="col-md-4 col-sm-6">
+                    <button type="submit" class="btn btn-info btn-icon-text" >
+                       Pesquisar
+                    </button>
                 </div>
             </div>
 
         </div>
     </div>
 </div>
+</form>
 
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body pb-0">
-            <h4 class="card-title">Lista</h4>
-            <p class="card-description">   estudantes  </p>
+            
+            <div class="row">
+                <div class="col-auto mr-auto">
+                    <h4 class="card-title">Lista</h4>
+                    <p class="card-description">   estudantes  </p>
+                </div>
+                <div class="col-auto">
+                    
+                        <a type="button" class="btn btn-info btn-icon-text" asp-action="create" asp-controller="studant">
+                            Cadastrar novo estudante
+                        </a>
+                    
+                </div>
+            </div>
+           
+
             <div class="table-responsive">
                 <table class="table table-hover">
 
@@ -55,7 +83,7 @@
                     </thead>
                     <tbody>
 
-                        @foreach (var item in Model.records)
+                        @foreach (var item in Model.indexPage.records)
                         {
                             <tr>
                                 <th scope="row"> @item.Id</th>
@@ -131,12 +159,12 @@
                         <ul class="pagination">
 
 
-                            <li class="page-item"><a class="page-link" asp-route-pageNumber="@(Model.pageNumber-1)" asp-action="index" asp-controller="studant">Anterior</a></li>
+                            <li class="page-item"><a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber-1)" asp-action="index" asp-controller="studant">Anterior</a></li>
 
-                            @for (int i = 1; i <= Model.totalPages; i++)
+                            @for (int i = 1; i <= Model.indexPage.totalPages; i++)
                             {
                                 var btn_activ = "";
-                                if (i == Model.pageNumber)
+                                if (i == Model.indexPage.pageNumber)
                                 {
                                     btn_activ = "active";
                                 }
@@ -145,12 +173,12 @@
                             }
                             @{
                                 var btn_next_disable_css = "";
-                                if (Model.pageNumber == (Model.totalPages))
+                                if (Model.indexPage.pageNumber == (Model.indexPage.totalPages))
                                 {
                                     btn_next_disable_css = "display:none";
                                 }
                             }
-                            <li class="page-item " style="@btn_next_disable_css"><a class="page-link" asp-route-pageNumber="@(Model.pageNumber+1)" asp-action="index" asp-controller="studant">Próximo</a></li>
+                            <li class="page-item " style="@btn_next_disable_css"><a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber+1)" asp-action="index" asp-controller="studant">Próximo</a></li>
                         </ul>
 
                     </nav>

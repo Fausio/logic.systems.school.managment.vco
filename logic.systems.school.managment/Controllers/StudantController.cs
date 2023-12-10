@@ -10,12 +10,12 @@ namespace logic.systems.school.managment.Controllers
 {
     public class StudantController : Controller
     {
-        private ICRUD<Student> _StudentService;
+        private IstudantService _StudentService;
         private IOrgUnit _IOrgUnitServiceService;
         private ISempleEntityService _SempleEntityService;
         private ITuitionService _ITuitionService;
 
-        public StudantController(ICRUD<Student> StudentService,
+        public StudantController(IstudantService StudentService,
             IOrgUnit IOrgUnitServiceService,
             ISempleEntityService SempleEntityService,
             ITuitionService iTuitionService)
@@ -31,12 +31,11 @@ namespace logic.systems.school.managment.Controllers
             try
             {
                 var result = await _StudentService.ReadPagenation(pageNumber.Value, pageSize.Value);
-                //foreach (var item in result.records)
-                //{
-                //    await _ITuitionService.AutomaticRegularization(item.Id);
-                //}
-             
-                return View(result);
+                ViewBag.CurrentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
+                return View(new StudentPageDto()
+                {
+                    indexPage = result
+                });
             }
             catch (Exception)
             {
@@ -45,6 +44,34 @@ namespace logic.systems.school.managment.Controllers
             }
 
         }
+
+        public async Task<IActionResult> search(StudentPageDto model)
+        {
+            try
+            {
+
+                if (model.CurrentSchoolLevelId == null)
+                {
+                    model.CurrentSchoolLevelId = 0;
+                }
+
+                var result = await _StudentService.SearchRecord(model.studentName, model.CurrentSchoolLevelId.Value);
+                ViewBag.CurrentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
+                return View("Index", new StudentPageDto()
+                {
+                    indexPage = result
+                });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+
+
         public async Task<IActionResult> Create()
         {
             try
@@ -71,7 +98,7 @@ namespace logic.systems.school.managment.Controllers
                 await PopulateForms();
                 if (ModelState.IsValid)
                 {
-                    
+
 
                     if (model.EnroolAllMonths)
                     {
@@ -80,10 +107,10 @@ namespace logic.systems.school.managment.Controllers
                         TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
                         return RedirectToAction("edit", "studant", new { id = result.Id });
                     }
-                    else if (!model.EnroolAllMonths && model.StartTuition > 0) 
+                    else if (!model.EnroolAllMonths && model.StartTuition > 0)
                     {
                         var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
-                        await _ITuitionService.CreateByClassOfStudant(result,model.StartTuition);
+                        await _ITuitionService.CreateByClassOfStudant(result, model.StartTuition);
                         TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
                         return RedirectToAction("edit", "studant", new { id = result.Id });
                     }
@@ -98,7 +125,7 @@ namespace logic.systems.school.managment.Controllers
                         return View(model);
                     }
 
-               
+
                 }
 
                 return View(model);
@@ -121,7 +148,7 @@ namespace logic.systems.school.managment.Controllers
                 var result = StudantProfile.ToDTO(model);
                 await PopulateForms();
                 await PopuLateDetailsForm(model);
-     
+
                 if (TempData.ContainsKey("MensagemSucess"))
                 {
                     ViewBag.Mensagem = TempData["MensagemSucess"];
@@ -173,7 +200,7 @@ namespace logic.systems.school.managment.Controllers
             ViewBag.District = Student.District.Description;
             ViewBag.CurrentSchoolLevel = Student.CurrentSchoolLevel.Description;
             ViewBag.Tuitions = Student.Tuitions.Where(x => !x.Paid);
-            ViewBag.TuitionsFee =  await _ITuitionService.GetByStudantIdFinesBy(Student.Id);
+            ViewBag.TuitionsFee = await _ITuitionService.GetByStudantIdFinesBy(Student.Id);
         }
     }
 }
