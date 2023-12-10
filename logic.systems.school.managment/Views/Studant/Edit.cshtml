@@ -510,8 +510,7 @@
                         // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
                         $("#tabelaItens tbody").append(newRow);
                     });
-
-                    console.log("x")
+                     
                     $("#menu_1_spinner").hide();
                     $("#menu_1_info").show();
                 }
@@ -529,6 +528,7 @@
                 success: function (MyList) {
                     $("#tabelaItenFines tbody").empty();
                     $('#tuitionFeePayment').empty();
+                      console.log("MyList", MyList);
                     $.each(MyList, function (index, item) {
                         var newRow = $("<tr>");
 

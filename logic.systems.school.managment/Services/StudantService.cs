@@ -75,7 +75,7 @@ namespace logic.systems.school.managment.Services
             var models = new List<Student>();
 
 
-            models = await db.Students.Include(x => x.CurrentSchoolLevel).Where(x => x.Row != Common.Deleted)
+            models = await db.Students.Include(x => x.Tuitions).ThenInclude(x => x.TuitionFines).Include(x => x.CurrentSchoolLevel).Where(x => x.Row != Common.Deleted)
                                          .Skip(skip)
                                          .Take(pageSize)
                                          .Select(u => new Student()
@@ -84,6 +84,7 @@ namespace logic.systems.school.managment.Services
                                              Name = u.Name, 
                                              CurrentSchoolLevel = u.CurrentSchoolLevel,
                                              Suspended = u.Suspended,
+                                             haveFee =  u.Tuitions.Any(x => !x.TuitionFines.Paid)
 
                                          }).OrderBy(o => o.Name).ToListAsync();
 

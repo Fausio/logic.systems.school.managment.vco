@@ -23,6 +23,10 @@ namespace logic.systems.school.managment.Controllers
             try
             {
                 var result = await _ITuitionService.GetByStudantIdFinesBy(id);
+                foreach (var item in result)
+                {
+                    item.Tuition.TuitionFines = null;
+                }
                 return Json(result);
             }
             catch (Exception e)

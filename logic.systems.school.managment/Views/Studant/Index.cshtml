@@ -49,7 +49,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Estudante</th>
                             <th scope="col">Classe</th>
-                            <th scope="col">Turma</th>
+                            <th scope="col">Tem multa ?</th>
                             <th scope="col">Estado</th>
                         </tr>
                     </thead>
@@ -66,7 +66,16 @@
                                     </a>
                                 </td>
                                 <td>@item.CurrentSchoolLevel.Description</td>
-                                <td> @item.Suspended</td>
+                                <td>
+                                    @if (item.haveFee)
+                                    {
+                                        <label class="badge badge-danger">Sim</label>
+                                    }
+                                    else
+                                    {
+                                        <label class="badge badge-success">Não</label>
+                                    }
+                                </td>
                                 <td>
 
                                     @if (item.Suspended)

@@ -39,6 +39,9 @@ namespace logic.systems.school.managment.Models
         public virtual Sponsor Sponsor { get; set; } = new Sponsor();
         public int SponsorId { get; set; } 
         public List<Tuition> Tuitions { get; set; } = new List<Tuition>();
-         
-    }
+
+        [NotMapped]
+        public bool haveFee  { get; set; }
+
+}
 }
