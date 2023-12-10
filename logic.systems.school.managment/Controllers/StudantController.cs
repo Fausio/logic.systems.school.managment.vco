@@ -30,7 +30,13 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
-                return View(await _StudentService.ReadPagenation(pageNumber.Value, pageSize.Value));
+                var result = await _StudentService.ReadPagenation(pageNumber.Value, pageSize.Value);
+                //foreach (var item in result.records)
+                //{
+                //    await _ITuitionService.AutomaticRegularization(item.Id);
+                //}
+             
+                return View(result);
             }
             catch (Exception)
             {
@@ -110,6 +116,7 @@ namespace logic.systems.school.managment.Controllers
             try
             {
                 await _ITuitionService.CheckFee(id);
+                await _ITuitionService.AutomaticRegularization(id);
                 var model = await _StudentService.Read(id);
                 var result = StudantProfile.ToDTO(model);
                 await PopulateForms();

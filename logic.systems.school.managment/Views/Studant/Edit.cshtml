@@ -48,6 +48,11 @@
                     <div id="validation-summary" class="alert alert-danger" role="alert">
                         <p><strong>Estudante suspenso devido a multas:</strong></p>
                     </div>
+                }else
+                {
+                    <div id="validation-summary" class="alert alert-success" role="alert">
+                        <p><strong>Estudante com resolvido:</strong></p>
+                    </div>
                 }
 
                 <div class="alert alert-success" role="alert" id="msg-summary" style="display: @(string.IsNullOrEmpty(ViewBag.Mensagem) ? "none" : "block")">
@@ -152,7 +157,7 @@
                         </div>
 
                         <div id="menu_1_info">
-                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal">
+                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
                                 Adicionar Pagamento de mensalidade
                             </a>
 
@@ -213,7 +218,7 @@
                         </div>
 
                         <div id="menu_2_info">
-                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuFeeModal">
+                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuFeeModal" onclick="form_payfee_btns()">
                                 Adicionar Pagamento de multas
                             </a>
 
@@ -295,10 +300,17 @@
                     </fieldset>
                     <fieldset class="border p-2">
                         <legend class="w-auto">Ações</legend>
-                        <div class="template-demo">
+                        <div class="template-demo" id="form_pay_btns">
                             <button type="button" class="btn btn-success btn-icon-text" onclick="createPayment()">
                                 Efectuar pagamento
                             </button>
+                        </div> 
+                        <div id="form_pay_spinner">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
                         </div>
                     </fieldset>
                 </form>
@@ -339,10 +351,21 @@
                     </fieldset>
                     <fieldset class="border p-2">
                         <legend class="w-auto">Ações</legend>
-                        <div class="template-demo">
-                            <button type="button" class="btn btn-success btn-icon-text" onclick="createFeePayment()">
-                                Efectuar pagamento
-                            </button>
+                      
+
+                        <div id="form_payfee_btns">
+                            <div class="template-demo">
+                                <button type="button" class="btn btn-success btn-icon-text" onclick="createFeePayment()">
+                                    Efectuar pagamento
+                                </button>
+                            </div>
+                        </div>
+                        <div id="form_payfee_spinner">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
                         </div>
                     </fieldset>
                 </form>
@@ -399,8 +422,17 @@
             getTuitions(@Model.id);
         });
 
-         
 
+        function form_pay_btns() {
+
+            $("#form_pay_btns").show();
+            $("#form_pay_spinner").hide();
+        }  
+        function form_payfee_btns() {
+
+            $("#form_payfee_btns").show();
+            $("#form_payfee_spinner").hide();
+        }
 
         function createPayment() {
 
@@ -408,7 +440,8 @@
                 StudantId: @Model.id,
                 TuitionId: $("#tuitionPayment").val()
             };
-
+            $("#form_pay_btns").hide();
+            $("#form_pay_spinner").show();
             $.ajax({
                 url: "/tuition/CreatePayment",
                 type: "POST",
@@ -418,7 +451,9 @@
                     // Por exemplo, fechar o modal ou atualizar a página
                     getPayments(@Model.id);
                     getTuitions(@Model.id);
-                    //  getTuitionFines(@Model.id);
+
+                    $("#form_pay_btns").show();
+                    $("#form_pay_spinner").hide();
                     $('#meuModal').modal('hide');
                 }
             });
@@ -430,13 +465,16 @@
                 StudantId: @Model.id,
                 TuitionFeeId: $("#tuitionFeePayment").val()
             };
-
+            $("#form_payfee_btns").hide();
+            $("#form_payfee_spinner").show();
             $.ajax({
                 url: "/tuition/CreateFeePayment",
                 type: "POST",
                 data: data,
                 success: function (result) {
                     getTuitionFines(@Model.id);
+                    $("#form_payfee_btns").show();
+                    $("#form_payfee_spinner").hide();
                     $('#meuFeeModal').modal('hide');
 
                 }

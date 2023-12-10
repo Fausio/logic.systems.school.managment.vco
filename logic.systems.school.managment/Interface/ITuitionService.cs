@@ -15,7 +15,8 @@ namespace logic.systems.school.managment.Interface
         public Task<List<Models.TuitionFines>> GetByStudantIdFinesBy(int StudantId);
         public string  GetMonthName(int monthNumber);
          
-        public Task CheckFee(int? studentId);     
+        public Task CheckFee(int? studentId);       
+        public Task AutomaticRegularization(int? studentId);       
          
     }
 }

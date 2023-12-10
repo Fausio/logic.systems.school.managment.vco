@@ -20,8 +20,17 @@ namespace logic.systems.school.managment.Controllers
         }
          public async Task<JsonResult> IndexByStudantIdFines(int id)
         {
-            var result = await _ITuitionService.GetByStudantIdFinesBy(id);
-            return Json(result);
+            try
+            {
+                var result = await _ITuitionService.GetByStudantIdFinesBy(id);
+                return Json(result);
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+      
         }
 
         public async Task<JsonResult> IndexPaymentByStudantId(int id)

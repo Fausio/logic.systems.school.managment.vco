@@ -350,9 +350,7 @@ namespace logic.systems.school.managment.Services
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
 
             }
-
-
-
+             
             foreach (Student student in students)
             {
                 foreach (Tuition tuition in student.Tuitions)
@@ -400,7 +398,20 @@ namespace logic.systems.school.managment.Services
                 }
             }
         }
-         
+
+        public async Task AutomaticRegularization(int? studentId)
+        {
+            var Tuitions = await db.Tuitions.AnyAsync(x => x.StudentId == studentId && !x.Paid);  
+
+            var TuitionsFee = await db.Tuitions.AnyAsync(x => x.StudentId == studentId && !x.TuitionFines.Paid);
+
+            if (!Tuitions && !TuitionsFee)
+            {
+                var student = await db.Students.FirstOrDefaultAsync(x => x.Id == studentId);
+                student.Suspended = false; await db.SaveChangesAsync(); 
+            }
+             
+        }
     }
 }
 

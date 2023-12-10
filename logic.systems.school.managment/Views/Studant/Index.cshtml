@@ -13,7 +13,7 @@
 
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
-        <div class="card-body pb-0">  
+        <div class="card-body pb-0">
             <div class="row">
                 <div class="col-md-10 col-sm-6">
                     <div class="form-group">
@@ -31,74 +31,124 @@
                     </a>
                 </div>
             </div>
-           
+
         </div>
     </div>
 </div>
 
-    <div class="col-lg-12 grid-margin stretch-card">
-        <div class="card">
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
         <div class="card-body pb-0">
-                <h4 class="card-title">Lista</h4>
-                <p class="card-description">   estudantes  </p>
-                <div class="table-responsive"> 
-                        <table class="table table-hover">
+            <h4 class="card-title">Lista</h4>
+            <p class="card-description">   estudantes  </p>
+            <div class="table-responsive">
+                <table class="table table-hover">
 
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Estudante</th>
-                                    <th scope="col">Classe</th>
-                                    <th scope="col">Turma</th>
-                                    <th scope="col">Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Estudante</th>
+                            <th scope="col">Classe</th>
+                            <th scope="col">Turma</th>
+                            <th scope="col">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                                @foreach (var item in Model.records)
-                            {
-                                <tr>
-                                     <th scope="row"> @item.Id</th>   
-                                    <td> <a asp-action="edit" asp-controller="studant" asp-route-id="@item.Id">
+                        @foreach (var item in Model.records)
+                        {
+                            <tr>
+                                <th scope="row"> @item.Id</th>
+                                <td>
+                                    <a asp-action="edit" asp-controller="studant" asp-route-id="@item.Id">
                                         @*     <i class="typcn typcn-compass  text-success"></i> *@
-                                        @item.Name </a> </td>
+                                        @item.Name
+                                    </a>
+                                </td>
                                 <td>@item.CurrentSchoolLevel.Description</td>
                                 <td> @item.Suspended</td>
-                                    <td>  
-                                    
-                                        @if (item.Suspended)
+                                <td>
+
+                                    @if (item.Suspended)
                                     {
                                         <label class="badge badge-danger">Suspenso</label>
-                                    }else
+                                    }
+                                    else
                                     {
                                         <label class="badge badge-success">Resolvido</label>
                                     }
-                                       
-                                        
-                                    </td>
-                                </tr>
-                            }
-                              
-                                  
-                            </tbody>
-                        </table>
-                        <hr />
+
+
+                                </td>
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+
+
+                @*   <div class="row ">
+                <div class="col-4">
+                <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Anterior</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Próximo</a></li>
+                </ul>
+
+                </nav>
+                </div>
+                <div class="col-4">
+                <label>Showing 1 to 10 of 57 entries</label>
+                </div>
+                </div> *@
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-1 pt-4">
+            <div class="row">
+                <div class="col-md-4">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination">
-                            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+
+
+                            <li class="page-item"><a class="page-link" asp-route-pageNumber="@(Model.pageNumber-1)" asp-action="index" asp-controller="studant">Anterior</a></li>
+
+                            @for (int i = 1; i <= Model.totalPages; i++)
+                            {
+                                var btn_activ = "";
+                                if (i == Model.pageNumber)
+                                {
+                                    btn_activ = "active";
+                                }
+
+                                <li class="page-item @btn_activ"><a class="page-link" asp-route-pageNumber="@i" asp-action="index" asp-controller="studant">@i</a></li>
+                            }
+                            @{
+                                var btn_next_disable_css = "";
+                                if (Model.pageNumber == (Model.totalPages))
+                                {
+                                    btn_next_disable_css = "display:none";
+                                }
+                            }
+                            <li class="page-item " style="@btn_next_disable_css"><a class="page-link" asp-route-pageNumber="@(Model.pageNumber+1)" asp-action="index" asp-controller="studant">Próximo</a></li>
                         </ul>
+
                     </nav>
-                    
-
-
                 </div>
+                <div class="col-md-4 offset-md-4">Mostrando 1 a 10 de 57 entradas</div>
             </div>
         </div>
     </div>
+</div>
 
-
-     
