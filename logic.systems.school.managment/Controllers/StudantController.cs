@@ -65,25 +65,34 @@ namespace logic.systems.school.managment.Controllers
                 await PopulateForms();
                 if (ModelState.IsValid)
                 {
-                    var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
+                    
 
                     if (model.EnroolAllMonths)
                     {
-
+                        var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
                         await _ITuitionService.CreateByClassOfStudant(result);
+                        TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
+                        return RedirectToAction("edit", "studant", new { id = result.Id });
                     }
-                    else if (!model.EnroolAllMonths && model.StartTuition <=0) 
+                    else if (!model.EnroolAllMonths && model.StartTuition > 0) 
                     {
+                        var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
                         await _ITuitionService.CreateByClassOfStudant(result,model.StartTuition);
+                        TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
+                        return RedirectToAction("edit", "studant", new { id = result.Id });
                     }
                     else
                     {
-                        TempData["MensagemSucess"] = "Escolha o Meses de início";
+
+                        TempData["MensagemError"] = "Escolha o Meses de início";
+                        if (TempData.ContainsKey("MensagemError"))
+                        {
+                            ViewBag.MensagemError = TempData["MensagemError"];
+                        }
                         return View(model);
                     }
 
-                    TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
-                    return RedirectToAction("edit", "studant", new { id = result.Id });
+               
                 }
 
                 return View(model);

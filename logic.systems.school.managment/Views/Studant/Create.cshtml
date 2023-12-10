@@ -37,14 +37,13 @@
                         <p><strong>Por favor, corrija os seguintes erros:</strong></p>
                     </div>
                 }
+
+                <div class="alert alert-danger" role="alert" id="msg-summary" style="display: @(string.IsNullOrEmpty(ViewBag.MensagemError) ? "none" : "block")">
+                    <p><strong>@ViewBag.MensagemError</strong></p>
+                </div>
+
                 <form class="needs-validation" novalidate>
-
-                    @*     <fieldset class="border p-2">
-                    <legend class="w-auto">Your Legend</legend>
-                    </fieldset>  *@
-
-
-
+                     
                     <fieldset class="border p-2">
                         <legend class="w-auto">Dados do estudante</legend>
                         <div class="form-row">
@@ -183,8 +182,8 @@
 
                             <div class="form-row mb-3">
                                 <div class="col-md-4" id="MyClassesToStart">
-                                    <label for="">Meses de início</label>
-                                    <select class="form-control form-control-lg pb-3 pt-3" id="MyStartTuition" asp-for="StartTuition">
+                                    <label for="">Meses de início</label> 
+                                    <select class="form-control form-control-lg pb-3 pt-3" id="MyStartTuition" asp-for="StartTuition"> 
                                         @foreach (Tuition item in Model.Tuitions)
                                         {
                                             <option value=@item.MonthNumber>@item.MonthNumber - @item.MonthName - @item.Year</option>
@@ -273,7 +272,19 @@
             $("#MyClassesToStart").show();
         }
 
-        
+        $(document).ready(function () {
+            // Verifique se a mensagem está definida
+            var mensagem = '@ViewBag.MensagemError';
+            if (mensagem) {
+                // Exiba a mensagem
+                $("#msg-summary").css("display", "block");
+
+                // Remova a mensagem após 5 segundos
+                setTimeout(function () {
+                    $("#msg-summary").css("display", "none");
+                }, 9000);
+            }
+        });
 
         $(document).ready(function () {
             $("#provinces").change(function () {
