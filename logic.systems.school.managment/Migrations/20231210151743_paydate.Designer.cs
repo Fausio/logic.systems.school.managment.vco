@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using logic.systems.school.managment.Data;
 
@@ -11,9 +12,10 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231210151743_paydate")]
+    partial class paydate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -412,7 +414,7 @@ namespace logic.systems.school.managment.Migrations
                     b.Property<bool>("Paid")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("PaidDate")
+                    b.Property<DateTime>("PaidDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Row")

@@ -19,7 +19,7 @@ namespace logic.systems.school.managment.Controllers
         public async Task<IActionResult> Index()
         {
             // update  multas
-            await _ITuitionService.CheckFee();
+            await _ITuitionService.CheckFee(null);
             return View();
         }
 

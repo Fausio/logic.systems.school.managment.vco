@@ -14,5 +14,9 @@ namespace logic.systems.school.managment.Models
         {
             FinesValue = 300;
         }
+
+        public bool Paid { get; set; }
+
+        public DateTime? PaidDate { get; set; }
     }
 }

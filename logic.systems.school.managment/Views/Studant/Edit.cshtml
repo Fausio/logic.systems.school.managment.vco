@@ -42,7 +42,7 @@
                         <p><strong>Por favor, corrija os seguintes erros:</strong></p>
                     </div>
                 }
-               
+
                 @if (Model.Suspended)
                 {
                     <div id="validation-summary" class="alert alert-danger" role="alert">
@@ -135,82 +135,111 @@
                         <a class="nav-link active   nav-info" data-toggle="tab" href="#home">Mensalidades/Pagamentos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#menu1">Multas</a>
-                    </li> 
+                        <a class="nav-link" data-toggle="tab" href="#menu1" onclick="getTuitionFines(@Model.id)">Multas</a>
+                    </li>
                 </ul>
 
                 <!-- Tab panes -->
                 <div class="tab-content">
                     <div id="home" class=" tab-pane active">
 
-                        <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal">
-                            Adicionar Pagamento
-                        </a>
-
-                        <div class="row">
-
-                            <div class="col-md-6 col-sm-12">
-                                <div class="table-responsive"> 
-                                    <table class="MytabelaItens wideTable" id="tabelaItensPayments" border="1">
-                                        <thead>
-                                            <tr>
-                                                 <th>Pagamento para a mensalidade</th>
-                                                 <th>Data de Pagamento</th>
-                                                 <th>Propina</th>
-                                                 <th>Iva (5%)</th>
-                                                 <th>Total (Propina + Iva (5%))</th>
-                                                <!-- Adicione mais colunas conforme necessário -->
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Os itens da lista serão adicionados aqui -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-12">
-                                <div class="table-responsive">
-                                    <table class="MytabelaItens" id="tabelaItens" border="1">
-                                        <thead>
-                                            <tr>
-                                                <th>Mensalidades a pagar (@ViewBag.CurrentSchoolLevel)</th>
-                                                <th>Data</th>
-                                                <th>Estado</th>
-                                                <!-- Adicione mais colunas conforme necessário -->
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Os itens da lista serão adicionados aqui -->
-                                        </tbody>
-                                    </table>
+                        <div id="menu_1_spinner">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
                                 </div>
                             </div>
                         </div>
+
+                        <div id="menu_1_info">
+                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal">
+                                Adicionar Pagamento de mensalidade
+                            </a>
+
+                            <div class="row">
+
+                                <div class="col-md-7 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="MytabelaItens wideTable" id="tabelaItensPayments" border="1">
+                                            <thead>
+                                                <tr>
+                                                    <th>Pagamento para a mensalidade</th>
+                                                    <th>Data de Pagamento</th>
+                                                    <th>Propina</th>
+                                                    <th>Iva (5%)</th>
+                                                    <th>Total (Propina + Iva (5%))</th>
+                                                    <!-- Adicione mais colunas conforme necessário -->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Os itens da lista serão adicionados aqui -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="MytabelaItens" id="tabelaItens" border="1">
+                                            <thead>
+                                                <tr>
+                                                    <th>Mensalidades a pagar (@ViewBag.CurrentSchoolLevel)</th>
+                                                    <th>Data</th>
+                                                    <th>Estado</th>
+                                                    <!-- Adicione mais colunas conforme necessário -->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Os itens da lista serão adicionados aqui -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
 
 
 
                     </div>
                     <div id="menu1" class="tab-pane fade">
-                        <br>
-                        <h3>Multas</h3>
-                        <div class="col-md-6 col-sm-12">
-                            <div class="table-responsive">
-                                <table class="MytabelaItens" id="tabelaItenFines" border="1">
-                                    <thead>
-                                        <tr>
-                                            <th>Valor da Multa</th>
-                                            <th>Multa referente a mensalidade de</th>
-                                            <th>Data de cração da multa (Automática)</th>
-                                            <!-- Adicione mais colunas conforme necessário -->
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Os itens da lista serão adicionados aqui -->
-                                    </tbody>
-                                </table>
+
+                        <div id="menu_2_spinner">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
                             </div>
                         </div>
-                    </div> 
+
+                        <div id="menu_2_info">
+                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuFeeModal">
+                                Adicionar Pagamento de multas
+                            </a>
+
+                            <div class="col-md-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="MytabelaItens" id="tabelaItenFines" border="1">
+                                        <thead>
+                                            <tr>
+                                                <th>Valor da Multa</th>
+                                                <th>Multa referente a mensalidade de</th>
+                                                <th>Data de cração da multa (Automática)</th>
+                                                <th>Estado</th>
+                                                <th>Data de pagamento</th>
+                                                <!-- Adicione mais colunas conforme necessário -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Os itens da lista serão adicionados aqui -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
                 </div>
 
 
@@ -243,13 +272,13 @@
 
             <!-- Conteúdo do modal -->
             <div class="modal-header">
-                <h4 class="modal-title">Formulário de pagamento</h4>
+                <h4 class="modal-title">Formulário de pagamento de mensalidades</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
             <div class="modal-body">
                 <!-- Conteúdo do formulário aqui -->
-                <form id="meuFormulario"> 
+                <form id="meuFormulario">
                     <fieldset class="border p-2">
                         <legend class="w-auto">Mensalidades a pagar (@ViewBag.CurrentSchoolLevel) </legend>
                         <div class="form-row mb-3">
@@ -278,6 +307,55 @@
         </div>
     </div>
 </div>
+
+
+<!-- Seu modal -->
+<div class="modal" id="meuFeeModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Conteúdo do modal -->
+            <div class="modal-header">
+                <h4 class="modal-title">Formulário de pagamento de multas</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Conteúdo do formulário aqui -->
+                <form id="meuFormulario">
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Multas a pagar (@ViewBag.CurrentSchoolLevel) </legend>
+                        <div class="form-row mb-3">
+                            <div class="col-md-12 col-sm-12">
+                                <label for="">Meses</label>
+                                <select class="form-control form-control-lg pb-3 pt-3" id="tuitionFeePayment">
+                                    @foreach (TuitionFines item in ViewBag.TuitionsFee)
+                                    {
+                                        <option value="@item.Id">@item.Tuition.MonthNumber - @item.Tuition.MonthName - @item.Tuition.Year</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Ações</legend>
+                        <div class="template-demo">
+                            <button type="button" class="btn btn-success btn-icon-text" onclick="createFeePayment()">
+                                Efectuar pagamento
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
 
 @section scripts {
     <script>
@@ -316,12 +394,12 @@
             }
         });
 
-        $(document).ready(function () {
-            // Suponhamos que você tenha o id disponível na variável 'idDoObjetoPrincipal'
-            getTuitions(@Model.id);
+        $(document).ready(function () { 
             getPayments(@Model.id);
-            getTuitionFines(@Model.id);
+            getTuitions(@Model.id);
         });
+
+         
 
 
         function createPayment() {
@@ -329,7 +407,7 @@
             var data = {
                 StudantId: @Model.id,
                 TuitionId: $("#tuitionPayment").val()
-                            };
+            };
 
             $.ajax({
                 url: "/tuition/CreatePayment",
@@ -337,31 +415,52 @@
                 data: data,
                 success: function (result) {
                     // Lógica após o envio bem-sucedido, se necessário
-                    // Por exemplo, fechar o modal ou atualizar a página 
+                    // Por exemplo, fechar o modal ou atualizar a página
                     getPayments(@Model.id);
                     getTuitions(@Model.id);
-                    getTuitionFines(@Model.id);
+                    //  getTuitionFines(@Model.id);
                     $('#meuModal').modal('hide');
                 }
             });
         }
 
+        function createFeePayment() {
+
+            var data = {
+                StudantId: @Model.id,
+                TuitionFeeId: $("#tuitionFeePayment").val()
+            };
+
+            $.ajax({
+                url: "/tuition/CreateFeePayment",
+                type: "POST",
+                data: data,
+                success: function (result) {
+                    getTuitionFines(@Model.id);
+                    $('#meuFeeModal').modal('hide');
+
+                }
+            });
+        }
+
         function getTuitions(id) {
+            $("#menu_1_spinner").show();
+            $("#menu_1_info").hide(); 
             $.ajax({
                 url: "/tuition/IndexByStudantId?id=" + id,
                 type: "GET",
                 success: function (MyList) {
                     $("#tabelaItens tbody").empty();
-                   $('#tuitionPayment').empty(); 
+                    $('#tuitionPayment').empty();
 
                     $.each(MyList, function (index, item) {
                         var newRow = $("<tr>");
                         var formattedsDate = new Date(item.startDate).toLocaleDateString('pt-BR');
                         var formattedeDate = new Date(item.endDate).toLocaleDateString('pt-BR');
 
-                        newRow.append("<td>" + item.monthName +    "</td>");
-                        newRow.append("<td>"  + formattedsDate + " a " + formattedeDate + "</td>");
-                 
+                        newRow.append("<td>" + item.monthName + "</td>");
+                        newRow.append("<td>" + formattedsDate + " a " + formattedeDate + "</td>");
+
                         if (item.paid) {
                             // Se verdadeiro, adicione a célula com a classe verde
                             newRow.append("<td><label class='badge badge-success mt-0 mb-0'>Pago</label></td>");
@@ -373,56 +472,86 @@
                         // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
                         $("#tabelaItens tbody").append(newRow);
                     });
+
+                    console.log("x")
+                    $("#menu_1_spinner").hide();
+                    $("#menu_1_info").show();
                 }
             });
         }
 
         function getTuitionFines(id) {
+
+            $('#menu_2_info').hide();
+            $('#menu_2_spinner').show();
+
             $.ajax({
                 url: "/tuition/IndexByStudantIdFines?id=" + id,
                 type: "GET",
                 success: function (MyList) {
                     $("#tabelaItenFines tbody").empty();
-                     
+                    $('#tuitionFeePayment').empty();
+                    $.each(MyList, function (index, item) {
+                        var newRow = $("<tr>");
 
-                      $.each(MyList, function (index, item) {
-                          var newRow = $("<tr>");
                         var formattedDate = new Date(item.createdDate).toLocaleDateString('pt-BR');
+                        var formattedPaidDate = new Date(item.paidDate).toLocaleDateString('pt-BR');
 
                         newRow.append("<td>" + item.finesValue + ",00 MT" + "</td>");
-                          newRow.append("<td>" + item.tuition.monthNumber + " - " + item.tuition.monthName + " - " + item.tuition.year + "</td>");
-                          newRow.append("<td>" + formattedDate + "</td>");
-                     
-                           
-                          // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
-                          $("#tabelaItenFines tbody").append(newRow);
-                      });
+                        newRow.append("<td>" + item.tuition.monthNumber + " - " + item.tuition.monthName + " - " + item.tuition.year + "</td>");
+                        newRow.append("<td>" + formattedDate + "</td>");
+
+                        if (item.paid) {
+                            // Se verdadeiro, adicione a célula com a classe verde
+                            newRow.append("<td><label class='badge badge-success mt-0 mb-0'>Pago</label></td>");
+                        } else {
+                            // Se falso, adicione a célula com a classe vermelha
+                            newRow.append("<td><label class='badge badge-danger mt-0 mb-0'>Não Pago</label></td>");
+                            $('#tuitionFeePayment').append('<option value="' + item.id + '">' + item.tuition.monthNumber + ' - ' + item.tuition.monthName + ' - ' + item.tuition.year + '</option>');
+
+                        }
+
+                        if (formattedPaidDate === "01/01/1970") {
+                            newRow.append("<td>" + "" + "</td>");
+                        } else {
+                            newRow.append("<td>" + formattedPaidDate + "</td>");
+                        }
+
+                        // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
+                        $("#tabelaItenFines tbody").append(newRow);
+                    });
+
+                    $('#menu_2_info').show();
+                    $('#menu_2_spinner').hide();
                 }
             });
+
+
         }
 
 
         function getPayments(id) {
+          
             $.ajax({
                 url: "/tuition/IndexPaymentByStudantId?id=" + id,
                 type: "GET",
-                success: function (MyList) { 
-                      $("#tabelaItensPayments tbody").empty();
-                      // Adicione os novos itens à tabela na sua página
-                      $.each(MyList, function (index, item) {
-                          var newRow = $("<tr>");
+                success: function (MyList) {
+                    $("#tabelaItensPayments tbody").empty();
+                    // Adicione os novos itens à tabela na sua página
+                    $.each(MyList, function (index, item) {
+                        var newRow = $("<tr>");
                         // Formata a data no formato "dd-mm-aaaa"
                         var formattedDate = new Date(item.paymentDate).toLocaleDateString('pt-BR');
 
-                           newRow.append("<td>" + item.tuition.monthNumber + " - " + item.tuition.monthName + " - " + item.tuition.year + "</td>");
-                           newRow.append("<td>" + formattedDate + "</td>");
-                           newRow.append("<td>" + item.monthlyFeeWithoutVat +",00 MT" + "</td>");
-                           newRow.append("<td>" + item.vatOfMonthlyFee + ",00 MT" + "</td>");
-                           newRow.append("<td>" + item.monthlyFeeWithVat + ",00 MT" + "</td>");
-                          // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
-                     
-                          $("#tabelaItensPayments tbody").append(newRow);
-                      });
+                        newRow.append("<td>" + item.tuition.monthNumber + " - " + item.tuition.monthName + " - " + item.tuition.year + "</td>");
+                        newRow.append("<td>" + formattedDate + "</td>");
+                        newRow.append("<td>" + item.monthlyFeeWithoutVat + ",00 MT" + "</td>");
+                        newRow.append("<td>" + item.vatOfMonthlyFee + ",00 MT" + "</td>");
+                        newRow.append("<td>" + item.monthlyFeeWithVat + ",00 MT" + "</td>");
+                        // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
+
+                        $("#tabelaItensPayments tbody").append(newRow);
+                    }); 
                 }
             });
         }

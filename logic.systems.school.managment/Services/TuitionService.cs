@@ -184,9 +184,32 @@ namespace logic.systems.school.managment.Services
 
                 throw;
             }
-        }
+        } 
+        public async Task CreateFeePayment(CreateFeePaymentDTO dto)
+        {
+            try
+            {
+                var TuitionFines = await db.TuitionFines.FirstOrDefaultAsync(x => x.Id == dto.TuitionFeeId);
 
-        public async Task<List<Models.Payment>> CreatePayment(CreatePaymentDTO dto)
+                if (TuitionFines is not null && TuitionFines.Id > 0)
+                {
+                     
+                       TuitionFines.Paid = true;
+                       TuitionFines.PaidDate = DateTime.Now;
+                       TuitionFines.Row = Common.Modified;   
+                       db.TuitionFines.Update(TuitionFines);
+                       await db.SaveChangesAsync();
+                }
+                 
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+    public async Task<List<Models.Payment>> CreatePayment(CreatePaymentDTO dto)
         {
             try
             {
@@ -311,10 +334,24 @@ namespace logic.systems.school.managment.Services
 
 
 
-        public async Task CheckFee()
+        public async Task CheckFee(int? studantId)
         {
             var now = DateTime.Now;
-            var students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
+
+            var students = new List<Student>();
+
+            if (studantId is not null || studantId > 0 )
+            {
+                  students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Tuitions).Where(x => x.Row != Common.Deleted && x.Id == studantId).ToListAsync();
+
+            }
+            else
+            {
+                students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
+
+            }
+
+
 
             foreach (Student student in students)
             {
@@ -363,7 +400,7 @@ namespace logic.systems.school.managment.Services
                 }
             }
         }
-
+         
     }
 }
 

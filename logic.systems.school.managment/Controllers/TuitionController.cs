@@ -36,5 +36,12 @@ namespace logic.systems.school.managment.Controllers
             var result = await _ITuitionService.CreatePayment(data);
             return Json(result);
         }
+        [HttpPost]
+
+        public async Task<JsonResult> CreateFeePayment(CreateFeePaymentDTO data)
+        {
+            await _ITuitionService.CreateFeePayment(data);
+            return Json("");
+        }
     }
 }

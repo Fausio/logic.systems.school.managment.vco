@@ -109,10 +109,12 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
+                await _ITuitionService.CheckFee(id);
                 var model = await _StudentService.Read(id);
                 var result = StudantProfile.ToDTO(model);
                 await PopulateForms();
                 await PopuLateDetailsForm(model);
+     
                 if (TempData.ContainsKey("MensagemSucess"))
                 {
                     ViewBag.Mensagem = TempData["MensagemSucess"];
@@ -164,6 +166,7 @@ namespace logic.systems.school.managment.Controllers
             ViewBag.District = Student.District.Description;
             ViewBag.CurrentSchoolLevel = Student.CurrentSchoolLevel.Description;
             ViewBag.Tuitions = Student.Tuitions.Where(x => !x.Paid);
+            ViewBag.TuitionsFee =  await _ITuitionService.GetByStudantIdFinesBy(Student.Id);
         }
     }
 }
