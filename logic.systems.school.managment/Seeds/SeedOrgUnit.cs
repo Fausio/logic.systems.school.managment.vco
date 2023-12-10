@@ -23,17 +23,17 @@ namespace logic.systems.school.managment.Seeds
             {
                 var provinces = new List<OrgUnitProvince>()
                 {
-                    new OrgUnitProvince() { Id = 1, Description = "Cabo Delgado" },
-                    new OrgUnitProvince() { Id = 2, Description = "Gaza" },
-                    new OrgUnitProvince() { Id = 3, Description = "Inhambane" },
-                    new OrgUnitProvince() { Id = 4, Description = "Manica" },
-                    new OrgUnitProvince() { Id = 5, Description = "Maputo (Cidade)" },
-                    new OrgUnitProvince() { Id = 6, Description = "Maputo (Província)" },
-                    new OrgUnitProvince() { Id = 7, Description = "Nampula" },
-                    new OrgUnitProvince() { Id = 8, Description = "Niassa" },
-                    new OrgUnitProvince() { Id = 9, Description = "Sofala" },
-                    new OrgUnitProvince() { Id = 10, Description = "Tete" },
-                    new OrgUnitProvince() { Id = 11, Description = "Zambezia" }
+                    new OrgUnitProvince() {  Description = "Cabo Delgado" },
+                    new OrgUnitProvince() {  Description = "Gaza" },
+                    new OrgUnitProvince() {  Description = "Inhambane" },
+                    new OrgUnitProvince() {  Description = "Manica" },
+                    new OrgUnitProvince() {  Description = "Maputo (Cidade)" },
+                    new OrgUnitProvince() {  Description = "Maputo (Província)" },
+                    new OrgUnitProvince() {  Description = "Nampula" },
+                    new OrgUnitProvince() {  Description = "Niassa" },
+                    new OrgUnitProvince() {  Description = "Sofala" },
+                    new OrgUnitProvince() {  Description = "Tete" },
+                    new OrgUnitProvince() {  Description = "Zambezia" }
                 };
 
                 await db.OrgUnitProvinces.AddRangeAsync(provinces);

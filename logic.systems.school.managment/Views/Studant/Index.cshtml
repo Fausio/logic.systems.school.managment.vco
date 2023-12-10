@@ -1,0 +1,191 @@
+﻿@model logic.systems.school.managment.Dto.StudentPageDto
+
+@{
+    ViewData["Title"] = "Estudantes";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Lista de Estudantes</li>
+    </ol>
+</nav>
+<form asp-action="search" asp-controller="studant" > 
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0">
+            <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Filtrar pelo pelo nome do estudante" asp-for="studentName">
+
+                            </div>
+                        </div>
+                    </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="form-group">
+                        <div class="input-group">
+                           
+                                <select class="form-control form-control-lg pb-3 pt-2" asp-for="CurrentSchoolLevelId" id="SelectSchoolLevel">
+                                    <option selected>... Filtrar pela classe do estudante</option>
+                                    @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
+                                    {
+                                        <option value="@item.Id">@item.Description</option>
+                                    }
+                                </select> 
+                        </div>
+                    </div>
+                </div>  
+             
+                <div class="col-md-4 col-sm-6">
+                    <button type="submit" class="btn btn-info btn-icon-text" >
+                       Pesquisar
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</form>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0">
+            
+            <div class="row">
+                <div class="col-auto mr-auto">
+                    <h4 class="card-title">Lista</h4>
+                    <p class="card-description">   estudantes  </p>
+                </div>
+                <div class="col-auto">
+                    
+                        <a type="button" class="btn btn-info btn-icon-text" asp-action="create" asp-controller="studant">
+                            Cadastrar novo estudante
+                        </a>
+                    
+                </div>
+            </div>
+           
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Estudante</th>
+                            <th scope="col">Classe</th>
+                            <th scope="col">Tem multa ?</th>
+                            <th scope="col">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.indexPage.records)
+                        {
+                            <tr>
+                                <th scope="row"> @item.Id</th>
+                                <td>
+                                    <a asp-action="edit" asp-controller="studant" asp-route-id="@item.Id">
+                                        @*     <i class="typcn typcn-compass  text-success"></i> *@
+                                        @item.Name
+                                    </a>
+                                </td>
+                                <td>@item.CurrentSchoolLevel.Description</td>
+                                <td>
+                                    @if (item.haveFee)
+                                    {
+                                        <label class="badge badge-danger">Sim</label>
+                                    }
+                                    else
+                                    {
+                                        <label class="badge badge-success">Não</label>
+                                    }
+                                </td>
+                                <td>
+
+                                    @if (item.Suspended)
+                                    {
+                                        <label class="badge badge-danger">Suspenso</label>
+                                    }
+                                    else
+                                    {
+                                        <label class="badge badge-success">Resolvido</label>
+                                    }
+
+
+                                </td>
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+
+
+                @*   <div class="row ">
+                <div class="col-4">
+                <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Anterior</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Próximo</a></li>
+                </ul>
+
+                </nav>
+                </div>
+                <div class="col-4">
+                <label>Showing 1 to 10 of 57 entries</label>
+                </div>
+                </div> *@
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-1 pt-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+
+
+                            <li class="page-item"><a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber-1)" asp-action="index" asp-controller="studant">Anterior</a></li>
+
+                            @for (int i = 1; i <= Model.indexPage.totalPages; i++)
+                            {
+                                var btn_activ = "";
+                                if (i == Model.indexPage.pageNumber)
+                                {
+                                    btn_activ = "active";
+                                }
+
+                                <li class="page-item @btn_activ"><a class="page-link" asp-route-pageNumber="@i" asp-action="index" asp-controller="studant">@i</a></li>
+                            }
+                            @{
+                                var btn_next_disable_css = "";
+                                if (Model.indexPage.pageNumber == (Model.indexPage.totalPages))
+                                {
+                                    btn_next_disable_css = "display:none";
+                                }
+                            }
+                            <li class="page-item " style="@btn_next_disable_css"><a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber+1)" asp-action="index" asp-controller="studant">Próximo</a></li>
+                        </ul>
+
+                    </nav>
+                </div>
+                <div class="col-md-4 offset-md-4">Mostrando 1 a 10 de 57 entradas</div>
+            </div>
+        </div>
+    </div>
+</div>
+

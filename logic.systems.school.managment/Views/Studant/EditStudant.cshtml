@@ -1,0 +1,239 @@
+﻿@model logic.systems.school.managment.Dto.EditStudantDTO
+
+@{
+    ViewData["Title"] = "Cadastrar estudante";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="studant">Lista de Estudantess</a><</li>
+        <li class="breadcrumb-item active" aria-current="page">Actualizar</li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0 pt-2">
+            <h2>Actualizar Estudante</h2>
+
+        </div>
+    </div>
+</div>
+
+
+<form asp-action="create" asp-controller="studant">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+
+                @if (ViewData.ModelState.IsValid)
+                {
+
+                }
+                else
+                {
+                    <div id="validation-summary" class="alert alert-danger" role="alert">
+                        <p><strong>Por favor, corrija os seguintes erros:</strong></p>
+                    </div>
+                }
+                @if (Model.Suspended)
+                {
+                    <div id="validation-summary" class="alert alert-danger" role="alert">
+                        <p><strong>Estudante suspenso devido a multas:</strong></p>
+                    </div>
+                }
+                <form class="needs-validation" novalidate>
+
+                    @*     <fieldset class="border p-2">
+                    <legend class="w-auto">Your Legend</legend>
+                    </fieldset>  *@
+
+
+
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Dados do estudante</legend>
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label for="">Nome completo</label>
+                                <input type="text" class="form-control" asp-for="Name">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="">Data de Nasciento</label>
+                                <input type="date" class="form-control date-input" asp-for="BirthDate">
+                                <span asp-validation-for="BirthDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                <label for="">Naturalidade</label>
+                                <input type="text" class="form-control" asp-for="Naturalness">
+                                <span asp-validation-for="Naturalness" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="">Província</label>
+                                <select class="form-control form-control-lg pb-3 pt-3" id="provinces">
+
+
+                                    @foreach (OrgUnitProvince item in ViewBag.Provinces)
+                                    {
+                                        <option value="@item.Id">@item.Description</option>
+                                    }
+
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="">Distrito</label>
+                                <select class="form-control form-control-lg pb-3 pt-3" id="district" asp-for="DistrictId">
+                                    <option selected>...</option>
+
+                                    @foreach (OrgUnitProvince item in ViewBag.Provinces)
+                                    {
+                                        <option value="@item.Id">@item.Description</option>
+                                    }
+
+                                </select>
+                                <span asp-validation-for="DistrictId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="form-row mb-3">
+                            <div class="col-md-4">
+                                <label for="">Sexo</label>    <span asp-validation-for="Gender" class="text-danger"></span>
+                                <select class="form-control form-control-lg pb-3 pt-3" asp-for="Gender">
+                                    @foreach (string item in ViewBag.Gender)
+                                    {
+                                        <option value="@item">@item</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label for="">BI</label>
+                                <input type="text" class="form-control" asp-for="PersonId">
+                                <span asp-validation-for="PersonId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label for="">Nome do pai</label>
+                                <input type="text" class="form-control" asp-for="FatherName">
+                                <span asp-validation-for="FatherName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="">Nome da mãe</label>
+                                <input class="form-control" asp-for="MatherName">
+                                <span asp-validation-for="MatherName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <fieldset class="border p-2">
+                            <legend class="w-auto">Dados pedagógicos</legend>
+                            <div class="form-row mb-3">
+                                <div class="col-md-4">
+                                    <label for="">Classe actual</label>    <span asp-validation-for="Gender" class="text-danger"></span>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="CurrentSchoolLevelId">
+                                        <option selected>...</option>
+                                        @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
+                                        {
+                                            <option value="@item.Id">@item.Description</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </fieldset>
+
+
+
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Dados do encarregado de educação</legend>
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label for="">Nome do encarregado de Educação</label>
+                                <input type="text" class="form-control" asp-for="SponsorName">
+                                <span asp-validation-for="SponsorName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="">Residência do encarregado de educação</label>
+                                <input class="form-control" asp-for="SponsorAddress">
+                                <span asp-validation-for="SponsorAddress" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label for="">Contacto do encarregado de educação</label>
+
+                                @for (int i = 0; i < Model.SponsorContacts.Count(); i++)
+                                {
+                                    <input type="text" placeholder="Casa/serviço ou numero pessoal" class="form-control" asp-for="SponsorContacts[i]">
+                                    <span asp-validation-for="SponsorContacts[i]" class="text-danger"></span>
+                                }
+
+                            </div>
+                        </div>
+                    </fieldset>
+
+
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Ações</legend> 
+                        <div class="template-demo"> 
+                            <button type="submit" class="btn btn-info btn-icon-text">
+                                Actualizar
+                                <i class="typcn typcn-edit btn-icon-append"></i>
+                            </button>
+                            <a asp-action="edit" asp-controller="studant" asp-route-id="@Model.id" class="btn btn-light btn-icon-text">
+                                Voltar para detalhes 
+                            </a>
+
+                        </div>
+                    </fieldset>
+
+
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#provinces").change(function () {
+                var ProvincesId = $("#provinces").val();
+                $.ajax({
+                    url: '/admin/GetDistricts',
+                    type: 'GET',
+                    data: { Id: ProvincesId },
+                    success: function (districts) {
+                        $("#district").empty();
+                        $.each(districts, function (index, result) {
+                            $("#district").append($('<option>', {
+                                value: result.id,
+                                text: result.description
+                            }));
+                        });
+                    }
+                });
+            });
+        });
+
+    </script>
+}

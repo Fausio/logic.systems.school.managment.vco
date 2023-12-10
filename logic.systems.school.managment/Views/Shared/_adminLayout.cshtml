@@ -1,13 +1,20 @@
 ﻿<!DOCTYPE html> 
 <head>
-    <!-- Required meta tags -->
+ 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>@ViewData["Title"] - logic systems school managment</title>
+    <title>@ViewData["Title"] - Cooperativa de ensino Kalimany</title>
     <!-- base:css -->
+    <link rel="stylesheet" href="~/celestial-admin/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="~/celestial-admin/vendors/typicons.font/font/typicons.css" />
     <link rel="stylesheet" href="~/celestial-admin/vendors/css/vendor.bundle.base.css" />
-   
+    <link rel="stylesheet" href="~/celestial-admin/vendors/select2/select2.min.css">
+    <link rel="stylesheet" href="~/celestial-admin/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
     <!-- endinject -->
     <!-- plugin css for this page -->
     <!-- End plugin css for this page -->
@@ -15,6 +22,32 @@
     <link rel="stylesheet" href="~/celestial-admin/css/vertical-layout-light/style.css" />
     <!-- endinject -->
     <link rel="shortcut icon" href="~/celestial-admin/images/favicon.png" />
+    <style>
+        /* Estilize os selects com erro */
+        select.input-validation-error {
+            border: 1px solid #ff0000; /* Borda vermelha para indicar erro */
+            background-color: #ffeeee; /* Fundo vermelho claro para destacar o erro */
+        }
+
+        /* Estilize as mensagens de erro */
+        span.field-validation-error {
+            color: #ff0000; /* Cor do texto vermelho para mensagens de erro */
+        }
+
+        legend {
+            font-size: 14px; /* Tamanho da fonte */
+            color: #333; /* Cor do texto */
+            /* Outras propriedades desejadas */
+        }
+    </style>
+
+    <style>
+        legend.scheduler-border {
+            width: inherit; /* Or auto */
+            padding: 0 10px; /* To give a bit of padding on the left and right */
+            border-bottom: none;
+        }
+    </style>
 </head>
 <body>
     <div class="container-scroller">
@@ -23,15 +56,11 @@
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                 <a class="navbar-brand brand-logo" asp-action="index" asp-controller="home">
                   @*   <img src="~/celestial-admin/images/logo.svg" alt="logo" /> *@
+                  <label class="text-white"> KALIMANY </label>
                 </a>
                 <a class="navbar-brand brand-logo-mini" asp-action="index" asp-controller="home">
-                    <img src="~/celestial-admin/images/logo-mini.svg" alt="logo" />
+                    <label class="text-white"> KA </label>
                 </a>
-                <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" 
-                        type="button"
-                        data-toggle="minimize">
-                    <span class="typcn typcn-th-menu" style="background-color:white"></span>
-                </button>
             </div>
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
                 <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" 
@@ -96,10 +125,10 @@
                         <div class="collapse" id="ui-basic">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Criar</a>
+                                    <a class="nav-link" asp-action="create" asp-controller="studant">Cadastrar</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Listar</a>
+                                    <a class="nav-link" asp-action="index" asp-controller="studant">Listar</a>
                                 </li> 
                             </ul>
                         </div>
@@ -134,7 +163,7 @@
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">
-                                        Criar
+                                        Cadastrar
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -168,7 +197,9 @@
                     <div class="d-sm-flex justify-content-center justify-content-sm-between">
                         <span class="text-center text-sm-left d-block d-sm-inline-block">
                             Copyright ©
-                            <a href="https://logicsystems.co.mz/" target="_blank">Logic systems</a>
+                            <a href="https://logicsystems.co.mz/" target="_blank">Logic systems</a> 
+                            and 
+                            <a href="#" target="_blank">BestDeal.Mz</a>
                             @DateTime.Now.Year.ToString()
                         </span>
                        
@@ -189,7 +220,7 @@
     <!-- inject:js -->
     <script src="~/celestial-admin/js/off-canvas.js"></script>
     <script src="~/celestial-admin/js/hoverable-collapse.js"></script>
-    <script src="~/celestial-admin/js/template.js"></script>
+ @*    <script src="~/celestial-admin/js/template.js"></script> *@
     <script src="~/celestial-admin/js/settings.js"></script>
     <script src="~/celestial-admin/js/todolist.js"></script>
     <!-- endinject -->
@@ -198,8 +229,17 @@
     <script src="~/celestial-admin/vendors/chart.js/Chart.min.js"></script>
     <!-- End plugin js for this page -->
     <!-- Custom js for this page-->
-    <script src="~/celestial-admin/js/dashboard.js"></script>
+@*     <script src="~/celestial-admin/js/dashboard.js"></script> *@
     <!-- End custom js for this page-->
+
+
+    <script src="~/celestial-admin/vendors/typeahead.js/typeahead.bundle.min.js"></script>
+    <script src="~/celestial-admin/vendors/select2/select2.min.js"></script>
+    <!-- End plugin js for this page -->
+    <!-- Custom js for this page-->
+    <script src="~/celestial-admin/js/file-upload.js"></script>
+    <script src="~/celestial-admin/js/typeahead.js"></script>
+    <script src="~/celestial-admin/js/select2.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

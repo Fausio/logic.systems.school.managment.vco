@@ -1,0 +1,67 @@
+﻿
+.Mytable {
+    border-collapse: collapse;
+    width: 300px; /* Ajuste a largura conforme necessário */
+    margin: 20px; /* Adicione margem conforme necessário */
+}
+
+   .Mytable td th {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd; /* Adiciona borda inferior em todas as células */
+    }
+
+    .Mytable td:first-child {
+        border-right: 1px solid #ddd; /* Adiciona borda direita na primeira coluna */
+        font-weight: bold;
+        text-align: right; /* Alinha o texto à direita na primeira célula */
+        padding-right: 10px; /* Adiciona algum espaço à direita para melhorar a aparência */
+        height: 25px;
+    }
+
+
+.MytabelaItens {
+    border-collapse: collapse;
+    width: 100%; /* Ajuste a largura conforme necessário */
+    margin-top:20px
+    
+}
+
+    .MytabelaItens th {
+        background-color: #ddd;
+    }
+
+    .MytabelaItens th, .MytabelaItens td {
+        border: 1px solid #ddd;
+        padding: 4px;
+        text-align: left;
+    }
+
+    .MytabelaItens tr:hover {
+        background-color: #f5f5f5;
+    }
+
+
+.wideTable {
+    border-collapse: collapse;
+    width: 100%; /* Ajuste a largura conforme necessário */
+    margin-top: 20px
+}
+    .wideTable th, .wideTable td {
+        border: 1px solid #ddd;
+        padding: 6px;
+        text-align: left;
+    }
+
+legend {
+    font-size: 14px; /* Tamanho da fonte */
+    color: #333; /* Cor do texto */
+    /* Outras propriedades desejadas */
+}
+
+
+fieldset {
+    border: none; /* Remover todas as bordas */
+    border-top: 1px solid #ddd; /* Adicionar borda superior */
+    padding: 10px; /* Espaçamento interno do fieldset */
+}

@@ -1,5 +1,8 @@
 using logic.systems.school.managment.Data;
+using logic.systems.school.managment.Interface;
+using logic.systems.school.managment.Models;
 using logic.systems.school.managment.Seeds;
+using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +17,13 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+
+builder.Services.AddScoped<IstudantService, StudantService>();
+builder.Services.AddScoped<IOrgUnit, OrgUnitService>();
+builder.Services.AddScoped<ISempleEntityService, SempleEntityService>();
+  builder.Services.AddScoped<ITuitionService, TuitionService>();
+  builder.Services.AddScoped<IDashBoard, DashboardService>();
+                                                        
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -41,6 +51,14 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider  .GetRequiredService<ApplicationDbContext>();
+
+    // Here is the migration executed
+    dbContext.Database.Migrate();
+}
 await SeedOrgUnit.Run();
+await SeedSimpleEntity.Run();
 
 app.Run();

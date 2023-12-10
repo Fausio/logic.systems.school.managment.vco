@@ -1,0 +1,599 @@
+﻿@model logic.systems.school.managment.Dto.EditStudantDTO
+
+@{
+    ViewData["Title"] = "Actualizar estudante";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/EditViewBen.css" />
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="studant">Lista de Estudantess</a><</li>
+        <li class="breadcrumb-item active" aria-current="page">Detalhes</li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0 pt-2">
+            <h2>Estudante</h2>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<form asp-action="create" asp-controller="studant">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body ">
+
+                @if (ViewData.ModelState.IsValid)
+                {
+
+                }
+                else
+                {
+                    <div id="validation-summary" class="alert alert-danger" role="alert">
+                        <p><strong>Por favor, corrija os seguintes erros:</strong></p>
+                    </div>
+                }
+
+                @if (Model.Suspended)
+                {
+                    <div id="validation-summary" class="alert alert-danger" role="alert">
+                        <p><strong>Estudante suspenso devido a multas:</strong></p>
+                    </div>
+                }else
+                {
+                    <div id="validation-summary" class="alert alert-success" role="alert">
+                        <p><strong>Estudante com resolvido:</strong></p>
+                    </div>
+                }
+
+                <div class="alert alert-success" role="alert" id="msg-summary" style="display: @(string.IsNullOrEmpty(ViewBag.Mensagem) ? "none" : "block")">
+                    <p><strong>@ViewBag.Mensagem</strong></p>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-6 col col-sm-12">
+                        <fieldset class="p-2">
+                            <legend class="w-auto">Dados do estudante</legend>
+                            <div class="table-responsive">
+                                <table class="Mytable">
+                                    <tr>
+                                        <td>Nome completo:</td>
+                                        <td> <a asp-action="EditStudant" asp-controller="studant" asp-route-id="@Model.id">@Model.Name</a>
+                                    </tr>
+                                    <tr>
+                                        <td>Data de Nasciento:</td>
+                                        <td>@Model.BirthDate.ToShortDateString()</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Naturalidade:</td>
+                                        <td>@Model.Naturalness</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Província/Distrito:</td>
+                                        <td>  @ViewBag.Province +"/"+ @ViewBag.District  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sexo:</td>
+                                        <td>@Model.Gender  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>BI:</td>
+                                        <td>@Model.PersonId  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nome do pai:</td>
+                                        <td>@Model.FatherName  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nome da mãe:</td>
+                                        <td>@Model.MatherName  </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Classe actual:</td>
+                                        <td>@ViewBag.CurrentSchoolLevel </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="col-md-6 col col-sm-12">
+                        <fieldset class="p-2">
+                            <legend class="w-auto">Dados do encarregado de educação</legend>
+                            <div class="table-responsive">
+                                <table class="Mytable">
+                                    <tr>
+                                        <td>Dados do encarregado de educação:</td>
+                                        <td>@Model.SponsorName</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Residência do encarregado de educação:</td>
+                                        <td>@Model.SponsorAddress</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Contacto do encarregado de educação:</td>
+                                        <td>@Model.SponsorContacts[0]</td>
+                                    </tr>
+
+
+                                </table>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active   nav-info" data-toggle="tab" href="#home">Mensalidades/Pagamentos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#menu1" onclick="getTuitionFines(@Model.id)">Multas</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div id="home" class=" tab-pane active">
+
+                        <div id="menu_1_spinner">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="menu_1_info">
+                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
+                                Adicionar Pagamento de mensalidade
+                            </a>
+
+                            <div class="row">
+
+                                <div class="col-md-7 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="MytabelaItens wideTable" id="tabelaItensPayments" border="1">
+                                            <thead>
+                                                <tr>
+                                                    <th>Pagamento para a mensalidade</th>
+                                                    <th>Data de Pagamento</th>
+                                                    <th>Propina</th>
+                                                    <th>Iva (5%)</th>
+                                                    <th>Total (Propina + Iva (5%))</th>
+                                                    <!-- Adicione mais colunas conforme necessário -->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Os itens da lista serão adicionados aqui -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="MytabelaItens" id="tabelaItens" border="1">
+                                            <thead>
+                                                <tr>
+                                                    <th>Mensalidades a pagar (@ViewBag.CurrentSchoolLevel)</th>
+                                                    <th>Data</th>
+                                                    <th>Estado</th>
+                                                    <!-- Adicione mais colunas conforme necessário -->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Os itens da lista serão adicionados aqui -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                    <div id="menu1" class="tab-pane fade">
+
+                        <div id="menu_2_spinner">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="menu_2_info">
+                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuFeeModal" onclick="form_payfee_btns()">
+                                Adicionar Pagamento de multas
+                            </a>
+
+                            <div class="col-md-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="MytabelaItens" id="tabelaItenFines" border="1">
+                                        <thead>
+                                            <tr>
+                                                <th>Valor da Multa</th>
+                                                <th>Multa referente a mensalidade de</th>
+                                                <th>Data de cração da multa (Automática)</th>
+                                                <th>Estado</th>
+                                                <th>Data de pagamento</th>
+                                                <!-- Adicione mais colunas conforme necessário -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Os itens da lista serão adicionados aqui -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+
+
+
+
+                <fieldset class="border pt-0">
+                    <legend class="w-auto">Ações</legend>
+                    <div class="template-demo">
+                        <a asp-action="index" asp-controller="studant" class="btn btn-light btn-icon-text">
+                            Voltar para lista
+                        </a>
+                    </div>
+                </fieldset>
+            </div>
+
+
+
+
+        </div>
+    </div>
+</form>
+
+
+<!-- Seu modal -->
+<div class="modal" id="meuModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Conteúdo do modal -->
+            <div class="modal-header">
+                <h4 class="modal-title">Formulário de pagamento de mensalidades</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Conteúdo do formulário aqui -->
+                <form id="meuFormulario">
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Mensalidades a pagar (@ViewBag.CurrentSchoolLevel) </legend>
+                        <div class="form-row mb-3">
+                            <div class="col-md-12 col-sm-12">
+                                <label for="">Meses</label>
+                                <select class="form-control form-control-lg pb-3 pt-3" id="tuitionPayment">
+                                    @foreach (Tuition item in ViewBag.Tuitions)
+                                    {
+                                        <option value="@item.Id">@item.MonthNumber - @item.MonthName - @item.Year</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Ações</legend>
+                        <div class="template-demo" id="form_pay_btns">
+                            <button type="button" class="btn btn-success btn-icon-text" onclick="createPayment()">
+                                Efectuar pagamento
+                            </button>
+                        </div> 
+                        <div id="form_pay_spinner">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Seu modal -->
+<div class="modal" id="meuFeeModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Conteúdo do modal -->
+            <div class="modal-header">
+                <h4 class="modal-title">Formulário de pagamento de multas</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Conteúdo do formulário aqui -->
+                <form id="meuFormulario">
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Multas a pagar (@ViewBag.CurrentSchoolLevel) </legend>
+                        <div class="form-row mb-3">
+                            <div class="col-md-12 col-sm-12">
+                                <label for="">Meses</label>
+                                <select class="form-control form-control-lg pb-3 pt-3" id="tuitionFeePayment">
+                                    @foreach (TuitionFines item in ViewBag.TuitionsFee)
+                                    {
+                                        <option value="@item.Id">@item.Tuition.MonthNumber - @item.Tuition.MonthName - @item.Tuition.Year</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Ações</legend>
+                      
+
+                        <div id="form_payfee_btns">
+                            <div class="template-demo">
+                                <button type="button" class="btn btn-success btn-icon-text" onclick="createFeePayment()">
+                                    Efectuar pagamento
+                                </button>
+                            </div>
+                        </div>
+                        <div id="form_payfee_spinner">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#provinces").change(function () {
+                var ProvincesId = $("#provinces").val();
+                $.ajax({
+                    url: '/admin/GetDistricts',
+                    type: 'GET',
+                    data: { Id: ProvincesId },
+                    success: function (districts) {
+                        $("#district").empty();
+                        $.each(districts, function (index, result) {
+                            $("#district").append($('<option>', {
+                                value: result.id,
+                                text: result.description
+                            }));
+                        });
+                    }
+                });
+            });
+        });
+
+
+        $(document).ready(function () {
+            // Verifique se a mensagem está definida
+            var mensagem = '@ViewBag.Mensagem';
+            if (mensagem) {
+                // Exiba a mensagem
+                $("#msg-summary").css("display", "block");
+
+                // Remova a mensagem após 5 segundos
+                setTimeout(function () {
+                    $("#msg-summary").css("display", "none");
+                }, 3000);
+            }
+        });
+
+        $(document).ready(function () { 
+            getPayments(@Model.id);
+            getTuitions(@Model.id);
+        });
+
+
+        function form_pay_btns() {
+
+            $("#form_pay_btns").show();
+            $("#form_pay_spinner").hide();
+        }  
+        function form_payfee_btns() {
+
+            $("#form_payfee_btns").show();
+            $("#form_payfee_spinner").hide();
+        }
+
+        function createPayment() {
+
+            var data = {
+                StudantId: @Model.id,
+                TuitionId: $("#tuitionPayment").val()
+            };
+            $("#form_pay_btns").hide();
+            $("#form_pay_spinner").show();
+            $.ajax({
+                url: "/tuition/CreatePayment",
+                type: "POST",
+                data: data,
+                success: function (result) {
+                    // Lógica após o envio bem-sucedido, se necessário
+                    // Por exemplo, fechar o modal ou atualizar a página
+                    getPayments(@Model.id);
+                    getTuitions(@Model.id);
+
+                    $("#form_pay_btns").show();
+                    $("#form_pay_spinner").hide();
+                    $('#meuModal').modal('hide');
+                }
+            });
+        }
+
+        function createFeePayment() {
+
+            var data = {
+                StudantId: @Model.id,
+                TuitionFeeId: $("#tuitionFeePayment").val()
+            };
+            $("#form_payfee_btns").hide();
+            $("#form_payfee_spinner").show();
+            $.ajax({
+                url: "/tuition/CreateFeePayment",
+                type: "POST",
+                data: data,
+                success: function (result) {
+                    getTuitionFines(@Model.id);
+                    $("#form_payfee_btns").show();
+                    $("#form_payfee_spinner").hide();
+                    $('#meuFeeModal').modal('hide');
+
+                }
+            });
+        }
+
+        function getTuitions(id) {
+            $("#menu_1_spinner").show();
+            $("#menu_1_info").hide(); 
+            $.ajax({
+                url: "/tuition/IndexByStudantId?id=" + id,
+                type: "GET",
+                success: function (MyList) {
+                    $("#tabelaItens tbody").empty();
+                    $('#tuitionPayment').empty();
+
+                    $.each(MyList, function (index, item) {
+                        var newRow = $("<tr>");
+                        var formattedsDate = new Date(item.startDate).toLocaleDateString('pt-BR');
+                        var formattedeDate = new Date(item.endDate).toLocaleDateString('pt-BR');
+
+                        newRow.append("<td>" + item.monthName + "</td>");
+                        newRow.append("<td>" + formattedsDate + " a " + formattedeDate + "</td>");
+
+                        if (item.paid) {
+                            // Se verdadeiro, adicione a célula com a classe verde
+                            newRow.append("<td><label class='badge badge-success mt-0 mb-0'>Pago</label></td>");
+                        } else {
+                            // Se falso, adicione a célula com a classe vermelha
+                            newRow.append("<td><label class='badge badge-danger mt-0 mb-0'>Não Pago</label></td>");
+                            $('#tuitionPayment').append('<option value="' + item.id + '">' + item.monthNumber + ' - ' + item.monthName + ' - ' + item.year + '</option>');
+                        }
+                        // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
+                        $("#tabelaItens tbody").append(newRow);
+                    });
+                     
+                    $("#menu_1_spinner").hide();
+                    $("#menu_1_info").show();
+                }
+            });
+        }
+
+        function getTuitionFines(id) {
+
+            $('#menu_2_info').hide();
+            $('#menu_2_spinner').show();
+
+            $.ajax({
+                url: "/tuition/IndexByStudantIdFines?id=" + id,
+                type: "GET",
+                success: function (MyList) {
+                    $("#tabelaItenFines tbody").empty();
+                    $('#tuitionFeePayment').empty();
+                      console.log("MyList", MyList);
+                    $.each(MyList, function (index, item) {
+                        var newRow = $("<tr>");
+
+                        var formattedDate = new Date(item.createdDate).toLocaleDateString('pt-BR');
+                        var formattedPaidDate = new Date(item.paidDate).toLocaleDateString('pt-BR');
+
+                        newRow.append("<td>" + item.finesValue + ",00 MT" + "</td>");
+                        newRow.append("<td>" + item.tuition.monthNumber + " - " + item.tuition.monthName + " - " + item.tuition.year + "</td>");
+                        newRow.append("<td>" + formattedDate + "</td>");
+
+                        if (item.paid) {
+                            // Se verdadeiro, adicione a célula com a classe verde
+                            newRow.append("<td><label class='badge badge-success mt-0 mb-0'>Pago</label></td>");
+                        } else {
+                            // Se falso, adicione a célula com a classe vermelha
+                            newRow.append("<td><label class='badge badge-danger mt-0 mb-0'>Não Pago</label></td>");
+                            $('#tuitionFeePayment').append('<option value="' + item.id + '">' + item.tuition.monthNumber + ' - ' + item.tuition.monthName + ' - ' + item.tuition.year + '</option>');
+
+                        }
+
+                        if (formattedPaidDate === "01/01/1970") {
+                            newRow.append("<td>" + "" + "</td>");
+                        } else {
+                            newRow.append("<td>" + formattedPaidDate + "</td>");
+                        }
+
+                        // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
+                        $("#tabelaItenFines tbody").append(newRow);
+                    });
+
+                    $('#menu_2_info').show();
+                    $('#menu_2_spinner').hide();
+                }
+            });
+
+
+        }
+
+
+        function getPayments(id) {
+          
+            $.ajax({
+                url: "/tuition/IndexPaymentByStudantId?id=" + id,
+                type: "GET",
+                success: function (MyList) {
+                    $("#tabelaItensPayments tbody").empty();
+                    // Adicione os novos itens à tabela na sua página
+                    $.each(MyList, function (index, item) {
+                        var newRow = $("<tr>");
+                        // Formata a data no formato "dd-mm-aaaa"
+                        var formattedDate = new Date(item.paymentDate).toLocaleDateString('pt-BR');
+
+                        newRow.append("<td>" + item.tuition.monthNumber + " - " + item.tuition.monthName + " - " + item.tuition.year + "</td>");
+                        newRow.append("<td>" + formattedDate + "</td>");
+                        newRow.append("<td>" + item.monthlyFeeWithoutVat + ",00 MT" + "</td>");
+                        newRow.append("<td>" + item.vatOfMonthlyFee + ",00 MT" + "</td>");
+                        newRow.append("<td>" + item.monthlyFeeWithVat + ",00 MT" + "</td>");
+                        // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
+
+                        $("#tabelaItensPayments tbody").append(newRow);
+                    }); 
+                }
+            });
+        }
+
+
+    </script>
+} 
