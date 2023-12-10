@@ -9,11 +9,14 @@ namespace logic.systems.school.managment.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private ITuitionService _ITuitionService;
+       private IDashBoard _IDashBoard;
         public HomeController(ILogger<HomeController> logger,
-             ITuitionService iTuitionService)
+             ITuitionService iTuitionService,
+             IDashBoard iDashBoard)
         {
             _logger = logger;
             this._ITuitionService = iTuitionService;
+            _IDashBoard = iDashBoard;
         }
 
         public async Task<IActionResult> Index()
@@ -23,9 +26,11 @@ namespace logic.systems.school.managment.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        
+        public async Task<IActionResult> getfeeBymonth()
         {
-            return View();
+            var result = await _IDashBoard.GetAllMonthsFeeByCurrentYear();
+            return Json(result);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

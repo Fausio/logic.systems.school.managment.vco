@@ -22,6 +22,7 @@ builder.Services.AddScoped<IstudantService, StudantService>();
 builder.Services.AddScoped<IOrgUnit, OrgUnitService>();
 builder.Services.AddScoped<ISempleEntityService, SempleEntityService>();
   builder.Services.AddScoped<ITuitionService, TuitionService>();
+  builder.Services.AddScoped<IDashBoard, DashboardService>();
                                                         
 var app = builder.Build();
 
