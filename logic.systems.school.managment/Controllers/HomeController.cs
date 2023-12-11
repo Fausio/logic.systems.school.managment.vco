@@ -1,5 +1,7 @@
-﻿using logic.systems.school.managment.Interface;
+﻿using logic.systems.school.managment.Dto;
+using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
+using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -10,20 +12,25 @@ namespace logic.systems.school.managment.Controllers
         private readonly ILogger<HomeController> _logger;
         private ITuitionService _ITuitionService;
        private IDashBoard _IDashBoard;
+        private ISempleEntityService _SempleEntityService;
         public HomeController(ILogger<HomeController> logger,
              ITuitionService iTuitionService,
+                ISempleEntityService SempleEntityService,
              IDashBoard iDashBoard)
         {
             _logger = logger;
             this._ITuitionService = iTuitionService;
             _IDashBoard = iDashBoard;
+            this._SempleEntityService = SempleEntityService;
         }
 
         public async Task<IActionResult> Index()
         {
             // update  multas
-         //   await _ITuitionService.CheckFee(null);
-            return View();
+            ViewBag.CurrentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
+            return View(new StudentPageDto()
+            { 
+            });
         }
 
         
