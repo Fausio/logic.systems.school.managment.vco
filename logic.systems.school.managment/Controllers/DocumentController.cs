@@ -46,7 +46,19 @@ namespace logic.systems.school.managment.Controllers
             worksheet.Cell(5, 5).Value = "Iva";
             worksheet.Cell(5, 6).Value = "Total com IVA (5%)";
 
-         
+            worksheet.Cell(1, 1).Style.Font.SetBold();
+            worksheet.Cell(2, 1).Style.Font.SetBold();
+            worksheet.Cell(3, 1).Style.Font.SetBold();
+            worksheet.Cell(4, 1).Style.Font.SetBold();
+            worksheet.Cell(4, 2).Style.Font.SetBold();
+            worksheet.Cell(5, 1).Style.Font.SetBold();
+            worksheet.Cell(5, 2).Style.Font.SetBold();
+            worksheet.Cell(5, 3).Style.Font.SetBold();
+            worksheet.Cell(5, 4).Style.Font.SetBold();
+            worksheet.Cell(5, 5).Style.Font.SetBold();
+            worksheet.Cell(5, 6).Style.Font.SetBold();
+
+
             #endregion
 
             #region body
