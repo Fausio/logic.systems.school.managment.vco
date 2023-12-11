@@ -18,13 +18,22 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => {
     options.SignIn.RequireConfirmedAccount = false;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+    options.SignIn.RequireConfirmedEmail = false; 
+
     options.Password.RequireDigit = false;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 4;
     options.Password.RequireLowercase = false;
-    options.Password.RequireUppercase = false;
-    })
+    options.Password.RequireUppercase = false; 
+    
+})
     .AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+//builder.Services.Configure<PasswordHasherOptions>(options =>
+//    options.CompatibilityMode = PasswordHasherCompatibilityMode.IdentityV2
+//);
+
 builder.Services.AddControllersWithViews();
 
 
@@ -89,7 +98,7 @@ using (var scope = app.Services.CreateScope())
         {
             Email = mail,
             NormalizedEmail = "admin@Kalimany.com",
-            UserName = "admin",
+            UserName = mail,
             NormalizedUserName = "admin",
             EmailConfirmed = true,
             PhoneNumberConfirmed = true,
