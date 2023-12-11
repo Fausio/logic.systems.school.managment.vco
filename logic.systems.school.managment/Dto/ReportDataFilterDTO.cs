@@ -8,8 +8,8 @@
 
         public ReportDataFilterDTO()
         {
-            StartDate = DateTime.Now.AddDays(-30);
-            EndDate = DateTime.Now.AddDays(30);
+            StartDate = DateTime.Now.AddDays(-1);
+            EndDate = DateTime.Now;
         }
     }
 }
