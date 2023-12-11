@@ -15,6 +15,7 @@ namespace logic.systems.school.managment.Models
         public int StudentId { get; set; }
         public int AssociatedLevelId { get; set; }
         public bool Paid { get; set; }
+        public DateTime? PaidDate { get; set; }
 
         [NotMapped]
         public bool Create { get; set; }

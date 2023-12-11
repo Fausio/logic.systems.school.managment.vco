@@ -1,0 +1,56 @@
+﻿@model logic.systems.school.managment.Dto.ReportDataFilterDTO
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller=" Document">Lista de Relatórios</a><</li>
+        <li class="breadcrumb-item active" aria-current="page">Relatorio de Fecho de contas</li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0 pt-2">
+            <h2>Relatorio de Fecho de contas por datas</h2>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-3 pt-4">
+
+
+            <form asp-action="PaymentTuitionList" asp-controller="document">
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Filtro</legend>
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label for="">Data inicial</label>
+                                <input type="date" class="form-control date-input" asp-for="StartDate">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="">Data final</label>
+                                <input type="date" class="form-control date-input" asp-for="EndDate">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Ações</legend>
+                        <div class="template-demo">
+                            <button type="submit" class="btn btn-info btn-icon-text">
+                                Baixar
+                            </button>
+                            <a asp-action="index" asp-controller="document" class="btn btn-light btn-icon-text">
+                                Ir para lista
+                            </a>
+
+                        </div>
+                    </fieldset>
+                </form>
+           
+        </div>
+    </div>
+</div>
