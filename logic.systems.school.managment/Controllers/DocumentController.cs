@@ -34,7 +34,7 @@ namespace logic.systems.school.managment.Controllers
             var worksheet = workBook.Worksheets.Add("Fecho de contas");
 
             #region Headers
-            worksheet.Cell(1, 1).Value = "Relatorio de Fecho de contas por datas";
+            worksheet.Cell(1, 1).Value = "Relatório de Fecho de contas por datas";
             worksheet.Cell(2, 1).Value = "Data de Emissão: " + DateTime.Now;
             worksheet.Cell(3, 1).Value = "COPPERATIVA DE ENSINO KALIMANY";
             worksheet.Cell(4, 1).Value = "Data inicial" + filters.StartDate;
