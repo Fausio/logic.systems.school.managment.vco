@@ -196,7 +196,8 @@ namespace logic.systems.school.managment.Services
                      
                        TuitionFines.Paid = true;
                        TuitionFines.PaidDate = DateTime.Now;
-                       TuitionFines.Row = Common.Modified;   
+                        TuitionFines.UpdatedDate = DateTime.Now;
+                         TuitionFines.Row = Common.Modified;   
                        db.TuitionFines.Update(TuitionFines);
                        await db.SaveChangesAsync();
                 }
@@ -234,6 +235,8 @@ namespace logic.systems.school.managment.Services
 
                     var tuitionPayed = studant.Tuitions.FirstOrDefault(x => x.Id == dto.TuitionId);
                     tuitionPayed.Row = Common.Modified;
+                    tuitionPayed.UpdatedDate = DateTime.Now;
+                    tuitionPayed.PaidDate = DateTime.Now;
                     tuitionPayed.Paid = true;
 
                     db.Tuitions.Update(tuitionPayed);

@@ -25,4 +25,8 @@
     <PackageReference Include="System.Reflection" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Document\Template\" />
+  </ItemGroup>
+
 </Project>

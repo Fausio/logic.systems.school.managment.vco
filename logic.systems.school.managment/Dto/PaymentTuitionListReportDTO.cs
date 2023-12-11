@@ -16,9 +16,11 @@ namespace logic.systems.school.managment.Dto
 
         public string MonthPaid { get; set; }
 
-        public decimal TuitionPayd { get; set; } 
+        public decimal MonthlyFeeWithoutVat { get; set; }
+        public decimal VatOfMonthlyFee { get; set; } // 5%
+        public decimal MonthlyFeeWithVat { get; set; }
 
-        public decimal total { get; set; }
+         
 
     }
 }
