@@ -17,13 +17,21 @@ namespace logic.systems.school.managment.Controllers
 
         public async Task<JsonResult> GetDistricts(int Id)
         {
-            var s = await _IOrgUnitServiceService.GetOrgUnitDistrictsByProvinceId(Id);
-            return Json(await _IOrgUnitServiceService.GetOrgUnitDistrictsByProvinceId(Id));
+            var result = await _IOrgUnitServiceService.GetOrgUnitDistrictsByProvinceId(Id);
+            return Json(result);
         }
         public async Task<JsonResult> GetSchoolClassRooms(int Id)
         {
-            var s = await _SempleEntityService.GetGetSchoolClassRoomsBySchoolLevelId(Id);
-            return Json(await _IOrgUnitServiceService.GetOrgUnitDistrictsByProvinceId(Id));
+            if (Id> 0)
+            {
+                var result = await _SempleEntityService.GetGetSchoolClassRoomsBySchoolLevelId(Id);
+                return Json(result);
+            }
+            else
+            {              
+                return Json( new List<OrgUnitDistrict>());
+            }
+         
         }
     }
 }

@@ -10,8 +10,12 @@ namespace logic.systems.school.managment.Models
         public int TuitionId { get; set; }
         public string type { get; set; }
         public DateTime PaymentDate { get; set; }
-        public decimal MonthlyFeeWithoutVat { get; set; }   
+
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal MonthlyFeeWithoutVat { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal VatOfMonthlyFee { get; set; } // 5%
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal MonthlyFeeWithVat { get; set; }
     }
 }

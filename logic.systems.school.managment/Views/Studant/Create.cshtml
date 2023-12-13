@@ -318,7 +318,7 @@
         function hideMyMonthLabel() {
              
             $.ajax({
-                url: '/admin/GetDistricts',
+                url: '/admin/GetSchoolClassRooms',
                 type: 'GET',
                 data: { Id: $("#SelectSchoolLevel").val() },
                 success: function (mydata) {
