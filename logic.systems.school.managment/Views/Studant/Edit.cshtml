@@ -341,7 +341,7 @@
                             <div class="col-md-12 col-sm-12">
                                 <label for="">Meses</label>
                                 <select class="form-control form-control-lg pb-3 pt-3" id="tuitionFeePayment">
-                                    @foreach (TuitionFines item in ViewBag.TuitionsFee)
+                                    @foreach (Fines item in ViewBag.TuitionsFee)
                                     {
                                         <option value="@item.Id">@item.Tuition.MonthNumber - @item.Tuition.MonthName - @item.Tuition.Year</option>
                                     }

@@ -131,12 +131,12 @@ namespace logic.systems.school.managment.Services
             }
         }
 
-        public async Task<List<Models.TuitionFines>> GetByStudantIdFinesBy(int StudantId)
+        public async Task<List<Models.Fines>> GetByStudantIdFinesBy(int StudantId)
         {
             try
             {
                 var tuitions = await GetByStudantId(StudantId);
-                var tuitionsFines = new List<Models.TuitionFines>();
+                var tuitionsFines = new List<Models.Fines>();
                 if (tuitions.Count > 0)
                 {
                     foreach (var item in tuitions)
@@ -370,7 +370,7 @@ namespace logic.systems.school.managment.Services
                             if (now > tuition.StartDate.AddDays(14) && now <= tuition.StartDate.AddDays(24) && havetuitionFines is null)
                             {   // cria mutla de 300 se pagar entre dia 15 a 25
                                 //  Console.WriteLine("300 MT");
-                                var tuitionFines = new Models.TuitionFines()
+                                var tuitionFines = new Models.Fines()
                                 {
                                     TuitionId = tuition.Id
                                 };
@@ -386,7 +386,7 @@ namespace logic.systems.school.managment.Services
                             else if (now > tuition.StartDate.AddDays(24) && student.Suspended && havetuitionFines is null)
                             {   // cria multa se nao tiver suspenso e sem multa
                                 //  Console.WriteLine("300 MT");
-                                var tuitionFines = new Models.TuitionFines()
+                                var tuitionFines = new Models.Fines()
                                 {
                                     TuitionId = tuition.Id
                                 };
