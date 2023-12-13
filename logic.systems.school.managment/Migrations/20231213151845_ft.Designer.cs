@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using logic.systems.school.managment.Data;
 
@@ -11,9 +12,10 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231213151845_ft")]
+    partial class ft
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,9 +88,6 @@ namespace logic.systems.school.managment.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SchoolLevelId")
-                        .HasColumnType("int");
-
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
@@ -99,8 +98,6 @@ namespace logic.systems.school.managment.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SchoolLevelId");
 
                     b.HasIndex("StudentId");
 
@@ -851,19 +848,11 @@ namespace logic.systems.school.managment.Migrations
 
             modelBuilder.Entity("logic.systems.school.managment.Models.Enrollment", b =>
                 {
-                    b.HasOne("logic.systems.school.managment.Models.SimpleEntity", "SchoolLevel")
-                        .WithMany()
-                        .HasForeignKey("SchoolLevelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("logic.systems.school.managment.Models.Student", "Student")
                         .WithMany("Enrollments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("SchoolLevel");
 
                     b.Navigation("Student");
                 });

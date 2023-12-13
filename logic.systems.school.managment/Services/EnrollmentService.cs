@@ -210,6 +210,7 @@ namespace logic.systems.school.managment.Services
                         Console.WriteLine("Class");
                         break;
                 }
+                enrollment.SchoolLevelId  = SchoolLevelId;
                 enrollment.PaymentEnrollment.Paid = true;
                 enrollment.PaymentEnrollment.PaymentDate = DateTime.Now;
                 return enrollment;
