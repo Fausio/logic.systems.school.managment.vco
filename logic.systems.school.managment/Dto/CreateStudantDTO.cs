@@ -29,6 +29,8 @@ namespace logic.systems.school.managment.Dto
 
         [Required(ErrorMessage = "O campo classe é obrigatório.")]
         public int CurrentSchoolLevelId { get; set; }
+        [Required(ErrorMessage = "O campo Turma é obrigatório.")]
+        public int SchoolClassRoomId { get; set; }
 
         #region  Sponsor
         [Required(ErrorMessage = "O campo Nome do encarregado de Educação é obrigatório.")]
@@ -36,14 +38,14 @@ namespace logic.systems.school.managment.Dto
         public string? SponsorAddress { get; set; }
         public string? SponsorEducation { get; set; }
 
-        public string[] SponsorContacts { get; set; }  =   new string[] { "" };
+        public string[] SponsorContacts { get; set; } = new string[] { "" };
 
-       
+
         #endregion
 
         public bool EnroolAllMonths { get; set; }
 
-        public int StartTuition { get; set; }  
+        public int StartTuition { get; set; }
 
         public List<Tuition> Tuitions { get; set; } = new List<Tuition>();
 
@@ -63,7 +65,7 @@ namespace logic.systems.school.managment.Dto
                     MonthName = meses[i - 1],
                     StartDate = startDate,
                     EndDate = endDate,
-                    Year = DateTime.Now.Year,  
+                    Year = DateTime.Now.Year,
 
                 });
             }

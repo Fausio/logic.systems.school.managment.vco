@@ -43,7 +43,7 @@
                 </div>
 
                 <form class="needs-validation" novalidate>
-                     
+
                     <fieldset class="border p-2">
                         <legend class="w-auto">Dados do estudante</legend>
                         <div class="form-row">
@@ -131,7 +131,7 @@
                             <legend class="w-auto">Dados pedagógicos</legend>
                             <div class="form-row mb-1">
                                 <div class="col-md-4">
-                                    <label for="">Classe actual</label>    <span asp-validation-for="Gender" class="text-danger"></span>
+                                    <label for="">Matricular na Classe </label>
                                     <select class="form-control form-control-lg pb-3 pt-3" asp-for="CurrentSchoolLevelId" id="SelectSchoolLevel">
                                         <option selected>...</option>
                                         @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
@@ -140,9 +140,18 @@
                                         }
                                     </select>
                                     <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
-                                </div> 
-                                
-
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="">Turma </label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="SchoolClassRoomId" id="SchoolClassRoom">
+                                        <option selected>...</option>
+                                        @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
+                                        {
+                                            <option value="@item.Id">@item.Description</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="SchoolClassRoomId" class="text-danger"></span>
+                                </div>
                             </div>
 
                             <div class="form-row mb-1">
@@ -176,21 +185,21 @@
                                         </div>
                                     </div>
                                 </div>
-                              
+
 
                             </div>
 
                             <div class="form-row mb-3">
                                 <div class="col-md-4" id="MyClassesToStart">
-                                    <label for="">Meses de início</label> 
-                                    <select class="form-control form-control-lg pb-3 pt-3" id="MyStartTuition" asp-for="StartTuition"> 
+                                    <label for="">Meses de início</label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" id="MyStartTuition" asp-for="StartTuition">
                                         @foreach (Tuition item in Model.Tuitions)
                                         {
                                             <option value=@item.MonthNumber>@item.MonthNumber - @item.MonthName - @item.Year</option>
                                         }
                                     </select>
                                 </div>
-                                </div>
+                            </div>
 
                         </fieldset>
                     </fieldset>
@@ -248,8 +257,8 @@
         </div>
     </div>
 
- 
-   </form>
+
+</form>
 
 
 
@@ -263,7 +272,7 @@
     <script>
 
         function hideMyMonthLabel() {
-             
+
             $("#MyClassesToStart").hide();
         }
 
@@ -306,31 +315,51 @@
             });
         });
 
+        function hideMyMonthLabel() {
+             
+            $.ajax({
+                url: '/admin/GetDistricts',
+                type: 'GET',
+                data: { Id: $("#SelectSchoolLevel").val() },
+                success: function (mydata) {
+                    $("#SchoolClassRoom").empty();
+                    $.each(mydata, function (index, result) {
+                        $("#SchoolClassRoom").append($('<option>', {
+                            value: result.id,
+                            text: result.description
+                        }));
+                    });
+                }
+            });
+        }
+       
+
         $(document).ready(function () {
             // Adicione um evento de mudança ao seu elemento select
             $("#SelectSchoolLevel").change(function () {
                 // Verifique se a opção desejada está selecionada
                 if ($(this).val() === "...") {
                     // // Desabilite a div
-                    $("#monthsDev").prop("disabled", true); 
+                    $("#monthsDev").prop("disabled", true);
                     $("#monthsDev :input").prop("disabled", true);
                     hideMyMonthLabel();
                 } else {
-                    // // Caso contrário, habilite a div
+                    hideMyMonthLabel();
                     $("#monthsDev").prop("disabled", false);
                     $("#monthsDev").css("background-color", "");
                     $("#monthsDev :input").prop("disabled", false);
+
                 }
 
             });
 
             // Desabilite a div se a opção padrão não for selecionada
             if ($("#SelectSchoolLevel").val() === "...") {
-                $("#monthsDev").prop("disabled", true); 
+                $("#monthsDev").prop("disabled", true);
                 $("#monthsDev :input").prop("disabled", true);
-                      hideMyMonthLabel();
+                hideMyMonthLabel();
             }
-             
+
         });
 
     </script>

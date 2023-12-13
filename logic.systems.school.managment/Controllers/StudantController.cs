@@ -190,6 +190,7 @@ namespace logic.systems.school.managment.Controllers
 
             ViewBag.Provinces = await _IOrgUnitServiceService.GetOrgUnitProvinces();
             ViewBag.CurrentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
+            ViewBag.SchoolClassRooms = await _SempleEntityService.GetByTypeOrderById("SchoolClassRoom");
 
 
         }

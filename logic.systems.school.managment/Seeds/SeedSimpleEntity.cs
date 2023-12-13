@@ -19,9 +19,7 @@ namespace logic.systems.school.managment.Seeds
             {
                 List<SimpleEntity> schoolLevels = new List<SimpleEntity>
                 {
-                new SimpleEntity { Type = "SchoolLevel", Description = "Pré-escola A" },
-                new SimpleEntity { Type = "SchoolLevel", Description = "Pré-escola B" },
-                new SimpleEntity { Type = "SchoolLevel", Description = "Pré-escola C" },
+                new SimpleEntity { Type = "SchoolLevel", Description = "Pré-escola" }, 
                 new SimpleEntity { Type = "SchoolLevel", Description = "1ª classe" },
                 new SimpleEntity { Type = "SchoolLevel", Description = "2ª classe" },
                 new SimpleEntity { Type = "SchoolLevel", Description = "3ª classe" },
@@ -40,6 +38,24 @@ namespace logic.systems.school.managment.Seeds
                 await db.SaveChangesAsync();
 
             }
+
+            if (await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == "SchoolClassRoom") is null)
+            {
+                List<SimpleEntity> schoolLevels = new List<SimpleEntity>
+                {
+                new SimpleEntity { Type = "SchoolClassRoom", Description = "Turma A" },
+                new SimpleEntity { Type = "SchoolClassRoom", Description = "Turma B" },
+                new SimpleEntity { Type = "SchoolClassRoom", Description = "Turma C" }, 
+                new SimpleEntity { Type = "SchoolClassRoom", Description = "Grupo A" },
+                new SimpleEntity { Type = "SchoolClassRoom", Description = "Grupo B" },
+                new SimpleEntity { Type = "SchoolClassRoom", Description = "Grupo C" }, 
+                };
+
+                await db.AddRangeAsync(schoolLevels);
+                await db.SaveChangesAsync();
+
+            } 
+            
         }
     }
 }

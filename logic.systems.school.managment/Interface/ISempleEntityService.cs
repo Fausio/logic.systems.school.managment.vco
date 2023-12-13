@@ -7,6 +7,7 @@ namespace logic.systems.school.managment.Interface
 
         public Task<List<SimpleEntity>> GetByType(string type);
         public Task<List<SimpleEntity>> GetByTypeOrderByDescription(string type);
-        public Task<List<SimpleEntity>> GetByTypeOrderById(string type);
+        public Task<List<SimpleEntity>> GetByTypeOrderById(string type);   
+        public Task<List<SimpleEntity>> GetGetSchoolClassRoomsBySchoolLevelId(int schoolLevelId);
     }
 }

@@ -21,17 +21,18 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
                     MatherName = dTO.MatherName,
                     Naturalness = dTO.Naturalness,
                     PersonId = dTO.PersonId,
-                    DistrictId = dTO.DistrictId, 
-                    CurrentSchoolLevelId = dTO.CurrentSchoolLevelId, 
+                    DistrictId = dTO.DistrictId,
+                    CurrentSchoolLevelId = dTO.CurrentSchoolLevelId,
+                    SchoolClassRoomId = dTO.SchoolClassRoomId,
                 };
-                 
-                myClass.Sponsor.Name = dTO.SponsorName; 
-                myClass.Sponsor.Address = dTO.SponsorAddress; 
+
+                myClass.Sponsor.Name = dTO.SponsorName;
+                myClass.Sponsor.Address = dTO.SponsorAddress;
                 myClass.Sponsor.Education = dTO.SponsorEducation;
-                myClass.Sponsor.Contacts  = new List<Contacts>()
+                myClass.Sponsor.Contacts = new List<Contacts>()
                 {
                    new Contacts()
-                   { 
+                   {
                     ContactsType = "",
                     Number = dTO.SponsorContacts[0]
                    }
@@ -39,38 +40,39 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
 
                 return myClass;
             }
-            catch (Exception )
+            catch (Exception)
             {
 
-                throw ;
+                throw;
             }
         }
 
         public static EditStudantDTO ToDTO(Student Class)
         {
-            
+
             try
-            {  
-              
+            {
+
                 var dto = new EditStudantDTO()
                 {
-                    id          = Class.Id,
-                    Name        = Class.Name,
-                    BirthDate   = Class.BirthDate,
-                    Gender      = Class.Gender,
-                    FatherName  = Class.FatherName,
-                    MatherName  = Class.MatherName,
+                    id = Class.Id,
+                    Name = Class.Name,
+                    BirthDate = Class.BirthDate,
+                    Gender = Class.Gender,
+                    FatherName = Class.FatherName,
+                    MatherName = Class.MatherName,
                     Naturalness = Class.Naturalness,
-                    PersonId    = Class.PersonId,
-                    DistrictId  = Class.DistrictId,
+                    PersonId = Class.PersonId,
+                    DistrictId = Class.DistrictId,
                     CurrentSchoolLevelId = Class.CurrentSchoolLevelId,
+                    SchoolClassRoomId = Class.SchoolClassRoomId,
                     Suspended = Class.Suspended,
                 };
 
-                dto.SponsorName         = Class.Sponsor.Name;
-                dto.SponsorAddress      = Class.Sponsor.Address;
-                dto.SponsorEducation    = Class.Sponsor.Education;
-                dto.SponsorContacts[0]  = Class.Sponsor.Contacts[0].Number;
+                dto.SponsorName = Class.Sponsor.Name;
+                dto.SponsorAddress = Class.Sponsor.Address;
+                dto.SponsorEducation = Class.Sponsor.Education;
+                dto.SponsorContacts[0] = Class.Sponsor.Contacts[0].Number;
 
                 return dto;
             }
