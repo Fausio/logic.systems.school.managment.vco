@@ -33,16 +33,16 @@ namespace logic.systems.school.managment.Services
                 var result = from t in db.Tuitions
                              join s in db.Students on t.StudentId equals s.Id
                              join classLevel in db.SimpleEntitys on s.CurrentSchoolLevelId equals classLevel.Id
-                             join p in db.Payments on t.Id equals p.TuitionId
+                             join p in db.PaymentTuitions on t.Id equals p.TuitionId
                              where t.Paid == true && p.PaymentDate >= startDate && p.PaymentDate <= endDate
                              select new PaymentTuitionListReportDTO()
                              {
                                  StudendName = s.Name,
                                  StudentClassLevel = classLevel.Description,
                                  MonthPaid = t.MonthNumber + " - " + t.MonthName + " - " + t.Year,
-                                 MonthlyFeeWithoutVat = p.MonthlyFeeWithoutVat,
-                                 VatOfMonthlyFee = p.VatOfMonthlyFee,
-                                 MonthlyFeeWithVat = p.MonthlyFeeWithVat
+                                 MonthlyFeeWithoutVat = p.PaymentWithoutVat,
+                                 VatOfMonthlyFee = p.VatOfPayment,
+                                 MonthlyFeeWithVat = p.PaymentWithVat
                              };
 
              return   result.ToList(); 

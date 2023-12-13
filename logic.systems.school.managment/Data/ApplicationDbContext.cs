@@ -16,6 +16,23 @@ namespace logic.systems.school.managment.Data
         // Define your entity sets (DbSets) here... 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Enrollment>()
+    .HasOne(e => e.PaymentEnrollment)
+    .WithOne(pe => pe.Enrollment)
+    .HasForeignKey<PaymentEnrollment>(pe => pe.EnrollmentId);
+
+            modelBuilder.Entity<Student>()
+             .HasOne(s => s.CurrentSchoolLevel)
+             .WithMany()
+            .HasForeignKey(s => s.CurrentSchoolLevelId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Student>()
+  .HasOne(s => s.SchoolClassRoom)
+  .WithMany()
+ .HasForeignKey(s => s.SchoolClassRoomId)
+ .OnDelete(DeleteBehavior.Restrict);
+
             base.OnModelCreating(modelBuilder);
 
 
@@ -71,7 +88,6 @@ namespace logic.systems.school.managment.Data
         }
 
         public DbSet<Student> Students { get; set; }
-        //public DbSet<SchoolLevel> SchoolLevels { get; set; }
         public DbSet<Tuition> Tuitions { get; set; }
 
 
@@ -82,12 +98,13 @@ namespace logic.systems.school.managment.Data
         public DbSet<Fines> TuitionFines { get; set; }
 
         public DbSet<SimpleEntity> SimpleEntitys { get; set; }
-    
+
         public DbSet<Enrollment> Enrollments { get; set; }
+       public DbSet<EnrollmentItem> EnrollmentItems { get; set; }
 
         public DbSet<PaymentTuition> PaymentTuitions { get; set; }
-       public DbSet<PaymentFines> PaymentFines { get; set; }
+        public DbSet<PaymentFines> PaymentFines { get; set; }
         public DbSet<PaymentEnrollment> PaymentEnrollments { get; set; }
-        
+
     }
 }

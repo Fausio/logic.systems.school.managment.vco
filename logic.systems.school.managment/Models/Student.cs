@@ -40,8 +40,7 @@ namespace logic.systems.school.managment.Models
         public int DistrictId { get; set; }
 
         public virtual Sponsor Sponsor { get; set; } = new Sponsor();
-        public int SponsorId { get; set; }
-        public List<Tuition> Tuitions { get; set; } = new List<Tuition>();
+        public int SponsorId { get; set; } 
         public List<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
         [NotMapped]

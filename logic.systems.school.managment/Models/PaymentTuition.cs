@@ -4,7 +4,7 @@ namespace logic.systems.school.managment.Models
     [Table("PaymentTuition")]
     public class PaymentTuition : Payment
     {
-        public virtual Fines Fines { get; set; }
-        public int FinesId { get; set; }
+        public virtual Tuition Tuition { get; set; }
+        public int TuitionId { get; set; }
     }
 }

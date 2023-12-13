@@ -5,6 +5,7 @@ namespace logic.systems.school.managment.Models
     [Table("Payment")]
     public class Payment : Common
     {
+        public bool Paid { get; set; }
         public DateTime PaymentDate { get; set; }
 
         [Column(TypeName = "decimal(18, 2)")]

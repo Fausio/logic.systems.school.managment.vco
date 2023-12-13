@@ -20,7 +20,7 @@ namespace logic.systems.school.managment.Models
         [NotMapped]
         public bool Create { get; set; }
 
-        public Fines TuitionFines { get; set; }
+        public Fines? TuitionFines { get; set; }
 
     }
 }

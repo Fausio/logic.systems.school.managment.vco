@@ -14,16 +14,19 @@ namespace logic.systems.school.managment.Controllers
         private IOrgUnit _IOrgUnitServiceService;
         private ISempleEntityService _SempleEntityService;
         private ITuitionService _ITuitionService;
+        private IEnrollment _IEnrollmentService;
 
         public StudantController(IstudantService StudentService,
             IOrgUnit IOrgUnitServiceService,
             ISempleEntityService SempleEntityService,
-            ITuitionService iTuitionService)
+            IEnrollment IEnrollment,
+        ITuitionService iTuitionService)
         {
             this._StudentService = StudentService;
             this._IOrgUnitServiceService = IOrgUnitServiceService;
             this._SempleEntityService = SempleEntityService;
-            _ITuitionService = iTuitionService;
+            this._ITuitionService = iTuitionService;
+            this._IEnrollmentService = IEnrollment;
         }
 
         public async Task<IActionResult> Index(int? pageNumber = 1, int? pageSize = 10)
@@ -103,6 +106,7 @@ namespace logic.systems.school.managment.Controllers
                     if (model.EnroolAllMonths)
                     {
                         var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
+                        await _IEnrollmentService.EnrollmentByStudantId(result.Id,model.CurrentSchoolLevelId);
                         await _ITuitionService.CreateByClassOfStudant(result);
                         TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
                         return RedirectToAction("edit", "studant", new { id = result.Id });
@@ -200,7 +204,7 @@ namespace logic.systems.school.managment.Controllers
             ViewBag.Province = Student.District.OrgUnitProvince.Description;
             ViewBag.District = Student.District.Description;
             ViewBag.CurrentSchoolLevel = Student.CurrentSchoolLevel.Description;
-            ViewBag.Tuitions = Student.Tuitions.Where(x => !x.Paid);
+            ViewBag.Tuitions = Student.Enrollments.Select(x => x.Tuitions.Where(x => !x.Paid));
             ViewBag.TuitionsFee = await _ITuitionService.GetByStudantIdFinesBy(Student.Id);
         }
     }

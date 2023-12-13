@@ -43,7 +43,7 @@ builder.Services.AddScoped<ISempleEntityService, SempleEntityService>();
 builder.Services.AddScoped<ITuitionService, TuitionService>();
 builder.Services.AddScoped<IDashBoard, DashboardService>();
 builder.Services.AddScoped<Idocument, DocumentService>();
-
+builder.Services.AddScoped<IEnrollment, EnrollmentService>(); 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
