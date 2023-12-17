@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
@@ -57,29 +58,86 @@ namespace logic.systems.school.managment.Services
 
         public async Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(int studantId)
         {
-            var result = new List<EnrollmentListDTO>();
-            //< th > Data de cração</ th >
-            //< th > Classe da matricula</ th >
-            //< th > Ano </ th >
-            //< th > Itens </ th >
-            //< th > Valor </ th >
-            //< th > Total </ th >
+            try
+            {
+                var result = new List<EnrollmentListDTO>();
+                //< th > Data de cração</ th >
+                //< th > Classe da matricula</ th >
+                //< th > Ano </ th >
+                //< th > Itens </ th >
+                //< th > Valor </ th > gf
+                //< th > Total </ th >
+                var x = await db.Enrollments.Include(x => x.EnrollmentItems).FirstOrDefaultAsync(x => x.StudentId == studantId);
 
-            result = (from e in db.Enrollments.Include(x => x.EnrollmentItems)
-                      join level in db.SimpleEntitys on e.SchoolLevelId equals level.Id
-                      join pay in db.PaymentEnrollments on e.Id equals pay.EnrollmentId
-                      where e.StudentId == studantId
-                      select new EnrollmentListDTO
-                      {
-                          createdDate = e.CreatedDate,
-                          level = level.Description,
-                          year = e.EnrollmentYear,
-                          items = "ghfgh",
-                          value = pay.PaymentWithoutVat.ToString(),
-                          Total = pay.PaymentWithoutVat.ToString(),
-                      }).ToList();
-            return result;
+                result = (from e in db.Enrollments.Include(x => x.EnrollmentItems)
+                          join level in db.SimpleEntitys on e.SchoolLevelId equals level.Id
+                          join pay in db.PaymentEnrollments on e.Id equals pay.EnrollmentId
+                          where e.StudentId == studantId
+                          select new EnrollmentListDTO
+                          {
+                              id = e.Id,
+                              createdDate = e.CreatedDate,
+                              level = level.Description,
+                              year = e.EnrollmentYear,
+                              items = getEnrollmentItems(e.EnrollmentItems).Result,
+                              value = (pay.PaymentWithoutVat -   getotalItems(e.EnrollmentItems).Result) .ToString(),
+                              Total = pay.PaymentWithoutVat.ToString(),
+                          }).ToList();
+
+                return result;
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
         }
+
+        private string SD(string v)
+        {
+            return v;
+        }
+
+        private static async Task<string> getEnrollmentItems(List<EnrollmentItem> enrolemntItens)
+        {
+
+            var itens = string.Empty;
+
+            if (enrolemntItens != null && enrolemntItens.Count() > 0)
+            {
+                foreach (var item in enrolemntItens)
+                {
+                    itens = itens + $" item: {item.Description}, preço: {item.Price} MT \n";
+                }
+                return itens;
+            }
+            else
+            {
+                return itens;
+            }
+        }
+        private static async Task<decimal> getotalItems(List<EnrollmentItem> enrolemntItens)
+        {
+
+            decimal itensPrices = 0;
+
+            if (enrolemntItens != null && enrolemntItens.Count() > 0)
+            {
+                foreach (var item in enrolemntItens)
+                {
+                    itensPrices = itensPrices + item.Price;
+                }
+                return itensPrices;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+
+
 
         private async Task<Enrollment> GenerateEnrollmentDataByLevel(int studantId, int SchoolLevelId)
         {

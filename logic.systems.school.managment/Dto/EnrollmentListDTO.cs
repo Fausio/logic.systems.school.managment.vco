@@ -8,7 +8,7 @@
         //< th > Itens </ th >
         //< th > Valor </ th >
         //< th > Total </ th >
-
+        public int id { get; set; }
         public DateTime createdDate { get; set; }
         public string level { get; set; }
         public int year { get; set; }
