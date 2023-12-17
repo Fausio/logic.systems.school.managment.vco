@@ -100,6 +100,20 @@ namespace logic.systems.school.managment.Services
             }
         }
 
+
+
+
+        public async Task<bool> CheckIfHaveEnrollmentIntheYear(EnrollmentCreateDTO model)
+          => await db.Enrollments.AnyAsync(x => x.EnrollmentYear == model.EnrollmentYear && x.StudentId == model.StudantId); 
+       
+
+
+
+
+
+
+
+
         #region private Region
         private static async Task<string> getEnrollmentItems(List<EnrollmentItem> enrolemntItens)
         {
@@ -271,7 +285,7 @@ namespace logic.systems.school.managment.Services
                             }
                         };
                         break;
-                    case "11 classe":
+                    case "11ª classe":
                         enrollment = new Enrollment()
                         {
                             StudentId = studantId,
@@ -289,7 +303,7 @@ namespace logic.systems.school.managment.Services
                                 }
                         };
                         break;
-                    case "12 classe":
+                    case "12ª classe":
                         enrollment = new Enrollment()
                         {
                             StudentId = studantId,
@@ -315,6 +329,8 @@ namespace logic.systems.school.managment.Services
             }
 
         }
+
+
 
 
         #endregion

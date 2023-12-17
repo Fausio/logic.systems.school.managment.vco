@@ -473,6 +473,9 @@
                 <form id="meuFormulario">
                     <fieldset class="border p-2">
                         <legend class="w-auto">Dados pedagógicos </legend>
+                        <div id="validation-summary-enroll" class="alert alert-danger" role="alert" style="display:none">
+                            <p><strong id="validation-summary-msg">Estudante suspenso devido a multas:</strong></p>
+                        </div>
                         <fieldset class="border p-2">
                             <legend class="w-auto">Matricula actual (@ViewBag.CurrentSchoolLevel) </legend>
                             <div class="form-row mb-3">
@@ -735,17 +738,35 @@
                     data: data,
                     success: function (result) {
 
-                        // getEnrollments(@Model.id); 
-                        // getTuitionFines(@Model.id); 
+
+                        console.log("result", result);
+
+                        if (result === "CheckIfHaveEnrollmentIntheYear") {
+
+                            $("#validation-summary-enroll").show();
+                            $("#validation-summary-msg").text("Estudante já tem uma matricula para o ano " + data.EnrollmentYear);
+
+                            setTimeout(function () {
+                                $("#validation-summary-enroll").hide();
+                            }, 5000);
+
+                        } else {
+                            window.location = window.location;
+                        }
+
+
+                        // getEnrollments(@Model.id);
+                        // getTuitionFines(@Model.id);
 
                         // getPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
                         // getTuitions(@Model.id, @Model.Enrollments[0].EnrollmentYear);
-
-                        // $("#form_Enrollment_btns").show();
-                        // $("#form_Enrollment_spinner").hide();
+                      
+                       // $("#validation-summary-enroll").show();
+                      //  $("#form_Enrollment_btns").show();
+                      //  $("#form_Enrollment_spinner").hide();
 
                         // $('#EnrollmentModal').modal('hide');
-                        window.location = window.location;
+                        // 
 
                     }
                 });

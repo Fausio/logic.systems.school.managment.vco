@@ -16,8 +16,17 @@ namespace logic.systems.school.managment.Controllers
         }
         public async Task<IActionResult> Create(EnrollmentCreateDTO model)
         {
-            var result = await _EnrollmentService.EnrollmentsByStudantId(model);
-            return Json(result);
+            if (!await _EnrollmentService.CheckIfHaveEnrollmentIntheYear(model))
+            {
+                var result = await _EnrollmentService.EnrollmentsByStudantId(model);
+                return Json(result);
+            }
+            else
+            {
+                return Json("CheckIfHaveEnrollmentIntheYear");
+            }
+
         }
+   
     }
 }
