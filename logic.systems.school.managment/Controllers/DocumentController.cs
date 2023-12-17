@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
@@ -26,7 +27,24 @@ namespace logic.systems.school.managment.Controllers
         [HttpPost]
         public async Task<IActionResult> PaymentTuitionList(ReportDataFilterDTO filters)
         {
+            return await PaymentTuitionListMethod(filters, "Relatório de Fecho de contas por datas");
+        }
 
+
+        [HttpPost]
+        public async Task<IActionResult> PaymentTuitionListDaily()
+        {
+            var today = DateTime.Now;
+
+            return await PaymentTuitionListMethod(new ReportDataFilterDTO()
+            {
+                StartDate = new DateTime(today.Year, today.Month, today.Day, 0, 0, 0),
+                EndDate = new DateTime(today.Year, today.Month, today.Day, 23, 59, 59)
+            }, "Relatório de Fecho de contas diário");
+        }
+
+        private async Task<FileContentResult> PaymentTuitionListMethod(ReportDataFilterDTO filters, string Name ="")
+        {
             var results = await _DocumentService.GetPaymentTuitionList(filters.StartDate, filters.EndDate);
 
 
@@ -34,11 +52,11 @@ namespace logic.systems.school.managment.Controllers
             var worksheet = workBook.Worksheets.Add("Fecho de contas");
 
             #region Headers
-            worksheet.Cell(1, 1).Value = "Relatório de Fecho de contas por datas";
+            worksheet.Cell(1, 1).Value = Name;
             worksheet.Cell(2, 1).Value = "Data de Emissão: " + DateTime.Now;
             worksheet.Cell(3, 1).Value = "COPPERATIVA DE ENSINO KALIMANY";
             worksheet.Cell(4, 1).Value = "Data inicial" + filters.StartDate;
-            worksheet.Cell(4, 2).Value = "Data final" + filters.EndDate; 
+            worksheet.Cell(4, 2).Value = "Data final" + filters.EndDate;
             worksheet.Cell(5, 1).Value = "Estudante";
             worksheet.Cell(5, 2).Value = "Classe do estudante";
             worksheet.Cell(5, 3).Value = "Mes a pagar";
@@ -78,7 +96,7 @@ namespace logic.systems.school.managment.Controllers
                 worksheet.Cell(currentRow, 4).Value = item.MonthlyFeeWithoutVat;
                 worksheet.Cell(currentRow, 5).Value = item.VatOfMonthlyFee;
                 worksheet.Cell(currentRow, 6).Value = item.MonthlyFeeWithVat;
-                 
+
                 TotalMonthlyFeeWithoutVat = TotalMonthlyFeeWithoutVat + item.MonthlyFeeWithoutVat;
                 TotalVatOfMonthlyFee = TotalVatOfMonthlyFee + item.VatOfMonthlyFee;
                 TotalMonthlyFeeWithVat = TotalMonthlyFeeWithVat + item.MonthlyFeeWithVat;
@@ -87,8 +105,8 @@ namespace logic.systems.school.managment.Controllers
 
             currentRow++;
 
-            worksheet.Range(@$"A{currentRow}"+":"+ @$"C{currentRow}").Merge();
-            worksheet.Cell(currentRow, 1).Value =   "TOTAL";
+            worksheet.Range(@$"A{currentRow}" + ":" + @$"C{currentRow}").Merge();
+            worksheet.Cell(currentRow, 1).Value = "TOTAL";
             worksheet.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Cell(currentRow, 1).Style.Font.SetBold();
 
@@ -111,17 +129,15 @@ namespace logic.systems.school.managment.Controllers
             #endregion
 
 
-            //worksheet.Protect();
+           worksheet.Protect();
 
             using var stream = new MemoryStream();
             workBook.SaveAs(stream);
             var content = stream.ToArray();
 
-            var ReportName = "Relatorio de Fecho de contas por datas - " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
+            var ReportName = Name +" - " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
 
             return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ReportName);
         }
-
-
     }
 }

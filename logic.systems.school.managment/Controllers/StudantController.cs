@@ -44,8 +44,7 @@ namespace logic.systems.school.managment.Controllers
                 });
             }
             catch (Exception)
-            {
-
+            { 
                 throw;
             }
 
