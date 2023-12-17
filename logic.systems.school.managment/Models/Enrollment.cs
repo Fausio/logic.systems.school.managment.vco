@@ -17,5 +17,6 @@ namespace logic.systems.school.managment.Models
         public List<EnrollmentItem> EnrollmentItems { get; set; } = new List<EnrollmentItem>();
 
         public int EnrollmentYear { get; set; }
+        public int SchoolClassRoomId { get; set; }
     }
 }

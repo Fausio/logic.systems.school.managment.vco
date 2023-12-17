@@ -144,7 +144,7 @@
                         <a class="nav-link" data-toggle="tab" href="#menu1" onclick="getTuitionFines(@Model.id)">Multas</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#menu2" onclick="getEnrollments(@Model.id)">Matruculas</a>
+                        <a class="nav-link" data-toggle="tab" href="#menu2" onclick="getEnrollments(@Model.id)">Matriculas</a>
                     </li>
                 </ul>
 
@@ -225,24 +225,25 @@
                             <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuFeeModal" onclick="form_payfee_btns()">
                                 Adicionar Pagamento de multas
                             </a>
-
-                            <div class="col-md-12 col-sm-12">
-                                <div class="table-responsive">
-                                    <table class="MytabelaItens" id="tabelaItenFines" border="1">
-                                        <thead>
-                                            <tr>
-                                                <th>Valor da Multa</th>
-                                                <th>Multa referente a mensalidade de</th>
-                                                <th>Data de cração da multa (Automática)</th>
-                                                <th>Estado</th>
-                                                <th>Data de pagamento</th>
-                                                <!-- Adicione mais colunas conforme necessário -->
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Os itens da lista serão adicionados aqui -->
-                                        </tbody>
-                                    </table>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="MytabelaItens" id="tabelaItenFines" border="1">
+                                            <thead>
+                                                <tr>
+                                                    <th>Valor da Multa</th>
+                                                    <th>Multa referente a mensalidade de</th>
+                                                    <th>Data de cração da multa (Automática)</th>
+                                                    <th>Estado</th>
+                                                    <th>Data de pagamento</th>
+                                                    <!-- Adicione mais colunas conforme necessário -->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Os itens da lista serão adicionados aqui -->
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -260,28 +261,29 @@
                         </div>
 
                         <div id="menu_3_info">
-                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuFeeModal" onclick="form_payfee_btns()">
+                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
                                 Matricular
                             </a>
-
-                            <div class="col-md-12 col-sm-12">
-                                <div class="table-responsive">
-                                    <table class="MytabelaItens" id="tabelaEnrollments" border="1">
-                                        <thead>
-                                            <tr>
-                                                <th>Data de cração</th>
-                                                <th>Classe da matricula</th>
-                                                <th>Ano</th>
-                                                <th>Itens </th>
-                                                <th>Valor da matricula </th>
-                                                <th><b>Total:</b> (Valor da matricula + itens)</th>
-                                                <!-- Adicione mais colunas conforme necessário -->
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Os itens da lista serão adicionados aqui -->
-                                        </tbody>
-                                    </table>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="table-responsive">
+                                        <table class="MytabelaItens" id="tabelaEnrollments" border="1">
+                                            <thead>
+                                                <tr>
+                                                    <th>Data de cração</th>
+                                                    <th>Classe da matricula</th>
+                                                    <th>Ano</th>
+                                                    <th>Itens </th>
+                                                    <th>Valor da matricula </th>
+                                                    <th><b>Total:</b> (Valor da matricula + itens)</th>
+                                                    <!-- Adicione mais colunas conforme necessário -->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Os itens da lista serão adicionados aqui -->
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -368,6 +370,89 @@
 
 
 <!-- Seu modal -->
+<div class="modal" id="EnrollmentModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Conteúdo do modal -->
+            <div class="modal-header">
+                <h4 class="modal-title">Formulário de matricula  </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Conteúdo do formulário aqui -->
+                <form id="meuFormulario">
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Dados pedagógicos </legend>
+                        <fieldset class="border p-2">
+                            <legend class="w-auto">Matricula actual (@ViewBag.CurrentSchoolLevel) </legend>
+                            <div class="form-row mb-3">
+                                <div class="col-md-12 col-sm-12">
+                                    <label for="">Matricular na Classe</label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="CurrentSchoolLevelId" id="NextSchoolLevelId">
+
+                                        @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
+                                        {
+                                            <option value="@item.Id">@item.Description</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-12 col-sm-12 mt-3">
+                                    <label for="">Turma / Grupo</label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="SchoolClassRoomId" id="SchoolClassRoomId">
+                                        <option selected>...</option>
+                                        @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
+                                        {
+                                            <option value="@item.Id">@item.Description</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="SchoolClassRoomId" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-12 col-sm-12 mt-3">
+                                    <label for="">Ano</label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="EnrollmentYear" id="EnrollmentYear">
+                                        <option selected>...</option>
+                                        @foreach (var item in ViewBag.EnrollmentYears)
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="EnrollmentYear" class="text-danger" id="ValidationEnrollmentYear" style="display:none">O campo Ano de inscrição  é obrigatório.</span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </fieldset>
+
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Ações</legend>
+
+
+                        <div id="form_Enrollment_btns">
+                            <div class="template-demo">
+                                <button type="button" class="btn btn-success btn-icon-text" onclick="createEnrollment()">
+                                    Matricular
+                                </button>
+                            </div>
+                        </div>
+                        <div id="form_Enrollment_spinner">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Seu modal -->
 <div class="modal" id="meuFeeModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -448,7 +533,6 @@
             });
         });
 
-
         $(document).ready(function () {
             // Verifique se a mensagem está definida
             var mensagem = '@ViewBag.Mensagem';
@@ -479,6 +563,12 @@
             $("#form_payfee_btns").show();
             $("#form_payfee_spinner").hide();
         }
+        function form_Enrollment_btns() {
+
+            $("#form_Enrollment_btns").show();
+            $("#form_Enrollment_spinner").hide();
+        }
+
 
         function createPayment() {
 
@@ -525,6 +615,47 @@
 
                 }
             });
+        }
+
+        function createEnrollment() {
+
+            var data = {
+                StudantId: @Model.id,
+                SchoolLevelId: $("#NextSchoolLevelId").val(),
+                SchoolClassRoomId: $("#SchoolClassRoomId").val(),
+                EnrollmentYear: $("#EnrollmentYear").val()
+            };
+
+            if (data.EnrollmentYear === "...") {
+                $("#ValidationEnrollmentYear").show();
+            }
+            else {
+                $("#ValidationEnrollmentYear").hide();
+
+                $("#form_Enrollment_btns").hide();
+                $("#form_Enrollment_spinner").show();
+
+                $.ajax({
+                    url: "/Enrollment/Create",
+                    type: "POST",
+                    data: data,
+                    success: function (result) {
+
+                        getEnrollments(@Model.id);
+
+                        $("#form_Enrollment_btns").show();
+                        $("#form_Enrollment_spinner").hide();
+
+                        $('#EnrollmentModal').modal('hide');
+
+                    }
+                });
+            }
+
+
+            console.log("createEnrollment", data);
+
+
         }
 
         function getTuitions(id) {
@@ -574,7 +705,6 @@
                 success: function (MyList) {
                     $("#tabelaItenFines tbody").empty();
                     $('#tuitionFeePayment').empty();
-                    console.log("MyList", MyList);
                     $.each(MyList, function (index, item) {
                         var newRow = $("<tr>");
 
@@ -625,7 +755,6 @@
                 success: function (MyList) {
                     $("#tabelaEnrollments tbody").empty();
                     $('#tuitionFeePayment').empty();
-                    console.log("MyList", MyList);
                     $.each(MyList, function (index, item) {
                         var newRow = $("<tr>");
 
@@ -660,7 +789,6 @@
                 type: "GET",
                 success: function (MyList) {
                     $("#tabelaItensPayments tbody").empty();
-                    console.log("getPayments:MyList", MyList)
                     // Adicione os novos itens à tabela na sua página
                     $.each(MyList, function (index, item) {
                         var newRow = $("<tr>");

@@ -17,7 +17,7 @@ namespace logic.systems.school.managment.Services
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
 
-        public async Task<Enrollment> EnrollmentByStudantId(int studantId, int CurrentSchoolLevelId, int EnrollmentYear)
+        public async Task<Enrollment> EnrollmentByStudantId(int studantId, int CurrentSchoolLevelId, int EnrollmentYear, int SchoolClassRoomId)
         {
             try
             {
@@ -32,6 +32,7 @@ namespace logic.systems.school.managment.Services
 
                         enrollment.PaymentEnrollmentId = enrollment.PaymentEnrollment.Id;
                         enrollment.EnrollmentYear = EnrollmentYear;
+                        enrollment.SchoolClassRoomId = SchoolClassRoomId;
                         await db.SaveChangesAsync();
 
                         return enrollment;
@@ -43,31 +44,25 @@ namespace logic.systems.school.managment.Services
                 }
                 else
                 {
-
                     throw new Exception("Nof found EnrollmentByStudantId");
                 }
             }
             catch (Exception)
-            {
-
+            { 
                 throw;
-            }
-
-
+            } 
         }
 
+        public async Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(EnrollmentCreateDTO model)
+        {
+            await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId);
+            return await EnrollmentsByStudantId(model.StudantId);
+        }
         public async Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(int studantId)
         {
             try
             {
                 var result = new List<EnrollmentListDTO>();
-                //< th > Data de cração</ th >
-                //< th > Classe da matricula</ th >
-                //< th > Ano </ th >
-                //< th > Itens </ th >
-                //< th > Valor </ th > gf
-                //< th > Total </ th >
-                var x = await db.Enrollments.Include(x => x.EnrollmentItems).FirstOrDefaultAsync(x => x.StudentId == studantId);
 
                 result = (from e in db.Enrollments.Include(x => x.EnrollmentItems)
                           join level in db.SimpleEntitys on e.SchoolLevelId equals level.Id
@@ -80,7 +75,7 @@ namespace logic.systems.school.managment.Services
                               level = level.Description,
                               year = e.EnrollmentYear,
                               items = getEnrollmentItems(e.EnrollmentItems).Result,
-                              value = (pay.PaymentWithoutVat -   getotalItems(e.EnrollmentItems).Result) .ToString(),
+                              value = (pay.PaymentWithoutVat - getotalItems(e.EnrollmentItems).Result).ToString(),
                               Total = pay.PaymentWithoutVat.ToString(),
                           }).ToList();
 
@@ -91,14 +86,9 @@ namespace logic.systems.school.managment.Services
 
                 throw e;
             }
-
         }
 
-        private string SD(string v)
-        {
-            return v;
-        }
-
+        #region private Region
         private static async Task<string> getEnrollmentItems(List<EnrollmentItem> enrolemntItens)
         {
 
@@ -135,9 +125,6 @@ namespace logic.systems.school.managment.Services
                 return 0;
             }
         }
-
-
-
 
         private async Task<Enrollment> GenerateEnrollmentDataByLevel(int studantId, int SchoolLevelId)
         {
@@ -316,5 +303,9 @@ namespace logic.systems.school.managment.Services
             }
 
         }
+
+
+        #endregion
+
     }
 }

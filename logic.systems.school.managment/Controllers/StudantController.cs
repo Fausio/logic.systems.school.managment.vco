@@ -106,7 +106,7 @@ namespace logic.systems.school.managment.Controllers
                     //if (model.EnroolAllMonths)
                     //{
                     var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
-                    var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear);
+                    var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear, result.CurrentSchoolLevelId);
                     await _ITuitionService.CreateByClassOfStudant(result, Enrollment);
                     TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
                     return RedirectToAction("edit", "studant", new { id = result.Id });
@@ -153,6 +153,10 @@ namespace logic.systems.school.managment.Controllers
                 await PopulateForms();
                 await PopuLateDetailsForm(model);
 
+                var currentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
+                ViewBag.CurrentSchoolLevels = currentSchoolLevels.Where(x => x.Id > result.CurrentSchoolLevelId);
+
+
                 if (TempData.ContainsKey("MensagemSucess"))
                 {
                     ViewBag.Mensagem = TempData["MensagemSucess"];
@@ -197,7 +201,7 @@ namespace logic.systems.school.managment.Controllers
             ViewBag.SchoolClassRooms = await _SempleEntityService.GetByTypeOrderById("SchoolClassRoom");
             ViewBag.EnrollmentYears = new List<string>{
                    DateTime.Now.Year.ToString(),
-                   DateTime.Now.AddYears(1). Year.ToString(), 
+                   DateTime.Now.AddYears(1). Year.ToString(),
             };
 
 
