@@ -1,4 +1,5 @@
 ﻿using logic.systems.school.managment.Helper;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -27,6 +28,7 @@ namespace logic.systems.school.managment.Models
         public string? MatherName { get; set; }
         public string? Naturalness { get; set; }
         [Required(ErrorMessage = "O campo BI é obrigatório.")]
+       // [Index(IsUnique = true)]
         public string PersonId { get; set; }
 
         public virtual SimpleEntity CurrentSchoolLevel { get; set; }

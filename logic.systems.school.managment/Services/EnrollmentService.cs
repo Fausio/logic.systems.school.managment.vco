@@ -21,9 +21,13 @@ namespace logic.systems.school.managment.Services
                 {
                     var enrollment = await GenerateEnrollmentDataByLevel(studantId, CurrentSchoolLevelId);
                     if (enrollment is not null)
-                    {
+                    { 
+                        var PaymentEnrollment = enrollment.PaymentEnrollment;
                         await db.Enrollments.AddAsync(enrollment);
                         await db.SaveChangesAsync();
+
+                        enrollment.PaymentEnrollmentId = enrollment.PaymentEnrollment.Id; 
+                        await db.SaveChangesAsync(); 
                     }
                 }
             }
@@ -64,7 +68,7 @@ namespace logic.systems.school.managment.Services
                         {
                             StudentId = studantId,
                             PaymentEnrollment = new PaymentEnrollment()
-                            { 
+                            {
                                 PaymentWithoutVat = 3500,
                             },
                             EnrollmentItems = new List<EnrollmentItem>()
@@ -83,7 +87,6 @@ namespace logic.systems.school.managment.Services
                             StudentId = studantId,
                             PaymentEnrollment = new PaymentEnrollment()
                             {
-                                
                                 PaymentWithoutVat = 4000,
                             },
                             EnrollmentItems = new List<EnrollmentItem>()
@@ -112,7 +115,6 @@ namespace logic.systems.school.managment.Services
                             StudentId = studantId,
                             PaymentEnrollment = new PaymentEnrollment()
                             {
-                                
                                 PaymentWithoutVat = 3700,
                             },
                             EnrollmentItems = new List<EnrollmentItem>()
@@ -129,14 +131,12 @@ namespace logic.systems.school.managment.Services
                     case "3ª classe":
                     case "4ª classe":
                     case "5ª classe":
-
                     case "6ª classe":
                         enrollment = new Enrollment()
                         {
                             StudentId = studantId,
                             PaymentEnrollment = new PaymentEnrollment()
                             {
-                                
                                 PaymentWithoutVat = 3700,
                             }
                         };
@@ -147,7 +147,7 @@ namespace logic.systems.school.managment.Services
                             StudentId = studantId,
                             PaymentEnrollment = new PaymentEnrollment()
                             {
-                                
+
                                 PaymentWithoutVat = 3700,
                             },
                             EnrollmentItems = new List<EnrollmentItem>()
@@ -163,14 +163,12 @@ namespace logic.systems.school.managment.Services
 
                     case "8ª classe":
                     case "9ª classe":
-
                     case "10ª classe":
                         enrollment = new Enrollment()
                         {
                             StudentId = studantId,
                             PaymentEnrollment = new PaymentEnrollment()
                             {
-                                
                                 PaymentWithoutVat = 3800,
                             }
                         };
@@ -181,7 +179,6 @@ namespace logic.systems.school.managment.Services
                             StudentId = studantId,
                             PaymentEnrollment = new PaymentEnrollment()
                             {
-                                
                                 PaymentWithoutVat = 4200,
                             },
                             EnrollmentItems = new List<EnrollmentItem>()
@@ -200,7 +197,6 @@ namespace logic.systems.school.managment.Services
                             StudentId = studantId,
                             PaymentEnrollment = new PaymentEnrollment()
                             {
-                                
                                 PaymentWithoutVat = 4200,
                             }
                         };
@@ -210,7 +206,7 @@ namespace logic.systems.school.managment.Services
                         Console.WriteLine("Class");
                         break;
                 }
-                enrollment.SchoolLevelId  = SchoolLevelId;
+                enrollment.SchoolLevelId = SchoolLevelId;
                 enrollment.PaymentEnrollment.Paid = true;
                 enrollment.PaymentEnrollment.PaymentDate = DateTime.Now;
                 return enrollment;

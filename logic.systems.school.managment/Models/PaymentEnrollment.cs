@@ -6,8 +6,7 @@ namespace logic.systems.school.managment.Models
     public class PaymentEnrollment : Payment
     {
         public virtual Enrollment Enrollment { get; set; }
-        public int EnrollmentId { get; set; }
-         
+        public int EnrollmentId { get; set; } 
 
     }
 }
