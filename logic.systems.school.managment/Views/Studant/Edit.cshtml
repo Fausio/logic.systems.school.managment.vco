@@ -349,13 +349,30 @@
                         </div>
 
                         <div id="menu_3_info">
-                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
-                                Matricular
-                            </a>
 
-                            <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
-                                Matrícular como repetente
-                            </a>
+
+                            @if (Model.Suspended)
+                            {
+                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                    Matricular
+                                </a>
+
+                                <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                    Matrícular como repetente
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
+                                    Matricular
+                                </a>
+
+                                <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
+                                    Matrícular como repetente
+                                </a>
+                            }
+
+
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
                                     <div class="table-responsive">
@@ -624,6 +641,42 @@
     </div>
 </div>
 
+<div class="modal" id="SuspendedModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Conteúdo do modal -->
+            <div class="modal-header">
+                <h4 class="modal-title">Alerta</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body mb-0">
+                <!-- Conteúdo do formulário aqui -->
+
+                <fieldset class="border p-2 mb-0">
+                        <legend class="w-auto">Informação pedagógica </legend>
+
+                        <div class="form-row mb-0">
+                            <div class="col-md-12 col-sm-12">
+                            <div class="alert alert-danger mb-0" role="alert">
+                                    <h3><center><b>Estudante suspenso:</b> </center> </h3>
+                                    <p> Não é possivel matricular o estudante pois encontra-se suspenso.   </p>
+
+                                    <p>Os pagamentos das mensalidades devem ser feitos antecipadamente no 
+                                        início de cada mês, do dia 1 ao dia 15. A partir do dia 16 até o dia 25, 
+                                        haverá uma multa de 300 meticais. Após o dia 25, o aluno será suspenso. </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </fieldset>
+                     
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <!-- Seu modal -->
@@ -748,7 +801,7 @@
         }
 
         function form_EnrollmentRepit_btns() {
-             
+
             $("#form_EnrollmentRepit_btns_repit").show();
             $("#form_EnrollmentRepit_spinner_repit").hide();
         }
