@@ -1,4 +1,6 @@
-﻿using Humanizer;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Humanizer;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
@@ -14,7 +16,7 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
                 var s = dTO.SponsorContacts[0];
                 var myClass = new Student()
                 {
-
+ 
                     Name = dTO.Name,
                     BirthDate = dTO.BirthDate,
                     Gender = dTO.Gender,

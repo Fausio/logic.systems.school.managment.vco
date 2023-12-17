@@ -111,8 +111,8 @@ namespace logic.systems.school.managment.Controllers
                     if (await _IAppService.LimitOfStudentByClassRoomAndLevelYear(model.EnrollmentYear, model.CurrentSchoolLevelId, model.SchoolClassRoomId))
                     {
 
-                        var CurrentSchoolLevel= await _IAppService.SempleEntityDescriptionById(model.CurrentSchoolLevelId);
-                        var SchoolClassRoom = await _IAppService.SempleEntityDescriptionById(model.SchoolClassRoomId); 
+                        var CurrentSchoolLevel = await _IAppService.SempleEntityDescriptionById(model.CurrentSchoolLevelId);
+                        var SchoolClassRoom = await _IAppService.SempleEntityDescriptionById(model.SchoolClassRoomId);
                         TempData["MensagemError"] = $"Impossível gravar o estudante nesta turma. A turma {SchoolClassRoom} para {CurrentSchoolLevel} já atingiu o limite de 35 alunos para o ano {model.EnrollmentYear}.";
                         if (TempData.ContainsKey("MensagemError"))
                         {
@@ -192,6 +192,30 @@ namespace logic.systems.school.managment.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditStudantDTO model)
+        {
+            try
+            {
+                var myClass = StudantProfile.ToClass(model);
+                myClass.Id = model.id;
+
+                var result = await _StudentService.Update(myClass, "8e445865-a24d-4543-a6c6-9443d048cdb9");
+
+                TempData["MensagemSucess"] = "Estudante Actualizado com sucesso!";
+
+
+                return RedirectToAction("EditStudant", "studant", new { id = model.id });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+
         public async Task<IActionResult> EditStudant(int id)
         {
             try
@@ -199,6 +223,10 @@ namespace logic.systems.school.managment.Controllers
                 var model = await _StudentService.Read(id);
                 var result = StudantProfile.ToDTO(model);
                 await PopulateForms();
+                if (TempData.ContainsKey("MensagemSucess"))
+                {
+                    ViewBag.Mensagem = TempData["MensagemSucess"];
+                }
                 return View(result);
             }
             catch (Exception)

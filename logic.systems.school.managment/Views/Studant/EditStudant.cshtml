@@ -23,7 +23,15 @@
 </div>
 
 
-<form asp-action="create" asp-controller="studant">
+<form asp-action="Edit" asp-controller="studant">
+
+    <!-- Campo oculto para o ID -->
+    <input type="hidden" asp-for="@Model.id" />
+    <input type="hidden" asp-for="@Model.DistrictId" />
+    <input type="hidden" asp-for="@Model.SchoolClassRoomId" />
+    <input type="hidden" asp-for="@Model.CurrentSchoolLevelId" />
+   <input type="hidden" asp-for="@Model.Enrollments" />
+
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
@@ -44,6 +52,11 @@
                         <p><strong>Estudante suspenso devido a multas:</strong></p>
                     </div>
                 }
+
+                <div class="alert alert-success" role="alert" id="msg-summary" style="display: @(string.IsNullOrEmpty(ViewBag.Mensagem) ? "none" : "block")">
+                    <p><strong>@ViewBag.Mensagem</strong></p>
+                </div>
+
                 <form class="needs-validation" novalidate>
 
                     @*     <fieldset class="border p-2">
@@ -135,22 +148,7 @@
                             </div>
                         </div>
 
-                        <fieldset class="border p-2">
-                            <legend class="w-auto">Dados pedagógicos</legend>
-                            <div class="form-row mb-3">
-                                <div class="col-md-4">
-                                    <label for="">Classe actual</label>    <span asp-validation-for="Gender" class="text-danger"></span>
-                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="CurrentSchoolLevelId">
-                                        <option selected>...</option>
-                                        @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
-                                        {
-                                            <option value="@item.Id">@item.Description</option>
-                                        }
-                                    </select>
-                                    <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </fieldset>
+
                     </fieldset>
 
 
@@ -188,14 +186,14 @@
 
 
                     <fieldset class="border p-2">
-                        <legend class="w-auto">Ações</legend> 
-                        <div class="template-demo"> 
+                        <legend class="w-auto">Ações</legend>
+                        <div class="template-demo">
                             <button type="submit" class="btn btn-info btn-icon-text">
                                 Actualizar
                                 <i class="typcn typcn-edit btn-icon-append"></i>
                             </button>
                             <a asp-action="edit" asp-controller="studant" asp-route-id="@Model.id" class="btn btn-light btn-icon-text">
-                                Voltar para detalhes 
+                                Voltar para detalhes
                             </a>
 
                         </div>
@@ -234,6 +232,22 @@
                 });
             });
         });
+
+
+        $(document).ready(function () {
+            // Verifique se a mensagem está definida
+            var mensagem = '@ViewBag.Mensagem';
+            if (mensagem) {
+                // Exiba a mensagem
+                $("#msg-summary").css("display", "block");
+
+                // Remova a mensagem após 5 segundos
+                setTimeout(function () {
+                    $("#msg-summary").css("display", "none");
+                }, 3000000);
+            }
+        });
+
 
     </script>
 }
