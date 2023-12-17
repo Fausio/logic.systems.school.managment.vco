@@ -160,6 +160,38 @@
                             </div>
                         </div>
 
+                        <ul class="nav nav-tabs" role="tablist">
+
+                            @foreach (var item in Model.Enrollments)
+                            {
+                                var styleActive = "nav-link";
+                                if (Model.Enrollments[0].Id == item.Id)
+                                {
+                                    styleActive = "nav-link active nav-info";
+                                }
+                                var href = $"tuitionHome{item.Id}";
+                                <li class="nav-item">
+                                    <a class="@styleActive" data-toggle="tab" href="#@href">@item.EnrollmentYear</a>
+                                </li>
+                            }
+                        </ul>
+                        <div class="tab-content">
+
+                            @foreach (var item in Model.Enrollments)
+                            {
+                                var styleActive = "tab-pane fade";
+                                if (Model.Enrollments[0].Id == item.Id)
+                                {
+                                    styleActive = "tab-pane active";
+                                }
+                                var divId = $"tuitionHome{item.Id}";
+                                <div id="@divId" class="@styleActive">
+                                    <label>@item.Id</label>
+                                </div>
+                            }
+                        </div>
+
+
                         <div id="menu_1_info">
                             <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
                                 Adicionar Pagamento de mensalidade
@@ -642,6 +674,9 @@
                     success: function (result) {
 
                         getEnrollments(@Model.id);
+                        getPayments(@Model.id);
+                        getTuitionFines(@Model.id);
+                        getTuitions(@Model.id);
 
                         $("#form_Enrollment_btns").show();
                         $("#form_Enrollment_spinner").hide();

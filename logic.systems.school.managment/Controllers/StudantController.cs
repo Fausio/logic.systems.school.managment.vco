@@ -155,7 +155,9 @@ namespace logic.systems.school.managment.Controllers
 
                 var currentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
                 ViewBag.CurrentSchoolLevels = currentSchoolLevels.Where(x => x.Id > result.CurrentSchoolLevelId);
-
+                ViewBag.EnrollmentYears = new List<string>{ 
+                   DateTime.Now.AddYears(1). Year.ToString(),
+            };
 
                 if (TempData.ContainsKey("MensagemSucess"))
                 {

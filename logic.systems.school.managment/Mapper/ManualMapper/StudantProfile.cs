@@ -1,5 +1,6 @@
 ﻿using Humanizer;
 using logic.systems.school.managment.Dto;
+using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
 
 namespace logic.systems.school.managment.Mapper.ManualMapper
@@ -67,12 +68,15 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
                     CurrentSchoolLevelId = Class.CurrentSchoolLevelId,
                     SchoolClassRoomId = Class.SchoolClassRoomId,
                     Suspended = Class.Suspended,
+                    Enrollments = Class.Enrollments
                 };
 
                 dto.SponsorName = Class.Sponsor.Name;
                 dto.SponsorAddress = Class.Sponsor.Address;
                 dto.SponsorEducation = Class.Sponsor.Education;
                 dto.SponsorContacts[0] = Class.Sponsor.Contacts[0].Number;
+
+                dto.Enrollments = dto.Enrollments.OrderByDescending(x => x.EnrollmentYear).ToList();
 
                 return dto;
             }
@@ -84,3 +88,4 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
         }
     }
 }
+ 

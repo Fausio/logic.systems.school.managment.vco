@@ -16,6 +16,14 @@ namespace logic.systems.school.managment.Services
     public class EnrollmentService : IEnrollment
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
+        private ITuitionService _ITuitionService;
+        private IstudantService _StudentService;
+        public EnrollmentService(ITuitionService iTuitionService, IstudantService studentService)
+        {
+            this._ITuitionService = iTuitionService;
+            _StudentService = studentService;
+
+        }
 
         public async Task<Enrollment> EnrollmentByStudantId(int studantId, int CurrentSchoolLevelId, int EnrollmentYear, int SchoolClassRoomId)
         {
@@ -48,14 +56,16 @@ namespace logic.systems.school.managment.Services
                 }
             }
             catch (Exception)
-            { 
+            {
                 throw;
-            } 
+            }
         }
 
         public async Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(EnrollmentCreateDTO model)
         {
-            await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId);
+            var enrollment = await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId); 
+            await _ITuitionService.CreateByClassOfStudant(await _StudentService.Read(model.StudantId), enrollment);
+
             return await EnrollmentsByStudantId(model.StudantId);
         }
         public async Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(int studantId)
