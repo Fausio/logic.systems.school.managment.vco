@@ -80,7 +80,7 @@ namespace logic.systems.school.managment.Services
             var models = new List<Student>();
 
 
-            models = await db.Students.Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).ThenInclude(x => x.TuitionFines).Include(x => x.CurrentSchoolLevel).Where(x => x.Row != Common.Deleted)
+            models = await db.Students.Include(x => x.SchoolClassRoom). Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).ThenInclude(x => x.TuitionFines).Include(x => x.CurrentSchoolLevel).Where(x => x.Row != Common.Deleted)
                                          .Skip(skip)
                                          .Take(pageSize)
                                          .Select(u => new Student()
@@ -88,6 +88,7 @@ namespace logic.systems.school.managment.Services
                                              Id = u.Id,
                                              Name = u.Name,
                                              CurrentSchoolLevel = u.CurrentSchoolLevel,
+                                             SchoolClassRoom = u.SchoolClassRoom,
                                              Suspended = u.Suspended,
                                              haveFee = u.Enrollments.Any(x => !x.Tuitions.Any(x => x.TuitionFines.Paid))
 
