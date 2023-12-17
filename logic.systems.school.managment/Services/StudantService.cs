@@ -132,8 +132,9 @@ namespace logic.systems.school.managment.Services
                                              Id = u.Id,
                                              Name = u.Name,
                                              CurrentSchoolLevel = u.CurrentSchoolLevel,
+                                             SchoolClassRoom = u.SchoolClassRoom,
                                              Suspended = u.Suspended,
-                                             haveFee = u.Enrollments.Any(x => x.Tuitions.Any(x => !x.TuitionFines.Paid))
+                                             haveFee = u.Enrollments.Any(x => !x.Tuitions.Any(x => x.TuitionFines.Paid))
                                          }).OrderBy(o => o.Name).ToListAsync();
             }
             else if (!string.IsNullOrEmpty(Name) && CurrentSchoolLevelId <= 0)
@@ -148,8 +149,9 @@ namespace logic.systems.school.managment.Services
                                              Id = u.Id,
                                              Name = u.Name,
                                              CurrentSchoolLevel = u.CurrentSchoolLevel,
+                                             SchoolClassRoom = u.SchoolClassRoom,
                                              Suspended = u.Suspended,
-                                             haveFee = u.Enrollments.Any(x => x.Tuitions.Any(x => !x.TuitionFines.Paid))
+                                             haveFee = u.Enrollments.Any(x => !x.Tuitions.Any(x => x.TuitionFines.Paid))
                                          }).OrderBy(o => o.Name).ToListAsync();
 
             }
@@ -165,8 +167,9 @@ namespace logic.systems.school.managment.Services
                                              Id = u.Id,
                                              Name = u.Name,
                                              CurrentSchoolLevel = u.CurrentSchoolLevel,
+                                             SchoolClassRoom = u.SchoolClassRoom,
                                              Suspended = u.Suspended,
-                                             haveFee = u.Enrollments.Any(x => x.Tuitions.Any(x => !x.TuitionFines.Paid))
+                                             haveFee = u.Enrollments.Any(x => !x.Tuitions.Any(x => x.TuitionFines.Paid))
                                          }).OrderBy(o => o.Name).ToListAsync();
             }
             else
