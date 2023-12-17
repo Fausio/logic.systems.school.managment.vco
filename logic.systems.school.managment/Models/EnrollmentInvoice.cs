@@ -2,13 +2,19 @@
 
 namespace logic.systems.school.managment.Models
 {
-    [Table("PaymentFine")]
-    public class PaymentFines :   Payment
+    [Table("EnrollmentInvoice")]
+    public class EnrollmentInvoice : Invoice
     {
         public virtual Enrollment Enrollment { get; set; }
         public int EnrollmentId { get; set; }
 
-        public virtual Fines Fines { get; set; }
-        public int FinesId { get; set; }
+        public EnrollmentInvoice()
+        { 
+            this.Type = "EnrollmentInvoice";
+            this.Date = DateTime.Now;
+        }
+
+
+
     }
 }

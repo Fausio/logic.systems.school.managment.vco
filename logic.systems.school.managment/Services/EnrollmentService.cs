@@ -43,6 +43,14 @@ namespace logic.systems.school.managment.Services
                         enrollment.SchoolClassRoomId = SchoolClassRoomId;
                         await db.SaveChangesAsync();
 
+                        var invoice = new EnrollmentInvoice()
+                        {
+                            EnrollmentId = enrollment.Id
+                        };
+
+                        await db.EnrollmentInvoices.AddAsync(invoice);
+                        await db.SaveChangesAsync();
+
                         return enrollment;
                     }
                     else
@@ -64,10 +72,14 @@ namespace logic.systems.school.managment.Services
         public async Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(EnrollmentCreateDTO model)
         {
             var enrollment = await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId);
+
+           
+
             await _ITuitionService.CreateByClassOfStudant(await _StudentService.Read(model.StudantId), enrollment);
             var student = await db.Students.FirstOrDefaultAsync(x => x.Id == model.StudantId);
             student.CurrentSchoolLevelId = model.SchoolLevelId;
-            await db.SaveChangesAsync();
+            await db.SaveChangesAsync(); 
+
             return await EnrollmentsByStudantId(model.StudantId);
         }
         public async Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(int studantId)

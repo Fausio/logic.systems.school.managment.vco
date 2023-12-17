@@ -30,13 +30,24 @@
                             </form>
                         </li>
                         <li class="list-group-item mt-3">
-                            <a asp-action="PaymentTuitionList" asp-controller="Document">
-                                <button type="button" class="btn btn-info btn-icon-text btn-block">
-                                    Relatorio de Fecho de contas
-                                </button>
-                            </a>
+                            @*  <a asp-action="PaymentTuitionList" asp-controller="Document">
+                            <button type="button" class="btn btn-info btn-icon-text btn-block">
+                            Relatorio de Fecho de contas
+                            </button>
+                            </a> *@
+
+                            <button type="button" class="btn btn-info btn-icon-text btn-block" id="baixarRelatorio">
+                                Relatorio de Fecho de contas
+                            </button>
+                            <div id="spinner" style="display:none">
+                                <div class="d-flex justify-content-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
                         </li>
-                       
+
                     </ul>
                 </div>
                 <div class="col-md-2">
@@ -54,42 +65,83 @@
 
 
 @section scripts {
-    @* <script>
-        function donloadPaymentTuitionListDaily() {
+    <script>
 
-            console.log("start")
+         
+
+        $("#baixarRelatorio").click(function () {
+
+            $("#baixarRelatorio").hide();
+            $("#spinner").show();
+
             $.ajax({
-                url: '/Document/PaymentTuitionListDaily',
-                type: 'POST',
-                success: function (data) {
-                    // // Cria um link temporário para iniciar o download
-                    // var a = document.createElement('a');
-                    // var url = window.URL.createObjectURL(data);
-                    // a.href = url;
-                    // a.download = 'relatorio.xlsx';
-                    // document.body.appendChild(a);
-                    // a.click();
-                    // window.URL.revokeObjectURL(url);
-                    // document.body.removeChild(a);
+                type: "GET",
+                url: "/Document/PaymentTuitionListDaily",
+                xhrFields: {
+                    responseType: 'blob' // Configuração para tratar a resposta como um blob
                 },
-                error: function () {
-                    alert('Erro ao baixar o relatório.');
+                success: function (data) {
+                    var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'Relatorio de Fecho de contas  diário.xlsx';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+
+                    $("#baixarRelatorio").show();
+                    $("#spinner").hide();
+                },
+                error: function (error) {
+                    console.error('Erro ao baixar o relatório:', error);
+
+                    $("#baixarRelatorio").show();
+                    $("#spinner").hide();
                 }
             });
 
-            // $.ajax({
-            //     url: '/admin/GetDistricts',
-            //     type: 'GET',
-            //     success: function (districts) {
-            //         $("#district").empty();
-            //         $.each(districts, function (index, result) {
-            //             $("#district").append($('<option>', {
-            //                 value: result.id,
-            //                 text: result.description
-            //             }));
-            //         });
-            //     }
-            // });
-        }
-    </script> *@
+        });
+
+
+
+
+                    //    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ReportName);
+
+
+
+
+                                    // $.ajax({
+                                    //     url: '/Document/PaymentTuitionListDaily',
+                                    //     type: 'POST',
+                                    //     success: function (data) {
+                                    //         // // Cria um link temporário para iniciar o download
+                                    //         // var a = document.createElement('a');
+                                    //         // var url = window.URL.createObjectURL(data);
+                                    //         // a.href = url;
+                                    //         // a.download = 'relatorio.xlsx';
+                                    //         // document.body.appendChild(a);
+                                    //         // a.click();
+                                    //         // window.URL.revokeObjectURL(url);
+                                    //         // document.body.removeChild(a);
+                                    //     },
+                                    //     error: function () {
+                                    //         alert('Erro ao baixar o relatório.');
+                                    //     }
+                                    // });
+
+                                    // $.ajax({
+                                    //     url: '/admin/GetDistricts',
+                                    //     type: 'GET',
+                                    //     success: function (districts) {
+                                    //         $("#district").empty();
+                                    //         $.each(districts, function (index, result) {
+                                    //             $("#district").append($('<option>', {
+                                    //                 value: result.id,
+                                    //                 text: result.description
+                                    //             }));
+                                    //         });
+                                    //     }
+                                    // });
+    </script>
 }

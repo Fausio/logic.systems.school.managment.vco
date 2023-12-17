@@ -3,16 +3,21 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
+using logic.systems.school.managment.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing.Template;
 
 namespace logic.systems.school.managment.Controllers
 {
     public class DocumentController : Controller
     {
         private Idocument _DocumentService;
-        public DocumentController(Idocument DocumentService)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+
+        public DocumentController(Idocument DocumentService, IWebHostEnvironment hostingEnvironment)
         {
             this._DocumentService = DocumentService;
+            _hostingEnvironment = hostingEnvironment;
         }
         public IActionResult Index()
         {
@@ -31,7 +36,39 @@ namespace logic.systems.school.managment.Controllers
         }
 
 
-        [HttpPost]
+        public async Task<IActionResult> EnrollmentInvoice(int id)
+        {
+            var result = await _DocumentService.GetEnrollmentInvoiceByEnrollId(id);
+
+             
+            string relativePath = "template/invoice.xlsx";
+            string filePath = Path.Combine(_hostingEnvironment.WebRootPath, relativePath);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                using var workbook = new XLWorkbook(filePath);
+                var worksheet = workbook.Worksheets.Worksheet(1);
+
+
+                worksheet.Cell("E5").Value = result.Id.ToString();
+
+                using var stream = new MemoryStream();
+
+                workbook.SaveAs(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+
+                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Recibo.xlsx");
+            }
+            else
+            {
+                throw new Exception("path not foun");
+            }
+               
+
+             
+        }
+
+
         public async Task<IActionResult> PaymentTuitionListDaily()
         {
             var today = DateTime.Now;
@@ -43,7 +80,8 @@ namespace logic.systems.school.managment.Controllers
             }, "Relatório de Fecho de contas diário");
         }
 
-        private async Task<FileContentResult> PaymentTuitionListMethod(ReportDataFilterDTO filters, string Name ="")
+
+        private async Task<FileContentResult> PaymentTuitionListMethod(ReportDataFilterDTO filters, string Name = "")
         {
             var results = await _DocumentService.GetPaymentTuitionList(filters.StartDate, filters.EndDate);
 
@@ -129,13 +167,13 @@ namespace logic.systems.school.managment.Controllers
             #endregion
 
 
-           worksheet.Protect();
+            worksheet.Protect();
 
             using var stream = new MemoryStream();
             workBook.SaveAs(stream);
             var content = stream.ToArray();
 
-            var ReportName = Name +" - " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
+            var ReportName = Name + " - " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
 
             return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ReportName);
         }

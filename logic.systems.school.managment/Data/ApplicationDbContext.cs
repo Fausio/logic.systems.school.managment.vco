@@ -100,11 +100,12 @@ namespace logic.systems.school.managment.Data
         public DbSet<SimpleEntity> SimpleEntitys { get; set; }
 
         public DbSet<Enrollment> Enrollments { get; set; }
-       public DbSet<EnrollmentItem> EnrollmentItems { get; set; }
+        public DbSet<EnrollmentItem> EnrollmentItems { get; set; }
 
         public DbSet<PaymentTuition> PaymentTuitions { get; set; }
         public DbSet<PaymentFines> PaymentFines { get; set; }
         public DbSet<PaymentEnrollment> PaymentEnrollments { get; set; }
+        public DbSet<EnrollmentInvoice> EnrollmentInvoices { get; set; }
 
     }
 }
