@@ -735,15 +735,17 @@
                     data: data,
                     success: function (result) {
 
-                        getEnrollments(@Model.id);
-                        getPayments(@Model.id);
-                        getTuitionFines(@Model.id);
-                        getTuitions(@Model.id);
+                        // getEnrollments(@Model.id); 
+                        // getTuitionFines(@Model.id); 
 
-                        $("#form_Enrollment_btns").show();
-                        $("#form_Enrollment_spinner").hide();
+                        // getPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+                        // getTuitions(@Model.id, @Model.Enrollments[0].EnrollmentYear);
 
-                        $('#EnrollmentModal').modal('hide');
+                        // $("#form_Enrollment_btns").show();
+                        // $("#form_Enrollment_spinner").hide();
+
+                        // $('#EnrollmentModal').modal('hide');
+                        window.location = window.location;
 
                     }
                 });
