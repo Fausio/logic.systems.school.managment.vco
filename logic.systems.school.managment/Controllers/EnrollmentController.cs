@@ -27,6 +27,19 @@ namespace logic.systems.school.managment.Controllers
             }
 
         }
+        public async Task<IActionResult> CreateRepit(EnrollmentCreateDTO model)
+        {
+            if (!await _EnrollmentService.CheckIfHaveEnrollmentIntheYear(model))
+            {
+                var result = await _EnrollmentService.EnrollmentsByStudantId(model);
+                return Json(result);
+            }
+            else
+            {
+                return Json("CheckIfHaveEnrollmentIntheYear");
+            }
+
+        }
    
     }
 }

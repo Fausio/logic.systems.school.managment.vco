@@ -352,6 +352,10 @@
                             <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
                                 Matricular
                             </a>
+
+                            <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
+                                Matrícular como repetente
+                            </a>
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
                                     <div class="table-responsive">
@@ -474,7 +478,7 @@
                     <fieldset class="border p-2">
                         <legend class="w-auto">Dados pedagógicos </legend>
                         <div id="validation-summary-enroll" class="alert alert-danger" role="alert" style="display:none">
-                            <p><strong id="validation-summary-msg">Estudante suspenso devido a multas:</strong></p>
+                            <p><strong id="validation-summary-msg"> </strong></p>
                         </div>
                         <fieldset class="border p-2">
                             <legend class="w-auto">Matricula actual (@ViewBag.CurrentSchoolLevel) </legend>
@@ -528,6 +532,85 @@
                             </div>
                         </div>
                         <div id="form_Enrollment_spinner">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Seu modal -->
+<div class="modal" id="EnrollmentRepitModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Conteúdo do modal -->
+            <div class="modal-header">
+                <h4 class="modal-title">Formulário de matricula  (para repetentes)</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Conteúdo do formulário aqui -->
+                <form id="meuFormulario">
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Dados pedagógicos </legend>
+                        <div id="validation-summary-enroll-repit" class="alert alert-danger" role="alert" style="display:none">
+                            <p><strong id="validation-summary-msg-repit"> </strong></p>
+                        </div>
+                        <fieldset class="border p-2">
+                            <legend class="w-auto">Matricula actual (@ViewBag.CurrentSchoolLevel) </legend>
+                            <div class="form-row mb-3">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="alert alert-danger" role="alert">
+                                        <h3><center>Voltar a matricular na @ViewBag.CurrentSchoolLevel</center> </h3>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-12 col-sm-12 ">
+                                    <label for="">Turma / Grupo</label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="SchoolClassRoomId" id="SchoolClassRoomIdRepit">
+                                        <option selected>...</option>
+                                        @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
+                                        {
+                                            <option value="@item.Id">@item.Description</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="SchoolClassRoomId" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-12 col-sm-12 mt-3">
+                                    <label for="">Ano</label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="EnrollmentYear" id="EnrollmentYearRepit">
+                                        <option selected>...</option>
+                                        @foreach (var item in ViewBag.EnrollmentYears)
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="EnrollmentYear" class="text-danger" id="ValidationEnrollmentYearRepit" style="display:none">O campo Ano de inscrição  é obrigatório.</span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </fieldset>
+
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Ações</legend>
+
+
+                        <div id="form_EnrollmentRepit_btns_repit">
+                            <div class="template-demo">
+                                <button type="button" class="btn btn-danger btn-icon-text" onclick="createEnrollmentRepit()">
+                                    Matricular
+                                </button>
+                            </div>
+                        </div>
+                        <div id="form_EnrollmentRepit_spinner_repit">
                             <div class="d-flex justify-content-center">
                                 <div class="spinner-border" role="status">
                                     <span class="sr-only">Loading...</span>
@@ -664,6 +747,12 @@
             $("#form_Enrollment_spinner").hide();
         }
 
+        function form_EnrollmentRepit_btns() {
+             
+            $("#form_EnrollmentRepit_btns_repit").show();
+            $("#form_EnrollmentRepit_spinner_repit").hide();
+        }
+
 
         function createPayment() {
 
@@ -712,6 +801,57 @@
 
                 }
             });
+
+
+
+
+        }
+
+        function createEnrollmentRepit() {
+            var data = {
+                StudantId: @Model.id,
+                SchoolLevelId: @Model.CurrentSchoolLevelId,
+                SchoolClassRoomId: $("#SchoolClassRoomIdRepit").val(),
+                EnrollmentYear: $("#EnrollmentYearRepit").val()
+            };
+
+            console.log("data.createEnrollment", data);
+
+            if (data.EnrollmentYear === "...") {
+                $("#ValidationEnrollmentYearRepit").show();
+            }
+            else {
+                $("#ValidationEnrollmentYearRepit").hide();
+
+                $("#form_EnrollmentRepit_btns_repit").hide();
+                $("#form_EnrollmentRepit_spinner_repit").show();
+
+                $.ajax({
+                    url: "/Enrollment/CreateRepit",
+                    type: "POST",
+                    data: data,
+                    success: function (result) {
+
+
+
+                        if (result === "CheckIfHaveEnrollmentIntheYear") {
+
+                            $("#validation-summary-enroll-repit").show();
+                            $("#validation-summary-msg-repit").text("Estudante já tem uma matricula para o ano " + data.EnrollmentYear);
+
+                            setTimeout(function () {
+                                $("#validation-summary-enroll-repit").hide();
+                            }, 5000);
+
+                        } else {
+                            window.location = window.location;
+                        }
+
+                        $("#form_EnrollmentRepit_btns_repit").show();
+                        $("#form_EnrollmentRepit_spinner_repit").hide();
+                    }
+                });
+            }
         }
 
         function createEnrollment() {
@@ -739,7 +879,6 @@
                     success: function (result) {
 
 
-                        console.log("result", result);
 
                         if (result === "CheckIfHaveEnrollmentIntheYear") {
 
@@ -754,28 +893,9 @@
                             window.location = window.location;
                         }
 
-
-                        // getEnrollments(@Model.id);
-                        // getTuitionFines(@Model.id);
-
-                        // getPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
-                        // getTuitions(@Model.id, @Model.Enrollments[0].EnrollmentYear);
-                      
-                       // $("#validation-summary-enroll").show();
-                      //  $("#form_Enrollment_btns").show();
-                      //  $("#form_Enrollment_spinner").hide();
-
-                        // $('#EnrollmentModal').modal('hide');
-                        // 
-
                     }
                 });
             }
-
-
-            console.log("createEnrollment", data);
-
-
         }
 
         function getTuitions(id, EnrollmentYear) {
