@@ -13,9 +13,10 @@ namespace logic.systems.school.managment.Controllers
         {
             this._ITuitionService = ITuitionService;
         }
-        public async Task<JsonResult> IndexByStudantId(int id)
+        public async Task<JsonResult> IndexByStudantId(getPaymentParamitersDTO id)
         {
-            var result = await _ITuitionService.GetByStudantId(id);
+            var result = await _ITuitionService.GetByStudantId(id.StudantId);
+            result = result.Where(x => x.Year  == id.EnrollmentYear).ToList();
             return Json(result);
         }
         public async Task<JsonResult> IndexByStudantIdFines(int id)
@@ -37,9 +38,11 @@ namespace logic.systems.school.managment.Controllers
 
         }
 
-        public async Task<JsonResult> IndexPaymentByStudantId(int id)
+        public async Task<JsonResult> IndexPaymentByStudantId(getPaymentParamitersDTO id)
         {
-            var result = await _ITuitionService.GetPaymentsByStudantTuitionsId(id);
+            var result = await _ITuitionService.GetPaymentsByStudantTuitionsId(id.StudantId);
+            result = result.Where(x => x.Tuition.Year == id.EnrollmentYear).ToList();
+
             return Json(result);
         }
         public async Task<JsonResult> IndexByEnrollments(int id)
