@@ -15,11 +15,13 @@ namespace logic.systems.school.managment.Controllers
         private ISempleEntityService _SempleEntityService;
         private ITuitionService _ITuitionService;
         private IEnrollment _IEnrollmentService;
+        private IApp _IAppService;
 
         public StudantController(IstudantService StudentService,
             IOrgUnit IOrgUnitServiceService,
             ISempleEntityService SempleEntityService,
             IEnrollment IEnrollment,
+            IApp IAppService,
         ITuitionService iTuitionService)
         {
             this._StudentService = StudentService;
@@ -27,6 +29,7 @@ namespace logic.systems.school.managment.Controllers
             this._SempleEntityService = SempleEntityService;
             this._ITuitionService = iTuitionService;
             this._IEnrollmentService = IEnrollment;
+            this._IAppService = IAppService;
         }
 
         public async Task<IActionResult> Index(int? pageNumber = 1, int? pageSize = 10)
@@ -99,14 +102,29 @@ namespace logic.systems.school.managment.Controllers
             try
             {
                 await PopulateForms();
+
+
+
+
                 if (ModelState.IsValid)
                 {
+                    if (await _IAppService.LimitOfStudentByClassRoomAndLevelYear(model.EnrollmentYear, model.CurrentSchoolLevelId, model.SchoolClassRoomId))
+                    {
 
+                        var CurrentSchoolLevel= await _IAppService.SempleEntityDescriptionById(model.CurrentSchoolLevelId);
+                        var SchoolClassRoom = await _IAppService.SempleEntityDescriptionById(model.SchoolClassRoomId); 
+                        TempData["MensagemError"] = $"Impossível gravar o estudante nesta turma. A turma {SchoolClassRoom} para {CurrentSchoolLevel} já atingiu o limite de 35 alunos para o ano {model.EnrollmentYear}.";
+                        if (TempData.ContainsKey("MensagemError"))
+                        {
+                            ViewBag.MensagemError = TempData["MensagemError"];
+                        }
+                        return View(model);
+                    }
 
                     //if (model.EnroolAllMonths)
                     //{
                     var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
-                    var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear, result.CurrentSchoolLevelId);
+                    var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear, result.SchoolClassRoomId);
                     await _ITuitionService.CreateByClassOfStudant(result, Enrollment);
                     TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
                     return RedirectToAction("edit", "studant", new { id = result.Id });
@@ -155,7 +173,7 @@ namespace logic.systems.school.managment.Controllers
 
                 var currentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
                 ViewBag.CurrentSchoolLevels = currentSchoolLevels.Where(x => x.Id > result.CurrentSchoolLevelId);
-                ViewBag.EnrollmentYears = new List<string>{ 
+                ViewBag.EnrollmentYears = new List<string>{
                    DateTime.Now.AddYears(1). Year.ToString(),
             };
 

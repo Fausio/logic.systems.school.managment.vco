@@ -42,9 +42,10 @@ builder.Services.AddScoped<IOrgUnit, OrgUnitService>();
 builder.Services.AddScoped<ISempleEntityService, SempleEntityService>();
 builder.Services.AddScoped<ITuitionService, TuitionService>();
 builder.Services.AddScoped<IDashBoard, DashboardService>();
+builder.Services.AddScoped<IApp, AppService>();
 builder.Services.AddScoped<Idocument, DocumentService>();
 builder.Services.AddScoped<IEnrollment, EnrollmentService>(); 
-var app = builder.Build();
+var app = builder.Build(); 
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

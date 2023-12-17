@@ -161,57 +161,9 @@
                                             <option value="@item">@item</option>
                                         }
                                     </select>
-                                    <span asp-validation-for="EnrollmentYear" class="text-danger">O campo Ano de inscrição  é obrigatório.</span>
+                                    <span asp-validation-for="EnrollmentYear" class="text-danger " style="display:none">O campo Ano de inscrição  é obrigatório.</span>
                                 </div>
-                            </div>
-
-                            <div class="form-row mb-1">
-                                <div class="col-md-8">
-                                    <div class="form-row form-check form-check-info">
-                                        <div id="monthsDev">
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label">Inscrever todos os meses?</label>
-                                                <div class="col-md-3">
-                                                    <div class="form-check">
-                                                        <label class="form-check-label">
-                                                            @* <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios1" value="@true" asp-for="EnroolAllMonths" onclick="hideMyMonthLabel()"> *@
-                                                            @Html.RadioButtonFor(model => model.EnroolAllMonths,true, new { id = "option1", onclick="hideMyMonthLabel()",@class = "form-check-input"})
-                                                            Sim
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-check">
-                                                        <label class="form-check-label">
-                                                            @*      <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios2" value="@false" asp-for="EnroolAllMonths"  @>
-                                                            *@
-                                                            @Html.RadioButtonFor(model => model.EnroolAllMonths,false, new { id = "option1", onclick="ShowMyClassesToStart()" ,@class = "form-check-input"})
-
-                                                            Não
-                                                        </label>
-                                                        <label id="MonthSelected">  </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-                            <div class="form-row mb-3">
-                                <div class="col-md-4" id="MyClassesToStart">
-                                    <label for="">Meses de início</label>
-                                  @*   <select class="form-control form-control-lg pb-3 pt-3" id="MyStartTuition" asp-for="StartTuition">
-                                        @foreach (Tuition item in Model.Tuitions)
-                                        {
-                                            <option value=@item.MonthNumber>@item.MonthNumber - @item.MonthName - @item.Year</option>
-                                        }
-                                    </select> *@
-                                </div>
-                            </div>
-
+                            </div> 
                         </fieldset>
                     </fieldset>
 
@@ -299,10 +251,10 @@
                 // Exiba a mensagem
                 $("#msg-summary").css("display", "block");
 
-                // Remova a mensagem após 5 segundos
+                // Remova a mensagem após 5 minutos
                 setTimeout(function () {
                     $("#msg-summary").css("display", "none");
-                }, 9000);
+                }, 300000);
             }
         });
 
