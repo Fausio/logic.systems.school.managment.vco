@@ -151,6 +151,17 @@
                                         }
                                     </select>
                                     <span asp-validation-for="SchoolClassRoomId" class="text-danger"></span>
+                                </div> 
+                                <div class="col-md-4">
+                                    <label for="">Ano</label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="EnrollmentYear" id="SchoolClassRoom">
+                                        <option selected>...</option>
+                                        @foreach (var item in ViewBag.EnrollmentYears)
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="EnrollmentYear" class="text-danger">O campo Ano de inscrição  é obrigatório.</span>
                                 </div>
                             </div>
 
@@ -192,12 +203,12 @@
                             <div class="form-row mb-3">
                                 <div class="col-md-4" id="MyClassesToStart">
                                     <label for="">Meses de início</label>
-                                    <select class="form-control form-control-lg pb-3 pt-3" id="MyStartTuition" asp-for="StartTuition">
+                                  @*   <select class="form-control form-control-lg pb-3 pt-3" id="MyStartTuition" asp-for="StartTuition">
                                         @foreach (Tuition item in Model.Tuitions)
                                         {
                                             <option value=@item.MonthNumber>@item.MonthNumber - @item.MonthName - @item.Year</option>
                                         }
-                                    </select>
+                                    </select> *@
                                 </div>
                             </div>
 

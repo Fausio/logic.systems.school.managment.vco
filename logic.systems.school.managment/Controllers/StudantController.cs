@@ -103,31 +103,31 @@ namespace logic.systems.school.managment.Controllers
                 {
 
 
-                    if (model.EnroolAllMonths)
-                    {
-                        var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
-                        await _IEnrollmentService.EnrollmentByStudantId(result.Id,model.CurrentSchoolLevelId);
-                        await _ITuitionService.CreateByClassOfStudant(result);
-                        TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
-                        return RedirectToAction("edit", "studant", new { id = result.Id });
-                    }
-                    else if (!model.EnroolAllMonths && model.StartTuition > 0)
-                    {
-                        var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
-                        await _ITuitionService.CreateByClassOfStudant(result, model.StartTuition);
-                        TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
-                        return RedirectToAction("edit", "studant", new { id = result.Id });
-                    }
-                    else
-                    {
+                    //if (model.EnroolAllMonths)
+                    //{
+                    var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
+                    var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear);
+                    await _ITuitionService.CreateByClassOfStudant(result, Enrollment);
+                    TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
+                    return RedirectToAction("edit", "studant", new { id = result.Id });
+                    //}
+                    //else if (!model.EnroolAllMonths && model.StartTuition > 0)
+                    //{
+                    //    var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
+                    //    await _ITuitionService.CreateByClassOfStudant(result, model.StartTuition);
+                    //    TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
+                    //    return RedirectToAction("edit", "studant", new { id = result.Id });
+                    //}
+                    //else
+                    //{
 
-                        TempData["MensagemError"] = "Escolha o Meses de início";
-                        if (TempData.ContainsKey("MensagemError"))
-                        {
-                            ViewBag.MensagemError = TempData["MensagemError"];
-                        }
-                        return View(model);
-                    }
+                    //    TempData["MensagemError"] = "Escolha o Meses de início";
+                    //    if (TempData.ContainsKey("MensagemError"))
+                    //    {
+                    //        ViewBag.MensagemError = TempData["MensagemError"];
+                    //    }
+                    //    return View(model);
+                    //}
 
 
                 }
@@ -195,6 +195,10 @@ namespace logic.systems.school.managment.Controllers
             ViewBag.Provinces = await _IOrgUnitServiceService.GetOrgUnitProvinces();
             ViewBag.CurrentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
             ViewBag.SchoolClassRooms = await _SempleEntityService.GetByTypeOrderById("SchoolClassRoom");
+            ViewBag.EnrollmentYears = new List<string>{
+                   DateTime.Now.Year.ToString(),
+                   DateTime.Now.AddYears(1). Year.ToString(), 
+            };
 
 
         }
@@ -204,7 +208,7 @@ namespace logic.systems.school.managment.Controllers
             ViewBag.Province = Student.District.OrgUnitProvince.Description;
             ViewBag.District = Student.District.Description;
             ViewBag.CurrentSchoolLevel = Student.CurrentSchoolLevel.Description;
-            ViewBag.Tuitions = Student.Enrollments.Select(x => x.Tuitions.Where(x => !x.Paid));
+            ViewBag.Tuitions = Student.Enrollments.SelectMany(x => x.Tuitions.Where(x => !x.Paid));
             ViewBag.TuitionsFee = await _ITuitionService.GetByStudantIdFinesBy(Student.Id);
         }
     }

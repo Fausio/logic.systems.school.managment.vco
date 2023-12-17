@@ -9,10 +9,14 @@ namespace logic.systems.school.managment.Controllers
     {
         private IOrgUnit _IOrgUnitServiceService;
         private ISempleEntityService _SempleEntityService;
-        public AdminController(IOrgUnit IOrgUnitServiceService, ISempleEntityService sempleEntityService)
+        private ITuitionService _ITuitionService;
+        private IEnrollment _EnrollmentService;
+        public AdminController(IOrgUnit IOrgUnitServiceService, ISempleEntityService sempleEntityService, ITuitionService iTuitionService, IEnrollment enrollmentService)
         {
             this._IOrgUnitServiceService = IOrgUnitServiceService;
             _SempleEntityService = sempleEntityService;
+            _ITuitionService = iTuitionService;
+            _EnrollmentService = enrollmentService;
         }
 
         public async Task<JsonResult> GetDistricts(int Id)
@@ -20,6 +24,13 @@ namespace logic.systems.school.managment.Controllers
             var result = await _IOrgUnitServiceService.GetOrgUnitDistrictsByProvinceId(Id);
             return Json(result);
         }
+
+       public async Task<JsonResult> GetEnrollmentsByStudentId(int Id)
+        {
+            var result = await _EnrollmentService.EnrollmentsByStudantId(Id);
+            return Json(result);
+        }
+
         public async Task<JsonResult> GetSchoolClassRooms(int Id)
         {
             if (Id> 0)

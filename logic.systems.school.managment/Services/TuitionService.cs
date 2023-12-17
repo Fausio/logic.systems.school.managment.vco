@@ -1,6 +1,6 @@
 ﻿using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
-using logic.systems.school.managment.Interface; 
+using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -45,7 +45,7 @@ namespace logic.systems.school.managment.Services
 
 
 
-        public async Task CreateByClassOfStudant(Student model, int? startMonth = -99)
+        public async Task CreateByClassOfStudant(Student model, Enrollment enrollment)
         {
 
 
@@ -61,24 +61,23 @@ namespace logic.systems.school.managment.Services
                 string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
                 for (int i = 1; i < meses.Length + 1; i++)
                 {
-                    if (i + 1 > startMonth)
+
+
+                    int daysInMonth = DateTime.DaysInMonth(enrollment.EnrollmentYear, i + 1);
+                    DateTime startDate = new DateTime(enrollment.EnrollmentYear, i + 1, 1);
+                    DateTime endDate = new DateTime(enrollment.EnrollmentYear, i + 1, daysInMonth);
+
+                    tuitions.Add(new Tuition()
                     {
-                        int daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, i + 1);
-                        DateTime startDate = new DateTime(DateTime.Now.Year, i + 1, 1);
-                        DateTime endDate = new DateTime(DateTime.Now.Year, i + 1, daysInMonth);
-
-                        tuitions.Add(new Tuition()
-                        {
-                            MonthNumber = i,
-                            MonthName = meses[i - 1],
-                            StartDate = startDate,
-                            EndDate = endDate,
-                            Year = DateTime.Now.Year,
-                            StudentId = model.Id,
-                            AssociatedLevelId = model.CurrentSchoolLevelId
-
-                        });
-                    }
+                        MonthNumber = i,
+                        MonthName = meses[i - 1],
+                        StartDate = startDate,
+                        EndDate = endDate,
+                        Year = enrollment.EnrollmentYear,
+                        StudentId = model.Id,
+                        AssociatedLevelId = model.CurrentSchoolLevelId,
+                        EnrollmentId = enrollment.Id
+                    }); 
 
                 }
 
@@ -91,24 +90,23 @@ namespace logic.systems.school.managment.Services
                 string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro" };
                 for (int i = 1; i < meses.Length + 1; i++)
                 {
-                    if (i + 1 > startMonth)
+
+                    int daysInMonth = DateTime.DaysInMonth(enrollment.EnrollmentYear, i + 1);
+                    DateTime startDate = new DateTime(enrollment.EnrollmentYear, i + 1, 1);
+                    DateTime endDate = new DateTime(enrollment.EnrollmentYear, i + 1, daysInMonth);
+
+                    tuitions.Add(new Tuition()
                     {
-                        int daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, i + 1);
-                        DateTime startDate = new DateTime(DateTime.Now.Year, i + 1, 1);
-                        DateTime endDate = new DateTime(DateTime.Now.Year, i + 1, daysInMonth);
+                        MonthNumber = i,
+                        MonthName = meses[i - 1],
+                        StartDate = startDate,
+                        EndDate = endDate,
+                        Year = enrollment.EnrollmentYear,
+                        StudentId = model.Id,
+                        AssociatedLevelId = model.CurrentSchoolLevelId,
+                        EnrollmentId = enrollment.Id
+                    });
 
-                        tuitions.Add(new Tuition()
-                        {
-                            MonthNumber = i,
-                            MonthName = meses[i - 1],
-                            StartDate = startDate,
-                            EndDate = endDate,
-                            Year = DateTime.Now.Year,
-                            StudentId = model.Id,
-                            AssociatedLevelId = model.CurrentSchoolLevelId
-
-                        });
-                    }
                 }
 
                 await db.Tuitions.AddRangeAsync(tuitions);
@@ -159,12 +157,12 @@ namespace logic.systems.school.managment.Services
             }
         }
 
-        public async Task<List<Models.Payment>> GetPaymentsByStudantTuitionsId(int studentId)
+        public async Task<List<PaymentTuition>> GetPaymentsByStudantTuitionsId(int studentId)
         {
             try
             {
                 var student = await db.Students.Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).FirstOrDefaultAsync(x => x.Id == studentId);
-                var listOfPayments = new List<Models.Payment>();
+                var listOfPayments = new List<PaymentTuition>();
 
                 foreach (int item in student.Enrollments.SelectMany(x => x.Tuitions).Select(x => x.Id).ToList())
                 {
@@ -172,6 +170,7 @@ namespace logic.systems.school.managment.Services
 
                     if (payment is not null)
                     {
+                        payment.Tuition.Enrollment = null;
                         listOfPayments.Add(payment);
                     }
 
@@ -209,12 +208,12 @@ namespace logic.systems.school.managment.Services
                 throw;
             }
         }
-        public async Task<List<Models.Payment>> CreatePayment(CreatePaymentDTO dto)
+        public async Task<List<PaymentTuition>> CreatePayment(CreatePaymentDTO dto)
         {
             try
             {
-                var studant = await db.Students.Include(x => x.Enrollments) 
-                                                .ThenInclude( x=> x. Tuitions)
+                var studant = await db.Students.Include(x => x.Enrollments)
+                                                .ThenInclude(x => x.Tuitions)
                                                .Include(x => x.CurrentSchoolLevel)
                                                .FirstOrDefaultAsync(x => x.Id == dto.StudantId);
 
@@ -233,7 +232,7 @@ namespace logic.systems.school.managment.Services
                     await db.PaymentTuitions.AddAsync(payment);
                     await db.SaveChangesAsync();
 
-                    var tuitionPayed = db  .Tuitions.FirstOrDefault(x => x.Id == dto.TuitionId);
+                    var tuitionPayed = db.Tuitions.FirstOrDefault(x => x.Id == dto.TuitionId);
                     tuitionPayed.Row = Common.Modified;
                     tuitionPayed.UpdatedDate = DateTime.Now;
                     tuitionPayed.PaidDate = DateTime.Now;
@@ -311,15 +310,15 @@ namespace logic.systems.school.managment.Services
             };
             var Price_3800 = new List<string>()
             {
-           "8ª classe"      ,
-"9ª classe"     ,
-"10ª classe"
+                "8ª classe"      ,
+                "9ª classe"     ,
+                "10ª classe"
 
             };
             var Price_4200 = new List<string>()
             {
-"11ª classe"    ,
-"12ª classe"
+                "11ª classe"    ,
+                "12ª classe"
             };
 
             if (Price_3500.Contains(schoolLevel)) { return 3500; }
@@ -345,7 +344,7 @@ namespace logic.systems.school.managment.Services
 
             if (studantId is not null || studantId > 0)
             {
-                students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x. Tuitions).Where(x => x.Row != Common.Deleted && x.Id == studantId).ToListAsync();
+                students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted && x.Id == studantId).ToListAsync();
 
             }
             else
@@ -354,8 +353,8 @@ namespace logic.systems.school.managment.Services
             }
 
             foreach (Student student in students)
-            { 
-                foreach (Tuition tuition in student.Enrollments.SelectMany(x => x. Tuitions))
+            {
+                foreach (Tuition tuition in student.Enrollments.SelectMany(x => x.Tuitions))
                 {
 
                     if (!tuition.Paid)

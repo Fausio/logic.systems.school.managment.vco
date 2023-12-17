@@ -5,13 +5,13 @@ namespace logic.systems.school.managment.Interface
 {
     public interface ITuitionService
     {
-         public Task CreateByClassOfStudant (Student model, int? startManth = -99);
+         public Task CreateByClassOfStudant (Student model, Enrollment enrollment);
          
         public Task<List<Tuition>> GetByStudantId (int StudantId);
 
-        public Task<List<Payment>> CreatePayment(CreatePaymentDTO dto);
+        public Task<List<PaymentTuition>> CreatePayment(CreatePaymentDTO dto);
        public Task  CreateFeePayment(CreateFeePaymentDTO dto);
-        public Task<List<Payment>> GetPaymentsByStudantTuitionsId(int studentId);
+        public Task<List<PaymentTuition>> GetPaymentsByStudantTuitionsId(int studentId);
         public Task<List<Models.Fines>> GetByStudantIdFinesBy(int StudantId);
         public string  GetMonthName(int monthNumber);
          

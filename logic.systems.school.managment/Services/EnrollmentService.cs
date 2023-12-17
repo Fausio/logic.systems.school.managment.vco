@@ -1,10 +1,13 @@
-﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using logic.systems.school.managment.Data;
+using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace logic.systems.school.managment.Services
@@ -13,7 +16,7 @@ namespace logic.systems.school.managment.Services
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
 
-        public async Task EnrollmentByStudantId(int studantId, int CurrentSchoolLevelId)
+        public async Task<Enrollment> EnrollmentByStudantId(int studantId, int CurrentSchoolLevelId, int EnrollmentYear)
         {
             try
             {
@@ -21,14 +24,26 @@ namespace logic.systems.school.managment.Services
                 {
                     var enrollment = await GenerateEnrollmentDataByLevel(studantId, CurrentSchoolLevelId);
                     if (enrollment is not null)
-                    { 
+                    {
                         var PaymentEnrollment = enrollment.PaymentEnrollment;
                         await db.Enrollments.AddAsync(enrollment);
                         await db.SaveChangesAsync();
 
-                        enrollment.PaymentEnrollmentId = enrollment.PaymentEnrollment.Id; 
-                        await db.SaveChangesAsync(); 
+                        enrollment.PaymentEnrollmentId = enrollment.PaymentEnrollment.Id;
+                        enrollment.EnrollmentYear = EnrollmentYear;
+                        await db.SaveChangesAsync();
+
+                        return enrollment;
                     }
+                    else
+                    {
+                        throw new Exception("Nof found enrollment");
+                    }
+                }
+                else
+                {
+
+                    throw new Exception("Nof found EnrollmentByStudantId");
                 }
             }
             catch (Exception)
@@ -38,6 +53,32 @@ namespace logic.systems.school.managment.Services
             }
 
 
+        }
+
+        public async Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(int studantId)
+        {
+            var result = new List<EnrollmentListDTO>();
+            //< th > Data de cração</ th >
+            //< th > Classe da matricula</ th >
+            //< th > Ano </ th >
+            //< th > Itens </ th >
+            //< th > Valor </ th >
+            //< th > Total </ th >
+
+            result = (from e in db.Enrollments.Include(x => x.EnrollmentItems)
+                      join level in db.SimpleEntitys on e.SchoolLevelId equals level.Id
+                      join pay in db.PaymentEnrollments on e.Id equals pay.EnrollmentId
+                      where e.StudentId == studantId
+                      select new EnrollmentListDTO
+                      {
+                          createdDate = e.CreatedDate,
+                          level = level.Description,
+                          year = e.EnrollmentYear,
+                          items = "ghfgh",
+                          value = pay.PaymentWithoutVat.ToString(),
+                          Total = pay.PaymentWithoutVat.ToString(),
+                      }).ToList();
+            return result;
         }
 
         private async Task<Enrollment> GenerateEnrollmentDataByLevel(int studantId, int SchoolLevelId)

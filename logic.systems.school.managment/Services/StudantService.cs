@@ -47,12 +47,15 @@ namespace logic.systems.school.managment.Services
         {
             try
             {
-                return await db.Students.Include(x => x.CurrentSchoolLevel)
+                // pegar sempre o mais recente
+                var result = await db.Students.Include(x => x.CurrentSchoolLevel)
                                         .Include(x => x.District).ThenInclude(x => x.OrgUnitProvince)
-                                        .Include(x => x.Enrollments).ThenInclude(x => x.Tuitions)
+                                        .Include(x => x.Enrollments).ThenInclude(t => t.Tuitions)
                                         .Include(x => x.Sponsor)
                                         .ThenInclude(x => x.Contacts)
-                                        .FirstOrDefaultAsync(x => x.Id == modelID && x.Row != Common.Deleted);
+                                        .FirstOrDefaultAsync(x => x.Id == modelID && x.Row != Common.Deleted); 
+                 
+                return result;
             }
             catch (Exception)
             {

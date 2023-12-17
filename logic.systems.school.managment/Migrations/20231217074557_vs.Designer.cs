@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using logic.systems.school.managment.Data;
 
@@ -11,9 +12,10 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231217074557_vs")]
+    partial class vs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,9 +80,6 @@ namespace logic.systems.school.managment.Migrations
                     b.Property<string>("CreatedUSer")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EnrollmentYear")
-                        .HasColumnType("int");
 
                     b.Property<int>("PaymentEnrollmentId")
                         .HasColumnType("int");
@@ -597,7 +596,7 @@ namespace logic.systems.school.managment.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("EnrollmentId")
+                    b.Property<int>("EnrollmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("MonthName")
@@ -972,7 +971,9 @@ namespace logic.systems.school.managment.Migrations
                 {
                     b.HasOne("logic.systems.school.managment.Models.Enrollment", "Enrollment")
                         .WithMany("Tuitions")
-                        .HasForeignKey("EnrollmentId");
+                        .HasForeignKey("EnrollmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Enrollment");
                 });
