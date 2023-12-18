@@ -1,10 +1,12 @@
 ﻿using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace logic.systems.school.managment.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         private IOrgUnit _IOrgUnitServiceService;

@@ -21,23 +21,9 @@
                 <div class="col-md-6">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <form asp-action="PaymentTuitionListDaily" asp-controller="Document">
 
-                                <button type="submit" class="btn btn-info btn-icon-text btn-block">
-                                    Relatorio de Fecho de contas  diário (Data: @DateTime.Now.ToString("dd/MM/yyyy")) DD/MM/AAAA
-                                </button>
-
-                            </form>
-                        </li>
-                        <li class="list-group-item mt-3">
-                            @*  <a asp-action="PaymentTuitionList" asp-controller="Document">
-                            <button type="button" class="btn btn-info btn-icon-text btn-block">
-                            Relatorio de Fecho de contas
-                            </button>
-                            </a> *@
-
-                            <button type="button" class="btn btn-info btn-icon-text btn-block" id="baixarRelatorio">
-                                Relatorio de Fecho de contas
+                            <button type="submit" class="btn btn-info btn-icon-text btn-block" id="baixarRelatorio">
+                                Relatório de Fecho de contas  diário (Data: @DateTime.Now.ToString("dd/MM/yyyy")) DD/MM/AAAA
                             </button>
                             <div id="spinner" style="display:none">
                                 <div class="d-flex justify-content-center">
@@ -47,7 +33,13 @@
                                 </div>
                             </div>
                         </li>
-
+                        <li class="list-group-item mt-3">
+                            <a asp-action="PaymentTuitionList" asp-controller="Document">
+                                <button type="button" class="btn btn-info btn-icon-text btn-block">
+                                    Relatório de Fecho de contas
+                                </button>
+                            </a> 
+                        </li> 
                     </ul>
                 </div>
                 <div class="col-md-2">
@@ -67,7 +59,7 @@
 @section scripts {
     <script>
 
-         
+
 
         $("#baixarRelatorio").click(function () {
 
@@ -106,42 +98,42 @@
 
 
 
-                    //    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ReportName);
+                            //    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ReportName);
 
 
 
 
-                                    // $.ajax({
-                                    //     url: '/Document/PaymentTuitionListDaily',
-                                    //     type: 'POST',
-                                    //     success: function (data) {
-                                    //         // // Cria um link temporário para iniciar o download
-                                    //         // var a = document.createElement('a');
-                                    //         // var url = window.URL.createObjectURL(data);
-                                    //         // a.href = url;
-                                    //         // a.download = 'relatorio.xlsx';
-                                    //         // document.body.appendChild(a);
-                                    //         // a.click();
-                                    //         // window.URL.revokeObjectURL(url);
-                                    //         // document.body.removeChild(a);
-                                    //     },
-                                    //     error: function () {
-                                    //         alert('Erro ao baixar o relatório.');
-                                    //     }
-                                    // });
+                                            // $.ajax({
+                                            //     url: '/Document/PaymentTuitionListDaily',
+                                            //     type: 'POST',
+                                            //     success: function (data) {
+                                            //         // // Cria um link temporário para iniciar o download
+                                            //         // var a = document.createElement('a');
+                                            //         // var url = window.URL.createObjectURL(data);
+                                            //         // a.href = url;
+                                            //         // a.download = 'relatorio.xlsx';
+                                            //         // document.body.appendChild(a);
+                                            //         // a.click();
+                                            //         // window.URL.revokeObjectURL(url);
+                                            //         // document.body.removeChild(a);
+                                            //     },
+                                            //     error: function () {
+                                            //         alert('Erro ao baixar o relatório.');
+                                            //     }
+                                            // });
 
-                                    // $.ajax({
-                                    //     url: '/admin/GetDistricts',
-                                    //     type: 'GET',
-                                    //     success: function (districts) {
-                                    //         $("#district").empty();
-                                    //         $.each(districts, function (index, result) {
-                                    //             $("#district").append($('<option>', {
-                                    //                 value: result.id,
-                                    //                 text: result.description
-                                    //             }));
-                                    //         });
-                                    //     }
-                                    // });
+                                            // $.ajax({
+                                            //     url: '/admin/GetDistricts',
+                                            //     type: 'GET',
+                                            //     success: function (districts) {
+                                            //         $("#district").empty();
+                                            //         $.each(districts, function (index, result) {
+                                            //             $("#district").append($('<option>', {
+                                            //                 value: result.id,
+                                            //                 text: result.description
+                                            //             }));
+                                            //         });
+                                            //     }
+                                            // });
     </script>
 }

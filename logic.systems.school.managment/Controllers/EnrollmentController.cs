@@ -2,10 +2,12 @@
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace logic.systems.school.managment.Controllers
 {
+    [Authorize]
     public class EnrollmentController : Controller
     {
         private IEnrollment _EnrollmentService;

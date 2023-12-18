@@ -4,20 +4,30 @@ using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Template;
 
 namespace logic.systems.school.managment.Controllers
 {
+    [Authorize]
     public class DocumentController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private Idocument _DocumentService;
+        private IApp _AppService;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public DocumentController(Idocument DocumentService, IWebHostEnvironment hostingEnvironment)
+        public DocumentController(Idocument DocumentService,
+                                  IWebHostEnvironment hostingEnvironment,
+                                  IApp appService,
+                                  UserManager<IdentityUser> userManager)
         {
             this._DocumentService = DocumentService;
-            _hostingEnvironment = hostingEnvironment;
+            this._hostingEnvironment = hostingEnvironment;
+            this._AppService = appService;
+            this._userManager = userManager;
         }
         public IActionResult Index()
         {
@@ -40,7 +50,7 @@ namespace logic.systems.school.managment.Controllers
         {
             var result = await _DocumentService.GetEnrollmentInvoiceByEnrollId(id);
 
-             
+
             string relativePath = "template/invoice.xlsx";
             string filePath = Path.Combine(_hostingEnvironment.WebRootPath, relativePath);
 
@@ -49,8 +59,24 @@ namespace logic.systems.school.managment.Controllers
                 using var workbook = new XLWorkbook(filePath);
                 var worksheet = workbook.Worksheets.Worksheet(1);
 
+                worksheet.Cell("E4").Value = DateTime.Now.ToString("dd/MM/yyyy");
+                worksheet.Cell("E5").Value = result.Id;
+                worksheet.Cell("E6").Value = result.Enrollment.StudentId;
+                worksheet.Cell("E7").Value = "Recibo de Matricula";
 
-                worksheet.Cell("E5").Value = result.Id.ToString();
+                worksheet.Cell("C8").Value = result.Enrollment.Student.Name;
+
+                worksheet.Cell("B11").Value = "#";
+                worksheet.Cell("C11").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId);
+                worksheet.Cell("D11").Value = result.Enrollment.EnrollmentYear;
+                worksheet.Cell("E11").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + "MT";
+
+                var currentUser = await _userManager.GetUserAsync(User);
+
+                if (currentUser != null)
+                {
+                    worksheet.Cell("E13").Value = "Emitido por: " + currentUser.UserName;
+                } 
 
                 using var stream = new MemoryStream();
 
@@ -63,9 +89,9 @@ namespace logic.systems.school.managment.Controllers
             {
                 throw new Exception("path not foun");
             }
-               
 
-             
+
+
         }
 
 

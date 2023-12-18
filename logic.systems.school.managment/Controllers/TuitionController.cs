@@ -1,10 +1,12 @@
 ﻿using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace logic.systems.school.managment.Controllers
 {
+    [Authorize]
     public class TuitionController : Controller
     {
         private ITuitionService _ITuitionService;

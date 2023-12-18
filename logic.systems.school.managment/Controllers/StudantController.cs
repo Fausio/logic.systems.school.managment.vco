@@ -3,13 +3,17 @@ using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Mapper.ManualMapper;
 using logic.systems.school.managment.Models;
 using logic.systems.school.managment.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Metrics;
 
 namespace logic.systems.school.managment.Controllers
 {
+    [Authorize]
     public class StudantController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private IstudantService _StudentService;
         private IOrgUnit _IOrgUnitServiceService;
         private ISempleEntityService _SempleEntityService;
@@ -22,7 +26,8 @@ namespace logic.systems.school.managment.Controllers
             ISempleEntityService SempleEntityService,
             IEnrollment IEnrollment,
             IApp IAppService,
-        ITuitionService iTuitionService)
+        ITuitionService iTuitionService,
+        UserManager<IdentityUser> userManager)
         {
             this._StudentService = StudentService;
             this._IOrgUnitServiceService = IOrgUnitServiceService;
@@ -30,6 +35,7 @@ namespace logic.systems.school.managment.Controllers
             this._ITuitionService = iTuitionService;
             this._IEnrollmentService = IEnrollment;
             this._IAppService = IAppService;
+            this._userManager = userManager;
         }
 
         public async Task<IActionResult> Index(int? pageNumber = 1, int? pageSize = 10)
@@ -122,7 +128,8 @@ namespace logic.systems.school.managment.Controllers
 
                     //if (model.EnroolAllMonths)
                     //{
-                    var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
+                    var currentUser = await _userManager.GetUserAsync(User);
+                    var result = await _StudentService.Create(StudantProfile.ToClass(model), currentUser.Id);
                     var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear, result.SchoolClassRoomId);
                     await _ITuitionService.CreateByClassOfStudant(result, Enrollment);
                     TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
@@ -198,8 +205,8 @@ namespace logic.systems.school.managment.Controllers
             {
                 var myClass = StudantProfile.ToClass(model);
                 myClass.Id = model.id;
-
-                var result = await _StudentService.Update(myClass, "8e445865-a24d-4543-a6c6-9443d048cdb9");
+                var currentUser = await _userManager.GetUserAsync(User);
+                var result = await _StudentService.Update(myClass, currentUser.Id);
 
                 TempData["MensagemSucess"] = "Estudante Actualizado com sucesso!";
 
