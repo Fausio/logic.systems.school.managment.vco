@@ -1,4 +1,4 @@
-﻿using logic.systems.school.managment.Migrations;
+﻿ 
 
 namespace logic.systems.school.managment.Dto
 {
