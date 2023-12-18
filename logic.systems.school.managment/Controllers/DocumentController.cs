@@ -68,6 +68,7 @@ namespace logic.systems.school.managment.Controllers
 
                 worksheet.Cell("B11").Value = "#";
                 worksheet.Cell("C11").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId);
+                worksheet.Cell("C11").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId);
                 worksheet.Cell("D11").Value = result.Enrollment.EnrollmentYear;
                 worksheet.Cell("E11").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + "MT";
 
