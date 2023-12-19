@@ -44,8 +44,7 @@ namespace logic.systems.school.managment.Controllers
         {
             return await PaymentTuitionListMethod(filters, "Relatório de Fecho de contas por datas");
         }
-
-
+         
         public async Task<IActionResult> EnrollmentInvoice(int id)
         {
             var result = await _DocumentService.GetEnrollmentInvoiceByEnrollId(id);
@@ -94,8 +93,7 @@ namespace logic.systems.school.managment.Controllers
 
 
         }
-
-
+         
         public async Task<IActionResult> PaymentTuitionListDaily()
         {
             var today = DateTime.Now;
@@ -122,12 +120,14 @@ namespace logic.systems.school.managment.Controllers
             worksheet.Cell(3, 1).Value = "COPPERATIVA DE ENSINO KALIMANY";
             worksheet.Cell(4, 1).Value = "Data inicial" + filters.StartDate;
             worksheet.Cell(4, 2).Value = "Data final" + filters.EndDate;
-            worksheet.Cell(5, 1).Value = "Estudante";
-            worksheet.Cell(5, 2).Value = "Classe do estudante";
-            worksheet.Cell(5, 3).Value = "Mes a pagar";
-            worksheet.Cell(5, 4).Value = "Valor em Metical";
-            worksheet.Cell(5, 5).Value = "Iva";
-            worksheet.Cell(5, 6).Value = "Total com IVA (5%)";
+
+            worksheet.Cell(5, 1).Value = "Tipo";
+            worksheet.Cell(5, 2).Value = "Estudante";
+            worksheet.Cell(5, 3).Value = "Classe do estudante";
+            worksheet.Cell(5, 4).Value = "Mes a pagar";
+            worksheet.Cell(5, 5).Value = "Valor em Metical";
+            worksheet.Cell(5, 6).Value = "Iva";
+            worksheet.Cell(5, 7).Value = "Total com IVA (5%)";
 
             worksheet.Cell(1, 1).Style.Font.SetBold();
             worksheet.Cell(2, 1).Style.Font.SetBold();
@@ -140,7 +140,7 @@ namespace logic.systems.school.managment.Controllers
             worksheet.Cell(5, 4).Style.Font.SetBold();
             worksheet.Cell(5, 5).Style.Font.SetBold();
             worksheet.Cell(5, 6).Style.Font.SetBold();
-
+            worksheet.Cell(5, 7).Style.Font.SetBold();
 
             #endregion
 
@@ -155,12 +155,13 @@ namespace logic.systems.school.managment.Controllers
             {
                 currentRow++;
 
-                worksheet.Cell(currentRow, 1).Value = item.StudendName;
-                worksheet.Cell(currentRow, 2).Value = item.StudentClassLevel;
-                worksheet.Cell(currentRow, 3).Value = item.MonthPaid;
-                worksheet.Cell(currentRow, 4).Value = item.MonthlyFeeWithoutVat;
-                worksheet.Cell(currentRow, 5).Value = item.VatOfMonthlyFee;
-                worksheet.Cell(currentRow, 6).Value = item.MonthlyFeeWithVat;
+                worksheet.Cell(currentRow, 1).Value = item.Type;
+                worksheet.Cell(currentRow, 2).Value = item.StudendName;
+                worksheet.Cell(currentRow, 3).Value = item.StudentClassLevel;
+                worksheet.Cell(currentRow, 4).Value = item.MonthPaid;
+                worksheet.Cell(currentRow, 5).Value = item.MonthlyFeeWithoutVat;
+                worksheet.Cell(currentRow, 6).Value = item.VatOfMonthlyFee;
+                worksheet.Cell(currentRow, 7).Value = item.MonthlyFeeWithVat;
 
                 TotalMonthlyFeeWithoutVat = TotalMonthlyFeeWithoutVat + item.MonthlyFeeWithoutVat;
                 TotalVatOfMonthlyFee = TotalVatOfMonthlyFee + item.VatOfMonthlyFee;
@@ -170,23 +171,23 @@ namespace logic.systems.school.managment.Controllers
 
             currentRow++;
 
-            worksheet.Range(@$"A{currentRow}" + ":" + @$"C{currentRow}").Merge();
+            worksheet.Range(@$"A{currentRow}" + ":" + @$"D{currentRow}").Merge();
             worksheet.Cell(currentRow, 1).Value = "TOTAL";
             worksheet.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Cell(currentRow, 1).Style.Font.SetBold();
 
-            worksheet.Cell(currentRow, 4).Value = TotalMonthlyFeeWithoutVat;
-            worksheet.Cell(currentRow, 5).Value = TotalVatOfMonthlyFee;
-            worksheet.Cell(currentRow, 6).Value = TotalMonthlyFeeWithVat;
+            worksheet.Cell(currentRow, 5).Value = TotalMonthlyFeeWithoutVat;
+            worksheet.Cell(currentRow, 6).Value = TotalVatOfMonthlyFee;
+            worksheet.Cell(currentRow, 7).Value = TotalMonthlyFeeWithVat;
 
-            worksheet.Cell(currentRow, 4).Style.Font.SetBold();
             worksheet.Cell(currentRow, 5).Style.Font.SetBold();
             worksheet.Cell(currentRow, 6).Style.Font.SetBold();
+            worksheet.Cell(currentRow, 7).Style.Font.SetBold();
 
             #endregion
 
             #region Style   
-            for (int i = 1; i < 7; i++)
+            for (int i = 1; i < 8; i++)
             {
                 worksheet.Column(i).AdjustToContents();
             }
