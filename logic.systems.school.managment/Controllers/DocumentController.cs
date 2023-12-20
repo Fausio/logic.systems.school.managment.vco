@@ -58,6 +58,8 @@ namespace logic.systems.school.managment.Controllers
                 using var workbook = new XLWorkbook(filePath);
                 var worksheet = workbook.Worksheets.Worksheet(1);
 
+
+                #region first
                 worksheet.Cell("E4").Value = DateTime.Now.ToString("dd/MM/yyyy");
                 worksheet.Cell("E5").Value = result.Id;
                 worksheet.Cell("E6").Value = result.Enrollment.StudentId;
@@ -76,7 +78,29 @@ namespace logic.systems.school.managment.Controllers
                 if (currentUser != null)
                 {
                     worksheet.Cell("E13").Value = "Emitido por: " + currentUser.UserName;
-                } 
+                }
+                #endregion
+                #region Secund
+                worksheet.Cell("E23").Value = DateTime.Now.ToString("dd/MM/yyyy");
+                worksheet.Cell("E24").Value = result.Id;
+                worksheet.Cell("E25").Value = result.Enrollment.StudentId;
+                worksheet.Cell("E26").Value = "Recibo de Matricula";
+
+                worksheet.Cell("C27").Value = result.Enrollment.Student.Name;
+
+                worksheet.Cell("B30").Value = "#";
+                worksheet.Cell("C30").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId);
+                worksheet.Cell("C30").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId);
+                worksheet.Cell("D30").Value = result.Enrollment.EnrollmentYear;
+                worksheet.Cell("E30").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + "MT";
+                 
+
+                if (currentUser != null)
+                {
+                    worksheet.Cell("E32").Value = "Emitido por: " + currentUser.UserName;
+                }
+                #endregion
+
 
                 using var stream = new MemoryStream();
 
