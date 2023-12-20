@@ -731,6 +731,7 @@
 
 
 @section scripts {
+    <script src="https://cdn.skypack.dev/pdf-lib/core"></script>
     <script>
         $(document).ready(function () {
             $("#provinces").change(function () {
@@ -799,15 +800,13 @@
         }
 
 
-        function EnrollmentInvoice(id) {
+        function DonloadEnrollmentInvoice(id) {
 
-            $('#menu_3_info').hide();
-            $('#menu_3_spinner').show();
-
-
+            $('#enrolls_btns').hide();
+            $('#enrolls_spinner').show();
 
             $.ajax({
-                type: "GET", 
+                type: "GET",
                 url: "/Document/EnrollmentInvoice?id=" + id,
                 xhrFields: {
                     responseType: 'blob' // Configuração para tratar a resposta como um blob
@@ -822,18 +821,92 @@
                     document.body.removeChild(link);
 
 
-                    $('#menu_3_info').show();
-                    $('#menu_3_spinner').hide();
+
+                    $('#enrolls_btns').show();
+                    $('#enrolls_spinner').hide();
                 },
                 error: function (error) {
                     console.error('Erro ao baixar o relatório:', error);
 
-                    $('#menu_3_info').show();
-                    $('#menu_3_spinner').hide();
+                    $('#enrolls_btns').show();
+                    $('#enrolls_spinner').hide();
                 }
             });
+        }
 
+        function PrintEnrollmentInvoice(id) {
 
+            $('#enrolls_btns').hide();
+            $('#enrolls_spinner').show();
+
+            $.ajax({
+                type: "GET",
+                url: "/Document/EnrollmentInvoicePDF?id=" + id,
+                dataType: 'json',
+                success: function (data) {
+                    
+                     displayHtmlForPrinting(data.htmlContent);
+               
+                   
+                    $('#enrolls_btns').show();
+                    $('#enrolls_spinner').hide();
+                },
+                error: function (error) {
+                    console.error('Erro ao baixar o relatório:', error);
+
+                    $('#enrolls_btns').show();
+                    $('#enrolls_spinner').hide();
+                }
+            });
+        }
+
+        function displayHtmlForPrinting(htmlContent) {
+             
+
+            // Abre uma nova janela com o conteúdo HTML
+            var printWindow = window.open('', '_blank');
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+
+            // Aguarda o carregamento da janela antes de acionar a impressão
+            printWindow.onload = function () {
+                printWindow.print();
+                printWindow.onafterprint = function () {
+                    // Fecha a janela após a impressão
+                    printWindow.close();
+                };
+            };
+            console.log("displayHtmlForPrinting.end");
+        }
+
+        function xPrintEnrollmentInvoice(id) {
+
+            $.ajax({
+                url: '@Url.Action("GeneratePdf", "Document")',
+                type: 'POST',
+                xhrFields: {
+                    responseType: 'blob' // Set the response type to blob
+                },
+                success: function (data) {
+
+                    var blob = new Blob([data], { type: 'application/pdf' });
+                    var url = window.URL.createObjectURL(blob);
+
+                    // Open the PDF in a new tab
+                    window.open(url, '_blank');
+
+                    // Release the object URL to free up resources
+                    window.URL.revokeObjectURL(url);
+
+                    // Assuming the server returns the PDF file
+                    // You can use the returned data as needed
+                    console.log('PDF generated successfully', data);
+                    // For simplicity, redirect to the PDF file
+                },
+                error: function (error) {
+                    console.error('Error generating PDF', error);
+                }
+            });
         }
 
 
@@ -897,7 +970,6 @@
                 EnrollmentYear: $("#EnrollmentYearRepit").val()
             };
 
-            console.log("data.createEnrollment", data);
 
             if (data.EnrollmentYear === "...") {
                 $("#ValidationEnrollmentYearRepit").show();
@@ -986,8 +1058,6 @@
                 StudantId: @Model.id,
                 EnrollmentYear: EnrollmentYear,
             };
-
-            console.log("getTuitions.data", data);
 
             $("#menu_1_spinner").show();
             $("#menu_1_info").hide();
@@ -1086,7 +1156,7 @@
                 success: function (MyList) {
                     $("#tabelaEnrollments tbody").empty();
                     $('#tuitionFeePayment').empty();
-                    console.log("MyList", MyList)
+
                     $.each(MyList, function (index, item) {
                         var newRow = $("<tr>");
 
@@ -1099,7 +1169,7 @@
 
                         newRow.append("<td>" + item.value + ", MT" + "</td>");
                         newRow.append("<td>" + item.total + ", MT" + "</td>");
-                        newRow.append("<td>" + "    <button onclick='EnrollmentInvoice(" + item.id + " )'   type='button'  class='btn btn-sm btn-light btn-block btn-icon-text text-black' > baixar </button>  " + "</td>");
+                        newRow.append("<td>" + " <div id='enrolls_btns' > <button onclick='PrintEnrollmentInvoice(" + item.id + " )'   type='button'  class='btn btn-sm btn-dark btn-block btn-icon-text text-white  mb-0 mt-0 ' >  Imprimir </button>   <button onclick='DonloadEnrollmentInvoice(" + item.id + " )'   type='button'  class=' mb-0 mt-0 btn btn-sm btn-light btn-block btn-icon-text text-black' > baixar </button>   </div>   <div id='enrolls_spinner' style='display:none'><div class='d-flex justify-content-center'><div class='spinner-border spinner-border-sm' role='status'><span class='sr-only'>Loading...</span></div></div></div> " + "</td>");
                         // "<td><label class='badge badge-success mt-0 mb-0'>Pago</label></td>"
                         // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
                         $("#tabelaEnrollments tbody").append(newRow);
@@ -1109,10 +1179,10 @@
                     $('#menu_3_spinner').hide();
                 }
             });
-             
+
         }
 
- 
+
 
 
         function getPayments(id, EnrollmentYear) {
@@ -1149,24 +1219,6 @@
             });
 
 
-            // $.ajax({
-            //     url: "/Enrollment/Create",
-            //     type: "POST",
-            //     data: data,
-            //     success: function (result) {
-
-            //         getEnrollments(@Model.id);
-            //         getPayments(@Model.id);
-            //         getTuitionFines(@Model.id);
-            //         getTuitions(@Model.id);
-
-            //         $("#form_Enrollment_btns").show();
-            //         $("#form_Enrollment_spinner").hide();
-
-            //         $('#EnrollmentModal').modal('hide');
-
-            //     }
-            // });
 
 
         }

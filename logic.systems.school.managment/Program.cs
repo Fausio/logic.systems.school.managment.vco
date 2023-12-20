@@ -1,3 +1,5 @@
+using DinkToPdf.Contracts;
+using DinkToPdf;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using DocumentFormat.OpenXml.Spreadsheet;
 using logic.systems.school.managment.Data;
@@ -44,7 +46,10 @@ builder.Services.AddScoped<ITuitionService, TuitionService>();
 builder.Services.AddScoped<IDashBoard, DashboardService>();
 builder.Services.AddScoped<IApp, AppService>();
 builder.Services.AddScoped<Idocument, DocumentService>();
-builder.Services.AddScoped<IEnrollment, EnrollmentService>(); 
+builder.Services.AddScoped<IEnrollment, EnrollmentService>();
+// Register DinkToPdf converter
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+
 var app = builder.Build(); 
 
 // Configure the HTTP request pipeline.

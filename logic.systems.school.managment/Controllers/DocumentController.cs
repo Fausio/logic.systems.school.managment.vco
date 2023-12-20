@@ -1,4 +1,6 @@
 ﻿using ClosedXML.Excel;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using DocumentFormat.OpenXml.Spreadsheet;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Template;
+using System.Text;
 
 namespace logic.systems.school.managment.Controllers
 {
@@ -18,16 +21,20 @@ namespace logic.systems.school.managment.Controllers
         private Idocument _DocumentService;
         private IApp _AppService;
         private readonly IWebHostEnvironment _hostingEnvironment;
-
+        private readonly IConverter _pdfConverter;
         public DocumentController(Idocument DocumentService,
                                   IWebHostEnvironment hostingEnvironment,
                                   IApp appService,
-                                  UserManager<IdentityUser> userManager)
+                                  UserManager<IdentityUser> userManager,
+                                  IConverter pdfConverter
+                                  )
         {
             this._DocumentService = DocumentService;
             this._hostingEnvironment = hostingEnvironment;
             this._AppService = appService;
-            this._userManager = userManager;
+            this._userManager = userManager ;
+            this._pdfConverter = pdfConverter ?? throw new ArgumentNullException(nameof(pdfConverter));
+
         }
         public IActionResult Index()
         {
@@ -116,6 +123,19 @@ namespace logic.systems.school.managment.Controllers
 
 
 
+        }
+        public async Task<IActionResult> EnrollmentInvoicePDF(int id)
+        {
+            var result = await _DocumentService.GetEnrollmentInvoiceByEnrollId(id);
+
+
+            string relativePath = "template/invoice.html";
+            string filePath = Path.Combine(_hostingEnvironment.WebRootPath, relativePath);
+            // Lê o conteúdo do arquivo HTML
+            var htmlContent = System.IO.File.ReadAllText(filePath);
+
+            // Retorna o conteúdo HTML como uma resposta JSON
+            return Json(new { HtmlContent = htmlContent });
         }
          
         public async Task<IActionResult> PaymentTuitionListDaily()
@@ -229,5 +249,47 @@ namespace logic.systems.school.managment.Controllers
 
             return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ReportName);
         }
+
+        public IActionResult GeneratePdf()
+        {
+            // Create an Excel workbook using ClosedXML
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Sheet1");
+                worksheet.Cell("A1").Value = "Hello";
+                worksheet.Cell("A2").Value = "World"; 
+                // Save the Excel workbook to a MemoryStream
+                using (var excelStream = new MemoryStream())
+                {
+                    workbook.SaveAs(excelStream);
+                    excelStream.Position = 0;
+
+                    // Convert the Excel file to PDF using DinkToPdf
+                    var pdfBytes = ConvertToPdf(excelStream);
+
+                    // Return the PDF file as a response
+                    return File(pdfBytes, "application/pdf", "output.pdf");
+                }
+            }
+        }
+        private byte[] ConvertToPdf(Stream excelStream)
+        {
+            // Convert the Excel stream to a byte array
+            byte[] excelBytes;
+            using (var memoryStream = new MemoryStream())
+            {
+                excelStream.CopyTo(memoryStream);
+                excelBytes = memoryStream.ToArray();
+            }
+
+            var pdfDocument = new HtmlToPdfDocument
+            {
+                Objects = { new ObjectSettings { HtmlContent = Encoding.UTF8.GetString(excelBytes) } },
+                GlobalSettings = { PaperSize = PaperKind.A4 },
+            };
+
+            return _pdfConverter.Convert(pdfDocument);
+        }
+
     }
 }
