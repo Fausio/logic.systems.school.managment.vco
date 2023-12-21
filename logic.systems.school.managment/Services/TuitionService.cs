@@ -409,7 +409,8 @@ namespace logic.systems.school.managment.Services
             if (!Tuitions && !TuitionsFee)
             {
                 var student = await db.Students.FirstOrDefaultAsync(x => x.Id == studentId);
-                student.Suspended = false; await db.SaveChangesAsync();
+                student.Suspended = false; 
+                await db.SaveChangesAsync();
             }
 
         }
