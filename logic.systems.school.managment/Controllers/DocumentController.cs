@@ -32,7 +32,7 @@ namespace logic.systems.school.managment.Controllers
             this._DocumentService = DocumentService;
             this._hostingEnvironment = hostingEnvironment;
             this._AppService = appService;
-            this._userManager = userManager ;
+            this._userManager = userManager;
             this._pdfConverter = pdfConverter ?? throw new ArgumentNullException(nameof(pdfConverter));
 
         }
@@ -51,7 +51,7 @@ namespace logic.systems.school.managment.Controllers
         {
             return await PaymentTuitionListMethod(filters, "Relatório de Fecho de contas por datas");
         }
-         
+
         public async Task<IActionResult> EnrollmentInvoice(int id)
         {
             var result = await _DocumentService.GetEnrollmentInvoiceByEnrollId(id);
@@ -100,7 +100,7 @@ namespace logic.systems.school.managment.Controllers
                 worksheet.Cell("C30").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId);
                 worksheet.Cell("D30").Value = result.Enrollment.EnrollmentYear;
                 worksheet.Cell("E30").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + "MT";
-                 
+
 
                 if (currentUser != null)
                 {
@@ -127,17 +127,38 @@ namespace logic.systems.school.managment.Controllers
         public async Task<IActionResult> EnrollmentInvoicePDF(int id)
         {
             var result = await _DocumentService.GetEnrollmentInvoiceByEnrollId(id);
-
+            var currentUser = await _userManager.GetUserAsync(User);
 
             string relativePath = "template/invoice.html";
             string filePath = Path.Combine(_hostingEnvironment.WebRootPath, relativePath);
             // Lê o conteúdo do arquivo HTML
             var htmlContent = System.IO.File.ReadAllText(filePath);
+           
+            var sum = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + result.Enrollment.PaymentEnrollment.VatOfPayment;
+
+            var formattedHtml = htmlContent.Replace("{0}", result.Id.ToString())
+                                           .Replace("{1}", result.CreatedDate.ToString("dd/MM/yyyy"))
+                                           .Replace("{2}", DateTime.Now.ToString("dd/MM/yyyy"))
+
+                                           .Replace("{3}", "Recibo de Matricula")
+                                           .Replace("{4}", result.Enrollment.StudentId.ToString())
+                                           .Replace("{5}", currentUser.UserName)
+
+                                           .Replace("{6}", result.Enrollment.Student.Name)
+
+                                           .Replace("{7}", "#")
+                                           .Replace("{8}", await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId))
+                                           .Replace("{9}", await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId))
+                                           .Replace("{10}", result.Enrollment.EnrollmentYear.ToString())
+                                           .Replace("{11}", result.Enrollment.PaymentEnrollment.PaymentWithoutVat + "MT")
+
+                                           .Replace("{12}", result.Enrollment.PaymentEnrollment.VatOfPayment + "MT")
+                                           .Replace("{13}", sum + "MT");
 
             // Retorna o conteúdo HTML como uma resposta JSON
-            return Json(new { HtmlContent = htmlContent });
+            return Json(new { HtmlContent = formattedHtml });
         }
-         
+
         public async Task<IActionResult> PaymentTuitionListDaily()
         {
             var today = DateTime.Now;
@@ -257,7 +278,7 @@ namespace logic.systems.school.managment.Controllers
             {
                 var worksheet = workbook.Worksheets.Add("Sheet1");
                 worksheet.Cell("A1").Value = "Hello";
-                worksheet.Cell("A2").Value = "World"; 
+                worksheet.Cell("A2").Value = "World";
                 // Save the Excel workbook to a MemoryStream
                 using (var excelStream = new MemoryStream())
                 {
