@@ -124,6 +124,118 @@ namespace logic.systems.school.managment.Controllers
 
 
         }
+
+        public async Task<IActionResult> TuitionInvoice(int id)
+        {
+            var result = await _DocumentService.GetEnrollmentInvoiceByEnrollId(id);
+
+
+            string relativePath = "template/invoice.xlsx";
+            string filePath = Path.Combine(_hostingEnvironment.WebRootPath, relativePath);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                using var workbook = new XLWorkbook(filePath);
+                var worksheet = workbook.Worksheets.Worksheet(1);
+
+
+                #region first
+                worksheet.Cell("E4").Value = DateTime.Now.ToString("dd/MM/yyyy");
+                worksheet.Cell("E5").Value = result.Id;
+                worksheet.Cell("E6").Value = result.Enrollment.StudentId;
+                worksheet.Cell("E7").Value = "Recibo de Matricula";
+
+                worksheet.Cell("C8").Value = result.Enrollment.Student.Name;
+
+                worksheet.Cell("B11").Value = "#";
+                worksheet.Cell("C11").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId);
+                worksheet.Cell("C11").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId);
+                worksheet.Cell("D11").Value = result.Enrollment.EnrollmentYear;
+                worksheet.Cell("E11").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + "MT";
+
+                var currentUser = await _userManager.GetUserAsync(User);
+
+                if (currentUser != null)
+                {
+                    worksheet.Cell("E13").Value = "Emitido por: " + currentUser.UserName;
+                }
+                #endregion
+                #region Secund
+                worksheet.Cell("E23").Value = DateTime.Now.ToString("dd/MM/yyyy");
+                worksheet.Cell("E24").Value = result.Id;
+                worksheet.Cell("E25").Value = result.Enrollment.StudentId;
+                worksheet.Cell("E26").Value = "Recibo de Matricula";
+
+                worksheet.Cell("C27").Value = result.Enrollment.Student.Name;
+
+                worksheet.Cell("B30").Value = "#";
+                worksheet.Cell("C30").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId);
+                worksheet.Cell("C30").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId);
+                worksheet.Cell("D30").Value = result.Enrollment.EnrollmentYear;
+                worksheet.Cell("E30").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + "MT";
+
+
+                if (currentUser != null)
+                {
+                    worksheet.Cell("E32").Value = "Emitido por: " + currentUser.UserName;
+                }
+                #endregion
+
+
+                using var stream = new MemoryStream();
+
+                workbook.SaveAs(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+
+                return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Recibo.xlsx");
+            }
+            else
+            {
+                throw new Exception("path not foun");
+            }
+
+
+
+        }
+
+
+        public async Task<IActionResult> TuitionInvoicePDF(int id)
+        {
+            var result = await _DocumentService.GetTuitionInvoiceById(id);
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            string relativePath = "template/invoice.html";
+            string filePath = Path.Combine(_hostingEnvironment.WebRootPath, relativePath);
+            // Lê o conteúdo do arquivo HTML
+            var htmlContent = System.IO.File.ReadAllText(filePath);
+
+            var sum = result.PaymentWithoutVat + result.VatOfPayment;
+             
+
+
+            var formattedHtml = htmlContent.Replace("{0}", result.Id.ToString())
+                                           .Replace("{1}", result.CreatedDate.ToString("dd/MM/yyyy"))
+                                           .Replace("{2}", DateTime.Now.ToString("dd/MM/yyyy"))
+
+                                           .Replace("{3}", $"Recibo de Mensalidade ({result.Tuition.MonthNumber +"-"+ result.Tuition.MonthName + "-" + result.Tuition.Year})" )
+                                           .Replace("{4}", result.Tuition.Enrollment.StudentId.ToString())
+                                           .Replace("{5}", currentUser.UserName)
+
+                                           .Replace("{6}", result.Tuition.Enrollment.Student.Name)
+
+                                           .Replace("{7}", "#")
+                                           .Replace("{8}", await _AppService.SempleEntityDescriptionById(result.Tuition.Enrollment.SchoolLevelId))
+                                           .Replace("{9}", await _AppService.SempleEntityDescriptionById(result.Tuition.Enrollment.SchoolClassRoomId))
+                                           .Replace("{10}", result.Tuition.Enrollment.EnrollmentYear.ToString())
+
+                                           .Replace("{11}", result.PaymentWithoutVat + "MT") 
+                                           .Replace("{12}", result.VatOfPayment + "MT")
+                                           .Replace("{13}", sum + "MT");
+
+            // Retorna o conteúdo HTML como uma resposta JSON
+            return Json(new { HtmlContent = formattedHtml });
+        }
+
         public async Task<IActionResult> EnrollmentInvoicePDF(int id)
         {
             var result = await _DocumentService.GetEnrollmentInvoiceByEnrollId(id);
@@ -133,7 +245,7 @@ namespace logic.systems.school.managment.Controllers
             string filePath = Path.Combine(_hostingEnvironment.WebRootPath, relativePath);
             // Lê o conteúdo do arquivo HTML
             var htmlContent = System.IO.File.ReadAllText(filePath);
-           
+
             var sum = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + result.Enrollment.PaymentEnrollment.VatOfPayment;
 
             var formattedHtml = htmlContent.Replace("{0}", result.Id.ToString())

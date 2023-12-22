@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace logic.systems.school.managment.Migrations
 {
-    public partial class v1 : Migration
+    public partial class v0 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -103,6 +103,25 @@ namespace logic.systems.school.managment.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sponsor", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TuitionInvoice",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TuitionInvoice", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -495,6 +514,7 @@ namespace logic.systems.school.managment.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TuitionId = table.Column<int>(type: "int", nullable: false),
+                    TuitionInvoiceId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -513,6 +533,12 @@ namespace logic.systems.school.managment.Migrations
                         name: "FK_PaymentTuition_Tuition_TuitionId",
                         column: x => x.TuitionId,
                         principalTable: "Tuition",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PaymentTuition_TuitionInvoice_TuitionInvoiceId",
+                        column: x => x.TuitionInvoiceId,
+                        principalTable: "TuitionInvoice",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -650,6 +676,11 @@ namespace logic.systems.school.managment.Migrations
                 column: "TuitionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PaymentTuition_TuitionInvoiceId",
+                table: "PaymentTuition",
+                column: "TuitionInvoiceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Student_CurrentSchoolLevelId",
                 table: "Student",
                 column: "CurrentSchoolLevelId");
@@ -718,6 +749,9 @@ namespace logic.systems.school.managment.Migrations
 
             migrationBuilder.DropTable(
                 name: "Fines");
+
+            migrationBuilder.DropTable(
+                name: "TuitionInvoice");
 
             migrationBuilder.DropTable(
                 name: "Tuition");

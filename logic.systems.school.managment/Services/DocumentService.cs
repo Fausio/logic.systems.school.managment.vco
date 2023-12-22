@@ -20,6 +20,16 @@ namespace logic.systems.school.managment.Services
             return result;
         }
 
+
+
+        public async Task<PaymentTuition> GetTuitionInvoiceById(int payementId)
+        {
+            var result = await db.PaymentTuitions.Include(x => x.Tuition).ThenInclude(x => x.Enrollment).ThenInclude(x => x.Student)
+                                                 .FirstOrDefaultAsync(x => x.Id == payementId);
+
+            return result;
+        }
+
         public async Task<List<PaymentTuitionListReportDTO>> GetPaymentTuitionList(DateTime? startDate, DateTime? endDate)
         {
             try
@@ -39,8 +49,8 @@ namespace logic.systems.school.managment.Services
                                                 MonthPaid = t.MonthNumber + " - " + t.MonthName + " - " + t.Year,
                                                 MonthlyFeeWithoutVat = p.PaymentWithoutVat,
                                                 VatOfMonthlyFee = p.VatOfPayment,
-                                                MonthlyFeeWithVat = p.PaymentWithVat 
-                                           
+                                                MonthlyFeeWithVat = p.PaymentWithVat
+
                                             }).ToList();
 
                 if (PaymentTuitionResult != null && PaymentTuitionResult.Count > 0)
@@ -60,8 +70,8 @@ namespace logic.systems.school.managment.Services
                                               MonthPaid = "N/A",
                                               MonthlyFeeWithoutVat = pe.PaymentWithoutVat,
                                               VatOfMonthlyFee = pe.VatOfPayment,
-                                              MonthlyFeeWithVat = pe.PaymentWithVat 
-                                      
+                                              MonthlyFeeWithVat = pe.PaymentWithVat
+
                                           }).ToList();
 
 
@@ -74,9 +84,10 @@ namespace logic.systems.school.managment.Services
                 return results;
             }
             catch (Exception x)
-            { 
+            {
                 throw x;
             }
         }
+
     }
 }

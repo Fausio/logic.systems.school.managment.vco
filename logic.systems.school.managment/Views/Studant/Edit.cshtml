@@ -209,6 +209,7 @@
                                                             <th>Propina</th>
                                                             <th>Iva (5%)</th>
                                                             <th>Total (Propina + Iva (5%))</th>
+                                                            <th>Recibo</th>
                                                             <!-- Adicione mais colunas conforme necessário -->
                                                         </tr>
                                                     </thead>
@@ -246,52 +247,7 @@
 
 
 
-
-
-                        @*      <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
-                        Adicionar Pagamento de mensalidade
-                        </a>
-
-                        <div class="row">
-
-                        <div class="col-md-7 col-sm-12">
-                        <div class="table-responsive">
-                        <table class="MytabelaItens wideTable" id="tabelaItensPayments" border="1">
-                        <thead>
-                        <tr>
-                        <th>Pagamento para a mensalidade</th>
-                        <th>Data de Pagamento</th>
-                        <th>Propina</th>
-                        <th>Iva (5%)</th>
-                        <th>Total (Propina + Iva (5%))</th>
-                        <!-- Adicione mais colunas conforme necessário -->
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!-- Os itens da lista serão adicionados aqui -->
-                        </tbody>
-                        </table>
-                        </div>
-                        </div>
-                        <div class="col-md-5 col-sm-12">
-                        <div class="table-responsive">
-                        <table class="MytabelaItens" id="tabelaItens" border="1">
-                        <thead>
-                        <tr>
-                        <th>Mensalidades a pagar (@ViewBag.CurrentSchoolLevel)</th>
-                        <th>Data</th>
-                        <th>Estado</th>
-                        <!-- Adicione mais colunas conforme necessário -->
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!-- Os itens da lista serão adicionados aqui -->
-                        </tbody>
-                        </table>
-                        </div>
-                        </div>
-                        </div> *@
-
+                         
                     </div>
 
 
@@ -834,6 +790,39 @@
             });
         }
 
+
+        function DonloadTuitionInvoice(id) {
+
+            $('#enrolls_btns').hide();
+            $('#enrolls_spinner').show();
+
+            $.ajax({
+                type: "GET",
+                url: "/Document/TuitionInvoice?id=" + id,
+                xhrFields: {
+                    responseType: 'blob' // Configuração para tratar a resposta como um blob
+                },
+                success: function (data) {
+                    var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'Recibo.xlsx';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                     
+                    $('#enrolls_btns').show();
+                    $('#enrolls_spinner').hide();
+                },
+                error: function (error) {
+                    console.error('Erro ao baixar o relatório:', error);
+
+                    $('#enrolls_btns').show();
+                    $('#enrolls_spinner').hide();
+                }
+            });
+        }
+
         function PrintEnrollmentInvoice(id) {
 
             $('#enrolls_btns').hide();
@@ -842,6 +831,34 @@
             $.ajax({
                 type: "GET",
                 url: "/Document/EnrollmentInvoicePDF?id=" + id,
+                dataType: 'json',
+                success: function (data) {
+                    
+                     displayHtmlForPrinting(data.htmlContent);
+               
+                   
+                    $('#enrolls_btns').show();
+                    $('#enrolls_spinner').hide();
+                },
+                error: function (error) {
+                    console.error('Erro ao baixar o relatório:', error);
+
+                    $('#enrolls_btns').show();
+                    $('#enrolls_spinner').hide();
+                }
+            });
+        }
+
+
+
+                function PrintTuitionInvoice(id) {
+
+            $('#enrolls_btns').hide();
+            $('#enrolls_spinner').show();
+
+            $.ajax({
+                type: "GET",
+                url: "/Document/TuitionInvoicePDF?id=" + id,
                 dataType: 'json',
                 success: function (data) {
                     
@@ -878,38 +895,7 @@
             };
             console.log("displayHtmlForPrinting.end");
         }
-
-        function xPrintEnrollmentInvoice(id) {
-
-            $.ajax({
-                url: '@Url.Action("GeneratePdf", "Document")',
-                type: 'POST',
-                xhrFields: {
-                    responseType: 'blob' // Set the response type to blob
-                },
-                success: function (data) {
-
-                    var blob = new Blob([data], { type: 'application/pdf' });
-                    var url = window.URL.createObjectURL(blob);
-
-                    // Open the PDF in a new tab
-                    window.open(url, '_blank');
-
-                    // Release the object URL to free up resources
-                    window.URL.revokeObjectURL(url);
-
-                    // Assuming the server returns the PDF file
-                    // You can use the returned data as needed
-                    console.log('PDF generated successfully', data);
-                    // For simplicity, redirect to the PDF file
-                },
-                error: function (error) {
-                    console.error('Error generating PDF', error);
-                }
-            });
-        }
-
-
+         
         function createPayment() {
 
             var data = {
@@ -926,8 +912,8 @@
                 success: function (result) {
                     // Lógica após o envio bem-sucedido, se necessário
                     // Por exemplo, fechar o modal ou atualizar a página
-                    getPayments(@Model.id);
-                    getTuitions(@Model.id);
+                    getPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+                    getTuitions(@Model.id, @Model.Enrollments[0].EnrollmentYear);
 
                     $("#form_pay_btns").show();
                     $("#form_pay_spinner").hide();
@@ -1211,6 +1197,10 @@
                         newRow.append("<td>" + item.paymentWithoutVat + ",00 MT" + "</td>");
                         newRow.append("<td>" + item.vatOfPayment + ",00 MT" + "</td>");
                         newRow.append("<td>" + item.paymentWithVat + ",00 MT" + "</td>");
+                        newRow.append("<td>" + " <div id='enrolls_btns' > <button onclick='PrintTuitionInvoice(" + item.id + " )'   type='button'  class='btn btn-sm btn-dark btn-block btn-icon-text text-white  mb-0 mt-0 ' >  Imprimir </button>  </div>   <div id='enrolls_spinner' style='display:none'><div class='d-flex justify-content-center'><div class='spinner-border spinner-border-sm' role='status'><span class='sr-only'>Loading...</span></div></div></div> " + "</td>");
+                    
+
+
                         // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
 
                         $("#tabelaItensPayments tbody").append(newRow);

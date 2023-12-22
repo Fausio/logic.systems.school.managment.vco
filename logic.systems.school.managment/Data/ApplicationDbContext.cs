@@ -106,6 +106,7 @@ namespace logic.systems.school.managment.Data
         public DbSet<PaymentFines> PaymentFines { get; set; }
         public DbSet<PaymentEnrollment> PaymentEnrollments { get; set; }
         public DbSet<EnrollmentInvoice> EnrollmentInvoices { get; set; }
+        public DbSet<TuitionInvoice> TuitionInvoices { get; set; }
 
     }
 }

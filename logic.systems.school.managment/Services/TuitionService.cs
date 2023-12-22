@@ -163,8 +163,8 @@ namespace logic.systems.school.managment.Services
             {
                 var student = await db.Students.Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).FirstOrDefaultAsync(x => x.Id == studentId);
                 var listOfPayments = new List<PaymentTuition>();
-
-                foreach (int item in student.Enrollments.SelectMany(x => x.Tuitions).Select(x => x.Id).ToList())
+                var tuitions = student.Enrollments.SelectMany(x => x.Tuitions).Select(x => x.Id).ToList();
+                foreach (int item in tuitions)
                 {
                     var payment = await db.PaymentTuitions.FirstOrDefaultAsync(x => x.TuitionId == item);
 
@@ -177,10 +177,10 @@ namespace logic.systems.school.managment.Services
                 }
                 return listOfPayments;
             }
-            catch (Exception)
-            {
+            catch (Exception e)
+            { 
 
-                throw;
+                throw e;
             }
         }
         public async Task CreateFeePayment(CreateFeePaymentDTO dto)
@@ -228,6 +228,12 @@ namespace logic.systems.school.managment.Services
                     payment.VatOfPayment = VatCalc(payment.PaymentWithoutVat);
                     payment.PaymentWithVat = payment.VatOfPayment + payment.PaymentWithoutVat;
 
+                    payment.TuitionInvoice = new TuitionInvoice()
+                    {
+                       
+                    } ;
+
+                    await db.SaveChangesAsync();
 
                     await db.PaymentTuitions.AddAsync(payment);
                     await db.SaveChangesAsync();
@@ -240,6 +246,10 @@ namespace logic.systems.school.managment.Services
 
                     db.Tuitions.Update(tuitionPayed);
                     await db.SaveChangesAsync();
+
+                    // TODO: INVOICE 
+
+                   
                 }
 
                 return await GetPaymentsByStudantTuitionsId(studant.Id);
