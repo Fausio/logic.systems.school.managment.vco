@@ -79,7 +79,12 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 
-
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    // Here is the migration executed
+    dbContext.Database.Migrate();
+}
 
 using (var scope = app.Services.CreateScope())
 {
@@ -162,12 +167,7 @@ using (var scope = app.Services.CreateScope())
         }
     }
 }
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    // Here is the migration executed
-    dbContext.Database.Migrate();
-}
+
 
 await SeedOrgUnit.Run();
 await SeedSimpleEntity.Run();
