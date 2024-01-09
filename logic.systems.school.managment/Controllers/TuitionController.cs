@@ -1,10 +1,12 @@
 ﻿using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace logic.systems.school.managment.Controllers
 {
+    [Authorize]
     public class TuitionController : Controller
     {
         private ITuitionService _ITuitionService;
@@ -13,12 +15,13 @@ namespace logic.systems.school.managment.Controllers
         {
             this._ITuitionService = ITuitionService;
         }
-        public async Task<JsonResult> IndexByStudantId(int id)
+        public async Task<JsonResult> IndexByStudantId(getPaymentParamitersDTO id)
         {
-            var result = await _ITuitionService.GetByStudantId(id);
+            var result = await _ITuitionService.GetByStudantId(id.StudantId);
+            result = result.Where(x => x.Year  == id.EnrollmentYear).ToList();
             return Json(result);
         }
-         public async Task<JsonResult> IndexByStudantIdFines(int id)
+        public async Task<JsonResult> IndexByStudantIdFines(int id)
         {
             try
             {
@@ -34,10 +37,17 @@ namespace logic.systems.school.managment.Controllers
 
                 throw e;
             }
-      
+
         }
 
-        public async Task<JsonResult> IndexPaymentByStudantId(int id)
+        public async Task<JsonResult> IndexPaymentByStudantId(getPaymentParamitersDTO id)
+        {
+            var result = await _ITuitionService.GetPaymentsByStudantTuitionsId(id.StudantId);
+            result = result.Where(x => x.Tuition.Year == id.EnrollmentYear).ToList();
+
+            return Json(result);
+        }
+        public async Task<JsonResult> IndexByEnrollments(int id)
         {
             var result = await _ITuitionService.GetPaymentsByStudantTuitionsId(id);
             return Json(result);

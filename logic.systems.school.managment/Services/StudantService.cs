@@ -18,7 +18,7 @@ namespace logic.systems.school.managment.Services
                 model.CreatedUSer = CreatedById;
                 await db.Students.AddAsync(model);
                 await db.SaveChangesAsync();
-                return  await Read( model.Id);
+                return await Read(model.Id);
             }
             catch (Exception)
             {
@@ -47,12 +47,15 @@ namespace logic.systems.school.managment.Services
         {
             try
             {
-                return await db.Students.Include(x => x.CurrentSchoolLevel)
+                // pegar sempre o mais recente
+                var result = await db.Students.Include(x => x.CurrentSchoolLevel)
                                         .Include(x => x.District).ThenInclude(x => x.OrgUnitProvince)
-                                          .Include(x => x.Tuitions)
+                                        .Include(x => x.Enrollments).ThenInclude(t => t.Tuitions)
                                         .Include(x => x.Sponsor)
-                                        .ThenInclude(x=> x.Contacts)
-                                        .FirstOrDefaultAsync(x => x.Id == modelID && x.Row != Common.Deleted);
+                                        .ThenInclude(x => x.Contacts)
+                                        .FirstOrDefaultAsync(x => x.Id == modelID && x.Row != Common.Deleted); 
+                 
+                return result;
             }
             catch (Exception)
             {
@@ -77,16 +80,17 @@ namespace logic.systems.school.managment.Services
             var models = new List<Student>();
 
 
-            models = await db.Students.Include(x => x.Tuitions).ThenInclude(x => x.TuitionFines).Include(x => x.CurrentSchoolLevel).Where(x => x.Row != Common.Deleted)
+            models = await db.Students.Include(x => x.SchoolClassRoom). Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).ThenInclude(x => x.TuitionFines).Include(x => x.CurrentSchoolLevel).Where(x => x.Row != Common.Deleted)
                                          .Skip(skip)
                                          .Take(pageSize)
                                          .Select(u => new Student()
                                          {
                                              Id = u.Id,
-                                             Name = u.Name, 
+                                             Name = u.Name,
                                              CurrentSchoolLevel = u.CurrentSchoolLevel,
+                                             SchoolClassRoom = u.SchoolClassRoom,
                                              Suspended = u.Suspended,
-                                             haveFee =  u.Tuitions.Any(x => !x.TuitionFines.Paid)
+                                             haveFee = u.Enrollments.Any(x => x.Tuitions.Any(x => !x.TuitionFines.Paid))
 
                                          }).OrderBy(o => o.Name).ToListAsync();
 
@@ -111,14 +115,15 @@ namespace logic.systems.school.managment.Services
             throw new NotImplementedException();
         }
 
-        public async Task<PaginationDTO<Student>> SearchRecord(string Name, int CurrentSchoolLevelId )
+        public async Task<PaginationDTO<Student>> SearchRecord(string Name, int CurrentSchoolLevelId)
         {
             var data = new PaginationDTO<Student>();
 
 
             if (!string.IsNullOrEmpty(Name) && CurrentSchoolLevelId > 0)
             {
-                data.records = await db.Students.Include(x => x.Tuitions)
+                data.records = await db.Students.Include(x => x.Enrollments)
+                                        .ThenInclude(x => x.Tuitions)
                                         .ThenInclude(x => x.TuitionFines)
                                         .Include(x => x.CurrentSchoolLevel)
                                         .Where(x => x.Row != Common.Deleted && x.Name.Contains(Name) && x.CurrentSchoolLevelId == CurrentSchoolLevelId)
@@ -127,13 +132,15 @@ namespace logic.systems.school.managment.Services
                                              Id = u.Id,
                                              Name = u.Name,
                                              CurrentSchoolLevel = u.CurrentSchoolLevel,
+                                             SchoolClassRoom = u.SchoolClassRoom,
                                              Suspended = u.Suspended,
-                                             haveFee = u.Tuitions.Any(x => !x.TuitionFines.Paid)
+                                             haveFee = u.Enrollments.Any(x => x.Tuitions.Any(x => !x.TuitionFines.Paid))
                                          }).OrderBy(o => o.Name).ToListAsync();
             }
             else if (!string.IsNullOrEmpty(Name) && CurrentSchoolLevelId <= 0)
             {
-                data.records = await db.Students.Include(x => x.Tuitions)
+                data.records = await db.Students.Include(x => x.Enrollments)
+                                        .ThenInclude(x=> x.Tuitions)
                                         .ThenInclude(x => x.TuitionFines)
                                         .Include(x => x.CurrentSchoolLevel)
                                         .Where(x => x.Row != Common.Deleted && x.Name.Contains(Name))
@@ -142,14 +149,16 @@ namespace logic.systems.school.managment.Services
                                              Id = u.Id,
                                              Name = u.Name,
                                              CurrentSchoolLevel = u.CurrentSchoolLevel,
+                                             SchoolClassRoom = u.SchoolClassRoom,
                                              Suspended = u.Suspended,
-                                             haveFee = u.Tuitions.Any(x => !x.TuitionFines.Paid)
+                                             haveFee = u.Enrollments.Any(x => x.Tuitions.Any(x => !x.TuitionFines.Paid))
                                          }).OrderBy(o => o.Name).ToListAsync();
 
             }
             else if (string.IsNullOrEmpty(Name) && CurrentSchoolLevelId > 0)
             {
-                data.records = await db.Students.Include(x => x.Tuitions)
+                data.records = await db.Students.Include(x => x.Enrollments)
+                                        .ThenInclude(x => x.Tuitions) 
                                         .ThenInclude(x => x.TuitionFines)
                                         .Include(x => x.CurrentSchoolLevel)
                                         .Where(x => x.Row != Common.Deleted && x.CurrentSchoolLevelId == CurrentSchoolLevelId)
@@ -158,13 +167,14 @@ namespace logic.systems.school.managment.Services
                                              Id = u.Id,
                                              Name = u.Name,
                                              CurrentSchoolLevel = u.CurrentSchoolLevel,
+                                             SchoolClassRoom = u.SchoolClassRoom,
                                              Suspended = u.Suspended,
-                                             haveFee = u.Tuitions.Any(x => !x.TuitionFines.Paid)
+                                             haveFee = u.Enrollments.Any(x => x.Tuitions.Any(x => !x.TuitionFines.Paid))
                                          }).OrderBy(o => o.Name).ToListAsync();
             }
             else
             {
-             data =   await ReadPagenation(1, 20);
+                data = await ReadPagenation(1, 20);
             }
 
             return data;

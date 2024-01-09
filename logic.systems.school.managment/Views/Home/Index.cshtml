@@ -1,5 +1,6 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model logic.systems.school.managment.Dto.StudentPageDto
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
 <nav aria-label="breadcrumb">
@@ -8,20 +9,45 @@
     </ol>
 </nav>
 
-<div class="col-lg-12 grid-margin stretch-card">
-    <div class="card">
-        <div class="card-body pb-0">
-            <div class="form-group">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Pesquisar estudante pelo nome">
-                    <div class="input-group-append">
-                        <button class="btn btn-sm btn-light" type="button">Search</button>
+<form asp-action="search" asp-controller="studant">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body pb-0">
+                <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Filtrar pelo pelo nome do estudante" asp-for="studentName">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <div class="input-group">
+
+                                <select class="form-control form-control-lg pb-3 pt-2" asp-for="CurrentSchoolLevelId" id="SelectSchoolLevel">
+                                    <option selected>... Filtrar pela classe do estudante</option>
+                                    @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
+                                    {
+                                        <option value="@item.Id">@item.Description</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-6">
+                        <button type="submit" class="btn btn-info btn-icon-text">
+                            Pesquisar
+                        </button>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
-</div>
+</form>
 
 
 <div class="col-lg-12 grid-margin stretch-card">

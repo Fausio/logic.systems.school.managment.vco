@@ -29,6 +29,11 @@ namespace logic.systems.school.managment.Dto
 
         [Required(ErrorMessage = "O campo classe é obrigatório.")]
         public int CurrentSchoolLevelId { get; set; }
+        [Required(ErrorMessage = "O campo Turma é obrigatório.")]
+        public int SchoolClassRoomId { get; set; }
+    
+        [Required(ErrorMessage = "O campo Ano de inscrição  é obrigatório.")]
+        public int EnrollmentYear { get; set; }
 
         #region  Sponsor
         [Required(ErrorMessage = "O campo Nome do encarregado de Educação é obrigatório.")]
@@ -36,37 +41,37 @@ namespace logic.systems.school.managment.Dto
         public string? SponsorAddress { get; set; }
         public string? SponsorEducation { get; set; }
 
-        public string[] SponsorContacts { get; set; }  =   new string[] { "" };
+        public string[] SponsorContacts { get; set; } = new string[] { "" };
 
-       
+
         #endregion
 
         public bool EnroolAllMonths { get; set; }
 
-        public int StartTuition { get; set; }  
+        //public int StartTuition { get; set; }
 
-        public List<Tuition> Tuitions { get; set; } = new List<Tuition>();
+        //public List<Tuition>? Tuitions { get; set; } = new List<Tuition>();
 
         public CreateStudantDTO()
         {
             this.BirthDate = DateTime.Now.AddYears(-21);
-            string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
-            for (int i = 1; i < meses.Length + 1; i++)
-            {
-                int daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, i + 1);
-                DateTime startDate = new DateTime(DateTime.Now.Year, i + 1, 1);
-                DateTime endDate = new DateTime(DateTime.Now.Year, i + 1, daysInMonth);
+            //string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
+            //for (int i = 1; i < meses.Length + 1; i++)
+            //{
+            //    int daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, i + 1);
+            //    DateTime startDate = new DateTime(DateTime.Now.Year, i + 1, 1);
+            //    DateTime endDate = new DateTime(DateTime.Now.Year, i + 1, daysInMonth);
 
-                Tuitions.Add(new Tuition()
-                {
-                    MonthNumber = i,
-                    MonthName = meses[i - 1],
-                    StartDate = startDate,
-                    EndDate = endDate,
-                    Year = DateTime.Now.Year,  
-
-                });
-            }
+            //    Tuitions.Add(new Tuition()
+            //    {
+            //        MonthNumber = i,
+            //        MonthName = meses[i - 1],
+            //        StartDate = startDate,
+            //        EndDate = endDate,
+            //        Year = DateTime.Now.Year,
+            //        Enrollment = new Enrollment()
+            //    });
+            //}
         }
 
     }

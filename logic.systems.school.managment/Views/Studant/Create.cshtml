@@ -43,7 +43,7 @@
                 </div>
 
                 <form class="needs-validation" novalidate>
-                     
+
                     <fieldset class="border p-2">
                         <legend class="w-auto">Dados do estudante</legend>
                         <div class="form-row">
@@ -131,7 +131,7 @@
                             <legend class="w-auto">Dados pedagógicos</legend>
                             <div class="form-row mb-1">
                                 <div class="col-md-4">
-                                    <label for="">Classe actual</label>    <span asp-validation-for="Gender" class="text-danger"></span>
+                                    <label for="">Matricular na Classe </label>
                                     <select class="form-control form-control-lg pb-3 pt-3" asp-for="CurrentSchoolLevelId" id="SelectSchoolLevel">
                                         <option selected>...</option>
                                         @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
@@ -140,58 +140,30 @@
                                         }
                                     </select>
                                     <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
-                                </div> 
-                                
-
-                            </div>
-
-                            <div class="form-row mb-1">
-                                <div class="col-md-8">
-                                    <div class="form-row form-check form-check-info">
-                                        <div id="monthsDev">
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label">Inscrever todos os meses?</label>
-                                                <div class="col-md-3">
-                                                    <div class="form-check">
-                                                        <label class="form-check-label">
-                                                            @* <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios1" value="@true" asp-for="EnroolAllMonths" onclick="hideMyMonthLabel()"> *@
-                                                            @Html.RadioButtonFor(model => model.EnroolAllMonths,true, new { id = "option1", onclick="hideMyMonthLabel()",@class = "form-check-input"})
-                                                            Sim
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-check">
-                                                        <label class="form-check-label">
-                                                            @*      <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios2" value="@false" asp-for="EnroolAllMonths"  @>
-                                                            *@
-                                                            @Html.RadioButtonFor(model => model.EnroolAllMonths,false, new { id = "option1", onclick="ShowMyClassesToStart()" ,@class = "form-check-input"})
-
-                                                            Não
-                                                        </label>
-                                                        <label id="MonthSelected">  </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-                              
-
-                            </div>
-
-                            <div class="form-row mb-3">
-                                <div class="col-md-4" id="MyClassesToStart">
-                                    <label for="">Meses de início</label> 
-                                    <select class="form-control form-control-lg pb-3 pt-3" id="MyStartTuition" asp-for="StartTuition"> 
-                                        @foreach (Tuition item in Model.Tuitions)
+                                <div class="col-md-4">
+                                    <label for="">Turma / Grupo</label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="SchoolClassRoomId" id="SchoolClassRoom">
+                                        <option selected>...</option>
+                                        @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
                                         {
-                                            <option value=@item.MonthNumber>@item.MonthNumber - @item.MonthName - @item.Year</option>
+                                            <option value="@item.Id">@item.Description</option>
                                         }
                                     </select>
+                                    <span asp-validation-for="SchoolClassRoomId" class="text-danger"></span>
+                                </div> 
+                                <div class="col-md-4">
+                                    <label for="">Ano</label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="EnrollmentYear" id="EnrollmentYear">
+                                        <option selected>...</option>
+                                        @foreach (var item in ViewBag.EnrollmentYears)
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="EnrollmentYear" class="text-danger " style="display:none">O campo Ano de inscrição  é obrigatório.</span>
                                 </div>
-                                </div>
-
+                            </div> 
                         </fieldset>
                     </fieldset>
 
@@ -248,8 +220,8 @@
         </div>
     </div>
 
- 
-   </form>
+
+</form>
 
 
 
@@ -263,7 +235,7 @@
     <script>
 
         function hideMyMonthLabel() {
-             
+
             $("#MyClassesToStart").hide();
         }
 
@@ -279,10 +251,10 @@
                 // Exiba a mensagem
                 $("#msg-summary").css("display", "block");
 
-                // Remova a mensagem após 5 segundos
+                // Remova a mensagem após 5 minutos
                 setTimeout(function () {
                     $("#msg-summary").css("display", "none");
-                }, 9000);
+                }, 300000);
             }
         });
 
@@ -306,31 +278,51 @@
             });
         });
 
+        function hideMyMonthLabel() {
+             
+            $.ajax({
+                url: '/admin/GetSchoolClassRooms',
+                type: 'GET',
+                data: { Id: $("#SelectSchoolLevel").val() },
+                success: function (mydata) {
+                    $("#SchoolClassRoom").empty();
+                    $.each(mydata, function (index, result) {
+                        $("#SchoolClassRoom").append($('<option>', {
+                            value: result.id,
+                            text: result.description
+                        }));
+                    });
+                }
+            });
+        }
+       
+
         $(document).ready(function () {
             // Adicione um evento de mudança ao seu elemento select
             $("#SelectSchoolLevel").change(function () {
                 // Verifique se a opção desejada está selecionada
                 if ($(this).val() === "...") {
                     // // Desabilite a div
-                    $("#monthsDev").prop("disabled", true); 
+                    $("#monthsDev").prop("disabled", true);
                     $("#monthsDev :input").prop("disabled", true);
                     hideMyMonthLabel();
                 } else {
-                    // // Caso contrário, habilite a div
+                    hideMyMonthLabel();
                     $("#monthsDev").prop("disabled", false);
                     $("#monthsDev").css("background-color", "");
                     $("#monthsDev :input").prop("disabled", false);
+
                 }
 
             });
 
             // Desabilite a div se a opção padrão não for selecionada
             if ($("#SelectSchoolLevel").val() === "...") {
-                $("#monthsDev").prop("disabled", true); 
+                $("#monthsDev").prop("disabled", true);
                 $("#monthsDev :input").prop("disabled", true);
-                      hideMyMonthLabel();
+                hideMyMonthLabel();
             }
-             
+
         });
 
     </script>

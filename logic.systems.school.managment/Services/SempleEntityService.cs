@@ -13,16 +13,16 @@ namespace logic.systems.school.managment.Services
         {
             try
             {
-               return  await db.SimpleEntitys.Where(x => x.Type == type).ToListAsync(); 
+                return await db.SimpleEntitys.Where(x => x.Type == type).ToListAsync();
             }
             catch (Exception)
             {
 
                 throw;
-            } 
+            }
         }
 
-        public  async Task<List<SimpleEntity>> GetByTypeOrderByDescription(string type)
+        public async Task<List<SimpleEntity>> GetByTypeOrderByDescription(string type)
         {
             try
             {
@@ -47,6 +47,23 @@ namespace logic.systems.school.managment.Services
             {
 
                 throw;
+            }
+        }
+
+        public async Task<List<SimpleEntity>> GetGetSchoolClassRoomsBySchoolLevelId(int schoolLevelId)
+        {
+            var results = await GetByTypeOrderById("SchoolClassRoom"); 
+            var SchoolLevel = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Id == schoolLevelId);
+
+
+
+            if ("12ª classe" == SchoolLevel.Description)
+            {
+                return results.Where(x => x.Description.Contains("Grupo")).ToList();
+            }
+            else
+            {
+                return results.Where(x => x.Description.Contains("Turma")).ToList();
             }
         }
     }
