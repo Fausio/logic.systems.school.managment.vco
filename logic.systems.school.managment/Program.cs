@@ -160,8 +160,6 @@ using (var scope = app.Services.CreateScope())
                 await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
             }
         }
-
-
     }
 }
 using (var scope = app.Services.CreateScope())
