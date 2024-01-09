@@ -18,17 +18,18 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+{
     options.SignIn.RequireConfirmedAccount = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
-    options.SignIn.RequireConfirmedEmail = false; 
+    options.SignIn.RequireConfirmedEmail = false;
 
     options.Password.RequireDigit = false;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 4;
     options.Password.RequireLowercase = false;
-    options.Password.RequireUppercase = false; 
-    
+    options.Password.RequireUppercase = false;
+
 })
     .AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -50,7 +51,7 @@ builder.Services.AddScoped<IEnrollment, EnrollmentService>();
 // Register DinkToPdf converter
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
-var app = builder.Build(); 
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -95,23 +96,72 @@ using (var scope = app.Services.CreateScope())
 using (var scope = app.Services.CreateScope())
 {
     var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+     
 
-    var mail = "admin@Kalimany.com";
-    var pass = "admin1234";
-    if (await UserManager.FindByEmailAsync(mail) is null)
+    if (await UserManager.FindByEmailAsync("admin@Kalimany.com") is null)
     {
-        var user = new IdentityUser()
+
+        var users = new List<IdentityUser>()
         {
-            Email = mail,
-            NormalizedEmail = "admin@Kalimany.com",
-            UserName = mail,
-            NormalizedUserName = "admin",
-            EmailConfirmed = true,
-            PhoneNumberConfirmed = true,
+               new IdentityUser()
+            {
+                Email =  "admin@Kalimany.com",
+                NormalizedEmail = "admin@Kalimany.com",
+                UserName =  "admin@Kalimany.com",
+                NormalizedUserName = "admin",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            },
+
+            new IdentityUser()
+            {
+                Email =  "assane.sulemange@Kalimany.com",
+                NormalizedEmail = "assane.sulemange@Kalimany.com",
+                UserName ="assane.sulemange@Kalimany.com",
+                NormalizedUserName = "Assane Sulemange",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            },
+
+            new IdentityUser()
+            {
+                Email = "nilza.rodrigues@Kalimany.com",
+                NormalizedEmail = "nilza.rodrigues@Kalimany.com",
+                UserName = "nilza.rodrigues@Kalimany.com",
+                NormalizedUserName = "Nilza Rodrigues",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            },
         };
 
-        await UserManager.CreateAsync(user, pass);
-        await UserManager.AddToRoleAsync(user, "ADMINISTRATOR");
+
+        foreach (var item in users)
+        {
+            var email = item.Email;
+
+            if (email == "admin@Kalimany.com")
+            {
+                var pass = "admin1234";
+                await UserManager.CreateAsync(item, pass);
+                await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
+            }
+
+            if (email == "assane.sulemange@Kalimany.com")
+            {
+                var pass = "Assane1234";
+                await UserManager.CreateAsync(item, pass);
+                await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
+            }   
+            
+            if (email == "nilza.rodrigues@Kalimany.com")
+            {
+                var pass = "Nilza1234";
+                await UserManager.CreateAsync(item, pass);
+                await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
+            }
+        }
+
+
     }
 }
 using (var scope = app.Services.CreateScope())
