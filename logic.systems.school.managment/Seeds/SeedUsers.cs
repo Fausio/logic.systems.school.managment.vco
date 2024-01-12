@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.InkML;
 using logic.systems.school.managment.Data;
+using logic.systems.school.managment.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

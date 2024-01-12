@@ -1,7 +1,7 @@
 ﻿@model logic.systems.school.managment.Dto.EditStudantDTO
 
 @{
-    ViewData["Title"] = "Cadastrar estudante";
+    ViewData["Title"] = "Actualizar estudante";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
 }
 
@@ -27,10 +27,10 @@
 
     <!-- Campo oculto para o ID -->
     <input type="hidden" asp-for="@Model.id" />
-    <input type="hidden" asp-for="@Model.DistrictId" />
-    <input type="hidden" asp-for="@Model.SchoolClassRoomId" />
+@*     <input type="hidden" asp-for="@Model.DistrictId" />
+    <input type="hidden" asp-for="@Model.SchoolClassRoomId" /> *@
     <input type="hidden" asp-for="@Model.CurrentSchoolLevelId" />
-   <input type="hidden" asp-for="@Model.Enrollments" />
+    <input type="hidden" asp-for="@Model.Enrollments" />
 
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
@@ -59,10 +59,6 @@
 
                 <form class="needs-validation" novalidate>
 
-                    @*     <fieldset class="border p-2">
-                    <legend class="w-auto">Your Legend</legend>
-                    </fieldset>  *@
-
 
 
                     <fieldset class="border p-2">
@@ -79,8 +75,6 @@
                                 <span asp-validation-for="BirthDate" class="text-danger"></span>
                             </div>
                         </div>
-
-
 
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
@@ -105,7 +99,7 @@
                                 <select class="form-control form-control-lg pb-3 pt-3" id="district" asp-for="DistrictId">
                                     <option selected>...</option>
 
-                                    @foreach (OrgUnitProvince item in ViewBag.Provinces)
+                                    @foreach (OrgUnitDistrict item in ViewBag.District)
                                     {
                                         <option value="@item.Id">@item.Description</option>
                                     }
@@ -114,7 +108,6 @@
                                 <span asp-validation-for="DistrictId" class="text-danger"></span>
                             </div>
                         </div>
-
 
                         <div class="form-row mb-3">
                             <div class="col-md-4">
@@ -149,6 +142,44 @@
                         </div>
 
 
+                        <fieldset class="border p-2 pb-0">
+                            <legend class="w-auto">Dados pedagógicos</legend>
+                            <div class="form-row mb-1">
+                                <div class="col-md-4">
+                                    <label for="">Matricular na Classe </label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="CurrentSchoolLevelId" id="SelectSchoolLevel" disabled>
+                                        <option selected>...</option>
+                                        @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
+                                        {
+                                            <option value="@item.Id">@item.Description</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="">Turma / Grupo</label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="SchoolClassRoomId" id="SchoolClassRoom">
+                                        <option selected>...</option>
+                                        @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
+                                        {
+                                            <option value="@item.Id">@item.Description</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="SchoolClassRoomId" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="">Ano</label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="EnrollmentYear" id="EnrollmentYear" disabled>
+                                        <option selected>...</option>
+                                        @foreach (var item in ViewBag.EnrollmentYears)
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </select> 
+                                    <span asp-validation-for="EnrollmentYear" class="text-danger " style="display:none">O campo Ano de inscrição  é obrigatório.</span>
+                                </div>
+                            </div>
+                        </fieldset>
                     </fieldset>
 
 

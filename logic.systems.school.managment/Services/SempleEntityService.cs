@@ -9,6 +9,19 @@ namespace logic.systems.school.managment.Services
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
 
+        public async Task<SimpleEntity> GetById(int Id)
+        {
+            try
+            {
+                return await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Id == Id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<List<SimpleEntity>> GetByType(string type)
         {
             try

@@ -181,7 +181,11 @@ namespace logic.systems.school.managment.Controllers
                 ViewBag.CurrentSchoolLevels = currentSchoolLevels.Where(x => x.Id > result.CurrentSchoolLevelId);
                 ViewBag.EnrollmentYears = new List<string>{
                    DateTime.Now.AddYears(1). Year.ToString(),
-            };
+                 };
+
+                var ClassRoom = await _SempleEntityService.GetById(result.SchoolClassRoomId);
+
+                ViewBag.SchoolClassRoom = ClassRoom.Description;
 
                 if (TempData.ContainsKey("MensagemSucess"))
                 {
@@ -227,7 +231,9 @@ namespace logic.systems.school.managment.Controllers
             try
             {
                 var model = await _StudentService.Read(id);
+
                 var result = StudantProfile.ToDTO(model);
+                result.EnrollmentYear = model.Enrollments.LastOrDefault().EnrollmentYear;
                 await PopulateForms();
                 if (TempData.ContainsKey("MensagemSucess"))
                 {
@@ -251,6 +257,7 @@ namespace logic.systems.school.managment.Controllers
             };
 
             ViewBag.Provinces = await _IOrgUnitServiceService.GetOrgUnitProvinces();
+            ViewBag.District = await _IOrgUnitServiceService.GetOrgUnitDistricts();
             ViewBag.CurrentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
             ViewBag.SchoolClassRooms = await _SempleEntityService.GetByTypeOrderById("SchoolClassRoom");
             ViewBag.EnrollmentYears = new List<string>{

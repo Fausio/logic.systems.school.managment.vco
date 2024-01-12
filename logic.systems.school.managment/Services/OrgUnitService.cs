@@ -22,6 +22,19 @@ namespace logic.systems.school.managment.Services
             }
         }
 
+        public async Task<List<OrgUnitDistrict>> GetOrgUnitDistricts()
+        {
+            try
+            {
+                return await db.OrgUnitDistricts.OrderBy(x => x.Id).ToListAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<List<OrgUnitDistrict>> GetOrgUnitDistrictsByProvinceId(int OrgUnitProvinceId)
         {
             try

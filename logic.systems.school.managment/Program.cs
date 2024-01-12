@@ -101,7 +101,7 @@ using (var scope = app.Services.CreateScope())
 using (var scope = app.Services.CreateScope())
 {
     var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-     
+
 
     if (await UserManager.FindByEmailAsync("admin@Kalimany.com") is null)
     {
@@ -113,7 +113,7 @@ using (var scope = app.Services.CreateScope())
                 Email =  "admin@Kalimany.com",
                 NormalizedEmail = "admin@Kalimany.com",
                 UserName =  "admin@Kalimany.com",
-                NormalizedUserName = "admin",
+                NormalizedUserName = "admin", 
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
             },
@@ -123,7 +123,7 @@ using (var scope = app.Services.CreateScope())
                 Email =  "assane.sulemange@Kalimany.com",
                 NormalizedEmail = "assane.sulemange@Kalimany.com",
                 UserName ="assane.sulemange@Kalimany.com",
-                NormalizedUserName = "Assane Sulemange",
+                NormalizedUserName = "Assane Sulemange", 
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
             },
@@ -133,7 +133,7 @@ using (var scope = app.Services.CreateScope())
                 Email = "nilza.rodrigues@Kalimany.com",
                 NormalizedEmail = "nilza.rodrigues@Kalimany.com",
                 UserName = "nilza.rodrigues@Kalimany.com",
-                NormalizedUserName = "Nilza Rodrigues",
+                NormalizedUserName = "Nilza Rodrigues", 
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
             },
@@ -156,8 +156,8 @@ using (var scope = app.Services.CreateScope())
                 var pass = "Assane1234";
                 await UserManager.CreateAsync(item, pass);
                 await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
-            }   
-            
+            }
+
             if (email == "nilza.rodrigues@Kalimany.com")
             {
                 var pass = "Nilza1234";

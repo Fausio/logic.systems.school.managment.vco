@@ -4,6 +4,7 @@
 
 using System;
 using System.Threading.Tasks;
+using logic.systems.school.managment.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

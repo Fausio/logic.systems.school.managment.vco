@@ -116,7 +116,13 @@
                                 <span class="sidebar-status-indicator"></span>
                             </div>
                             <div class="sidebar-profile-name">
-                                <p class="sidebar-name"> @User.Identity?.Name  </p>
+
+                                @{
+                                    var user = await userManager.GetUserAsync(User);
+                                }
+
+
+                                <p class="sidebar-designation" style="font-size:10px; color:white"> @user.NormalizedUserName  </p>
                                 <p class="sidebar-designation">Bem-vindo</p>
                             </div>
                         </div>
