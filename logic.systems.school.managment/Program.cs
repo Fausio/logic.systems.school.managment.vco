@@ -116,27 +116,7 @@ using (var scope = app.Services.CreateScope())
                 NormalizedUserName = "admin", 
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-            },
-
-            new IdentityUser()
-            {
-                Email =  "assane.sulemange@Kalimany.com",
-                NormalizedEmail = "assane.sulemange@Kalimany.com",
-                UserName ="assane.sulemange@Kalimany.com",
-                NormalizedUserName = "Assane Sulemange", 
-                EmailConfirmed = true,
-                PhoneNumberConfirmed = true,
-            },
-
-            new IdentityUser()
-            {
-                Email = "nilza.rodrigues@Kalimany.com",
-                NormalizedEmail = "nilza.rodrigues@Kalimany.com",
-                UserName = "nilza.rodrigues@Kalimany.com",
-                NormalizedUserName = "Nilza Rodrigues", 
-                EmailConfirmed = true,
-                PhoneNumberConfirmed = true,
-            },
+            } 
         };
 
 

@@ -14,11 +14,11 @@
 </div>
 
 <div class="col-lg-12 grid-margin stretch-card">
-    <div class="card">
+    <div class="card w-50">
         <div class="card-body pb-2 pt-2">
 
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <ul class="list-group">
                         <li class="list-group-item">
 
@@ -41,9 +41,24 @@
                             </a> 
                         </li> 
                     </ul>
-                </div>
-                <div class="col-md-2">
-                </div>
+                    <hr />
+                    <ul class="list-group">
+                        <li class="list-group-item">
+
+                            <button type="submit" class="btn btn-info btn-icon-text btn-block" id="downloadsuspended">
+                                Relatório de Estudantes Suspensos
+                            </button>
+
+                            <div id="spinner_suspended" style="display:none">
+                                <div class="d-flex justify-content-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li> 
+                    </ul>
+                </div> 
             </div>
 
 
@@ -59,6 +74,40 @@
 @section scripts {
     <script>
 
+
+        $("#downloadsuspended").click(function () {
+
+            $("#downloadsuspended").hide();
+            $("#spinner_suspended").show();
+
+            $.ajax({
+                type: "GET",
+                url: "/Document/downloadsuspended",
+                xhrFields: {
+                    responseType: 'blob' // Configuração para tratar a resposta como um blob
+                },
+                success: function (data) {
+                    var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'Relatório de Estudantes Suspensos.xlsx';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+
+                    $("#downloadsuspended").show();
+                    $("#spinner_suspended").hide();
+                },
+                error: function (error) {
+                    console.error('Erro ao baixar o relatório:', error);
+
+                    $("#downloadsuspended").show();
+                    $("#spinner_suspended").hide();
+                }
+            });
+
+        });
 
 
         $("#baixarRelatorio").click(function () {
@@ -98,42 +147,6 @@
 
 
 
-                            //    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ReportName);
-
-
-
-
-                                            // $.ajax({
-                                            //     url: '/Document/PaymentTuitionListDaily',
-                                            //     type: 'POST',
-                                            //     success: function (data) {
-                                            //         // // Cria um link temporário para iniciar o download
-                                            //         // var a = document.createElement('a');
-                                            //         // var url = window.URL.createObjectURL(data);
-                                            //         // a.href = url;
-                                            //         // a.download = 'relatorio.xlsx';
-                                            //         // document.body.appendChild(a);
-                                            //         // a.click();
-                                            //         // window.URL.revokeObjectURL(url);
-                                            //         // document.body.removeChild(a);
-                                            //     },
-                                            //     error: function () {
-                                            //         alert('Erro ao baixar o relatório.');
-                                            //     }
-                                            // });
-
-                                            // $.ajax({
-                                            //     url: '/admin/GetDistricts',
-                                            //     type: 'GET',
-                                            //     success: function (districts) {
-                                            //         $("#district").empty();
-                                            //         $.each(districts, function (index, result) {
-                                            //             $("#district").append($('<option>', {
-                                            //                 value: result.id,
-                                            //                 text: result.description
-                                            //             }));
-                                            //         });
-                                            //     }
-                                            // });
+                         
     </script>
 }

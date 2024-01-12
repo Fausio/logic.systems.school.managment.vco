@@ -1,11 +1,13 @@
 ﻿using ClosedXML.Excel;
 using DinkToPdf;
 using DinkToPdf.Contracts;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
+using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,9 +24,11 @@ namespace logic.systems.school.managment.Controllers
         private IApp _AppService;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IConverter _pdfConverter;
+        private ITuitionService _ITuitionService;
         public DocumentController(Idocument DocumentService,
                                   IWebHostEnvironment hostingEnvironment,
                                   IApp appService,
+                                   ITuitionService iTuitionService,
                                   UserManager<IdentityUser> userManager,
                                   IConverter pdfConverter
                                   )
@@ -32,6 +36,7 @@ namespace logic.systems.school.managment.Controllers
             this._DocumentService = DocumentService;
             this._hostingEnvironment = hostingEnvironment;
             this._AppService = appService;
+            this._ITuitionService = iTuitionService;
             this._userManager = userManager;
             this._pdfConverter = pdfConverter ?? throw new ArgumentNullException(nameof(pdfConverter));
 
@@ -210,14 +215,14 @@ namespace logic.systems.school.managment.Controllers
             var htmlContent = System.IO.File.ReadAllText(filePath);
 
             var sum = result.PaymentWithoutVat + result.VatOfPayment;
-             
+
 
 
             var formattedHtml = htmlContent.Replace("{0}", result.Id.ToString())
                                            .Replace("{1}", result.CreatedDate.ToString("dd/MM/yyyy"))
                                            .Replace("{2}", DateTime.Now.ToString("dd/MM/yyyy"))
 
-                                           .Replace("{3}", $"Recibo de Mensalidade ({result.Tuition.MonthNumber +"-"+ result.Tuition.MonthName + "-" + result.Tuition.Year})" )
+                                           .Replace("{3}", $"Recibo de Mensalidade ({result.Tuition.MonthNumber + "-" + result.Tuition.MonthName + "-" + result.Tuition.Year})")
                                            .Replace("{4}", result.Tuition.Enrollment.StudentId.ToString())
                                            .Replace("{5}", currentUser.UserName)
 
@@ -228,7 +233,7 @@ namespace logic.systems.school.managment.Controllers
                                            .Replace("{9}", await _AppService.SempleEntityDescriptionById(result.Tuition.Enrollment.SchoolClassRoomId))
                                            .Replace("{10}", result.Tuition.Enrollment.EnrollmentYear.ToString())
 
-                                           .Replace("{11}", result.PaymentWithoutVat + "MT") 
+                                           .Replace("{11}", result.PaymentWithoutVat + "MT")
                                            .Replace("{12}", result.VatOfPayment + "MT")
                                            .Replace("{13}", sum + "MT");
 
@@ -273,6 +278,27 @@ namespace logic.systems.school.managment.Controllers
 
         public async Task<IActionResult> PaymentTuitionListDaily()
         {
+            var today = DateTime.Now;
+
+            return await PaymentTuitionListMethod(new ReportDataFilterDTO()
+            {
+                StartDate = new DateTime(today.Year, today.Month, today.Day, 0, 0, 0),
+                EndDate = new DateTime(today.Year, today.Month, today.Day, 23, 59, 59)
+            }, "Relatório de Fecho de contas diário");
+        }
+
+        public async Task<IActionResult> downloadsuspended()
+        {
+
+            // update suspendes
+            await _ITuitionService.CheckFee(0);
+            await _ITuitionService.AutomaticRegularization(0);
+
+
+            // get all the data
+
+            // create excel File
+
             var today = DateTime.Now;
 
             return await PaymentTuitionListMethod(new ReportDataFilterDTO()

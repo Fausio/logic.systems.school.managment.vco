@@ -376,25 +376,25 @@ namespace logic.systems.school.managment.Services
                     var tuituionStartDate_part_2_b = tuition.StartDate.AddDays(24);
 
                     if (now > tuituionStartDate_part_1)
-                    {  
+                    {
                         if (now > tuituionStartDate_part_2_a && now <= tuituionStartDate_part_2_b)
                         {   // cria mutla de 300 se pagar entre dia 15 a 25
                             //  Console.WriteLine("300 MT"); 
-                           await CreateTuitionFine(tuition.Id);
+                            await CreateTuitionFine(tuition.Id);
                         }
-                        
+
                         if (now > tuituionStartDate_part_2_b)
                         {    // cria suspende se tiver passado 25 dias sem pagar a mensalidade
                              //  Console.WriteLine("Suspenso");
                             await CreateTuitionFine(tuition.Id);
 
                             setSuspended = true;
-                            student.Suspended = setSuspended; 
+                            student.Suspended = setSuspended;
                             await db.SaveChangesAsync();
-                        }   
+                        }
                     }
                 }
-                
+
                 if (setSuspended != student.Suspended)
                 {
                     student.Suspended = setSuspended;
@@ -422,17 +422,37 @@ namespace logic.systems.school.managment.Services
 
         public async Task AutomaticRegularization(int? studentId)
         {
+
+            if (studentId is not null || studentId > 0)
+            {
+                await singleAutomaticRegularization(studentId);
+            }
+            else
+            {
+                var students = await db.Students.Where(x => x.Row != Common.Deleted).ToListAsync();
+
+                // methorar pra nao usar foreach
+                foreach (var item in students)
+                {
+                    await singleAutomaticRegularization(item.Id);
+                }
+            }
+
+        }
+
+        private async Task singleAutomaticRegularization(int? studentId)
+        {
+
             var Tuitions = await db.Tuitions.AnyAsync(x => x.StudentId == studentId && !x.Paid);
 
             var TuitionsFee = await db.Tuitions.AnyAsync(x => x.StudentId == studentId && !x.TuitionFines.Paid);
 
             if (!Tuitions && !TuitionsFee)
             {
-                var student = await db.Students.FirstOrDefaultAsync(x => x.Id == studentId);
+                var student = await db.Students.FirstOrDefaultAsync(x => x.Id == studentId && x.Row != Common.Deleted);
                 student.Suspended = false;
                 await db.SaveChangesAsync();
             }
-
         }
     }
 }
