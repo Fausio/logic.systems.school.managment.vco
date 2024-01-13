@@ -60,7 +60,7 @@ namespace logic.systems.school.managment.Controllers
         {
             var currentUser = await _userManager.GetUserAsync(User);
             var result = await _ITuitionService.CreatePayment(data, currentUser.Id);
-            return Json(result);
+            return Json("");
         }
         [HttpPost]
 

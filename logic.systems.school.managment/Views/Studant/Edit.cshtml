@@ -80,8 +80,8 @@
                                 </tr>
 
                                 <tr>
-                                    <td>Província/Distrito:</td>
-                                    <td>  @ViewBag.Province +"/"+ @ViewBag.District  </td>
+                                    <td>Província / Distrito:</td>
+                                    <td>  @ViewBag.Province / @ViewBag.District  </td>
                                 </tr>
                                 <tr>
                                     <td>Sexo:</td>
@@ -251,7 +251,7 @@
 
 
 
-                         
+
                     </div>
 
 
@@ -269,9 +269,9 @@
                     </div>
 
                     <div id="menu_2_info">
-                        <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuFeeModal" onclick="form_payfee_btns()">
-                            Adicionar Pagamento de multas
-                        </a>
+                        @*     <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuFeeModal" onclick="form_payfee_btns()">
+                        Adicionar Pagamento de multas
+                        </a> *@
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
                                 <div class="table-responsive">
@@ -814,7 +814,7 @@
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                     
+
                     $('#enrolls_btns').show();
                     $('#enrolls_spinner').hide();
                 },
@@ -837,10 +837,10 @@
                 url: "/Document/EnrollmentInvoicePDF?id=" + id,
                 dataType: 'json',
                 success: function (data) {
-                    
-                     displayHtmlForPrinting(data.htmlContent);
-               
-                   
+
+                    displayHtmlForPrinting(data.htmlContent);
+
+
                     $('#enrolls_btns').show();
                     $('#enrolls_spinner').hide();
                 },
@@ -855,7 +855,7 @@
 
 
 
-                function PrintTuitionInvoice(id) {
+        function PrintTuitionInvoice(id) {
 
             $('#enrolls_btns').hide();
             $('#enrolls_spinner').show();
@@ -865,10 +865,10 @@
                 url: "/Document/TuitionInvoicePDF?id=" + id,
                 dataType: 'json',
                 success: function (data) {
-                    
-                     displayHtmlForPrinting(data.htmlContent);
-               
-                   
+
+                    displayHtmlForPrinting(data.htmlContent);
+
+
                     $('#enrolls_btns').show();
                     $('#enrolls_spinner').hide();
                 },
@@ -882,7 +882,7 @@
         }
 
         function displayHtmlForPrinting(htmlContent) {
-             
+
 
             // Abre uma nova janela com o conteúdo HTML
             var printWindow = window.open('', '_blank');
@@ -899,7 +899,7 @@
             };
             console.log("displayHtmlForPrinting.end");
         }
-         
+
         function createPayment() {
 
             var data = {
@@ -1202,7 +1202,7 @@
                         newRow.append("<td>" + item.vatOfPayment + ",00 MT" + "</td>");
                         newRow.append("<td>" + item.paymentWithVat + ",00 MT" + "</td>");
                         newRow.append("<td>" + " <div id='enrolls_btns' > <button onclick='PrintTuitionInvoice(" + item.id + " )'   type='button'  class='btn btn-sm btn-dark btn-block btn-icon-text text-white  mb-0 mt-0 ' >  Imprimir </button>  </div>   <div id='enrolls_spinner' style='display:none'><div class='d-flex justify-content-center'><div class='spinner-border spinner-border-sm' role='status'><span class='sr-only'>Loading...</span></div></div></div> " + "</td>");
-                    
+
 
 
                         // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário

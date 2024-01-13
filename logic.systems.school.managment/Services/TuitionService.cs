@@ -244,27 +244,43 @@ namespace logic.systems.school.managment.Services
                     await db.PaymentTuitions.AddAsync(payment);
                     await db.SaveChangesAsync();
 
-                    var tuitionPayed = db.Tuitions.FirstOrDefault(x => x.Id == dto.TuitionId);
+                    var tuitionPayed = db.Tuitions.Include(x => x.TuitionFines).FirstOrDefault(x => x.Id == dto.TuitionId);
                     tuitionPayed.Row = Common.Modified;
                     tuitionPayed.UpdatedDate = DateTime.Now;
                     tuitionPayed.PaidDate = DateTime.Now;
                     tuitionPayed.Paid = true;
                     tuitionPayed.UpdatedUSer = userid;
 
+
                     db.Tuitions.Update(tuitionPayed);
                     await db.SaveChangesAsync();
 
-                    // TODO: INVOICE 
+                    // create Fee Payment if Tuition have it  
+                    if (tuitionPayed.TuitionFines is not null)
+                    {
+                        tuitionPayed.TuitionFines.Paid = true;
+                        tuitionPayed.TuitionFines.PaidDate = payment.PaymentDate;
+                        tuitionPayed.UpdatedUSer = userid;
+                        tuitionPayed.Row = Common.Modified;
+
+                        db.TuitionFines.Update(tuitionPayed.TuitionFines);
+                        await db.SaveChangesAsync();
+                    }
+
+                  
+                 
+
+
 
 
                 }
 
                 return await GetPaymentsByStudantTuitionsId(studant.Id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
         }
 
@@ -364,8 +380,8 @@ namespace logic.systems.school.managment.Services
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted && x.Id == studantId).ToListAsync();
 
             }
-            
-            if(studantId is not null || studantId == 0)
+
+            if (studantId is not null || studantId == 0)
             {
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
             }
