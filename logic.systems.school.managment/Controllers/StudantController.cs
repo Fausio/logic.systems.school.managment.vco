@@ -107,12 +107,11 @@ namespace logic.systems.school.managment.Controllers
             try
             {
                 await PopulateForms();
-
-
-
+                 
 
                 if (ModelState.IsValid)
                 {
+                    var currentUser = await _userManager.GetUserAsync(User);
                     if (await _IAppService.LimitOfStudentByClassRoomAndLevelYear(model.EnrollmentYear, model.CurrentSchoolLevelId, model.SchoolClassRoomId))
                     {
 
@@ -125,35 +124,14 @@ namespace logic.systems.school.managment.Controllers
                         }
                         return View(model);
                     }
-
-                    //if (model.EnroolAllMonths)
-                    //{
-                    var currentUser = await _userManager.GetUserAsync(User);
+ 
+                 
                     var result = await _StudentService.Create(StudantProfile.ToClass(model), currentUser.Id);
                     var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear, result.SchoolClassRoomId);
-                    await _ITuitionService.CreateByClassOfStudant(result, Enrollment);
+                    await _ITuitionService.CreateByClassOfStudant(result, Enrollment, currentUser.Id);
                     TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
                     return RedirectToAction("edit", "studant", new { id = result.Id });
-                    //}
-                    //else if (!model.EnroolAllMonths && model.StartTuition > 0)
-                    //{
-                    //    var result = await _StudentService.Create(StudantProfile.ToClass(model), "8e445865-a24d-4543-a6c6-9443d048cdb9");
-                    //    await _ITuitionService.CreateByClassOfStudant(result, model.StartTuition);
-                    //    TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
-                    //    return RedirectToAction("edit", "studant", new { id = result.Id });
-                    //}
-                    //else
-                    //{
-
-                    //    TempData["MensagemError"] = "Escolha o Meses de início";
-                    //    if (TempData.ContainsKey("MensagemError"))
-                    //    {
-                    //        ViewBag.MensagemError = TempData["MensagemError"];
-                    //    }
-                    //    return View(model);
-                    //}
-
-
+                   
                 }
 
                 return View(model);
@@ -170,8 +148,9 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
-                await _ITuitionService.CheckFee(id);
-                await _ITuitionService.AutomaticRegularization(id);
+                var currentUser = await _userManager.GetUserAsync(User);
+                await _ITuitionService.CheckFee(id, currentUser.Id);
+            //    await _ITuitionService.AutomaticRegularization(id);
                 var model = await _StudentService.Read(id);
                 var result = StudantProfile.ToDTO(model);
                 await PopulateForms();

@@ -119,11 +119,18 @@
 
                                 @{
                                     var user = await userManager.GetUserAsync(User);
+
+                                    if (user is not null)
+                                    {
+                                        <p class="sidebar-designation" style="font-size:10px; color:white"> @user.NormalizedUserName  </p>
+                                    }
                                 }
 
 
-                                <p class="sidebar-designation" style="font-size:10px; color:white"> @user.NormalizedUserName  </p>
+                              
                                 <p class="sidebar-designation">Bem-vindo</p>
+
+
                             </div>
                         </div>
                         <div class="nav-search">
@@ -221,7 +228,7 @@
                         <img src="~/celestial-admin/images/favicon.png" width="190" />
                     </li>
                     <li>
-                        <center> <p class="sidebar-menu-title">versão 1.0.0.1</p></center>
+                        <center> <p class="sidebar-menu-title" style="color:white">versão 1.0.0.3</p></center>
                     </li>
                     
                 </ul>

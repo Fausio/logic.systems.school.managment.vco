@@ -2,8 +2,8 @@
 
 namespace logic.systems.school.managment.Models
 {
-    [Table("PaymentEnrollment")]
-    public class PaymentEnrollment : Payment
+    [Table("EnrollmentPayment")]
+    public class EnrollmentPayment : Payment
     {
         public virtual Enrollment Enrollment { get; set; }
         public int EnrollmentId { get; set; } 

@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Spreadsheet;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
@@ -46,7 +47,7 @@ namespace logic.systems.school.managment.Services
 
 
 
-        public async Task CreateByClassOfStudant(Student model, Enrollment enrollment)
+        public async Task CreateByClassOfStudant(Student model, Enrollment enrollment, string userid)
         {
 
 
@@ -77,7 +78,8 @@ namespace logic.systems.school.managment.Services
                         Year = enrollment.EnrollmentYear,
                         StudentId = model.Id,
                         AssociatedLevelId = model.CurrentSchoolLevelId,
-                        EnrollmentId = enrollment.Id
+                        EnrollmentId = enrollment.Id,
+                        CreatedUSer = userid
                     });
 
                 }
@@ -129,12 +131,12 @@ namespace logic.systems.school.managment.Services
             }
         }
 
-        public async Task<List<Models.Fines>> GetByStudantIdFinesBy(int StudantId)
+        public async Task<List<Models.TuitionFine>> GetByStudantIdFinesBy(int StudantId)
         {
             try
             {
                 var tuitions = await GetByStudantId(StudantId);
-                var tuitionsFines = new List<Models.Fines>();
+                var tuitionsFines = new List<Models.TuitionFine>();
                 if (tuitions.Count > 0)
                 {
                     foreach (var item in tuitions)
@@ -158,12 +160,12 @@ namespace logic.systems.school.managment.Services
             }
         }
 
-        public async Task<List<PaymentTuition>> GetPaymentsByStudantTuitionsId(int studentId)
+        public async Task<List<TuitionPayment>> GetPaymentsByStudantTuitionsId(int studentId)
         {
             try
             {
                 var student = await db.Students.Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).FirstOrDefaultAsync(x => x.Id == studentId);
-                var listOfPayments = new List<PaymentTuition>();
+                var listOfPayments = new List<TuitionPayment>();
                 var tuitions = student.Enrollments.SelectMany(x => x.Tuitions).Select(x => x.Id).ToList();
                 foreach (int item in tuitions)
                 {
@@ -184,7 +186,7 @@ namespace logic.systems.school.managment.Services
                 throw e;
             }
         }
-        public async Task CreateFeePayment(CreateFeePaymentDTO dto)
+        public async Task CreateFeePayment(CreateFeePaymentDTO dto, string userid)
         {
             try
             {
@@ -197,6 +199,7 @@ namespace logic.systems.school.managment.Services
                     TuitionFines.PaidDate = DateTime.Now;
                     TuitionFines.UpdatedDate = DateTime.Now;
                     TuitionFines.Row = Common.Modified;
+                    TuitionFines.UpdatedUSer = userid;
                     db.TuitionFines.Update(TuitionFines);
                     await db.SaveChangesAsync();
                 }
@@ -209,29 +212,31 @@ namespace logic.systems.school.managment.Services
                 throw;
             }
         }
-        public async Task<List<PaymentTuition>> CreatePayment(CreatePaymentDTO dto)
+        public async Task<List<TuitionPayment>> CreatePayment(CreatePaymentDTO dto, string userid)
         {
             try
             {
                 var studant = await db.Students.Include(x => x.Enrollments)
-                                                .ThenInclude(x => x.Tuitions)
+                                               .ThenInclude(x => x.Tuitions)
                                                .Include(x => x.CurrentSchoolLevel)
                                                .FirstOrDefaultAsync(x => x.Id == dto.StudantId);
 
                 if (dto.StudantId > 0 && dto.TuitionId > 0 && studant is not null)
                 {
-                    var payment = new Models.PaymentTuition()
+                    var payment = new TuitionPayment()
                     {
                         TuitionId = dto.TuitionId,
                         PaymentDate = DateTime.Now,
-                        PaymentWithoutVat = getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description)
+                        PaymentWithoutVat = getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description),
+                        CreatedUSer = userid,
                     };
                     payment.VatOfPayment = VatCalc(payment.PaymentWithoutVat);
                     payment.PaymentWithVat = payment.VatOfPayment + payment.PaymentWithoutVat;
 
                     payment.TuitionInvoice = new TuitionInvoice()
                     {
-
+                        Date = payment.PaymentDate,
+                        CreatedUSer = userid
                     };
 
                     await db.SaveChangesAsync();
@@ -244,6 +249,7 @@ namespace logic.systems.school.managment.Services
                     tuitionPayed.UpdatedDate = DateTime.Now;
                     tuitionPayed.PaidDate = DateTime.Now;
                     tuitionPayed.Paid = true;
+                    tuitionPayed.UpdatedUSer = userid;
 
                     db.Tuitions.Update(tuitionPayed);
                     await db.SaveChangesAsync();
@@ -347,7 +353,7 @@ namespace logic.systems.school.managment.Services
 
 
 
-        public async Task CheckFee(int? studantId)
+        public async Task CheckFee(int? studantId, string userid)
         {
 
 
@@ -358,7 +364,8 @@ namespace logic.systems.school.managment.Services
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted && x.Id == studantId).ToListAsync();
 
             }
-            else
+            
+            if(studantId is not null || studantId == 0)
             {
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
             }
@@ -367,7 +374,7 @@ namespace logic.systems.school.managment.Services
 
             foreach (Student student in students)
             {
-                var Tuitions = student.Enrollments.SelectMany(x => x.Tuitions);
+                var Tuitions = student.Enrollments.SelectMany(x => x.Tuitions.Where(t => !t.Paid));
                 var setSuspended = false;
                 foreach (Tuition tuition in Tuitions)
                 {
@@ -380,13 +387,13 @@ namespace logic.systems.school.managment.Services
                         if (now > tuituionStartDate_part_2_a && now <= tuituionStartDate_part_2_b)
                         {   // cria mutla de 300 se pagar entre dia 15 a 25
                             //  Console.WriteLine("300 MT"); 
-                            await CreateTuitionFine(tuition.Id);
+                            await CreateTuitionFine(tuition.Id, userid);
                         }
 
                         if (now > tuituionStartDate_part_2_b)
                         {    // cria suspende se tiver passado 25 dias sem pagar a mensalidade
                              //  Console.WriteLine("Suspenso");
-                            await CreateTuitionFine(tuition.Id);
+                            await CreateTuitionFine(tuition.Id, userid);
 
                             setSuspended = true;
                             student.Suspended = setSuspended;
@@ -397,22 +404,26 @@ namespace logic.systems.school.managment.Services
 
                 if (setSuspended != student.Suspended)
                 {
+
+                    student.UpdatedUSer = userid;
                     student.Suspended = setSuspended;
                     await db.SaveChangesAsync();
                 }
             }
         }
 
-        private async Task CreateTuitionFine(int tuitionId)
+        private async Task CreateTuitionFine(int tuitionId, string userid)
         {
 
             var havetuitionFines = await db.TuitionFines.FirstOrDefaultAsync(x => x.TuitionId == tuitionId);
-
+            // para nao duplicar multas
             if (havetuitionFines == null)
             {
-                var tuitionFines = new Fines()
+                var tuitionFines = new TuitionFine()
                 {
-                    TuitionId = tuitionId
+                    TuitionId = tuitionId,
+                    CreatedUSer = userid
+
                 };
                 await db.TuitionFines.AddAsync(tuitionFines);
                 await db.SaveChangesAsync();

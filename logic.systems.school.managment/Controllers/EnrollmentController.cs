@@ -3,6 +3,7 @@ using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace logic.systems.school.managment.Controllers
@@ -11,16 +12,19 @@ namespace logic.systems.school.managment.Controllers
     public class EnrollmentController : Controller
     {
         private IEnrollment _EnrollmentService;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public EnrollmentController(IEnrollment enrollmentService)
+        public EnrollmentController(IEnrollment enrollmentService, UserManager<IdentityUser> userManager)
         {
             _EnrollmentService = enrollmentService;
+            this._userManager = userManager;
         }
         public async Task<IActionResult> Create(EnrollmentCreateDTO model)
         {
             if (!await _EnrollmentService.CheckIfHaveEnrollmentIntheYear(model))
             {
-                var result = await _EnrollmentService.EnrollmentsByStudantId(model);
+                var currentUser = await _userManager.GetUserAsync(User);
+                var result = await _EnrollmentService.EnrollmentsByStudantId(model, currentUser.Id);
                 return Json(result);
             }
             else
@@ -33,7 +37,8 @@ namespace logic.systems.school.managment.Controllers
         {
             if (!await _EnrollmentService.CheckIfHaveEnrollmentIntheYear(model))
             {
-                var result = await _EnrollmentService.EnrollmentsByStudantId(model);
+                var currentUser = await _userManager.GetUserAsync(User);
+                var result = await _EnrollmentService.EnrollmentsByStudantId(model, currentUser.Id);
                 return Json(result);
             }
             else

@@ -2,6 +2,7 @@
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace logic.systems.school.managment.Controllers
@@ -10,10 +11,11 @@ namespace logic.systems.school.managment.Controllers
     public class TuitionController : Controller
     {
         private ITuitionService _ITuitionService;
-
-        public TuitionController(ITuitionService ITuitionService)
+        private   UserManager<IdentityUser> _userManager;
+        public TuitionController(ITuitionService ITuitionService, UserManager<IdentityUser> userManager)
         {
             this._ITuitionService = ITuitionService;
+            this._userManager = userManager;
         }
         public async Task<JsonResult> IndexByStudantId(getPaymentParamitersDTO id)
         {
@@ -56,14 +58,16 @@ namespace logic.systems.school.managment.Controllers
         [HttpPost]
         public async Task<JsonResult> CreatePayment(CreatePaymentDTO data)
         {
-            var result = await _ITuitionService.CreatePayment(data);
+            var currentUser = await _userManager.GetUserAsync(User);
+            var result = await _ITuitionService.CreatePayment(data, currentUser.Id);
             return Json(result);
         }
         [HttpPost]
 
         public async Task<JsonResult> CreateFeePayment(CreateFeePaymentDTO data)
         {
-            await _ITuitionService.CreateFeePayment(data);
+            var currentUser = await _userManager.GetUserAsync(User);
+            await _ITuitionService.CreateFeePayment(data, currentUser.Id);
             return Json("");
         }
     }

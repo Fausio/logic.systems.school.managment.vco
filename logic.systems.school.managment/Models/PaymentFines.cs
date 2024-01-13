@@ -8,7 +8,7 @@ namespace logic.systems.school.managment.Models
         public virtual Enrollment Enrollment { get; set; }
         public int EnrollmentId { get; set; }
 
-        public virtual Fines Fines { get; set; }
+        public virtual TuitionFine Fines { get; set; }
         public int FinesId { get; set; }
     }
 }

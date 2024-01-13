@@ -7,7 +7,7 @@ namespace logic.systems.school.managment.Models
     {
         public virtual SimpleEntity SchoolLevel { get; set; } 
         public int SchoolLevelId { get; set; }
-        public virtual PaymentEnrollment PaymentEnrollment { get; set; }
+        public virtual EnrollmentPayment PaymentEnrollment { get; set; }
         public int PaymentEnrollmentId { get; set; }
 
         public virtual Student Student { get; set; }

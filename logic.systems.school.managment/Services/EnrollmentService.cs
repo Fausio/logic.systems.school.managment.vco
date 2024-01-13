@@ -1,10 +1,12 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -69,13 +71,14 @@ namespace logic.systems.school.managment.Services
             }
         }
 
-        public async Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(EnrollmentCreateDTO model)
+        public async Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(EnrollmentCreateDTO model, string userId)
         {
+ 
+
             var enrollment = await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId);
+             
 
-           
-
-            await _ITuitionService.CreateByClassOfStudant(await _StudentService.Read(model.StudantId), enrollment);
+            await _ITuitionService.CreateByClassOfStudant(await _StudentService.Read(model.StudantId), enrollment, userId);
             var student = await db.Students.FirstOrDefaultAsync(x => x.Id == model.StudantId);
             student.CurrentSchoolLevelId = model.SchoolLevelId;
             await db.SaveChangesAsync(); 
@@ -191,7 +194,7 @@ namespace logic.systems.school.managment.Services
                         enrollment = new Enrollment()
                         {
                             StudentId = studantId,
-                            PaymentEnrollment = new PaymentEnrollment()
+                            PaymentEnrollment = new EnrollmentPayment()
                             {
                                 PaymentWithoutVat = 3500,
                             },
@@ -209,7 +212,7 @@ namespace logic.systems.school.managment.Services
                         enrollment = new Enrollment()
                         {
                             StudentId = studantId,
-                            PaymentEnrollment = new PaymentEnrollment()
+                            PaymentEnrollment = new EnrollmentPayment()
                             {
                                 PaymentWithoutVat = 4000,
                             },
@@ -237,7 +240,7 @@ namespace logic.systems.school.managment.Services
                         enrollment = new Enrollment()
                         {
                             StudentId = studantId,
-                            PaymentEnrollment = new PaymentEnrollment()
+                            PaymentEnrollment = new EnrollmentPayment()
                             {
                                 PaymentWithoutVat = 3700,
                             },
@@ -259,7 +262,7 @@ namespace logic.systems.school.managment.Services
                         enrollment = new Enrollment()
                         {
                             StudentId = studantId,
-                            PaymentEnrollment = new PaymentEnrollment()
+                            PaymentEnrollment = new EnrollmentPayment()
                             {
                                 PaymentWithoutVat = 3700,
                             }
@@ -269,7 +272,7 @@ namespace logic.systems.school.managment.Services
                         enrollment = new Enrollment()
                         {
                             StudentId = studantId,
-                            PaymentEnrollment = new PaymentEnrollment()
+                            PaymentEnrollment = new EnrollmentPayment()
                             {
 
                                 PaymentWithoutVat = 3700,
@@ -291,7 +294,7 @@ namespace logic.systems.school.managment.Services
                         enrollment = new Enrollment()
                         {
                             StudentId = studantId,
-                            PaymentEnrollment = new PaymentEnrollment()
+                            PaymentEnrollment = new EnrollmentPayment()
                             {
                                 PaymentWithoutVat = 3800,
                             }
@@ -301,7 +304,7 @@ namespace logic.systems.school.managment.Services
                         enrollment = new Enrollment()
                         {
                             StudentId = studantId,
-                            PaymentEnrollment = new PaymentEnrollment()
+                            PaymentEnrollment = new EnrollmentPayment()
                             {
                                 PaymentWithoutVat = 4200,
                             },
@@ -319,7 +322,7 @@ namespace logic.systems.school.managment.Services
                         enrollment = new Enrollment()
                         {
                             StudentId = studantId,
-                            PaymentEnrollment = new PaymentEnrollment()
+                            PaymentEnrollment = new EnrollmentPayment()
                             {
                                 PaymentWithoutVat = 4200,
                             }

@@ -5,17 +5,17 @@ namespace logic.systems.school.managment.Interface
 {
     public interface ITuitionService
     {
-         public Task CreateByClassOfStudant (Student model, Enrollment enrollment);
+         public Task CreateByClassOfStudant (Student model, Enrollment enrollment, string userid);
          
         public Task<List<Tuition>> GetByStudantId (int StudantId);
 
-        public Task<List<PaymentTuition>> CreatePayment(CreatePaymentDTO dto);
-       public Task  CreateFeePayment(CreateFeePaymentDTO dto);
-        public Task<List<PaymentTuition>> GetPaymentsByStudantTuitionsId(int studentId);
-        public Task<List<Models.Fines>> GetByStudantIdFinesBy(int StudantId);
+        public Task<List<TuitionPayment>> CreatePayment(CreatePaymentDTO dto, string userid);
+        public Task  CreateFeePayment(CreateFeePaymentDTO dto, string userid);
+        public Task<List<TuitionPayment>> GetPaymentsByStudantTuitionsId(int studentId);
+        public Task<List<Models.TuitionFine>> GetByStudantIdFinesBy(int StudantId);
         public string  GetMonthName(int monthNumber);
          
-        public Task CheckFee(int? studentId);       
+        public Task CheckFee(int? studentId, string userid);       
         public Task AutomaticRegularization(int? studentId);       
          
     }

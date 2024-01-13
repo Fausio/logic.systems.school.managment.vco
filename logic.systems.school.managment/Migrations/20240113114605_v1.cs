@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace logic.systems.school.managment.Migrations
 {
-    public partial class v0 : Migration
+    public partial class v1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -420,7 +420,7 @@ namespace logic.systems.school.managment.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PaymentEnrollment",
+                name: "EnrollmentPayment",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -439,9 +439,9 @@ namespace logic.systems.school.managment.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PaymentEnrollment", x => x.Id);
+                    table.PrimaryKey("PK_EnrollmentPayment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PaymentEnrollment_Enrollment_EnrollmentId",
+                        name: "FK_EnrollmentPayment_Enrollment_EnrollmentId",
                         column: x => x.EnrollmentId,
                         principalTable: "Enrollment",
                         principalColumn: "Id",
@@ -481,7 +481,7 @@ namespace logic.systems.school.managment.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Fines",
+                name: "TuitionFine",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -498,9 +498,9 @@ namespace logic.systems.school.managment.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Fines", x => x.Id);
+                    table.PrimaryKey("PK_TuitionFine", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Fines_Tuition_TuitionId",
+                        name: "FK_TuitionFine_Tuition_TuitionId",
                         column: x => x.TuitionId,
                         principalTable: "Tuition",
                         principalColumn: "Id",
@@ -508,7 +508,7 @@ namespace logic.systems.school.managment.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PaymentTuition",
+                name: "TuitionPayment",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -528,53 +528,17 @@ namespace logic.systems.school.managment.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PaymentTuition", x => x.Id);
+                    table.PrimaryKey("PK_TuitionPayment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PaymentTuition_Tuition_TuitionId",
+                        name: "FK_TuitionPayment_Tuition_TuitionId",
                         column: x => x.TuitionId,
                         principalTable: "Tuition",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PaymentTuition_TuitionInvoice_TuitionInvoiceId",
+                        name: "FK_TuitionPayment_TuitionInvoice_TuitionInvoiceId",
                         column: x => x.TuitionInvoiceId,
                         principalTable: "TuitionInvoice",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PaymentFine",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EnrollmentId = table.Column<int>(type: "int", nullable: false),
-                    FinesId = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Paid = table.Column<bool>(type: "bit", nullable: false),
-                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentWithoutVat = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    VatOfPayment = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PaymentWithVat = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PaymentFine", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PaymentFine_Enrollment_EnrollmentId",
-                        column: x => x.EnrollmentId,
-                        principalTable: "Enrollment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PaymentFine_Fines_FinesId",
-                        column: x => x.FinesId,
-                        principalTable: "Fines",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -644,41 +608,15 @@ namespace logic.systems.school.managment.Migrations
                 column: "EnrollmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Fines_TuitionId",
-                table: "Fines",
-                column: "TuitionId",
+                name: "IX_EnrollmentPayment_EnrollmentId",
+                table: "EnrollmentPayment",
+                column: "EnrollmentId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrgUnitDistrict_OrgUnitProvinceId",
                 table: "OrgUnitDistrict",
                 column: "OrgUnitProvinceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PaymentEnrollment_EnrollmentId",
-                table: "PaymentEnrollment",
-                column: "EnrollmentId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PaymentFine_EnrollmentId",
-                table: "PaymentFine",
-                column: "EnrollmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PaymentFine_FinesId",
-                table: "PaymentFine",
-                column: "FinesId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PaymentTuition_TuitionId",
-                table: "PaymentTuition",
-                column: "TuitionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PaymentTuition_TuitionInvoiceId",
-                table: "PaymentTuition",
-                column: "TuitionInvoiceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Student_CurrentSchoolLevelId",
@@ -704,6 +642,22 @@ namespace logic.systems.school.managment.Migrations
                 name: "IX_Tuition_EnrollmentId",
                 table: "Tuition",
                 column: "EnrollmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TuitionFine_TuitionId",
+                table: "TuitionFine",
+                column: "TuitionId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TuitionPayment_TuitionId",
+                table: "TuitionPayment",
+                column: "TuitionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TuitionPayment_TuitionInvoiceId",
+                table: "TuitionPayment",
+                column: "TuitionInvoiceId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -733,13 +687,13 @@ namespace logic.systems.school.managment.Migrations
                 name: "EnrollmentItem");
 
             migrationBuilder.DropTable(
-                name: "PaymentEnrollment");
+                name: "EnrollmentPayment");
 
             migrationBuilder.DropTable(
-                name: "PaymentFine");
+                name: "TuitionFine");
 
             migrationBuilder.DropTable(
-                name: "PaymentTuition");
+                name: "TuitionPayment");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -748,13 +702,10 @@ namespace logic.systems.school.managment.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Fines");
+                name: "Tuition");
 
             migrationBuilder.DropTable(
                 name: "TuitionInvoice");
-
-            migrationBuilder.DropTable(
-                name: "Tuition");
 
             migrationBuilder.DropTable(
                 name: "Enrollment");

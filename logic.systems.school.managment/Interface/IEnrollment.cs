@@ -7,7 +7,7 @@ namespace logic.systems.school.managment.Interface
     {
         public Task<Enrollment> EnrollmentByStudantId(int studantId, int CurrentSchoolLevelId, int EnrollmentYear, int SchoolClassRoomId);
         public Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(int studantId);
-        public Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(EnrollmentCreateDTO model);  
+        public Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(EnrollmentCreateDTO model, string userId);  
         public Task<bool> CheckIfHaveEnrollmentIntheYear(EnrollmentCreateDTO model);
     }
 }

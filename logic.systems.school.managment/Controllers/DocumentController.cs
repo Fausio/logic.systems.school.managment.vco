@@ -3,6 +3,7 @@ using DinkToPdf;
 using DinkToPdf.Contracts;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
@@ -12,7 +13,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Template;
+using System.Collections.Generic;
 using System.Text;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace logic.systems.school.managment.Controllers
 {
@@ -206,8 +209,10 @@ namespace logic.systems.school.managment.Controllers
 
         public async Task<IActionResult> TuitionInvoicePDF(int id)
         {
-            var result = await _DocumentService.GetTuitionInvoiceById(id);
             var currentUser = await _userManager.GetUserAsync(User);
+
+            var result = await _DocumentService.GetTuitionInvoiceById(id);
+
 
             string relativePath = "template/invoice.html";
             string filePath = Path.Combine(_hostingEnvironment.WebRootPath, relativePath);
@@ -289,25 +294,177 @@ namespace logic.systems.school.managment.Controllers
 
         public async Task<IActionResult> downloadsuspended()
         {
+            var currentUser = await _userManager.GetUserAsync(User);
 
             // update suspendes
-            await _ITuitionService.CheckFee(0);
-            await _ITuitionService.AutomaticRegularization(0);
+            await _ITuitionService.CheckFee(0, currentUser.Id);
+            //    await _ITuitionService.AutomaticRegularization(0);
+            List<BeneficiariesSuspededReportDTO> results = await _DocumentService.GetBeneficiariesSuspeded(); 
 
-
-            // get all the data
-
-            // create excel File
-
-            var today = DateTime.Now;
-
-            return await PaymentTuitionListMethod(new ReportDataFilterDTO()
-            {
-                StartDate = new DateTime(today.Year, today.Month, today.Day, 0, 0, 0),
-                EndDate = new DateTime(today.Year, today.Month, today.Day, 23, 59, 59)
-            }, "Relatório de Fecho de contas diário");
+            return await GenerateSuspended(results, "Relatório de Estudantes Suspensos");
         }
 
+        private async Task<FileContentResult> GenerateSuspended(List<BeneficiariesSuspededReportDTO> data, string Name = "")
+        {
+
+            var bgColorHeader = XLColor.FromTheme(XLThemeColor.Accent1, 0.0);
+            var fontColorHeader = XLColor.White;  
+
+
+            using var workBook = new XLWorkbook();
+            var worksheet = workBook.Worksheets.Add("Estudantes suspensos");
+
+            #region Headers
+          
+
+            worksheet.Range(@$"A{1}" + ":" + @$"K{1}").Merge();
+            worksheet.Range(@$"A{2}" + ":" + @$"K{2}").Merge();
+            worksheet.Range(@$"A{3}" + ":" + @$"K{3}").Merge();
+             
+
+            worksheet.Cell(1, 1).Value = Name;
+            worksheet.Cell(2, 1).Value = "Data de Emissão: " + DateTime.Now;
+            worksheet.Cell(3, 1).Value = "COOPERATIVA DE ENSINO KALIMANY"; 
+
+            worksheet.Range(@$"A{1}" + ":" + @$"K{1}"). Style.Font.SetBold();
+            worksheet.Range(@$"A{2}" + ":" + @$"K{2}"). Style.Font.SetBold();
+            worksheet.Range(@$"A{3}" + ":" + @$"K{3}"). Style.Font.SetBold();
+
+            worksheet.Range(@$"A{1}" + ":" + @$"K{1}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Range(@$"A{2}" + ":" + @$"K{2}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Range(@$"A{3}" + ":" + @$"K{3}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+ 
+            worksheet.Range(@$"A{1}" + ":" + @$"K{1}").Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Range(@$"A{2}" + ":" + @$"K{2}").Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Range(@$"A{3}" + ":" + @$"K{3}").Style.Fill.BackgroundColor = bgColorHeader;
+
+
+            worksheet.Range(@$"A{1}" + ":" + @$"K{1}").Style.Font.FontColor = fontColorHeader;
+            worksheet.Range(@$"A{2}" + ":" + @$"K{2}").Style.Font.FontColor = fontColorHeader;
+            worksheet.Range(@$"A{3}" + ":" + @$"K{3}").Style.Font.FontColor = fontColorHeader;
+
+
+
+
+
+            var line = 5;
+            foreach (var item in data)
+            {
+                worksheet.Cell(line, 1).Value = "Estudante";
+                worksheet.Cell(line, 2).Value = "Gênero";
+                worksheet.Cell(line, 3).Value = "Data de nascimento";
+                worksheet.Cell(line, 4).Value = "Classe actual";
+
+                worksheet.Cell(line, 1).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 2).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 3).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 4).Style.Fill.BackgroundColor = bgColorHeader;
+
+
+                worksheet.Cell(line, 1).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line, 2).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line, 3).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line, 4).Style.Font.FontColor = fontColorHeader;
+
+
+
+                worksheet.Cell(line, 1).Style.Font.SetBold();
+                worksheet.Cell(line, 2).Style.Font.SetBold();
+                worksheet.Cell(line, 3).Style.Font.SetBold();
+                worksheet.Cell(line, 4).Style.Font.SetBold();
+
+                line++;
+
+                worksheet.Cell(line, 1).Value = item.StudendName;
+                worksheet.Cell(line, 2).Value = item.StudendGender;
+                worksheet.Cell(line, 3).Value = item.StudendBirthDate;
+                worksheet.Cell(line, 4).Value = item.StudentClassLevel;
+
+                line--;
+
+                worksheet.Cell(line, 5 ).Value = "Mensalidade";
+                worksheet.Cell(line, 6 ).Value = "Classe da mensalidade";
+                worksheet.Cell(line, 7 ).Value = "Valor da mesalidade";
+                worksheet.Cell(line, 8 ).Value = "Estado da mensalidade";
+                worksheet.Cell(line, 9 ).Value = "Primeiro prazo de pagamento";
+                worksheet.Cell(line, 10).Value = "Multa da mensalidade";
+                worksheet.Cell(line, 11).Value = "Segundo prazo de pagamento (data de suspensão)";
+
+                worksheet.Cell(line, 5 ).Style.Fill.BackgroundColor =  bgColorHeader;
+                worksheet.Cell(line, 6 ).Style.Fill.BackgroundColor =  bgColorHeader;
+                worksheet.Cell(line, 7 ).Style.Fill.BackgroundColor =  bgColorHeader;
+                worksheet.Cell(line, 8 ).Style.Fill.BackgroundColor =  bgColorHeader;
+                worksheet.Cell(line, 9 ).Style.Fill.BackgroundColor =  bgColorHeader;
+                worksheet.Cell(line, 10).Style.Fill.BackgroundColor =  bgColorHeader;
+                worksheet.Cell(line, 11).Style.Fill.BackgroundColor = bgColorHeader;
+
+
+                worksheet.Cell(line,  5).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line,  6).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line,  7).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line,  8).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line,  9).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line, 10).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line, 11).Style.Font.FontColor = fontColorHeader;
+                 
+
+                worksheet.Cell(line, 5).Style.Font.SetBold();
+                worksheet.Cell(line, 6).Style.Font.SetBold();
+                worksheet.Cell(line, 7).Style.Font.SetBold();
+                worksheet.Cell(line, 8).Style.Font.SetBold();
+                worksheet.Cell(line, 9).Style.Font.SetBold();
+                worksheet.Cell(line, 10).Style.Font.SetBold();
+                worksheet.Cell(line, 11).Style.Font.SetBold();
+
+                line++;
+
+                foreach (var t in item.items)
+                {
+                    worksheet.Cell(line, 5).Value = t.MonthTuition;
+                    worksheet.Cell(line, 6).Value = t.AssociatedLevel;
+                    worksheet.Cell(line, 7).Value = t.MonthTuitionValue;
+                    worksheet.Cell(line, 8).Value = t.TuitionPaimentStatus;
+                    worksheet.Cell(line, 9).Value = t.PaymentTerm_first;
+                    worksheet.Cell(line, 10).Value = t.MonthTuitionFee;
+                    worksheet.Cell(line, 11).Value = t.PaymentTerm_Secund;
+                     
+                    worksheet.Cell(line, 8).Style.Font.FontColor = XLColor.Red;
+
+                    line++;
+                }
+
+
+                worksheet.Cell(line, 1). Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 2). Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 3). Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 4). Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 5). Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 6). Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 7). Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 8). Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 9). Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 10).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 11).Style.Fill.BackgroundColor = bgColorHeader;
+
+                line++;
+            }
+
+
+            for (int i = 1; i < 12; i++)
+            {
+                worksheet.Column(i).AdjustToContents();
+            }
+
+            #endregion
+
+            worksheet.Protect();
+            using var stream = new MemoryStream();
+            workBook.SaveAs(stream);
+            var content = stream.ToArray();
+
+            var ReportName = Name + " - " + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
+            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ReportName);
+        }
 
         private async Task<FileContentResult> PaymentTuitionListMethod(ReportDataFilterDTO filters, string Name = "")
         {
@@ -320,7 +477,7 @@ namespace logic.systems.school.managment.Controllers
             #region Headers
             worksheet.Cell(1, 1).Value = Name;
             worksheet.Cell(2, 1).Value = "Data de Emissão: " + DateTime.Now;
-            worksheet.Cell(3, 1).Value = "COPPERATIVA DE ENSINO KALIMANY";
+            worksheet.Cell(3, 1).Value = "COOPERATIVA DE ENSINO KALIMANY";
             worksheet.Cell(4, 1).Value = "Data inicial" + filters.StartDate;
             worksheet.Cell(4, 2).Value = "Data final" + filters.EndDate;
 

@@ -2,14 +2,14 @@
 
 namespace logic.systems.school.managment.Models
 {
-    [Table("Fines")]
-    public class Fines : Common
+    [Table("TuitionFine")]
+    public class TuitionFine : Common
     {
         public virtual Tuition Tuition { get; set; }
         public int TuitionId { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal FinesValue { get; set; }
-        public Fines()
+        public TuitionFine()
         {
             FinesValue = 300;
         }
