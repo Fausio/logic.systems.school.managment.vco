@@ -383,11 +383,7 @@ namespace logic.systems.school.managment.Controllers
         }
 
         private async Task<FileContentResult> GenerateSuspended(List<BeneficiariesSuspededReportDTO> data, string Name = "")
-        {
-
-
-
-
+        { 
             using var workBook = new XLWorkbook();
             var worksheet = workBook.Worksheets.Add("Estudantes suspensos");
 

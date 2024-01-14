@@ -15,7 +15,7 @@ namespace logic.systems.school.managment.Dto
         public string StudendName { get; set; }
         public string StudendGender { get; set; } 
         public string StudendBirthDate { get; set; } 
-        public string StudendAge { get; set; }
+        public int StudendAge { get; set; }
          
         public string StudentClassLevel { get; set; } 
         public string StudentClassRoom { get; set; }

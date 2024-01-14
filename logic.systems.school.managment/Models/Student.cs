@@ -47,33 +47,28 @@ namespace logic.systems.school.managment.Models
 
         [NotMapped]
         public bool haveFee { get; set; }
+         
+      
 
-
-
-
-        public int AgeInMonthsMethod(DateTime? lastDate)
+        public int GetAgeInDay()
         {
-            var months = (lastDate.Value.Year - BirthDate.Year) * 12;
-            months -= BirthDate.Month + 1;
-            months += lastDate.Value.Month;
-            return months <= 0 ? 0 : months;
-        }
-        public int? AgeInYears { get { return AgeInYearsMethod(null); } }
-        public int AgeInYearsMethod(DateTime? date)
-        {
-            DateTime birthDate = BirthDate;
-            DateTime today = DateTime.Today;
-
-            if (date != null) { today = date.Value; }
-
-            int age = today.Year - birthDate.Year;
-
-            if (birthDate.Date > today.AddYears(-age))
+            if (BirthDate  != null)
             {
-                age--;
-            }
+                DateTime now = DateTime.Now;
 
-            return age;
+                // Subtrai a data de nascimento da data atual
+                TimeSpan diference = now - BirthDate;
+
+                // Calcula a idade com precisão
+                int age = (int)Math.Floor(diference.TotalDays / 365.25);
+
+                return age;
+            }
+            else
+            {
+                // Data de nascimento é nula, retorna um valor negativo indicando erro
+                return -1;
+            }
         }
     }
 }
