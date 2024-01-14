@@ -240,6 +240,27 @@ namespace logic.systems.school.managment.Controllers
                 var result = StudantProfile.ToDTO(model);
                 result.EnrollmentYear = model.Enrollments.LastOrDefault().EnrollmentYear;
                 await PopulateForms();
+
+                var createdUser = await _userManager.FindByIdAsync(model.CreatedUSer);
+
+                if (createdUser is not null)
+                {
+                    result.CreatedUSer = createdUser.UserName;
+                    result.CreatedDate = model.CreatedDate;
+                }
+
+                if (model.UpdatedDate is not null)
+                {
+                    var updatedUser = await _userManager.FindByIdAsync(model.UpdatedUSer);
+
+                    if (updatedUser is not null)
+                    {
+                        result.UpdatedUSer = createdUser.UserName;
+                        result.UpdatedDate = model.UpdatedDate.Value;
+                    }
+                }
+
+
                 if (TempData.ContainsKey("MensagemSucess"))
                 {
                     ViewBag.Mensagem = TempData["MensagemSucess"];

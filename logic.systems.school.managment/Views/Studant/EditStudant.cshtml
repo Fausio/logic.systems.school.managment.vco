@@ -240,7 +240,43 @@
 </form>
 
 
+<div class="card">
+    <div class="card-body ">
+        <div class="row justify-content-end">
+            <div class="col-12 text-right">
+                <!-- Conteúdo da sua div aqui -->
+                <fieldset class="p-2">
+                    <legend class="w-auto">Dados de Auditoria</legend>
+                    <ul class="list-unstyled  ">
 
+
+                        @{
+                            if (Model.CreatedUSer is not null && !string.IsNullOrEmpty(Model.CreatedUSer))
+                            {
+                                <li><strong>Criado por:</strong> @Model.CreatedUSer</li>
+                                <li><strong>Data de Criação:</strong> @Model.CreatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
+
+                            }
+
+                            if (Model.UpdatedUSer is not null && !string.IsNullOrEmpty(Model.UpdatedUSer))
+                            {
+                                <li><strong>Actulizado por:</strong> @Model.UpdatedUSer</li>
+                                <li><strong>Data de Actulização:</strong> @Model.UpdatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
+
+                            }
+                        }
+
+
+
+
+                    </ul>
+                </fieldset>
+
+
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script>
