@@ -28,7 +28,7 @@ namespace logic.systems.school.managment.Services
 
         public async Task<TuitionPayment> GetTuitionInvoiceById(int payementId)
         {
-            var result = await db.PaymentTuitions.Include(x => x.Tuition) 
+            var result = await db.PaymentTuitions.Include(x => x.Tuition)
                                                  .ThenInclude(x => x.Enrollment).ThenInclude(x => x.Student)
                                                  .Include(x => x.Tuition.TuitionFines)
                                                  .FirstOrDefaultAsync(x => x.Id == payementId);
@@ -40,22 +40,31 @@ namespace logic.systems.school.managment.Services
         {
             try
             {
+
+
+
                 var results = new List<PaymentTuitionListReportDTO>();
 
                 var PaymentTuitionResult = (from t in db.Tuitions
                                             join s in db.Students on t.StudentId equals s.Id
                                             join classLevel in db.SimpleEntitys on s.CurrentSchoolLevelId equals classLevel.Id
+                                            join classroom in db.SimpleEntitys on s.SchoolClassRoomId equals classroom.Id
                                             join p in db.PaymentTuitions on t.Id equals p.TuitionId
                                             where t.Paid == true && p.PaymentDate >= startDate && p.PaymentDate <= endDate
                                             select new PaymentTuitionListReportDTO()
                                             {
                                                 Type = "Mensalidade",
                                                 StudendName = s.Name,
+                                                StudendBirthDate = s.BirthDate.ToString("dd/MM/yyyy"),
+                                                StudendGender = s.Gender,
+                                                StudentClassRoom = classroom.Description,
                                                 StudentClassLevel = classLevel.Description,
                                                 MonthPaid = t.MonthNumber + " - " + t.MonthName + " - " + t.Year,
                                                 MonthlyFeeWithoutVat = p.PaymentWithoutVat,
                                                 VatOfMonthlyFee = p.VatOfPayment,
-                                                MonthlyFeeWithVat = p.PaymentWithVat
+                                                MonthlyFeeWithVat = p.PaymentWithVat, 
+
+                                                   PaymentDate = p.PaymentDate
 
                                             }).ToList();
 
@@ -64,20 +73,54 @@ namespace logic.systems.school.managment.Services
                     results.AddRange(PaymentTuitionResult);
                 }
 
+
+
+                var PaymentTuitionFeeResult = (from t in db.TuitionFines
+                                               join s in db.Students on t.Tuition.StudentId equals s.Id
+                                               join classLevel in db.SimpleEntitys on s.CurrentSchoolLevelId equals classLevel.Id
+                                               join classroom in db.SimpleEntitys on s.SchoolClassRoomId equals classroom.Id
+                                               join p in db.PaymentTuitions on t.Id equals p.TuitionId
+                                               where t.Paid == true && t.PaidDate >= startDate && t.PaidDate <= endDate
+                                               select new PaymentTuitionListReportDTO()
+                                               {
+                                                   Type = "Multa",
+                                                   StudendName = s.Name,
+                                                   StudendBirthDate = s.BirthDate.ToString("dd/MM/yyyy"),
+                                                   StudendGender = s.Gender,
+                                                   StudentClassRoom = classroom.Description,
+                                                   StudentClassLevel = classLevel.Description,
+                                                   MonthPaid = t.Tuition.MonthNumber + " - " + t.Tuition.MonthName + " - " + t.Tuition.Year,
+                                                   MonthlyFeeWithoutVat = t.FinesValue,
+                                                   VatOfMonthlyFee = 0,
+                                                   MonthlyFeeWithVat = t.FinesValue, 
+                                                   PaymentDate = t.PaidDate.Value
+
+                                               }).ToList();
+
+                if (PaymentTuitionFeeResult != null && PaymentTuitionFeeResult.Count > 0)
+                {
+                    results.AddRange(PaymentTuitionFeeResult);
+                }
+
                 var PaymentEnrolResult = (from e in db.Enrollments
                                           join pe in db.PaymentEnrollments on e.Id equals pe.EnrollmentId
                                           join classLevel in db.SimpleEntitys on e.SchoolLevelId equals classLevel.Id
+                                          join classroom in db.SimpleEntitys on e.Student.SchoolClassRoomId equals classroom.Id
                                           where pe.Paid == true && pe.PaymentDate >= startDate && pe.PaymentDate <= endDate
                                           select new PaymentTuitionListReportDTO()
                                           {
                                               Type = "Inscrição",
                                               StudendName = e.Student.Name,
+                                              StudendBirthDate = e.Student.BirthDate.ToString("dd/MM/yyyy"),
+                                              StudendGender = e.Student.Gender,
+                                              StudentClassRoom = classroom.Description,
                                               StudentClassLevel = classLevel.Description,
                                               MonthPaid = "N/A",
                                               MonthlyFeeWithoutVat = pe.PaymentWithoutVat,
                                               VatOfMonthlyFee = pe.VatOfPayment,
-                                              MonthlyFeeWithVat = pe.PaymentWithVat
-
+                                              MonthlyFeeWithVat = pe.PaymentWithoutVat,
+                                                
+                                                   PaymentDate = pe.PaymentDate
                                           }).ToList();
 
 
@@ -86,6 +129,37 @@ namespace logic.systems.school.managment.Services
                     results.AddRange(PaymentEnrolResult);
                 }
 
+                     
+                var PaymentEnrolItemsResult = (from e in db.Enrollments 
+                                               join pe in db.PaymentEnrollments on e.Id equals pe.EnrollmentId
+                                               join classLevel in db.SimpleEntitys on e.SchoolLevelId equals classLevel.Id
+                                               join classroom in db.SimpleEntitys on e.Student.SchoolClassRoomId equals classroom.Id 
+                                               where pe.Paid == true && pe.PaymentDate >= startDate && pe.PaymentDate <= endDate 
+                                               from item in e.EnrollmentItems 
+                                               select new PaymentTuitionListReportDTO()
+                                               {
+                                                   Type = "Item da Inscrição",
+                                                   StudendName = e.Student.Name,
+                                                   StudendBirthDate = e.Student.BirthDate.ToString("dd/MM/yyyy"),
+                                                   StudendGender = e.Student.Gender,
+                                                   StudentClassRoom = classroom.Description,
+                                                   StudentClassLevel = classLevel.Description,
+                                                   MonthPaid = "N/A",
+                                                   MonthlyFeeWithoutVat = item.Price,
+                                                   VatOfMonthlyFee = 0,
+                                                   MonthlyFeeWithVat = item.Price,
+                                                 
+                                                   PaymentDate = pe.PaymentDate
+                                               } 
+                                               ).ToList();
+
+
+                if (PaymentEnrolItemsResult != null && PaymentEnrolItemsResult.Count > 0)
+                {
+                    results.AddRange(PaymentEnrolItemsResult);
+                }
+
+                results = results.OrderBy( x=> x.PaymentDate). ThenBy(x => x.StudendName). ToList();
 
                 return results;
             }
@@ -99,7 +173,7 @@ namespace logic.systems.school.managment.Services
         {
             try
             {
-                var enrollments  = await db.Enrollments.Select(x => x.Student).Where( x => x.Suspended ).ToListAsync(); 
+                var enrollments = await db.Enrollments.Select(x => x.Student).Where(x => x.Suspended).ToListAsync();
 
                 var results = new List<BeneficiariesSuspededReportDTO>();
 
@@ -122,7 +196,7 @@ namespace logic.systems.school.managment.Services
                     }
 
                     foreach (var item in results)
-                    { 
+                    {
                         var suspendedInfo = new List<BeneficiariesSuspededReportItemDTO>();
 
                         // Obtém a data atual
@@ -134,14 +208,14 @@ namespace logic.systems.school.managment.Services
 
                         now.AddMonths(24);
                         var Tuituins = await db.Tuitions.Include(x => x.TuitionFines)
-                            .Where(x => x.StudentId == item.StudendId 
+                            .Where(x => x.StudentId == item.StudendId
                             && !x.Paid
                             && x.StartDate < currentMonthLastFeeDay
                             )
                             .ToArrayAsync();
 
                         foreach (var t in Tuituins)
-                        { 
+                        {
                             var associatedLeve = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Id == t.AssociatedLevelId);
 
                             suspendedInfo.Add(new BeneficiariesSuspededReportItemDTO()
@@ -152,7 +226,7 @@ namespace logic.systems.school.managment.Services
                                 PaymentTerm_first = t.StartDate.AddDays(15).ToString("dd/MM/yyyy"),
                                 PaymentTerm_Secund = t.StartDate.AddDays(24).ToString("dd/MM/yyyy"),
                                 TuitionPaimentStatus = t.Paid ? "Pago" : "Não pago",
-                                MonthTuitionFee = 300 
+                                MonthTuitionFee = 300
                             });
                         }
 

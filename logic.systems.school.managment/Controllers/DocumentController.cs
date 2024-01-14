@@ -28,6 +28,9 @@ namespace logic.systems.school.managment.Controllers
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IConverter _pdfConverter;
         private ITuitionService _ITuitionService;
+        private XLColor bgColorHeader = XLColor.FromTheme(XLThemeColor.Accent1, 0.0);
+        private XLColor fontColorHeader = XLColor.White;
+
         public DocumentController(Idocument DocumentService,
                                   IWebHostEnvironment hostingEnvironment,
                                   IApp appService,
@@ -341,7 +344,7 @@ namespace logic.systems.school.managment.Controllers
                                         .Replace("{Classe}", "")
                                         .Replace("{ClasseRoom}", "")
                                         .Replace("{Year}", "")
-                                        .Replace("{payment}", "Total: " +(sum + itensTotals)+ " MT"));
+                                        .Replace("{payment}", "Total: " + (sum + itensTotals) + " MT"));
 
             var TableLinesIntoOneTring = string.Empty;
 
@@ -382,8 +385,7 @@ namespace logic.systems.school.managment.Controllers
         private async Task<FileContentResult> GenerateSuspended(List<BeneficiariesSuspededReportDTO> data, string Name = "")
         {
 
-            var bgColorHeader = XLColor.FromTheme(XLThemeColor.Accent1, 0.0);
-            var fontColorHeader = XLColor.White;
+
 
 
             using var workBook = new XLWorkbook();
@@ -550,37 +552,82 @@ namespace logic.systems.school.managment.Controllers
             var worksheet = workBook.Worksheets.Add("Fecho de contas");
 
             #region Headers
+
+            worksheet.Range(@$"A{1}" + ":" + @$"G{1}").Merge();
+            worksheet.Range(@$"A{2}" + ":" + @$"G{2}").Merge();
+            worksheet.Range(@$"A{3}" + ":" + @$"G{3}").Merge();
+            worksheet.Range(@$"A{4}" + ":" + @$"G{4}").Merge();
+            worksheet.Range(@$"A{4}" + ":" + @$"G{4}").Merge();
+
             worksheet.Cell(1, 1).Value = Name;
             worksheet.Cell(2, 1).Value = "Data de Emissão: " + DateTime.Now;
             worksheet.Cell(3, 1).Value = "COOPERATIVA DE ENSINO KALIMANY";
-            worksheet.Cell(4, 1).Value = "Data inicial" + filters.StartDate;
-            worksheet.Cell(4, 2).Value = "Data final" + filters.EndDate;
+            worksheet.Cell(4, 1).Value = "Data inicial" + filters.StartDate +" - "+ "Data final" + filters.EndDate;
 
-            worksheet.Cell(5, 1).Value = "Tipo";
-            worksheet.Cell(5, 2).Value = "Estudante";
-            worksheet.Cell(5, 3).Value = "Classe do estudante";
-            worksheet.Cell(5, 4).Value = "Mes a pagar";
-            worksheet.Cell(5, 5).Value = "Valor em Metical";
-            worksheet.Cell(5, 6).Value = "Iva";
-            worksheet.Cell(5, 7).Value = "Total com IVA (5%)";
+            worksheet.Range(@$"A{1}" + ":" + @$"G{1}").Style.Font.SetBold();
+            worksheet.Range(@$"A{2}" + ":" + @$"G{2}").Style.Font.SetBold();
+            worksheet.Range(@$"A{3}" + ":" + @$"G{3}").Style.Font.SetBold();
+            worksheet.Range(@$"A{4}" + ":" + @$"G{4}").Style.Font.SetBold();
+            worksheet.Range(@$"A{4}" + ":" + @$"G{4}").Style.Font.SetBold();
+
+            worksheet.Range(@$"A{1}" + ":" + @$"G{1}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Range(@$"A{2}" + ":" + @$"G{2}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Range(@$"A{3}" + ":" + @$"G{3}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Range(@$"A{4}" + ":" + @$"G{4}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Range(@$"A{4}" + ":" + @$"G{4}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+            worksheet.Range(@$"A{1}" + ":" + @$"G{1}").Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Range(@$"A{2}" + ":" + @$"G{2}").Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Range(@$"A{3}" + ":" + @$"G{3}").Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Range(@$"A{4}" + ":" + @$"G{4}").Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Range(@$"A{4}" + ":" + @$"G{4}").Style.Fill.BackgroundColor = bgColorHeader;
+
+            worksheet.Range(@$"A{1}" + ":" + @$"G{1}").Style.Font.FontColor = fontColorHeader;
+            worksheet.Range(@$"A{2}" + ":" + @$"G{2}").Style.Font.FontColor = fontColorHeader;
+            worksheet.Range(@$"A{3}" + ":" + @$"G{3}").Style.Font.FontColor = fontColorHeader;
+            worksheet.Range(@$"A{4}" + ":" + @$"G{4}").Style.Font.FontColor = fontColorHeader;
+            worksheet.Range(@$"A{4}" + ":" + @$"G{4}").Style.Font.FontColor = fontColorHeader;
+             
+            worksheet.Cell(6, 1).Value = "Tipo";
+            worksheet.Cell(6, 2).Value = "Estudante";
+            worksheet.Cell(6, 3).Value = "Classe do estudante";
+            worksheet.Cell(6, 4).Value = "Mes a pagar";
+            worksheet.Cell(6, 5).Value = "Valor em Metical";
+            worksheet.Cell(6, 6).Value = "Iva";
+            worksheet.Cell(6, 7).Value = "Total com IVA (5%)";
+
+            worksheet.Cell(6, 1).Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Cell(6, 2).Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Cell(6, 3).Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Cell(6, 4).Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Cell(6, 5).Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Cell(6, 6).Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Cell(6, 7).Style.Fill.BackgroundColor = bgColorHeader;
+
+            worksheet.Cell(6, 1).Style.Font.FontColor = fontColorHeader;
+            worksheet.Cell(6, 2).Style.Font.FontColor = fontColorHeader;
+            worksheet.Cell(6, 3).Style.Font.FontColor = fontColorHeader;
+            worksheet.Cell(6, 4).Style.Font.FontColor = fontColorHeader;
+            worksheet.Cell(6, 5).Style.Font.FontColor = fontColorHeader;
+            worksheet.Cell(6, 6).Style.Font.FontColor = fontColorHeader;
+            worksheet.Cell(6, 7).Style.Font.FontColor = fontColorHeader;
 
             worksheet.Cell(1, 1).Style.Font.SetBold();
             worksheet.Cell(2, 1).Style.Font.SetBold();
             worksheet.Cell(3, 1).Style.Font.SetBold();
             worksheet.Cell(4, 1).Style.Font.SetBold();
             worksheet.Cell(4, 2).Style.Font.SetBold();
-            worksheet.Cell(5, 1).Style.Font.SetBold();
-            worksheet.Cell(5, 2).Style.Font.SetBold();
-            worksheet.Cell(5, 3).Style.Font.SetBold();
-            worksheet.Cell(5, 4).Style.Font.SetBold();
-            worksheet.Cell(5, 5).Style.Font.SetBold();
-            worksheet.Cell(5, 6).Style.Font.SetBold();
-            worksheet.Cell(5, 7).Style.Font.SetBold();
-
+            worksheet.Cell(6, 1).Style.Font.SetBold();
+            worksheet.Cell(6, 2).Style.Font.SetBold();
+            worksheet.Cell(6, 3).Style.Font.SetBold();
+            worksheet.Cell(6, 4).Style.Font.SetBold();
+            worksheet.Cell(6, 5).Style.Font.SetBold();
+            worksheet.Cell(6, 6).Style.Font.SetBold();
+            worksheet.Cell(6, 7).Style.Font.SetBold(); 
             #endregion
 
             #region body
-            var currentRow = 5;
+            var currentRow = 6;
 
             decimal TotalMonthlyFeeWithoutVat = 0;
             decimal TotalVatOfMonthlyFee = 0;
@@ -607,6 +654,9 @@ namespace logic.systems.school.managment.Controllers
             currentRow++;
 
             worksheet.Range(@$"A{currentRow}" + ":" + @$"D{currentRow}").Merge();
+            worksheet.Range(@$"A{currentRow}" + ":" + @$"D{currentRow}").Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Range(@$"A{currentRow}" + ":" + @$"D{currentRow}").Style.Font.FontColor = fontColorHeader;
+
             worksheet.Cell(currentRow, 1).Value = "TOTAL";
             worksheet.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Cell(currentRow, 1).Style.Font.SetBold();
@@ -618,6 +668,16 @@ namespace logic.systems.school.managment.Controllers
             worksheet.Cell(currentRow, 5).Style.Font.SetBold();
             worksheet.Cell(currentRow, 6).Style.Font.SetBold();
             worksheet.Cell(currentRow, 7).Style.Font.SetBold();
+             
+            worksheet.Cell(currentRow, 5).Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Cell(currentRow, 6).Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Cell(currentRow, 7).Style.Fill.BackgroundColor = bgColorHeader;
+             
+
+            worksheet.Cell(currentRow, 5).Style.Font.FontColor = fontColorHeader;
+            worksheet.Cell(currentRow, 6).Style.Font.FontColor = fontColorHeader;
+            worksheet.Cell(currentRow, 7).Style.Font.FontColor = fontColorHeader;
+
 
             #endregion
 

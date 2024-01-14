@@ -9,7 +9,7 @@
         public ReportDataFilterDTO()
         {
             StartDate = DateTime.Now.AddDays(-1);
-            EndDate = DateTime.Now;
+            EndDate = DateTime.Now.AddDays(1);
         }
     }
 }
