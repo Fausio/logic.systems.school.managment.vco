@@ -54,7 +54,7 @@
 		td:nth-child(4),
 		td:nth-child(5) {
 			border-top: 2px solid #eee;
-			font-weight: bold;
+		 
 		}
 
 		@media only screen and (max-width: 600px) {
@@ -145,7 +145,8 @@
 
 		<table >
 			<tr class="heading">
-				<td>Nº</td>
+				<td>Descrição</td>
+				<td>Data de pagamento</td>
 				<td>Classe</td>
 				<td>Turma</td>
 				<td>Ano</td>
@@ -154,10 +155,20 @@
 
 			<tr class="details">
 				<td>{7}</td>
+				<td>{paymentDate}</td>
 				<td>{8}</td>
 				<td>{9}</td>
 				<td>{10}</td>
 				<td>{11}</td>
+			</tr>
+
+			<tr class="details" style="display: {FeeDisplay};">
+				<td>{feeDescription}</td>
+				<td>{FeepaymentDate}</td>
+				<td>{8}</td>
+				<td>{9}</td>
+				<td>{10}</td>
+				<td>300,00</td>
 			</tr>
 
 			<tr class="total">
@@ -165,9 +176,11 @@
 				<td></td>
 				<td></td>
 				<td></td>
+				<td></td>
 				<td>IVA(5%): {12}</td>
 			</tr>
 			<tr class="total">
+				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -252,7 +265,8 @@
 
 
 			<tr class="heading">
-				<td>Nº</td>
+				<td>Descrição</td>
+				<td>Data de pagamento</td>
 				<td>Classe</td>
 				<td>Turma</td>
 				<td>Ano</td>
@@ -261,10 +275,20 @@
 
 			<tr class="details">
 				<td>{7}</td>
+				<td>{paymentDate}</td>
 				<td>{8}</td>
 				<td>{9}</td>
 				<td>{10}</td>
 				<td>{11}</td>
+			</tr>
+			
+			<tr class="details" style="display: {FeeDisplay};">
+				<td>{feeDescription}</td>
+				<td>{FeepaymentDate}</td>
+				<td>{8}</td>
+				<td>{9}</td>
+				<td>{10}</td>
+				<td>300,00</td>
 			</tr>
 
 			<tr class="total">
@@ -272,9 +296,11 @@
 				<td></td>
 				<td></td>
 				<td></td>
+				<td></td>
 				<td>IVA(5%): {12}</td>
 			</tr>
 			<tr class="total">
+				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>

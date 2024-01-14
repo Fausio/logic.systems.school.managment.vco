@@ -139,7 +139,7 @@ namespace logic.systems.school.managment.Services
             {
                 foreach (var item in enrolemntItens)
                 {
-                    itens = itens + $" item: {item.Description}, preço: {item.Price} MT \n";
+                    itens = itens + $" item: {item.Description}, preço: {item.Price} MT  <br>";
                 }
                 return itens;
             }

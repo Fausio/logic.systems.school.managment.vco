@@ -86,7 +86,7 @@ namespace logic.systems.school.managment.Controllers
                 worksheet.Cell("C11").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId);
                 worksheet.Cell("C11").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId);
                 worksheet.Cell("D11").Value = result.Enrollment.EnrollmentYear;
-                worksheet.Cell("E11").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + "MT";
+                worksheet.Cell("E11").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + " MT";
 
                 var currentUser = await _userManager.GetUserAsync(User);
 
@@ -107,7 +107,7 @@ namespace logic.systems.school.managment.Controllers
                 worksheet.Cell("C30").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId);
                 worksheet.Cell("C30").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId);
                 worksheet.Cell("D30").Value = result.Enrollment.EnrollmentYear;
-                worksheet.Cell("E30").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + "MT";
+                worksheet.Cell("E30").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + " MT";
 
 
                 if (currentUser != null)
@@ -159,7 +159,7 @@ namespace logic.systems.school.managment.Controllers
                 worksheet.Cell("C11").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId);
                 worksheet.Cell("C11").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId);
                 worksheet.Cell("D11").Value = result.Enrollment.EnrollmentYear;
-                worksheet.Cell("E11").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + "MT";
+                worksheet.Cell("E11").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + " MT";
 
                 var currentUser = await _userManager.GetUserAsync(User);
 
@@ -180,7 +180,7 @@ namespace logic.systems.school.managment.Controllers
                 worksheet.Cell("C30").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId);
                 worksheet.Cell("C30").Value = await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId);
                 worksheet.Cell("D30").Value = result.Enrollment.EnrollmentYear;
-                worksheet.Cell("E30").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + "MT";
+                worksheet.Cell("E30").Value = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + " MT";
 
 
                 if (currentUser != null)
@@ -206,7 +206,6 @@ namespace logic.systems.school.managment.Controllers
 
         }
 
-
         public async Task<IActionResult> TuitionInvoicePDF(int id)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -221,6 +220,12 @@ namespace logic.systems.school.managment.Controllers
 
             var sum = result.PaymentWithoutVat + result.VatOfPayment;
 
+            if (result.Tuition.TuitionFines is not null)
+            {
+                sum = sum + 300;
+
+            }
+
 
 
             var formattedHtml = htmlContent.Replace("{0}", result.Id.ToString())
@@ -233,14 +238,30 @@ namespace logic.systems.school.managment.Controllers
 
                                            .Replace("{6}", result.Tuition.Enrollment.Student.Name)
 
-                                           .Replace("{7}", "#")
+                                           .Replace("{7}", "Mensalidade")
+                                           .Replace("{paymentDate}", result.PaymentDate.ToString("dd/MM/yyyy"))
                                            .Replace("{8}", await _AppService.SempleEntityDescriptionById(result.Tuition.Enrollment.SchoolLevelId))
                                            .Replace("{9}", await _AppService.SempleEntityDescriptionById(result.Tuition.Enrollment.SchoolClassRoomId))
                                            .Replace("{10}", result.Tuition.Enrollment.EnrollmentYear.ToString())
 
-                                           .Replace("{11}", result.PaymentWithoutVat + "MT")
-                                           .Replace("{12}", result.VatOfPayment + "MT")
-                                           .Replace("{13}", sum + "MT");
+                                           .Replace("{11}", result.PaymentWithoutVat + " MT")
+                                           .Replace("{12}", result.VatOfPayment + " MT")
+                                           .Replace("{13}", sum + " MT");
+
+
+            if (result.Tuition.TuitionFines is not null)
+            {
+
+                var feepaymentDate = result.Tuition.TuitionFines.PaidDate.Value;
+
+                formattedHtml = formattedHtml.Replace("{feeDescription}", "Multa")
+                    .Replace("{FeepaymentDate}", feepaymentDate.ToString("dd/MM/yyyy"));
+            }
+            else
+            {
+                formattedHtml = formattedHtml.Replace("{FeeDisplay}", "none");
+            }
+
 
             // Retorna o conteúdo HTML como uma resposta JSON
             return Json(new { HtmlContent = formattedHtml });
@@ -251,7 +272,7 @@ namespace logic.systems.school.managment.Controllers
             var result = await _DocumentService.GetEnrollmentInvoiceByEnrollId(id);
             var currentUser = await _userManager.GetUserAsync(User);
 
-            string relativePath = "template/invoice.html";
+            string relativePath = "template/invoiceForRntollment.html";
             string filePath = Path.Combine(_hostingEnvironment.WebRootPath, relativePath);
             // Lê o conteúdo do arquivo HTML
             var htmlContent = System.IO.File.ReadAllText(filePath);
@@ -268,14 +289,68 @@ namespace logic.systems.school.managment.Controllers
 
                                            .Replace("{6}", result.Enrollment.Student.Name)
 
-                                           .Replace("{7}", "#")
+                                           .Replace("{7}", "Matricula")
+                                           .Replace("{paymentDate}", result.Date.ToString("dd/MM/yyyy"))
                                            .Replace("{8}", await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId))
                                            .Replace("{9}", await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId))
                                            .Replace("{10}", result.Enrollment.EnrollmentYear.ToString())
-                                           .Replace("{11}", result.Enrollment.PaymentEnrollment.PaymentWithoutVat + "MT")
+                                           .Replace("{11}", result.Enrollment.PaymentEnrollment.PaymentWithoutVat + " MT")
+                                           .Replace("{12}", result.Enrollment.PaymentEnrollment.VatOfPayment + " MT")
+                                           .Replace("{13}", sum + " MT");
 
-                                           .Replace("{12}", result.Enrollment.PaymentEnrollment.VatOfPayment + "MT")
-                                           .Replace("{13}", sum + "MT");
+
+
+
+
+
+            var TableLines = new List<string>()
+            {
+                // primeiro os dados da matricula
+                   InvoiceTableLineDTO.Line.Replace("{desc}", "Matricula")
+                                           .Replace("{paymentDate}", result.Date.ToString("dd/MM/yyyy"))
+                                           .Replace("{Classe}", await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId))
+                                           .Replace("{ClasseRoom}", await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId))
+                                           .Replace("{Year}", result.Enrollment.EnrollmentYear.ToString())
+                                           .Replace("{payment}", sum + " MT")
+
+            };
+
+
+            // segundo os items da mattricula, caso tenha!
+            var itensTotals = (decimal)0;
+            if (result.Enrollment.EnrollmentItems is not null && result.Enrollment.EnrollmentItems.Count > 0)
+            {
+                foreach (var item in result.Enrollment.EnrollmentItems)
+                {
+                    TableLines.Add(
+                    InvoiceTableLineDTO.Line.Replace("{desc}", item.Description)
+                                        .Replace("{paymentDate}", result.Date.ToString("dd/MM/yyyy"))
+                                        .Replace("{Classe}", await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId))
+                                        .Replace("{ClasseRoom}", await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId))
+                                        .Replace("{Year}", result.Enrollment.EnrollmentYear.ToString())
+                                        .Replace("{payment}", item.Price + " MT"));
+
+                    itensTotals = itensTotals + item.Price;
+                }
+            }
+
+            //    totals
+            TableLines.Add(
+                    InvoiceTableLineDTO.Line.Replace("{desc}", "")
+                                        .Replace("{paymentDate}", "")
+                                        .Replace("{Classe}", "")
+                                        .Replace("{ClasseRoom}", "")
+                                        .Replace("{Year}", "")
+                                        .Replace("{payment}", "Total: " +(sum + itensTotals)+ " MT"));
+
+            var TableLinesIntoOneTring = string.Empty;
+
+            foreach (var line in TableLines)
+            {
+                TableLinesIntoOneTring = TableLinesIntoOneTring + line;
+            }
+
+            formattedHtml = formattedHtml.Replace("{items}", TableLinesIntoOneTring);
 
             // Retorna o conteúdo HTML como uma resposta JSON
             return Json(new { HtmlContent = formattedHtml });
@@ -299,7 +374,7 @@ namespace logic.systems.school.managment.Controllers
             // update suspendes
             await _ITuitionService.CheckFee(0, currentUser.Id);
             //    await _ITuitionService.AutomaticRegularization(0);
-            List<BeneficiariesSuspededReportDTO> results = await _DocumentService.GetBeneficiariesSuspeded(); 
+            List<BeneficiariesSuspededReportDTO> results = await _DocumentService.GetBeneficiariesSuspeded();
 
             return await GenerateSuspended(results, "Relatório de Estudantes Suspensos");
         }
@@ -308,32 +383,32 @@ namespace logic.systems.school.managment.Controllers
         {
 
             var bgColorHeader = XLColor.FromTheme(XLThemeColor.Accent1, 0.0);
-            var fontColorHeader = XLColor.White;  
+            var fontColorHeader = XLColor.White;
 
 
             using var workBook = new XLWorkbook();
             var worksheet = workBook.Worksheets.Add("Estudantes suspensos");
 
             #region Headers
-          
+
 
             worksheet.Range(@$"A{1}" + ":" + @$"K{1}").Merge();
             worksheet.Range(@$"A{2}" + ":" + @$"K{2}").Merge();
             worksheet.Range(@$"A{3}" + ":" + @$"K{3}").Merge();
-             
+
 
             worksheet.Cell(1, 1).Value = Name;
             worksheet.Cell(2, 1).Value = "Data de Emissão: " + DateTime.Now;
-            worksheet.Cell(3, 1).Value = "COOPERATIVA DE ENSINO KALIMANY"; 
+            worksheet.Cell(3, 1).Value = "COOPERATIVA DE ENSINO KALIMANY";
 
-            worksheet.Range(@$"A{1}" + ":" + @$"K{1}"). Style.Font.SetBold();
-            worksheet.Range(@$"A{2}" + ":" + @$"K{2}"). Style.Font.SetBold();
-            worksheet.Range(@$"A{3}" + ":" + @$"K{3}"). Style.Font.SetBold();
+            worksheet.Range(@$"A{1}" + ":" + @$"K{1}").Style.Font.SetBold();
+            worksheet.Range(@$"A{2}" + ":" + @$"K{2}").Style.Font.SetBold();
+            worksheet.Range(@$"A{3}" + ":" + @$"K{3}").Style.Font.SetBold();
 
             worksheet.Range(@$"A{1}" + ":" + @$"K{1}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Range(@$"A{2}" + ":" + @$"K{2}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Range(@$"A{3}" + ":" + @$"K{3}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
- 
+
             worksheet.Range(@$"A{1}" + ":" + @$"K{1}").Style.Fill.BackgroundColor = bgColorHeader;
             worksheet.Range(@$"A{2}" + ":" + @$"K{2}").Style.Fill.BackgroundColor = bgColorHeader;
             worksheet.Range(@$"A{3}" + ":" + @$"K{3}").Style.Fill.BackgroundColor = bgColorHeader;
@@ -382,31 +457,31 @@ namespace logic.systems.school.managment.Controllers
 
                 line--;
 
-                worksheet.Cell(line, 5 ).Value = "Mensalidade";
-                worksheet.Cell(line, 6 ).Value = "Classe da mensalidade";
-                worksheet.Cell(line, 7 ).Value = "Valor da mesalidade";
-                worksheet.Cell(line, 8 ).Value = "Estado da mensalidade";
-                worksheet.Cell(line, 9 ).Value = "Primeiro prazo de pagamento";
+                worksheet.Cell(line, 5).Value = "Mensalidade";
+                worksheet.Cell(line, 6).Value = "Classe da mensalidade";
+                worksheet.Cell(line, 7).Value = "Valor da mesalidade";
+                worksheet.Cell(line, 8).Value = "Estado da mensalidade";
+                worksheet.Cell(line, 9).Value = "Primeiro prazo de pagamento";
                 worksheet.Cell(line, 10).Value = "Multa da mensalidade";
                 worksheet.Cell(line, 11).Value = "Segundo prazo de pagamento (data de suspensão)";
 
-                worksheet.Cell(line, 5 ).Style.Fill.BackgroundColor =  bgColorHeader;
-                worksheet.Cell(line, 6 ).Style.Fill.BackgroundColor =  bgColorHeader;
-                worksheet.Cell(line, 7 ).Style.Fill.BackgroundColor =  bgColorHeader;
-                worksheet.Cell(line, 8 ).Style.Fill.BackgroundColor =  bgColorHeader;
-                worksheet.Cell(line, 9 ).Style.Fill.BackgroundColor =  bgColorHeader;
-                worksheet.Cell(line, 10).Style.Fill.BackgroundColor =  bgColorHeader;
+                worksheet.Cell(line, 5).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 6).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 7).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 8).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 9).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 10).Style.Fill.BackgroundColor = bgColorHeader;
                 worksheet.Cell(line, 11).Style.Fill.BackgroundColor = bgColorHeader;
 
 
-                worksheet.Cell(line,  5).Style.Font.FontColor = fontColorHeader;
-                worksheet.Cell(line,  6).Style.Font.FontColor = fontColorHeader;
-                worksheet.Cell(line,  7).Style.Font.FontColor = fontColorHeader;
-                worksheet.Cell(line,  8).Style.Font.FontColor = fontColorHeader;
-                worksheet.Cell(line,  9).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line, 5).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line, 6).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line, 7).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line, 8).Style.Font.FontColor = fontColorHeader;
+                worksheet.Cell(line, 9).Style.Font.FontColor = fontColorHeader;
                 worksheet.Cell(line, 10).Style.Font.FontColor = fontColorHeader;
                 worksheet.Cell(line, 11).Style.Font.FontColor = fontColorHeader;
-                 
+
 
                 worksheet.Cell(line, 5).Style.Font.SetBold();
                 worksheet.Cell(line, 6).Style.Font.SetBold();
@@ -427,22 +502,22 @@ namespace logic.systems.school.managment.Controllers
                     worksheet.Cell(line, 9).Value = t.PaymentTerm_first;
                     worksheet.Cell(line, 10).Value = t.MonthTuitionFee;
                     worksheet.Cell(line, 11).Value = t.PaymentTerm_Secund;
-                     
+
                     worksheet.Cell(line, 8).Style.Font.FontColor = XLColor.Red;
 
                     line++;
                 }
 
 
-                worksheet.Cell(line, 1). Style.Fill.BackgroundColor = bgColorHeader;
-                worksheet.Cell(line, 2). Style.Fill.BackgroundColor = bgColorHeader;
-                worksheet.Cell(line, 3). Style.Fill.BackgroundColor = bgColorHeader;
-                worksheet.Cell(line, 4). Style.Fill.BackgroundColor = bgColorHeader;
-                worksheet.Cell(line, 5). Style.Fill.BackgroundColor = bgColorHeader;
-                worksheet.Cell(line, 6). Style.Fill.BackgroundColor = bgColorHeader;
-                worksheet.Cell(line, 7). Style.Fill.BackgroundColor = bgColorHeader;
-                worksheet.Cell(line, 8). Style.Fill.BackgroundColor = bgColorHeader;
-                worksheet.Cell(line, 9). Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 1).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 2).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 3).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 4).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 5).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 6).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 7).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 8).Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Cell(line, 9).Style.Fill.BackgroundColor = bgColorHeader;
                 worksheet.Cell(line, 10).Style.Fill.BackgroundColor = bgColorHeader;
                 worksheet.Cell(line, 11).Style.Fill.BackgroundColor = bgColorHeader;
 

@@ -16,7 +16,8 @@ namespace logic.systems.school.managment.Services
 
         public async Task<EnrollmentInvoice> GetEnrollmentInvoiceByEnrollId(int EnrollId)
         {
-            var result = await db.EnrollmentInvoices.Include(x => x.Enrollment).ThenInclude(x => x.Student)
+            var result = await db.EnrollmentInvoices.Include(x => x.Enrollment).ThenInclude(x => x.EnrollmentItems)
+                                                    .Include(x => x.Enrollment).ThenInclude(x => x.Student)
                                                     .Include(p => p.Enrollment).ThenInclude(p => p.PaymentEnrollment)
                                                     .FirstOrDefaultAsync(x => x.EnrollmentId == EnrollId);
 
@@ -27,7 +28,9 @@ namespace logic.systems.school.managment.Services
 
         public async Task<TuitionPayment> GetTuitionInvoiceById(int payementId)
         {
-            var result = await db.PaymentTuitions.Include(x => x.Tuition).ThenInclude(x => x.Enrollment).ThenInclude(x => x.Student)
+            var result = await db.PaymentTuitions.Include(x => x.Tuition) 
+                                                 .ThenInclude(x => x.Enrollment).ThenInclude(x => x.Student)
+                                                 .Include(x => x.Tuition.TuitionFines)
                                                  .FirstOrDefaultAsync(x => x.Id == payementId);
 
             return result;

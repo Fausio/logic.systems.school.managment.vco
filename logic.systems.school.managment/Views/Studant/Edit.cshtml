@@ -208,11 +208,11 @@
                                                 <table class="MytabelaItens wideTable" id="tabelaItensPayments" border="1">
                                                     <thead>
                                                         <tr>
-                                                            <th>Pagamento para a mensalidade</th>
+                                                            <th>Mensalidade</th>
                                                             <th>Data de Pagamento</th>
                                                             <th>Propina</th>
                                                             <th>Iva (5%)</th>
-                                                            <th>Total (Propina + Iva (5%))</th>
+                                                            <th>Total (+ Iva 5%)</th>
                                                             <th>Recibo</th>
                                                             <!-- Adicione mais colunas conforme necessário -->
                                                         </tr>
@@ -896,8 +896,7 @@
                     // Fecha a janela após a impressão
                     printWindow.close();
                 };
-            };
-            console.log("displayHtmlForPrinting.end");
+            }; 
         }
 
         function createPayment() {
@@ -1150,8 +1149,7 @@
                     $.each(MyList, function (index, item) {
                         var newRow = $("<tr>");
 
-                        var formattedDate = new Date(item.createdDate).toLocaleDateString('pt-BR');
-                        // newRow.append("<td>" + item.formattedDate + ",00 MT" + "</td>");
+                        var formattedDate = new Date(item.createdDate).toLocaleDateString('pt-BR'); 
                         newRow.append("<td>" + formattedDate + "</td>");
                         newRow.append("<td>" + item.level + "</td>");
                         newRow.append("<td>" + item.year + "</td>");
@@ -1159,9 +1157,8 @@
 
                         newRow.append("<td>" + item.value + ", MT" + "</td>");
                         newRow.append("<td>" + item.total + ", MT" + "</td>");
-                        newRow.append("<td>" + " <div id='enrolls_btns' > <button onclick='PrintEnrollmentInvoice(" + item.id + " )'   type='button'  class='btn btn-sm btn-dark btn-block btn-icon-text text-white  mb-0 mt-0 ' >  Imprimir </button>   <button onclick='DonloadEnrollmentInvoice(" + item.id + " )'   type='button'  class=' mb-0 mt-0 btn btn-sm btn-light btn-block btn-icon-text text-black' > baixar </button>   </div>   <div id='enrolls_spinner' style='display:none'><div class='d-flex justify-content-center'><div class='spinner-border spinner-border-sm' role='status'><span class='sr-only'>Loading...</span></div></div></div> " + "</td>");
-                        // "<td><label class='badge badge-success mt-0 mb-0'>Pago</label></td>"
-                        // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
+                        newRow.append("<td>" + " <div id='enrolls_btns' > <button onclick='PrintEnrollmentInvoice(" + item.id + " )'   type='button'  class='btn btn-sm btn-dark btn-block btn-icon-text text-white  mb-0 mt-0 ' >  Imprimir </button>      </div>   <div id='enrolls_spinner' style='display:none'><div class='d-flex justify-content-center'><div class='spinner-border spinner-border-sm' role='status'><span class='sr-only'>Loading...</span></div></div></div> " + "</td>");
+                      
                         $("#tabelaEnrollments tbody").append(newRow);
                     });
 
