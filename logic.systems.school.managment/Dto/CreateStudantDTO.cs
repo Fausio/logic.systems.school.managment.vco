@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace logic.systems.school.managment.Dto
 {
-    public class CreateStudantDTO
+    public class CreateStudantDTO : AuditDTO
     {
         [Required(ErrorMessage = "O campo Nome é obrigatório.")]
         public string Name { get; set; }

@@ -65,7 +65,7 @@
                     <fieldset class="p-2">
                         <legend class="w-auto">Dados do estudante</legend>
                         <div class="table-responsive">
-                            <table class="Mytable">
+                            <table class="Mytable w-75">
                                 <tr>
                                     <td>Nome completo:</td>
                                     <td> <a asp-action="EditStudant" asp-controller="studant" asp-route-id="@Model.id">@Model.Name</a>
@@ -73,6 +73,10 @@
                                 <tr>
                                     <td>Data de Nasciento:</td>
                                     <td>@Model.BirthDate.ToShortDateString()</td>
+                                </tr>
+                                <tr>
+                                    <td>Idade:</td>
+                                    <td>@Model.age</td>
                                 </tr>
                                 <tr>
                                     <td>Naturalidade:</td>
@@ -115,7 +119,7 @@
                     <fieldset class="p-2">
                         <legend class="w-auto">Dados do encarregado de educação</legend>
                         <div class="table-responsive">
-                            <table class="Mytable">
+                            <table class="Mytable w-75">
                                 <tr>
                                     <td>Dados do encarregado de educação:</td>
                                     <td>@Model.SponsorName</td>
@@ -371,6 +375,45 @@
     </div>
 </div>
 
+
+
+<div class="card">
+    <div class="card-body ">
+        <div class="row justify-content-end">
+            <div class="col-12 text-right">
+                <!-- Conteúdo da sua div aqui -->
+                <fieldset class="p-2">
+                    <legend class="w-auto">Dados de Auditoria</legend>
+                    <ul class="list-unstyled  ">
+                        
+ 
+                        @{
+                            if (Model.CreatedUSer is not null && !string.IsNullOrEmpty(Model.CreatedUSer))
+                            {
+                                <li><strong>Criado por:</strong> @Model.CreatedUSer</li>
+                                <li><strong>Data de Criação:</strong> @Model.CreatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
+                             
+                            }
+
+                            if (Model.UpdatedUSer is not null && !string.IsNullOrEmpty(Model.UpdatedUSer))
+                            {
+                                <li><strong>Actulizado por:</strong> @Model.UpdatedUSer</li>
+                                <li><strong>Data de Actulização:</strong> @Model.UpdatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
+                              
+                            }
+                        }
+
+                      
+
+                        
+                    </ul>
+                </fieldset>
+
+
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Seu modal -->
 <div class="modal" id="meuModal">
@@ -896,7 +939,7 @@
                     // Fecha a janela após a impressão
                     printWindow.close();
                 };
-            }; 
+            };
         }
 
         function createPayment() {
@@ -1149,7 +1192,7 @@
                     $.each(MyList, function (index, item) {
                         var newRow = $("<tr>");
 
-                        var formattedDate = new Date(item.createdDate).toLocaleDateString('pt-BR'); 
+                        var formattedDate = new Date(item.createdDate).toLocaleDateString('pt-BR');
                         newRow.append("<td>" + formattedDate + "</td>");
                         newRow.append("<td>" + item.level + "</td>");
                         newRow.append("<td>" + item.year + "</td>");
@@ -1158,7 +1201,7 @@
                         newRow.append("<td>" + item.value + ", MT" + "</td>");
                         newRow.append("<td>" + item.total + ", MT" + "</td>");
                         newRow.append("<td>" + " <div id='enrolls_btns' > <button onclick='PrintEnrollmentInvoice(" + item.id + " )'   type='button'  class='btn btn-sm btn-dark btn-block btn-icon-text text-white  mb-0 mt-0 ' >  Imprimir </button>      </div>   <div id='enrolls_spinner' style='display:none'><div class='d-flex justify-content-center'><div class='spinner-border spinner-border-sm' role='status'><span class='sr-only'>Loading...</span></div></div></div> " + "</td>");
-                      
+
                         $("#tabelaEnrollments tbody").append(newRow);
                     });
 
