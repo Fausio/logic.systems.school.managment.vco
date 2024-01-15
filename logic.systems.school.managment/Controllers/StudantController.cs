@@ -87,11 +87,14 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
+                var currentUser = await _userManager.GetUserAsync(User);
+              
                 await PopulateForms();
                 return View(new CreateStudantDTO()
                 {
                     EnroolAllMonths = true,
-                });
+                    CreatedUSer = currentUser.Id
+            });
             }
             catch (Exception)
             {
@@ -106,12 +109,17 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
+                var currentUser = await _userManager.GetUserAsync(User);
+                model.CreatedUSer = currentUser.Id;
+
+              
+
                 await PopulateForms();
 
 
                 if (ModelState.IsValid)
                 {
-                    var currentUser = await _userManager.GetUserAsync(User);
+              
                     if (await _IAppService.LimitOfStudentByClassRoomAndLevelYear(model.EnrollmentYear, model.CurrentSchoolLevelId, model.SchoolClassRoomId))
                     {
 

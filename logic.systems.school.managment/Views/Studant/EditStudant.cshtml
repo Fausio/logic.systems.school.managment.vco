@@ -27,8 +27,8 @@
 
     <!-- Campo oculto para o ID -->
     <input type="hidden" asp-for="@Model.id" />
-@*     <input type="hidden" asp-for="@Model.DistrictId" />
-    <input type="hidden" asp-for="@Model.SchoolClassRoomId" /> *@
+    @* <input type="hidden" asp-for="@Model.CreatedUSer" />
+        <input type="hidden" asp-for="@Model.SchoolClassRoomId" /> *@
     <input type="hidden" asp-for="@Model.CurrentSchoolLevelId" />
     <input type="hidden" asp-for="@Model.Enrollments" />
 
@@ -254,14 +254,14 @@
                             if (Model.CreatedUSer is not null && !string.IsNullOrEmpty(Model.CreatedUSer))
                             {
                                 <li><strong>Criado por:</strong> @Model.CreatedUSer</li>
-                                <li><strong>Data de Criação:</strong> @Model.CreatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
+                                <li><strong>Data de Criação:</strong> @Model.CreatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
 
                             }
 
                             if (Model.UpdatedUSer is not null && !string.IsNullOrEmpty(Model.UpdatedUSer))
                             {
                                 <li><strong>Actulizado por:</strong> @Model.UpdatedUSer</li>
-                                <li><strong>Data de Actulização:</strong> @Model.UpdatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
+                                <li><strong>Data de Actulização:</strong> @Model.UpdatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
 
                             }
                         }
