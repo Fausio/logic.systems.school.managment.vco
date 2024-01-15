@@ -193,7 +193,7 @@ namespace logic.systems.school.managment.Controllers
 
                     if (updatedUser is not null)
                     {
-                        result.UpdatedUSer = createdUser.UserName;
+                        result.UpdatedUSer = updatedUser.UserName;
                         result.UpdatedDate = model.UpdatedDate.Value;
                     }  
                 }
@@ -263,7 +263,7 @@ namespace logic.systems.school.managment.Controllers
 
                     if (updatedUser is not null)
                     {
-                        result.UpdatedUSer = createdUser.UserName;
+                        result.UpdatedUSer = updatedUser.UserName;
                         result.UpdatedDate = model.UpdatedDate.Value;
                     }
                 }
