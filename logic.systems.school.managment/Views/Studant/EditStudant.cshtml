@@ -219,10 +219,19 @@
                     <fieldset class="border p-2">
                         <legend class="w-auto">Ações</legend>
                         <div class="template-demo">
-                            <button type="submit" class="btn btn-info btn-icon-text">
-                                Actualizar
-                                <i class="typcn typcn-edit btn-icon-append"></i>
-                            </button>
+
+                            
+
+                                @if (!Model.Transferred)
+                                {
+                                    <button type="submit" class="btn btn-info btn-icon-text">
+                                        Actualizar
+                                        <i class="typcn typcn-edit btn-icon-append"></i>
+                                    </button>
+                                }
+
+                            
+                          
                             <a asp-action="edit" asp-controller="studant" asp-route-id="@Model.id" class="btn btn-light btn-icon-text">
                                 Voltar para detalhes
                             </a>

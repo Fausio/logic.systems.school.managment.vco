@@ -30,9 +30,9 @@ namespace logic.systems.school.managment.Services
         {
             var result = new StudentTotalsDTO();
             result.Total = await db.Students.Where(x => x.Row != Common.Deleted).CountAsync();
-            result.TotalSolved = await db.Students.Where(x => x.Row != Common.Deleted && !x.Suspended ).CountAsync();
-            result.TotalSuspended = await db.Students.Where(x => x.Row != Common.Deleted && x.Suspended ).CountAsync();
-
+            result.TotalSolved = await db.Students.Where(x => x.Row != Common.Deleted && !x.Suspended && !x.Transferred).CountAsync();
+            result.TotalSuspended = await db.Students.Where(x => x.Row != Common.Deleted && x.Suspended && !x.Transferred).CountAsync();
+            result.TotalTranfered = await db.Students.Where(x => x.Row != Common.Deleted && x.Transferred).CountAsync();
             return result;
         }
     }

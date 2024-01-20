@@ -51,9 +51,7 @@ namespace logic.systems.school.managment.Services
 
             // meses de estudo (1 de fevereiro a  dezembro) para decima e decima-segunda classe, devido aos exame.
             // meses  de estudo de (1 de fevereiro a novembro) são todas as outras classes sem exame incluido sexta classe que tem exame.
-
-
-
+             
 
             if (classesWithtExame.Contains(model.CurrentSchoolLevel.Description))
             {
@@ -120,7 +118,7 @@ namespace logic.systems.school.managment.Services
         {
             try
             {
-                return await db.Tuitions.Where(x => x.StudentId == StudantId).ToListAsync();
+                return await db.Tuitions.Include(e => e.Enrollment.SchoolLevel).Where(x => x.StudentId == StudantId).ToListAsync();
             }
             catch (Exception)
             {
@@ -303,7 +301,7 @@ namespace logic.systems.school.managment.Services
         }
 
 
-        private decimal getTuitionValueByschoolLevel(string schoolLevel)
+        public decimal getTuitionValueByschoolLevel(string schoolLevel)
         {
 
             #region a logica da KALIMANY

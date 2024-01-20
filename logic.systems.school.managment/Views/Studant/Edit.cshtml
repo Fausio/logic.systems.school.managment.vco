@@ -5,6 +5,8 @@
     Layout = "~/Views/Shared/_adminLayout.cshtml";
 }
 
+
+
 <link rel="stylesheet" href="~/css/EditViewBen.css" />
 
 <nav aria-label="breadcrumb">
@@ -212,11 +214,14 @@
                                                 Adicionar Pagamento de mensalidade
                                             </a>
 
+                                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#multipayments" onclick="form_multi_pay_btns()">
+                                                Adicionar Multiplus Pagamentos de mensalidade
+                                            </a>
                                         }
 
-                                  }
+                                    }
 
-                            
+
                                     <br>
 
 
@@ -358,7 +363,7 @@
                         }
 
 
-                        
+
 
 
                         <div class="row">
@@ -391,7 +396,8 @@
             <fieldset class="border pt-0 mb-0">
                 <legend class="w-auto mb-0">Ações</legend>
                 <div class="template-demo my-0">
-                    <a asp-action="index" asp-controller="studant" class="btn btn-light btn-icon-text my-0">
+
+                    <a asp-action="index" asp-controller="studant" class="btn btn-sm btn-light btn-icon-text">
                         Voltar para lista
                     </a>
                     @{
@@ -404,7 +410,7 @@
                         }
 
                     }
-                   
+
                 </div>
             </fieldset>
         </div>
@@ -456,6 +462,49 @@
 
 
 
+<div class="modal fade" id="multipayments" tabindex="-1" role="dialog" aria-labelledby="confirmacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document" style="width: 50%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmacaoModalLabel">Mensalidades a pagar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <label id="TotalPayAllTabelaIten">Total a pagar:</label>
+
+                <div class="table-responsive mt-0">
+                    <table class="MytabelaItens mt-0" id="PayAllTabelaIten" border="1">
+                        <thead>
+                            <tr>
+                                <th>Mensalidades a pagar </th>
+                                <th>Data</th>
+                                <th> </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success text-white" onclick="confirmarTransferencia()">Efectuar pagamento</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <div class="modal fade" id="TransferModal" tabindex="-1" role="dialog" aria-labelledby="confirmacaoModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -475,7 +524,7 @@
                 <form asp-action="Transfer" asp-controller="studant" asp-route-Id="@Model.id">
                     <button type="submit" class="btn btn-warning text-white" onclick="confirmarTransferencia()">Confirmar Transferência</button>
                 </form>
-               
+
             </div>
         </div>
     </div>
@@ -485,7 +534,7 @@
 
 
 <!-- Seu modal -->
-<div class="modal" id="meuModal">
+<div class="modal fade" id="meuModal">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -541,7 +590,7 @@
 
 
 <!-- Seu modal -->
-<div class="modal" id="EnrollmentModal">
+<div class="modal fade" id="EnrollmentModal">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -625,7 +674,7 @@
 </div>
 
 <!-- Seu modal -->
-<div class="modal" id="EnrollmentRepitModal">
+<div class="modal fade" id="EnrollmentRepitModal">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -703,7 +752,7 @@
     </div>
 </div>
 
-<div class="modal" id="SuspendedModal">
+<div class="modal fade" id="SuspendedModal">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -744,7 +793,7 @@
 
 
 <!-- Seu modal -->
-<div class="modal" id="meuFeeModal">
+<div class="modal fade" id="meuFeeModal">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -841,6 +890,7 @@
 
         $(document).ready(function () {
             getPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+            getMultiPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
             getTuitions(@Model.id, @Model.Enrollments[0].EnrollmentYear);
         });
 
@@ -854,6 +904,13 @@
             $("#form_pay_btns").show();
             $("#form_pay_spinner").hide();
         }
+
+        function form_multi_pay_btns() {
+            // $("#form_pay_btns").show();
+            // $("#form_pay_spinner").hide();
+        }
+
+
         function form_payfee_btns() {
 
             $("#form_payfee_btns").show();
@@ -938,6 +995,27 @@
                 }
             });
         }
+         
+        var TotalToPay = 0;
+        function SumMonthToPay(itemId, event) {
+           
+            var checkbox = event.target; 
+            if (checkbox.checked) {
+                // Checkbox is checked
+                console.log("Checkbox with ID " + itemId + " is checked");
+                TotalToPay = TotalToPay + itemId;
+
+            } else {
+                // Checkbox is not checked
+                console.log("Checkbox with ID " + itemId + " is unchecked");
+                TotalToPay = TotalToPay - itemId;
+
+            }
+            // TotalToPay = TotalToPay + id;
+            // console.log("TotalToPay", TotalToPay);
+            $("#TotalPayAllTabelaIten").text("Total a pagar: " + TotalToPay + ".00 MT");
+        }
+
 
         function PrintEnrollmentInvoice(id) {
 
@@ -1281,7 +1359,37 @@
 
         }
 
+        function getMultiPayments(id, EnrollmentYear) {
+            var data = {
+                StudantId: @Model.id,
+                EnrollmentYear: EnrollmentYear,
+            };
 
+            $.ajax({
+                url: "/tuition/IndexMultiPaymentByStudantId",
+                type: "GET",
+                data: data,
+                success: function (MyList) {
+
+                    console.log("MyList", MyList)
+
+                    $("#PayAllTabelaIten tbody").empty();
+                    $.each(MyList, function (index, item) {
+
+                        var newRow = $("<tr>");
+                        var formattedsDate = new Date(item.startDate).toLocaleDateString('pt-BR');
+                        var formattedeDate = new Date(item.endDate).toLocaleDateString('pt-BR');
+
+                        newRow.append("<td>" + item.monthName + "</td>");
+                        newRow.append("<td>" + formattedsDate + " a " + formattedeDate + "</td>");
+                        newRow.append("<td> <input  onclick='SumMonthToPay(" + item.id + " , event)' type='checkbox' /> </td>");
+
+                        $("#PayAllTabelaIten tbody").append(newRow);
+                    });
+
+                }
+            });
+        }
 
 
         function getPayments(id, EnrollmentYear) {

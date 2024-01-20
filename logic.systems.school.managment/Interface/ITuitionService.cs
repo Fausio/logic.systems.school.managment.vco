@@ -16,7 +16,10 @@ namespace logic.systems.school.managment.Interface
         public string  GetMonthName(int monthNumber);
          
         public Task CheckFee(int? studentId, string userid);       
-        public Task AutomaticRegularization(int? studentId);       
-         
+        public Task AutomaticRegularization(int? studentId);
+
+        public decimal getTuitionValueByschoolLevel(string schoolLevel);
+
+
     }
 }
