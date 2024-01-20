@@ -50,24 +50,24 @@ namespace logic.systems.school.managment.Controllers
                 #region temp fix
                 var currentUser = await _userManager.GetUserAsync(User);
                 var studentToSeedTuition = await db.Enrollments.Include(x => x.Student)
-                                                                    .ThenInclude(x => x.CurrentSchoolLevel) 
+                                                               .ThenInclude(x => x.CurrentSchoolLevel)
                                                                .Include(x => x.Tuitions)
                                                                .Include(x => x.SchoolLevel)
-                                                               .ToListAsync(); 
-            
+                                                               .ToListAsync();
+
 
                 foreach (var item in studentToSeedTuition)
                 {
                     if (item.Tuitions.Count <= 0)
                     {
-                      
+
 
                         if (item.SchoolLevel.Description == "Pré-escola")
                         {
-                          await _ITuitionService.CreateByClassOfStudant(item.Student, item, currentUser.Id);
+                            await _ITuitionService.CreateByClassOfStudant(item.Student, item, currentUser.Id);
                         }
 
-                       
+
                     }
                 }
 
@@ -164,6 +164,15 @@ namespace logic.systems.school.managment.Controllers
                         return View(model);
                     }
 
+                    if (await _StudentService.CheckIfExists(model.PersonId))
+                    {
+                        TempData["MensagemError"] = $"Erro de duplicação de dados: Impossível gravar o estudante {model.Name} porque já existe um estudante com o BI {model.PersonId}. na base de dados";
+                        if (TempData.ContainsKey("MensagemError"))
+                        {
+                            ViewBag.MensagemError = TempData["MensagemError"];
+                        }
+                        return View(model);
+                    }
 
                     var result = await _StudentService.Create(StudantProfile.ToClass(model), currentUser.Id);
                     var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear, result.SchoolClassRoomId);
@@ -182,7 +191,14 @@ namespace logic.systems.school.managment.Controllers
             }
 
         }
-
+        
+        public async Task<IActionResult> Transfer(int Id)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            await _StudentService.Transfer(Id, currentUser.Id);
+            TempData["MensagemSucess"] = "Tranferencia do estudante feita com sucesso!";
+            return RedirectToAction("edit", "studant", new { id = Id });
+        }
         public async Task<IActionResult> Edit(int id)
         {
             try

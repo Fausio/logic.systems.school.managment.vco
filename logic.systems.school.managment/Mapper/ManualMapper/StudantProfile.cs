@@ -70,6 +70,7 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
                     CurrentSchoolLevelId = Class.CurrentSchoolLevelId,
                     SchoolClassRoomId = Class.SchoolClassRoomId,
                     Suspended = Class.Suspended,
+                    Transferred = Class.Transferred,
                     Enrollments = Class.Enrollments
                 };
 

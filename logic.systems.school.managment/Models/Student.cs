@@ -47,8 +47,9 @@ namespace logic.systems.school.managment.Models
 
         [NotMapped]
         public bool haveFee { get; set; }
-         
-      
+
+        public bool Transferred { get; set; }
+        
 
         public int GetAgeInDay()
         {

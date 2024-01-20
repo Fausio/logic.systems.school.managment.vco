@@ -151,7 +151,7 @@
                                         }
                                     </select>
                                     <span asp-validation-for="SchoolClassRoomId" class="text-danger"></span>
-                                </div> 
+                                </div>
                                 <div class="col-md-4">
                                     <label for="">Ano</label>
                                     <select class="form-control form-control-lg pb-3 pt-3" asp-for="EnrollmentYear" id="EnrollmentYear">
@@ -163,7 +163,7 @@
                                     </select>
                                     <span asp-validation-for="EnrollmentYear" class="text-danger " style="display:none">O campo Ano de inscrição  é obrigatório.</span>
                                 </div>
-                            </div> 
+                            </div>
                         </fieldset>
                     </fieldset>
 
@@ -202,7 +202,7 @@
                     <fieldset class="border p-2">
                         <legend class="w-auto">Ações</legend>
                         <div class="template-demo">
-                            <button type="submit" class="btn btn-info btn-icon-text">
+                            <button type="submit" class="btn btn-info btn-icon-text" onclick="DisableSubmit()" id="submitBtn">
                                 Cadastrar
                                 <i class="typcn typcn-edit btn-icon-append"></i>
                             </button>
@@ -233,6 +233,11 @@
 @section scripts {
     <script src="~/celestial-admin/js/template.js"></script>
     <script>
+
+        function DisableSubmit() {
+
+            $("#submitBtn").hide();
+        }
 
         function hideMyMonthLabel() {
 
@@ -279,7 +284,7 @@
         });
 
         function hideMyMonthLabel() {
-             
+
             $.ajax({
                 url: '/admin/GetSchoolClassRooms',
                 type: 'GET',
@@ -295,7 +300,7 @@
                 }
             });
         }
-       
+
 
         $(document).ready(function () {
             // Adicione um evento de mudança ao seu elemento select

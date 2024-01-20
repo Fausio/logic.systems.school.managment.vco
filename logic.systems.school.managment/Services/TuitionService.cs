@@ -394,41 +394,47 @@ namespace logic.systems.school.managment.Services
 
             foreach (Student student in students)
             {
-                var Tuitions = student.Enrollments.SelectMany(x => x.Tuitions.Where(t => !t.Paid));
-                var setSuspended = false;
-                foreach (Tuition tuition in Tuitions)
+
+                if (!student.Transferred)
                 {
-                    var tuituionStartDate_part_1 = tuition.StartDate.AddDays(15);
-                    var tuituionStartDate_part_2_a = tuition.StartDate.AddDays(14);
-                    var tuituionStartDate_part_2_b = tuition.StartDate.AddDays(24);
-
-                    if (now > tuituionStartDate_part_1)
+                    var Tuitions = student.Enrollments.SelectMany(x => x.Tuitions.Where(t => !t.Paid));
+                    var setSuspended = false;
+                    foreach (Tuition tuition in Tuitions)
                     {
-                        if (now > tuituionStartDate_part_2_a && now <= tuituionStartDate_part_2_b)
-                        {   // cria mutla de 300 se pagar entre dia 15 a 25
-                            //  Console.WriteLine("300 MT"); 
-                            await CreateTuitionFine(tuition.Id, userid);
-                        }
+                        var tuituionStartDate_part_1 = tuition.StartDate.AddDays(15);
+                        var tuituionStartDate_part_2_a = tuition.StartDate.AddDays(14);
+                        var tuituionStartDate_part_2_b = tuition.StartDate.AddDays(24);
 
-                        if (now > tuituionStartDate_part_2_b)
-                        {    // cria suspende se tiver passado 25 dias sem pagar a mensalidade
-                             //  Console.WriteLine("Suspenso");
-                            await CreateTuitionFine(tuition.Id, userid);
+                        if (now > tuituionStartDate_part_1)
+                        {
+                            if (now > tuituionStartDate_part_2_a && now <= tuituionStartDate_part_2_b)
+                            {   // cria mutla de 300 se pagar entre dia 15 a 25
+                                //  Console.WriteLine("300 MT"); 
+                                await CreateTuitionFine(tuition.Id, userid);
+                            }
 
-                            setSuspended = true;
-                            student.Suspended = setSuspended;
-                            await db.SaveChangesAsync();
+                            if (now > tuituionStartDate_part_2_b)
+                            {    // cria suspende se tiver passado 25 dias sem pagar a mensalidade
+                                 //  Console.WriteLine("Suspenso");
+                                await CreateTuitionFine(tuition.Id, userid);
+
+                                setSuspended = true;
+                                student.Suspended = setSuspended;
+                                await db.SaveChangesAsync();
+                            }
                         }
+                    }
+
+                    if (setSuspended != student.Suspended)
+                    {
+
+                        student.UpdatedUSer = userid;
+                        student.Suspended = setSuspended;
+                        await db.SaveChangesAsync();
                     }
                 }
 
-                if (setSuspended != student.Suspended)
-                {
-
-                    student.UpdatedUSer = userid;
-                    student.Suspended = setSuspended;
-                    await db.SaveChangesAsync();
-                }
+             
             }
         }
 
