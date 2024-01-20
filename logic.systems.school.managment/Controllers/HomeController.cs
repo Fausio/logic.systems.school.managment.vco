@@ -36,9 +36,11 @@ namespace logic.systems.school.managment.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             // update  multas
             ViewBag.CurrentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
+ 
             return View(new StudentPageDto()
             {
-            });
+                studentTotals = await _IDashBoard.GetStudentTotals()
+            }) ;
         }
 
 

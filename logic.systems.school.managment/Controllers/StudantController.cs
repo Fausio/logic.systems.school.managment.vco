@@ -1,4 +1,5 @@
-﻿using logic.systems.school.managment.Dto;
+﻿using logic.systems.school.managment.Data;
+using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Mapper.ManualMapper;
 using logic.systems.school.managment.Models;
@@ -6,6 +7,7 @@ using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Metrics;
 
 namespace logic.systems.school.managment.Controllers
@@ -20,6 +22,9 @@ namespace logic.systems.school.managment.Controllers
         private ITuitionService _ITuitionService;
         private IEnrollment _IEnrollmentService;
         private IApp _IAppService;
+
+        // temp
+        private readonly ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
 
         public StudantController(IstudantService StudentService,
             IOrgUnit IOrgUnitServiceService,
@@ -42,6 +47,33 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
+                #region temp fix
+                var currentUser = await _userManager.GetUserAsync(User);
+                var studentToSeedTuition = await db.Enrollments.Include(x => x.Student)
+                                                                    .ThenInclude(x => x.CurrentSchoolLevel) 
+                                                               .Include(x => x.Tuitions)
+                                                               .Include(x => x.SchoolLevel)
+                                                               .ToListAsync(); 
+            
+
+                foreach (var item in studentToSeedTuition)
+                {
+                    if (item.Tuitions.Count <= 0)
+                    {
+                      
+
+                        if (item.SchoolLevel.Description == "Pré-escola")
+                        {
+                          await _ITuitionService.CreateByClassOfStudant(item.Student, item, currentUser.Id);
+                        }
+
+                       
+                    }
+                }
+
+                #endregion
+
+
                 var result = await _StudentService.ReadPagenation(pageNumber.Value, pageSize.Value);
                 ViewBag.CurrentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
                 return View(new StudentPageDto()
@@ -87,10 +119,13 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
+                var currentUser = await _userManager.GetUserAsync(User);
+
                 await PopulateForms();
                 return View(new CreateStudantDTO()
                 {
                     EnroolAllMonths = true,
+                    CreatedUSer = currentUser.Id
                 });
             }
             catch (Exception)
@@ -111,6 +146,7 @@ namespace logic.systems.school.managment.Controllers
 
                 if (ModelState.IsValid)
                 {
+
                     var currentUser = await _userManager.GetUserAsync(User);
 
                     // todo: ver duplicacação pelo BI
@@ -168,11 +204,11 @@ namespace logic.systems.school.managment.Controllers
                 var ClassRoom = await _SempleEntityService.GetById(result.SchoolClassRoomId);
 
 
-                if (model.BirthDate  != null)
+                if (model.BirthDate != null)
                 {
                     result.age = model.GetAgeInDay();
                 }
-             
+
 
                 var createdUser = await _userManager.FindByIdAsync(model.CreatedUSer);
 
@@ -180,17 +216,17 @@ namespace logic.systems.school.managment.Controllers
                 {
                     result.CreatedUSer = createdUser.UserName;
                     result.CreatedDate = model.CreatedDate;
-                } 
+                }
 
                 if (model.UpdatedDate is not null)
                 {
-                    var  updatedUser =   await _userManager.FindByIdAsync(model.UpdatedUSer);
+                    var updatedUser = await _userManager.FindByIdAsync(model.UpdatedUSer);
 
                     if (updatedUser is not null)
                     {
-                        result.UpdatedUSer = createdUser.UserName;
+                        result.UpdatedUSer = updatedUser.UserName;
                         result.UpdatedDate = model.UpdatedDate.Value;
-                    }  
+                    }
                 }
 
                 ViewBag.SchoolClassRoom = ClassRoom.Description;
@@ -258,7 +294,7 @@ namespace logic.systems.school.managment.Controllers
 
                     if (updatedUser is not null)
                     {
-                        result.UpdatedUSer = createdUser.UserName;
+                        result.UpdatedUSer = updatedUser.UserName;
                         result.UpdatedDate = model.UpdatedDate.Value;
                     }
                 }

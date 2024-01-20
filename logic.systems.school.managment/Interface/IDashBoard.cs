@@ -5,5 +5,7 @@ namespace logic.systems.school.managment.Interface
     public interface IDashBoard
     {
         public Task<List<CanvarChartDTO>> GetAllMonthsFeeByCurrentYear();
+
+        public Task<StudentTotalsDTO> GetStudentTotals();
     }
 }

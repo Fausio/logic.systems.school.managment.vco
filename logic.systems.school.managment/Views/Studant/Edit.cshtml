@@ -391,14 +391,14 @@
                             if (Model.CreatedUSer is not null && !string.IsNullOrEmpty(Model.CreatedUSer))
                             {
                                 <li><strong>Criado por:</strong> @Model.CreatedUSer</li>
-                                <li><strong>Data de Criação:</strong> @Model.CreatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
+                                <li><strong>Data de Criação:</strong> @Model.CreatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
                              
                             }
 
                             if (Model.UpdatedUSer is not null && !string.IsNullOrEmpty(Model.UpdatedUSer))
                             {
                                 <li><strong>Actulizado por:</strong> @Model.UpdatedUSer</li>
-                                <li><strong>Data de Actulização:</strong> @Model.UpdatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
+                                <li><strong>Data de Actulização:</strong> @Model.UpdatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
                               
                             }
                         }

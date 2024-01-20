@@ -2,12 +2,12 @@
 {
     public class AuditDTO
     {
-        public string CreatedUSer  { get; set; }
+        public string? CreatedUSer  { get; set; }
 
-        public DateTime CreatedDate { get; set; }
-        public string UpdatedUSer  { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public string? UpdatedUSer  { get; set; }
 
-        public DateTime UpdatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
  
     }
 }

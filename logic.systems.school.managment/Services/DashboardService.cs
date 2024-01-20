@@ -1,6 +1,7 @@
 ﻿using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
+using logic.systems.school.managment.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace logic.systems.school.managment.Services
@@ -23,6 +24,16 @@ namespace logic.systems.school.managment.Services
                          };
 
             return  await result.ToListAsync();
+        }
+
+        public async Task<StudentTotalsDTO> GetStudentTotals()
+        {
+            var result = new StudentTotalsDTO();
+            result.Total = await db.Students.Where(x => x.Row != Common.Deleted).CountAsync();
+            result.TotalSolved = await db.Students.Where(x => x.Row != Common.Deleted && !x.Suspended ).CountAsync();
+            result.TotalSuspended = await db.Students.Where(x => x.Row != Common.Deleted && x.Suspended ).CountAsync();
+
+            return result;
         }
     }
 }

@@ -16,9 +16,7 @@ namespace logic.systems.school.managment.Services
         private readonly ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
         List<String> classesWithoutExame = new List<String>()
             {
-                "Pré-escola A",
-                "Pré-escola B",
-                "Pré-escola C",
+                "Pré-escola"  ,
                 "1ª classe"   ,
                 "2ª classe"   ,
                 "3ª classe"   ,
