@@ -112,6 +112,9 @@ namespace logic.systems.school.managment.Controllers
                 if (ModelState.IsValid)
                 {
                     var currentUser = await _userManager.GetUserAsync(User);
+
+                    // todo: ver duplicacação pelo BI
+
                     if (await _IAppService.LimitOfStudentByClassRoomAndLevelYear(model.EnrollmentYear, model.CurrentSchoolLevelId, model.SchoolClassRoomId))
                     {
 
