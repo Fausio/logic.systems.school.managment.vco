@@ -496,8 +496,18 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success text-white" onclick="confirmarMultiPayment()">Efectuar pagamento</button>
+
+                <div id="btn_multipayments">
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success text-white" onclick="confirmarMultiPayment()">Efectuar pagamento</button>
+                </div>
+                <div id="spinner_multipayments" style="display:none">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1394,21 +1404,27 @@
             $("#TotalPayAllTabelaIten").text("Total a pagar: " + TotalToPay + ".00 MT");
         }
         function confirmarMultiPayment() {
+            $("#btn_multipayments").hide();
+            $("#spinner_multipayments").show();
+
             // Exibir um diálogo de confirmação
             var userConfirmation = confirm("Tem certeza de que deseja prosseguir com o pagamento múltiplo?");
             var selectedIds = [];
             // Verificar a resposta do usuário
             if (userConfirmation) {
 
+                $("#btn_multipayments").hide();
+                $("#spinner_multipayments").show();
+
                 // Selector to get the rows of the table where the checkbox is checked
                 var selectedRows = $("#PayAllTabelaIten tbody tr:has(:checkbox:checked)");
 
                 // Iterate over the selected rows
                 selectedRows.each(function (index, row) {
-                 
+
                     var itemId = $(row).data("itemId");
-                     selectedIds.push(itemId);
-             
+                    selectedIds.push(itemId);
+
 
                 });
 
@@ -1417,15 +1433,24 @@
                 $.ajax({
                     url: "/Tuition/CreateMultiPayment",
                     type: "POST",
-                      contentType: "application/json",
+                    contentType: "application/json",
                     data: JSON.stringify(selectedIds),
                     success: function (result) {
-                         
+
+                        $("#btn_multipayments").show();
+                        $("#spinner_multipayments").hide();
+                        $('#multipayments').modal('hide');
+                    },
+                    error: function (error) {
+                        console.error('Erro ao baixar o relatório:', error);
+
+                        $("#btn_multipayments").show();
+                        $("#spinner_multipayments").hide();
                     }
                 });
 
 
-
+            
 
 
 
