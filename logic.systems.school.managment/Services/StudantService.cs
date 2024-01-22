@@ -1,4 +1,5 @@
-﻿using logic.systems.school.managment.Data;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
@@ -11,6 +12,27 @@ namespace logic.systems.school.managment.Services
     public class StudantService : IstudantService
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
+
+        public async Task<bool> CheckIfExists(string PersonalId)
+        {
+            try
+            {
+                Student student = await db.Students.FirstOrDefaultAsync(x => x.PersonId == PersonalId);
+
+                if (student is not null)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<Student> Create(Student model, string CreatedById)
         {
             try
@@ -53,8 +75,8 @@ namespace logic.systems.school.managment.Services
                                         .Include(x => x.Enrollments).ThenInclude(t => t.Tuitions)
                                         .Include(x => x.Sponsor)
                                         .ThenInclude(x => x.Contacts)
-                                        .FirstOrDefaultAsync(x => x.Id == modelID && x.Row != Common.Deleted); 
-                 
+                                        .FirstOrDefaultAsync(x => x.Id == modelID && x.Row != Common.Deleted);
+
                 return result;
             }
             catch (Exception)
@@ -80,7 +102,7 @@ namespace logic.systems.school.managment.Services
             var models = new List<Student>();
 
 
-            models = await db.Students.Include(x => x.SchoolClassRoom). Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).ThenInclude(x => x.TuitionFines).Include(x => x.CurrentSchoolLevel).Where(x => x.Row != Common.Deleted)
+            models = await db.Students.Include(x => x.SchoolClassRoom).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).ThenInclude(x => x.TuitionFines).Include(x => x.CurrentSchoolLevel).Where(x => x.Row != Common.Deleted)
                                          .Skip(skip)
                                          .Take(pageSize)
                                          .Select(u => new Student()
@@ -90,6 +112,7 @@ namespace logic.systems.school.managment.Services
                                              CurrentSchoolLevel = u.CurrentSchoolLevel,
                                              SchoolClassRoom = u.SchoolClassRoom,
                                              Suspended = u.Suspended,
+                                             Transferred = u.Transferred,
                                              haveFee = u.Enrollments.Any(x => x.Tuitions.Any(x => !x.TuitionFines.Paid))
 
                                          }).OrderBy(o => o.Name).ToListAsync();
@@ -140,7 +163,7 @@ namespace logic.systems.school.managment.Services
             else if (!string.IsNullOrEmpty(Name) && CurrentSchoolLevelId <= 0)
             {
                 data.records = await db.Students.Include(x => x.Enrollments)
-                                        .ThenInclude(x=> x.Tuitions)
+                                        .ThenInclude(x => x.Tuitions)
                                         .ThenInclude(x => x.TuitionFines)
                                         .Include(x => x.CurrentSchoolLevel)
                                         .Where(x => x.Row != Common.Deleted && x.Name.Contains(Name))
@@ -158,7 +181,7 @@ namespace logic.systems.school.managment.Services
             else if (string.IsNullOrEmpty(Name) && CurrentSchoolLevelId > 0)
             {
                 data.records = await db.Students.Include(x => x.Enrollments)
-                                        .ThenInclude(x => x.Tuitions) 
+                                        .ThenInclude(x => x.Tuitions)
                                         .ThenInclude(x => x.TuitionFines)
                                         .Include(x => x.CurrentSchoolLevel)
                                         .Where(x => x.Row != Common.Deleted && x.CurrentSchoolLevelId == CurrentSchoolLevelId)
@@ -180,6 +203,23 @@ namespace logic.systems.school.managment.Services
             return data;
         }
 
+        public async Task Transfer(int id, string userId)
+        {
+            try
+            {
+                Student student = await Read(id);
+                student.Transferred = true;
+           await     Update(student, userId);
+
+               
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<Student> Update(Student model, string UpdatedById)
         {
             try
@@ -189,8 +229,7 @@ namespace logic.systems.school.managment.Services
 
                     model.UpdatedDate = DateTime.UtcNow;
                     model.UpdatedUSer = UpdatedById;
-                    model.Row = Common.Modified;
-
+                    model.Row = Common.Modified; 
                     db.Students.Update(model);
                     await db.SaveChangesAsync();
                     return model;

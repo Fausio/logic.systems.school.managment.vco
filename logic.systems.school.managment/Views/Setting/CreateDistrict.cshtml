@@ -1,0 +1,156 @@
+﻿@model logic.systems.school.managment.Dto.OrgUnitDistrictCreateDTO
+
+@{
+    ViewData["Title"] = "Criar distrito";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/EditViewBen.css" />
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="studant">Configurações</a><</li>
+        <li class="breadcrumb-item active" aria-current="page">Adicionar Distritos</li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0 pt-2">
+            <h2>Adicionar Distritos</h2>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+
+            @if (ViewData.ModelState.IsValid)
+            {
+
+            }
+            else
+            {
+                <div id="validation-summary" class="alert alert-danger" role="alert">
+                    <p><strong>Por favor, corrija os seguintes erros:</strong></p>
+                </div>
+            }
+
+            <div class="alert alert-danger" role="alert" id="msg-summary" style="display: @(string.IsNullOrEmpty(ViewBag.MensagemError) ? "none" : "block")">
+                <p><strong>@ViewBag.MensagemError</strong></p>
+            </div>
+
+            <form asp-action="createdistrict" asp-controller="setting">
+
+                <fieldset class="border p-2">
+                    <legend class="w-auto">Provéncia</legend>
+
+                    <div class="form-row">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="">Província</label>
+                            <select class="form-control form-control-lg pb-3 pt-3" id="provinces" asp-for="@Model.OrgUnitProvinceId">
+
+                                <option> ... selecione </option>
+                                @foreach (OrgUnitProvince item in ViewBag.Provinces)
+                                {
+                                    <option value="@item.Id">@item.Description</option>
+                                }
+
+                            </select>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+
+                            <label for="">Distrito</label>
+                            <input type="text" class="form-control" asp-for="Description">
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                            
+                            
+
+                        </div>
+                    </div>
+
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Ações</legend>
+                        <div class="template-demo">
+                            <button type="submit" class="btn btn-info btn-icon-text">
+                                Cadastrar
+                                <i class="typcn typcn-edit btn-icon-append"></i>
+                            </button>
+                            <a asp-action="index" asp-controller="studant" class="btn btn-light btn-icon-text">
+                                Ir para lista de Adicionar Provincias/Distritos
+                            </a>
+                        </div>
+                    </fieldset>
+
+                    <div class="form-row">
+                        <div class="col-md-12 mb-2 mt-3">
+                           
+
+                            <div class="table-responsive mt-0">
+                                <table class="MytabelaItens wideTable" id="tableDistricts" border="1">
+                                    <thead>
+                                        <tr>
+                                            <th>Distritos da província</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Os itens da lista serão adicionados aqui -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> 
+                    </div>
+
+                </fieldset>
+
+
+    
+
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Chama a função ao abrir a visualização
+            loadDistricts();
+
+            // Adiciona um manipulador de evento para o evento change em #provinces
+            $("#provinces").change(function () {
+                // Chama a função quando o valor de #provinces é alterado
+                loadDistricts();
+            });
+        });
+
+        function loadDistricts() {
+            var ProvincesId = $("#provinces").val();
+            $.ajax({
+                url: '/setting/GetDistricts',
+                type: 'GET',
+                data: { Id: ProvincesId },
+                success: function (MyList) {
+                    console.log("x", MyList);
+                    $("#tableDistricts tbody").empty();
+
+                    $.each(MyList, function (index, item) {
+                        var newRow = $("<tr>");
+                        newRow.append("<td>" + item + "</td>");
+                        $("#tableDistricts tbody").append(newRow);
+                    });
+                }
+            });
+        }
+
+
+    </script>
+
+}

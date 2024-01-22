@@ -112,14 +112,28 @@
                                 </td>
                                 <td>
 
-                                    @if (item.Suspended)
-                                    {
-                                        <label class="badge badge-danger">Suspenso</label>
-                                    }
-                                    else
-                                    {
-                                        <label class="badge badge-success">Resolvido</label>
-                                    }
+                                     
+
+                                        @if (!item.Transferred)
+                                        {
+                                            if (item.Suspended)
+                                            {
+                                                <label class="badge badge-danger">Suspenso</label>
+                                            }
+                                            else
+                                            {
+                                                <label class="badge badge-success">Resolvido</label>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <label class="badge badge-warning text-white">Transferido</label>
+                                        }
+
+                                  
+
+
+                                   
 
 
                                 </td>

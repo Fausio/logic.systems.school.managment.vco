@@ -5,6 +5,8 @@
     Layout = "~/Views/Shared/_adminLayout.cshtml";
 }
 
+
+
 <link rel="stylesheet" href="~/css/EditViewBen.css" />
 
 <nav aria-label="breadcrumb">
@@ -46,6 +48,12 @@
             {
                 <div id="validation-summary" class="alert alert-danger" role="alert">
                     <p><strong>Estudante suspenso devido a multas:</strong></p>
+                </div>
+            }
+            else if (Model.Transferred)
+            {
+                <div id="validation-summary" class="alert alert-warning" role="alert">
+                    <p><strong>Estudante Transferido:</strong></p>
                 </div>
             }
             else
@@ -198,9 +206,22 @@
                                 }
                                 var divId = $"tuitionHome{item.Id}";
                                 <div id="@divId" class="@styleActive">
-                                    <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
-                                        Adicionar Pagamento de mensalidade
-                                    </a>
+                                    @{
+
+                                        if (!Model.Transferred)
+                                        {
+                                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
+                                                Adicionar Pagamento de mensalidade
+                                            </a>
+
+                                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#multipayments" onclick="form_multi_pay_btns()">
+                                                Adicionar Multiplus Pagamentos de mensalidade
+                                            </a>
+                                        }
+
+                                    }
+
+
                                     <br>
 
 
@@ -313,26 +334,36 @@
 
                     <div id="menu_3_info">
 
-                        @if (Model.Suspended)
-                        {
-                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                Matricular
-                            </a>
+                        @{
 
-                            <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                Matrícular como repetente
-                            </a>
-                        }
-                        else
-                        {
-                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
-                                Matricular
-                            </a>
+                            if (!Model.Transferred)
+                            {
+                                if (Model.Suspended)
+                                {
+                                    <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                        Matricular
+                                    </a>
 
-                            <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
-                                Matrícular como repetente
-                            </a>
+                                    <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                        Matrícular como repetente
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
+                                        Matricular
+                                    </a>
+
+                                    <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
+                                        Matrícular como repetente
+                                    </a>
+                                }
+                            }
+
                         }
+
+
+
 
 
                         <div class="row">
@@ -362,12 +393,24 @@
             </div>
 
 
-            <fieldset class="border pt-0">
-                <legend class="w-auto">Ações</legend>
-                <div class="template-demo">
-                    <a asp-action="index" asp-controller="studant" class="btn btn-light btn-icon-text">
+            <fieldset class="border pt-0 mb-0">
+                <legend class="w-auto mb-0">Ações</legend>
+                <div class="template-demo my-0">
+
+                    <a asp-action="index" asp-controller="studant" class="btn btn-sm btn-light btn-icon-text">
                         Voltar para lista
                     </a>
+                    @{
+
+                        if (!Model.Transferred)
+                        {
+                            <button class="btn btn-sm btn-warning btn-icon-text text-white" data-toggle="modal" data-target="#TransferModal" onclick="form_pay_btns()">
+                                Transferir studante
+                            </button>
+                        }
+
+                    }
+
                 </div>
             </fieldset>
         </div>
@@ -385,27 +428,27 @@
                 <fieldset class="p-2">
                     <legend class="w-auto">Dados de Auditoria</legend>
                     <ul class="list-unstyled  ">
-                        
- 
+
+
                         @{
                             if (Model.CreatedUSer is not null && !string.IsNullOrEmpty(Model.CreatedUSer))
                             {
                                 <li><strong>Criado por:</strong> @Model.CreatedUSer</li>
                                 <li><strong>Data de Criação:</strong> @Model.CreatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
-                             
+
                             }
 
                             if (Model.UpdatedUSer is not null && !string.IsNullOrEmpty(Model.UpdatedUSer))
                             {
                                 <li><strong>Actulizado por:</strong> @Model.UpdatedUSer</li>
                                 <li><strong>Data de Actulização:</strong> @Model.UpdatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
-                              
+
                             }
                         }
 
-                      
 
-                        
+
+
                     </ul>
                 </fieldset>
 
@@ -415,8 +458,83 @@
     </div>
 </div>
 
+
+
+
+
+<div class="modal fade" id="multipayments" tabindex="-1" role="dialog" aria-labelledby="confirmacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document" style="width: 50%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmacaoModalLabel">Mensalidades a pagar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <label id="TotalPayAllTabelaIten">Total a pagar:</label>
+
+                <div class="table-responsive mt-0">
+                    <table class="MytabelaItens mt-0" id="PayAllTabelaIten" border="1">
+                        <thead>
+                            <tr>
+                                <th>Mensalidades a pagar </th>
+                                <th>Data</th>
+                                <th> </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success text-white" onclick="confirmarMultiPayment()">Efectuar pagamento</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="TransferModal" tabindex="-1" role="dialog" aria-labelledby="confirmacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmacaoModalLabel">Confirmação de Transferência de Estudante</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza de que deseja proceder com a transferência do estudante?</p>
+            </div>
+            <div class="modal-footer">
+                <!-- Botões para confirmar ou cancelar a transferência -->
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+
+                <form asp-action="Transfer" asp-controller="studant" asp-route-Id="@Model.id">
+                    <button type="submit" class="btn btn-warning text-white" onclick="confirmarTransferencia()">Confirmar Transferência</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 <!-- Seu modal -->
-<div class="modal" id="meuModal">
+<div class="modal fade" id="meuModal">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -472,7 +590,7 @@
 
 
 <!-- Seu modal -->
-<div class="modal" id="EnrollmentModal">
+<div class="modal fade" id="EnrollmentModal">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -556,7 +674,7 @@
 </div>
 
 <!-- Seu modal -->
-<div class="modal" id="EnrollmentRepitModal">
+<div class="modal fade" id="EnrollmentRepitModal">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -634,7 +752,7 @@
     </div>
 </div>
 
-<div class="modal" id="SuspendedModal">
+<div class="modal fade" id="SuspendedModal">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -675,7 +793,7 @@
 
 
 <!-- Seu modal -->
-<div class="modal" id="meuFeeModal">
+<div class="modal fade" id="meuFeeModal">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -785,6 +903,10 @@
             $("#form_pay_btns").show();
             $("#form_pay_spinner").hide();
         }
+
+
+
+
         function form_payfee_btns() {
 
             $("#form_payfee_btns").show();
@@ -869,6 +991,9 @@
                 }
             });
         }
+
+
+
 
         function PrintEnrollmentInvoice(id) {
 
@@ -1210,6 +1335,105 @@
                 }
             });
 
+        }
+
+        function getMultiPayments(id, EnrollmentYear) {
+            var data = {
+                StudantId: @Model.id,
+                EnrollmentYear: EnrollmentYear,
+            };
+
+            $.ajax({
+                url: "/tuition/IndexMultiPaymentByStudantId",
+                type: "GET",
+                data: data,
+                success: function (MyList) {
+
+                    console.log("MyList", MyList)
+
+                    $("#PayAllTabelaIten tbody").empty();
+                    $.each(MyList, function (index, item) {
+
+                        var newRow = $("<tr>");
+                        newRow.data("itemId", item.id);
+                        var formattedsDate = new Date(item.startDate).toLocaleDateString('pt-BR');
+                        var formattedeDate = new Date(item.endDate).toLocaleDateString('pt-BR');
+
+                        newRow.append("<td>" + item.monthName + "</td>");
+                        newRow.append("<td>" + formattedsDate + " a " + formattedeDate + "</td>");
+                        newRow.append("<td> <input  onclick='SumMonthToPay(" + item.tuitionValue + " , event)' type='checkbox' /> </td>");
+
+                        $("#PayAllTabelaIten tbody").append(newRow);
+                    });
+
+                }
+            });
+        }
+        var TotalToPay = 0;
+        function form_multi_pay_btns() {
+            TotalToPay = 0;
+            $("#TotalPayAllTabelaIten").text("Total a pagar: ");
+            getMultiPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+        }
+        function SumMonthToPay(itemId, event) {
+
+            var checkbox = event.target;
+            if (checkbox.checked) {
+                // Checkbox is checked
+                console.log("Checkbox with ID " + itemId + " is checked");
+                TotalToPay = TotalToPay + itemId;
+
+            } else {
+                // Checkbox is not checked
+                console.log("Checkbox with ID " + itemId + " is unchecked");
+                TotalToPay = TotalToPay - itemId;
+
+            }
+            // TotalToPay = TotalToPay + id;
+            // console.log("TotalToPay", TotalToPay);
+            $("#TotalPayAllTabelaIten").text("Total a pagar: " + TotalToPay + ".00 MT");
+        }
+        function confirmarMultiPayment() {
+            // Exibir um diálogo de confirmação
+            var userConfirmation = confirm("Tem certeza de que deseja prosseguir com o pagamento múltiplo?");
+            var selectedIds = [];
+            // Verificar a resposta do usuário
+            if (userConfirmation) {
+
+                // Selector to get the rows of the table where the checkbox is checked
+                var selectedRows = $("#PayAllTabelaIten tbody tr:has(:checkbox:checked)");
+
+                // Iterate over the selected rows
+                selectedRows.each(function (index, row) {
+                 
+                    var itemId = $(row).data("itemId");
+                     selectedIds.push(itemId);
+             
+
+                });
+
+                console.log(selectedIds);
+
+                $.ajax({
+                    url: "/Tuition/CreateMultiPayment",
+                    type: "POST",
+                      contentType: "application/json",
+                    data: JSON.stringify(selectedIds),
+                    success: function (result) {
+                         
+                    }
+                });
+
+
+
+
+
+
+
+            } else {
+
+
+            }
         }
 
 

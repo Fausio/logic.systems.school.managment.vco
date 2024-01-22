@@ -228,11 +228,11 @@ namespace logic.systems.school.managment.Services
                                         Description = "Pasta",
                                         Price = 750,
                                     },
-                                     new EnrollmentItem()
-                                    {
-                                        Description = "Caderneta",
-                                        Price = 150,
-                                    },
+                                    // new EnrollmentItem()
+                                    //{
+                                    //    Description = "Caderneta",
+                                    //    Price = 150,
+                                    //},
                                 }
                         };
                         break;

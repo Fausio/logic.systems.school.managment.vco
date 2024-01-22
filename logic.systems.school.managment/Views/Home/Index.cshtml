@@ -60,28 +60,33 @@
             <div class="row mb-0">
                  
 
-                <div class="col-md-4 col-sm-12">
+
+                <div class="col-md-3 col-sm-12">
                     <blockquote class="blockquote blockquote-default mb-0">
                         <p>Total de estudantes </p>
                         <footer class="blockquote-footer"> @Model.studentTotals.Total </footer>
                     </blockquote>
                 </div>
-
-
-                <div class="col-md-4 col-sm-12">
+                <div class="col-md-3 col-sm-12">
                     <blockquote class="blockquote blockquote-success mb-0">
                         <p>Total de estudantes Resolvidos</p>
                         <footer class="blockquote-footer">@Model.studentTotals.TotalSolved</footer>
                     </blockquote>
-                </div>
-
-
-                <div class="col-md-4 col-sm-12">
+                </div> 
+                <div class="col-md-3 col-sm-12">
                     <blockquote class="blockquote blockquote-primary mb-0">
                         <p>Total de estudantes Suspensos</p>
                         <footer class="blockquote-footer">@Model.studentTotals.TotalSuspended</footer>
                     </blockquote>
                 </div>
+                <div class="col-md-3 col-sm-12">
+                    <blockquote class="blockquote blockquote-warning mb-0">
+                        <p>Total de estudantes Transferidos</p>
+                        <footer class="blockquote-footer">@Model.studentTotals.TotalTranfered</footer>
+                    </blockquote>
+                </div>
+
+
 
             </div>
 
@@ -136,37 +141,7 @@
                 }
             });
         });
-
-                // $(document).ready(function () {
-                //     var chartx = new CanvasJS.Chart("chartContainerx", {
-                //         theme: "light2", // "light1", "light2", "dark1", "dark2"
-                //         exportEnabled: true,
-                //         animationEnabled: true,
-                //         title: {
-                //             text: "Desktop Browser Market Share in 2016"
-                //         },
-                //         data: [{
-                //             type: "pie",
-                //             startAngle: 25,
-                //             toolTipContent: "<b>{label}</b>: {y}%",
-                //             showInLegend: "true",
-                //             legendText: "{label}",
-                //             indexLabelFontSize: 16,
-                //             indexLabel: "{label} - {y}%",
-                //             dataPoints: [
-                //                 { y: 51.08, label: "Chrome" },
-                //                 { y: 27.34, label: "Internet Explorer" },
-                //                 { y: 10.62, label: "Firefox" },
-                //                 { y: 5.02, label: "Microsoft Edge" },
-                //                 { y: 4.07, label: "Safari" },
-                //                 { y: 1.22, label: "Opera" },
-                //                 { y: 0.44, label: "Others" }
-                //             ]
-                //         }]
-                //     });
-                //     chartx.render();
-                // });
-
+         
     </script>
 
 
