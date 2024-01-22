@@ -1358,8 +1358,7 @@
                 type: "GET",
                 data: data,
                 success: function (MyList) {
-
-                    console.log("MyList", MyList)
+                     
 
                     $("#PayAllTabelaIten tbody").empty();
                     $.each(MyList, function (index, item) {
@@ -1389,18 +1388,15 @@
 
             var checkbox = event.target;
             if (checkbox.checked) {
-                // Checkbox is checked
-                console.log("Checkbox with ID " + itemId + " is checked");
+                // Checkbox is checked 
                 TotalToPay = TotalToPay + itemId;
 
             } else {
-                // Checkbox is not checked
-                console.log("Checkbox with ID " + itemId + " is unchecked");
+                // Checkbox is not checked 
                 TotalToPay = TotalToPay - itemId;
 
             }
-            // TotalToPay = TotalToPay + id;
-            // console.log("TotalToPay", TotalToPay);
+
             $("#TotalPayAllTabelaIten").text("Total a pagar: " + TotalToPay + ".00 MT");
         }
         function confirmarMultiPayment() {
@@ -1432,9 +1428,7 @@
 
 
                 });
-
-                console.log(selectedIds);
-                console.log(JSON.stringify(selectedIds));
+                 
 
                 $.ajax({
                     url: "/Tuition/CreateMultiPayment",
@@ -1457,13 +1451,7 @@
                         $("#spinner_multipayments").hide();
                     }
                 });
-
-
-            
-
-
-
-
+                 
             } else {
 
 
