@@ -329,9 +329,7 @@ namespace logic.systems.school.managment.Services
 
             var Price_3500 = new List<string>()
             {
-                "Pré-escola A"  ,
-                "Pré-escola B"  ,
-                "Pré-escola C"
+                "Pré-escola" 
             };
             var Price_4000 = new List<string>() { "1ª classe" };
             var Price_3700 = new List<string>()

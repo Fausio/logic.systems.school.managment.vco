@@ -497,7 +497,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success text-white" onclick="confirmarTransferencia()">Efectuar pagamento</button>
+                <button type="button" class="btn btn-success text-white" onclick="confirmarMultiPayment()">Efectuar pagamento</button>
             </div>
         </div>
     </div>
@@ -890,7 +890,6 @@
 
         $(document).ready(function () {
             getPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
-            getMultiPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
             getTuitions(@Model.id, @Model.Enrollments[0].EnrollmentYear);
         });
 
@@ -905,10 +904,7 @@
             $("#form_pay_spinner").hide();
         }
 
-        function form_multi_pay_btns() {
-            // $("#form_pay_btns").show();
-            // $("#form_pay_spinner").hide();
-        }
+
 
 
         function form_payfee_btns() {
@@ -995,26 +991,8 @@
                 }
             });
         }
-         
-        var TotalToPay = 0;
-        function SumMonthToPay(itemId, event) {
-           
-            var checkbox = event.target; 
-            if (checkbox.checked) {
-                // Checkbox is checked
-                console.log("Checkbox with ID " + itemId + " is checked");
-                TotalToPay = TotalToPay + itemId;
 
-            } else {
-                // Checkbox is not checked
-                console.log("Checkbox with ID " + itemId + " is unchecked");
-                TotalToPay = TotalToPay - itemId;
 
-            }
-            // TotalToPay = TotalToPay + id;
-            // console.log("TotalToPay", TotalToPay);
-            $("#TotalPayAllTabelaIten").text("Total a pagar: " + TotalToPay + ".00 MT");
-        }
 
 
         function PrintEnrollmentInvoice(id) {
@@ -1377,12 +1355,13 @@
                     $.each(MyList, function (index, item) {
 
                         var newRow = $("<tr>");
+                        newRow.data("itemId", item.id);
                         var formattedsDate = new Date(item.startDate).toLocaleDateString('pt-BR');
                         var formattedeDate = new Date(item.endDate).toLocaleDateString('pt-BR');
 
                         newRow.append("<td>" + item.monthName + "</td>");
                         newRow.append("<td>" + formattedsDate + " a " + formattedeDate + "</td>");
-                        newRow.append("<td> <input  onclick='SumMonthToPay(" + item.id + " , event)' type='checkbox' /> </td>");
+                        newRow.append("<td> <input  onclick='SumMonthToPay(" + item.tuitionValue + " , event)' type='checkbox' /> </td>");
 
                         $("#PayAllTabelaIten tbody").append(newRow);
                     });
@@ -1390,6 +1369,74 @@
                 }
             });
         }
+        var TotalToPay = 0;
+        function form_multi_pay_btns() {
+            TotalToPay = 0;
+            $("#TotalPayAllTabelaIten").text("Total a pagar: ");
+            getMultiPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+        }
+        function SumMonthToPay(itemId, event) {
+
+            var checkbox = event.target;
+            if (checkbox.checked) {
+                // Checkbox is checked
+                console.log("Checkbox with ID " + itemId + " is checked");
+                TotalToPay = TotalToPay + itemId;
+
+            } else {
+                // Checkbox is not checked
+                console.log("Checkbox with ID " + itemId + " is unchecked");
+                TotalToPay = TotalToPay - itemId;
+
+            }
+            // TotalToPay = TotalToPay + id;
+            // console.log("TotalToPay", TotalToPay);
+            $("#TotalPayAllTabelaIten").text("Total a pagar: " + TotalToPay + ".00 MT");
+        }
+        function confirmarMultiPayment() {
+            // Exibir um diálogo de confirmação
+            var userConfirmation = confirm("Tem certeza de que deseja prosseguir com o pagamento múltiplo?");
+            var selectedIds = [];
+            // Verificar a resposta do usuário
+            if (userConfirmation) {
+
+                // Selector to get the rows of the table where the checkbox is checked
+                var selectedRows = $("#PayAllTabelaIten tbody tr:has(:checkbox:checked)");
+
+                // Iterate over the selected rows
+                selectedRows.each(function (index, row) {
+                 
+                    var itemId = $(row).data("itemId");
+                     selectedIds.push(itemId);
+             
+
+                });
+
+                console.log(selectedIds);
+
+                $.ajax({
+                    url: "/Tuition/CreateMultiPayment",
+                    type: "POST",
+                      contentType: "application/json",
+                    data: JSON.stringify(selectedIds),
+                    success: function (result) {
+                         
+                    }
+                });
+
+
+
+
+
+
+
+            } else {
+
+
+            }
+        }
+
+
 
 
         function getPayments(id, EnrollmentYear) {

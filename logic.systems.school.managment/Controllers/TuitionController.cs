@@ -19,9 +19,21 @@ namespace logic.systems.school.managment.Controllers
         }
         public async Task<JsonResult> IndexByStudantId(getPaymentParamitersDTO id)
         {
-            var result = await _ITuitionService.GetByStudantId(id.StudantId);
-            result = result.Where(x => x.Year  == id.EnrollmentYear).ToList();
-            return Json(result);
+            try
+            {
+                var result = await _ITuitionService.GetByStudantId(id.StudantId);
+
+                result.ForEach(x => { x.Enrollment = null; });
+
+                result = result.Where(x => x.Year == id.EnrollmentYear).ToList();
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        
         }
         public async Task<JsonResult> IndexByStudantIdFines(int id)
         {
@@ -52,29 +64,38 @@ namespace logic.systems.school.managment.Controllers
 
         public async Task<JsonResult> IndexMultiPaymentByStudantId(getPaymentParamitersDTO id)
         {
-            //var result = await _ITuitionService.GetPaymentsByStudantTuitionsId(id.StudantId);
-            //result = result.Where(x => x.Tuition.Year == id.EnrollmentYear).ToList(); 
-            //return Json(result);
-            var result = await _ITuitionService.GetByStudantId(id.StudantId);
-            result = result.Where(x => x.Year == id.EnrollmentYear).ToList();
-
-            var resultDTO = new List<MultiPaymentTuitionDTO>(); 
-            foreach (var item in result)
+            try
             {
-                var _schoolLevel = item.Enrollment.SchoolLevel.Description;
-                var _tuitionValue = _ITuitionService.getTuitionValueByschoolLevel(_schoolLevel);
-                resultDTO.Add(new MultiPaymentTuitionDTO()
-                {
-                    id = item.Id,
-                    endDate = item.EndDate,
-                    monthName = item.MonthName,
-                    startDate = item.StartDate,
-                    tuitionValue = _tuitionValue,
-                });
-            }
+                //var result = await _ITuitionService.GetPaymentsByStudantTuitionsId(id.StudantId);
+                //result = result.Where(x => x.Tuition.Year == id.EnrollmentYear).ToList(); 
+                //return Json(result);
+                var result = await _ITuitionService.GetByStudantId(id.StudantId);
+                result = result.Where(x => x.Year == id.EnrollmentYear).ToList();
 
-        
-            return Json(resultDTO);
+                var resultDTO = new List<MultiPaymentTuitionDTO>();
+                foreach (var item in result)
+                {
+                    var _schoolLevel = item.Enrollment.SchoolLevel.Description;
+                    var _tuitionValue = _ITuitionService.getTuitionValueByschoolLevel(_schoolLevel);
+                    resultDTO.Add(new MultiPaymentTuitionDTO()
+                    {
+                        id = item.Id,
+                        endDate = item.EndDate,
+                        monthName = item.MonthName,
+                        startDate = item.StartDate,
+                        tuitionValue = _tuitionValue,
+                    });
+                }
+
+
+                return Json(resultDTO);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+          
         }
 
         public async Task<JsonResult> IndexByEnrollments(int id)
@@ -90,6 +111,15 @@ namespace logic.systems.school.managment.Controllers
             var result = await _ITuitionService.CreatePayment(data, currentUser.Id);
             return Json("");
         }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateMultiPayment([FromBody] List<int> data)
+        {
+         //   var currentUser = await _userManager.GetUserAsync(User);
+        //    var result = await _ITuitionService.CreatePayment(data, currentUser.Id);
+            return Json("");
+        }
+
         [HttpPost]
 
         public async Task<JsonResult> CreateFeePayment(CreateFeePaymentDTO data)
