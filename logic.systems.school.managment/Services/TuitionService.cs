@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Humanizer;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
@@ -51,7 +52,7 @@ namespace logic.systems.school.managment.Services
 
             // meses de estudo (1 de fevereiro a  dezembro) para decima e decima-segunda classe, devido aos exame.
             // meses  de estudo de (1 de fevereiro a novembro) são todas as outras classes sem exame incluido sexta classe que tem exame.
-             
+
 
             if (classesWithtExame.Contains(model.CurrentSchoolLevel.Description))
             {
@@ -208,72 +209,67 @@ namespace logic.systems.school.managment.Services
                 throw;
             }
         }
-        public async Task<List<TuitionPayment>> CreatePayment(CreatePaymentDTO dto, string userid)
+        public async Task  CreatePayment(List<CreatePaymentDTO> dtos, string userid)
         {
             try
             {
-                var studant = await db.Students.Include(x => x.Enrollments)
-                                               .ThenInclude(x => x.Tuitions)
-                                               .Include(x => x.CurrentSchoolLevel)
-                                               .FirstOrDefaultAsync(x => x.Id == dto.StudantId);
-
-                if (dto.StudantId > 0 && dto.TuitionId > 0 && studant is not null)
+                foreach (var dto in dtos)
                 {
-                    var payment = new TuitionPayment()
+                    var studant = await db.Students.Include(x => x.Enrollments)
+                                             .ThenInclude(x => x.Tuitions)
+                                             .Include(x => x.CurrentSchoolLevel)
+                                             .FirstOrDefaultAsync(x => x.Id == dto.StudantId);
+
+                    if (dto.StudantId > 0 && dto.TuitionId > 0 && studant is not null)
                     {
-                        TuitionId = dto.TuitionId,
-                        PaymentDate = DateTime.Now,
-                        PaymentWithoutVat = getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description),
-                        CreatedUSer = userid,
-                    };
-                    payment.VatOfPayment = VatCalc(payment.PaymentWithoutVat);
-                    payment.PaymentWithVat = payment.VatOfPayment + payment.PaymentWithoutVat;
+                        var payment = new TuitionPayment()
+                        {
+                            TuitionId = dto.TuitionId,
+                            PaymentDate = DateTime.Now,
+                            PaymentWithoutVat = getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description),
+                            CreatedUSer = userid,
+                        };
+                        payment.VatOfPayment = VatCalc(payment.PaymentWithoutVat);
+                        payment.PaymentWithVat = payment.VatOfPayment + payment.PaymentWithoutVat;
 
-                    payment.TuitionInvoice = new TuitionInvoice()
-                    {
-                        Date = payment.PaymentDate,
-                        CreatedUSer = userid
-                    };
+                        payment.TuitionInvoice = new TuitionInvoice()
+                        {
+                            Date = payment.PaymentDate,
+                            CreatedUSer = userid
+                        };
 
-                    studant.UpdatedDate = DateTime.Now;
-                    studant.Row = Common.Modified;
-                    studant.UpdatedUSer = userid;
-  
-                    await db.PaymentTuitions.AddAsync(payment);
-                    await db.SaveChangesAsync();
+                        studant.UpdatedDate = DateTime.Now;
+                        studant.Row = Common.Modified;
+                        studant.UpdatedUSer = userid;
 
-                    var tuitionPayed = db.Tuitions.Include(x => x.TuitionFines).FirstOrDefault(x => x.Id == dto.TuitionId);
-                    tuitionPayed.Row = Common.Modified;
-                    tuitionPayed.UpdatedDate = DateTime.Now;
-                    tuitionPayed.PaidDate = DateTime.Now;
-                    tuitionPayed.Paid = true;
-                    tuitionPayed.UpdatedUSer = userid;
-
-
-                    db.Tuitions.Update(tuitionPayed);
-                    await db.SaveChangesAsync();
-
-                    // create Fee Payment if Tuition have it  
-                    if (tuitionPayed.TuitionFines is not null)
-                    {
-                        tuitionPayed.TuitionFines.Paid = true;
-                        tuitionPayed.TuitionFines.PaidDate = payment.PaymentDate;
-                        tuitionPayed.UpdatedUSer = userid;
-                        tuitionPayed.Row = Common.Modified;
-
-                        db.TuitionFines.Update(tuitionPayed.TuitionFines);
+                        await db.PaymentTuitions.AddAsync(payment);
                         await db.SaveChangesAsync();
+
+                        var tuitionPayed = db.Tuitions.Include(x => x.TuitionFines).FirstOrDefault(x => x.Id == dto.TuitionId);
+                        tuitionPayed.Row = Common.Modified;
+                        tuitionPayed.UpdatedDate = DateTime.Now;
+                        tuitionPayed.PaidDate = DateTime.Now;
+                        tuitionPayed.Paid = true;
+                        tuitionPayed.UpdatedUSer = userid;
+
+
+                        db.Tuitions.Update(tuitionPayed);
+                        await db.SaveChangesAsync();
+
+                        // create Fee Payment if Tuition have it  
+                        if (tuitionPayed.TuitionFines is not null)
+                        {
+                            tuitionPayed.TuitionFines.Paid = true;
+                            tuitionPayed.TuitionFines.PaidDate = payment.PaymentDate;
+                            tuitionPayed.UpdatedUSer = userid;
+                            tuitionPayed.Row = Common.Modified;
+
+                            db.TuitionFines.Update(tuitionPayed.TuitionFines);
+                            await db.SaveChangesAsync();
+                        } 
                     }
-
-                  
-                 
-
-
-
-
                 }
-
-                return await GetPaymentsByStudantTuitionsId(studant.Id);
+                   
             }
             catch (Exception ex)
             {
@@ -325,7 +321,7 @@ namespace logic.systems.school.managment.Services
 
             var Price_3500 = new List<string>()
             {
-                "Pré-escola" 
+                "Pré-escola"
             };
             var Price_4000 = new List<string>() { "1ª classe" };
             var Price_3700 = new List<string>()
@@ -426,7 +422,7 @@ namespace logic.systems.school.managment.Services
                     }
                 }
 
-             
+
             }
         }
 

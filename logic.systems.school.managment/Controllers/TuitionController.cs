@@ -65,7 +65,7 @@ namespace logic.systems.school.managment.Controllers
         public async Task<JsonResult> IndexMultiPaymentByStudantId(getPaymentParamitersDTO id)
         {
             try
-            { 
+            {
                 var result = await _ITuitionService.GetByStudantId(id.StudantId);
                 result = result.Where(x => x.Year == id.EnrollmentYear).ToList();
 
@@ -105,7 +105,9 @@ namespace logic.systems.school.managment.Controllers
         public async Task<JsonResult> CreatePayment(CreatePaymentDTO data)
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            var result = await _ITuitionService.CreatePayment(data, currentUser.Id);
+            var dtoList = new List<CreatePaymentDTO>();
+            dtoList.Add(data);
+            await _ITuitionService.CreatePayment(dtoList, currentUser.Id);
             return Json("");
         }
 
@@ -114,11 +116,8 @@ namespace logic.systems.school.managment.Controllers
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
-            foreach (var dto in data)
-            {
-                var result = await _ITuitionService.CreatePayment(dto, currentUser.Id);
-            }
-
+            await _ITuitionService.CreatePayment(data, currentUser.Id);
+             
             return Json("");
         }
 
