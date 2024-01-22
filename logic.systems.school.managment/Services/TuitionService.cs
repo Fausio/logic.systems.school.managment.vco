@@ -209,7 +209,7 @@ namespace logic.systems.school.managment.Services
                 throw;
             }
         }
-        public async Task  CreatePayment(List<CreatePaymentDTO> dtos, string userid)
+        public async Task CreatePayment(List<CreatePaymentDTO> dtos, string userid)
         {
             try
             {
@@ -232,48 +232,55 @@ namespace logic.systems.school.managment.Services
                         payment.VatOfPayment = VatCalc(payment.PaymentWithoutVat);
                         payment.PaymentWithVat = payment.VatOfPayment + payment.PaymentWithoutVat;
 
-                        payment.TuitionInvoice = new TuitionInvoice()
+                        var invoice = new TuitionInvoice()
                         {
                             Date = payment.PaymentDate,
                             CreatedUSer = userid
                         };
 
+
+
+                        await db.TuitionInvoices.AddAsync(invoice);
+                        await db.SaveChangesAsync();
+
                         studant.UpdatedDate = DateTime.Now;
                         studant.Row = Common.Modified;
                         studant.UpdatedUSer = userid;
 
+                        payment.TuitionInvoice = invoice;
                         await db.PaymentTuitions.AddAsync(payment);
                         await db.SaveChangesAsync();
 
                         var tuitionPayed = db.Tuitions.Include(x => x.TuitionFines).FirstOrDefault(x => x.Id == dto.TuitionId);
-                        tuitionPayed.Row = Common.Modified;
-                        tuitionPayed.UpdatedDate = DateTime.Now;
-                        tuitionPayed.PaidDate = DateTime.Now;
-                        tuitionPayed.Paid = true;
-                        tuitionPayed.UpdatedUSer = userid;
 
-
-                        db.Tuitions.Update(tuitionPayed);
-                        await db.SaveChangesAsync();
-
-                        // create Fee Payment if Tuition have it  
-                        if (tuitionPayed.TuitionFines is not null)
+                        if (tuitionPayed != null)
                         {
-                            tuitionPayed.TuitionFines.Paid = true;
-                            tuitionPayed.TuitionFines.PaidDate = payment.PaymentDate;
-                            tuitionPayed.UpdatedUSer = userid;
                             tuitionPayed.Row = Common.Modified;
+                            tuitionPayed.UpdatedDate = DateTime.Now;
+                            tuitionPayed.PaidDate = DateTime.Now;
+                            tuitionPayed.Paid = true;
+                            tuitionPayed.UpdatedUSer = userid;
 
-                            db.TuitionFines.Update(tuitionPayed.TuitionFines);
+                            db.Tuitions.Update(tuitionPayed);
                             await db.SaveChangesAsync();
-                        } 
+
+                            // create Fee Payment if Tuition have it  
+                            if (tuitionPayed.TuitionFines is not null)
+                            {
+                                tuitionPayed.TuitionFines.Paid = true;
+                                tuitionPayed.TuitionFines.PaidDate = payment.PaymentDate;
+                                tuitionPayed.UpdatedUSer = userid;
+                                tuitionPayed.Row = Common.Modified;
+
+                                db.TuitionFines.Update(tuitionPayed.TuitionFines);
+                                await db.SaveChangesAsync();
+                            }
+                        }
                     }
                 }
-                   
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
