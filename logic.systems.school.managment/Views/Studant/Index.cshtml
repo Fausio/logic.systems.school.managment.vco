@@ -158,9 +158,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <nav aria-label="Page navigation example">
-                        <ul class="pagination">
-
-
+                        <ul class="pagination"> 
                             <li class="page-item"><a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber-1)" asp-action="index" asp-controller="studant">Anterior</a></li>
 
                             @for (int i = 1; i <= Model.indexPage.totalPages; i++)
@@ -181,8 +179,7 @@
                                 }
                             }
                             <li class="page-item " style="@btn_next_disable_css"><a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber+1)" asp-action="index" asp-controller="studant">Próximo</a></li>
-                        </ul>
-
+                        </ul> 
                     </nav>
                 </div>
 

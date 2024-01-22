@@ -11,7 +11,7 @@ namespace logic.systems.school.managment.Controllers
     public class TuitionController : Controller
     {
         private ITuitionService _ITuitionService;
-        private   UserManager<IdentityUser> _userManager;
+        private UserManager<IdentityUser> _userManager;
         public TuitionController(ITuitionService ITuitionService, UserManager<IdentityUser> userManager)
         {
             this._ITuitionService = ITuitionService;
@@ -33,7 +33,7 @@ namespace logic.systems.school.managment.Controllers
 
                 throw ex;
             }
-        
+
         }
         public async Task<JsonResult> IndexByStudantIdFines(int id)
         {
@@ -65,10 +65,7 @@ namespace logic.systems.school.managment.Controllers
         public async Task<JsonResult> IndexMultiPaymentByStudantId(getPaymentParamitersDTO id)
         {
             try
-            {
-                //var result = await _ITuitionService.GetPaymentsByStudantTuitionsId(id.StudantId);
-                //result = result.Where(x => x.Tuition.Year == id.EnrollmentYear).ToList(); 
-                //return Json(result);
+            { 
                 var result = await _ITuitionService.GetByStudantId(id.StudantId);
                 result = result.Where(x => x.Year == id.EnrollmentYear).ToList();
 
@@ -95,7 +92,7 @@ namespace logic.systems.school.managment.Controllers
 
                 throw;
             }
-          
+
         }
 
         public async Task<JsonResult> IndexByEnrollments(int id)
@@ -113,10 +110,15 @@ namespace logic.systems.school.managment.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> CreateMultiPayment([FromBody] List<int> data)
+        public async Task<JsonResult> CreateMultiPayment([FromBody] List<CreatePaymentDTO> data)
         {
-         //   var currentUser = await _userManager.GetUserAsync(User);
-        //    var result = await _ITuitionService.CreatePayment(data, currentUser.Id);
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            foreach (var dto in data)
+            {
+                var result = await _ITuitionService.CreatePayment(dto, currentUser.Id);
+            }
+
             return Json("");
         }
 

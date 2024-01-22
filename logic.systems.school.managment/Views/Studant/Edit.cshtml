@@ -1410,6 +1410,7 @@
             // Exibir um diálogo de confirmação
             var userConfirmation = confirm("Tem certeza de que deseja prosseguir com o pagamento múltiplo?");
             var selectedIds = [];
+           
             // Verificar a resposta do usuário
             if (userConfirmation) {
 
@@ -1423,12 +1424,17 @@
                 selectedRows.each(function (index, row) {
 
                     var itemId = $(row).data("itemId");
-                    selectedIds.push(itemId);
+
+                    selectedIds.push({
+                        StudantId: @Model.id,
+                        TuitionId: itemId
+                    });
 
 
                 });
 
                 console.log(selectedIds);
+                console.log(JSON.stringify(selectedIds));
 
                 $.ajax({
                     url: "/Tuition/CreateMultiPayment",
@@ -1436,6 +1442,9 @@
                     contentType: "application/json",
                     data: JSON.stringify(selectedIds),
                     success: function (result) {
+
+                        getPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+                        getTuitions(@Model.id, @Model.Enrollments[0].EnrollmentYear);
 
                         $("#btn_multipayments").show();
                         $("#spinner_multipayments").hide();

@@ -238,13 +238,9 @@ namespace logic.systems.school.managment.Services
                     studant.UpdatedDate = DateTime.Now;
                     studant.Row = Common.Modified;
                     studant.UpdatedUSer = userid;
-
-                    await db.SaveChangesAsync();
-
+  
                     await db.PaymentTuitions.AddAsync(payment);
                     await db.SaveChangesAsync();
-
-                     
 
                     var tuitionPayed = db.Tuitions.Include(x => x.TuitionFines).FirstOrDefault(x => x.Id == dto.TuitionId);
                     tuitionPayed.Row = Common.Modified;
