@@ -240,15 +240,16 @@ namespace logic.systems.school.managment.Controllers
                                            .Replace("{4}", result.FirstOrDefault().Tuition.Enrollment.StudentId.ToString())
                                            .Replace("{5}", currentUser.UserName)
 
-                                               .Replace("{6}", result.FirstOrDefault().Tuition.Enrollment.Student.Name + "<br> Mensalidades a pagar: " + string.Join(", ", result.Select(x => x.Tuition.MonthName).Distinct()));
+                                           .Replace("{6}", result.FirstOrDefault().Tuition.Enrollment.Student.Name + "<br> Mensalidades a pagar: " + string.Join(", ", result.Select(x => x.Tuition.MonthName).Distinct()));
 
 
             var TableLines = new List<string>();
- 
+
             TableLines.Add(
             InvoiceTableLineDTO.LineForInvoice
+                                .Replace("{desc}", "Mensalidade")
                                 .Replace("{unityPrice}", result.FirstOrDefault().PaymentWithVat + " MT")
-                                  .Replace("{quantity}", result.Count().ToString())
+                                .Replace("{quantity}", result.Count().ToString())
                                 .Replace("{paymentDate}", result.FirstOrDefault().PaymentDate.ToString("dd/MM/yyyy"))
                                 .Replace("{Classe}", await _AppService.SempleEntityDescriptionById(result.FirstOrDefault().Tuition.Enrollment.SchoolLevelId))
                                 .Replace("{ClasseRoom}", await _AppService.SempleEntityDescriptionById(result.FirstOrDefault().Tuition.Enrollment.SchoolClassRoomId))
@@ -256,21 +257,40 @@ namespace logic.systems.school.managment.Controllers
                                 .Replace("{payment}", result.Sum(p => p.PaymentWithoutVat) + " MT"));
 
 
-            //  }
+            var TotaltuitionFines =(decimal) 0;
+            if (result.Select(x => x.Tuition.TuitionFines).Count() > 0 )
+            {
 
-            //    totals
+                var tuitionFines = result.Where(x => x.Tuition.TuitionFines is not null).Select(x => x.Tuition.TuitionFines);
+                TotaltuitionFines = tuitionFines.Sum(p => p.Tuition.TuitionFines.FinesValue);
+
+                TableLines.Add(
+                   InvoiceTableLineDTO.LineForInvoice
+                   .Replace("{desc}", "Multa")
+                   .Replace("{unityPrice}", tuitionFines.FirstOrDefault().Tuition.TuitionFines.FinesValue + " MT")
+                   .Replace("{quantity}", tuitionFines.Count().ToString())
+                   .Replace("{paymentDate}", tuitionFines.FirstOrDefault().PaidDate.Value.ToString("dd/MM/yyyy"))
+                   .Replace("{Classe}", await _AppService.SempleEntityDescriptionById(result.FirstOrDefault().Tuition.Enrollment.SchoolLevelId))
+                   .Replace("{ClasseRoom}", await _AppService.SempleEntityDescriptionById(result.FirstOrDefault().Tuition.Enrollment.SchoolClassRoomId))
+                   .Replace("{Year}", tuitionFines.FirstOrDefault().Tuition.Enrollment.EnrollmentYear.ToString())
+                   .Replace("{payment}", TotaltuitionFines + " MT"));
+            }
+      
+             
             TableLines.Add(
                     InvoiceTableLineDTO.LineForInvoice
+                                        .Replace("{desc}", "")
                                         .Replace("{unityPrice}", "")
                                         .Replace("{paymentDate}", "")
                                         .Replace("{quantity}", "")
                                         .Replace("{Classe}", "")
                                         .Replace("{ClasseRoom}", "")
                                         .Replace("{Year}", "")
-                                        .Replace("{payment}", "SubTotal: " + (result.Sum(p => p.PaymentWithoutVat)) + " MT"));
+                                        .Replace("{payment}", "SubTotal: " + (result.Sum(p => p.PaymentWithoutVat)+ TotaltuitionFines) + " MT"));
 
             TableLines.Add(
                   InvoiceTableLineDTO.LineForInvoice
+                                        .Replace("{desc}", "")
                                         .Replace("{unityPrice}", "")
                                         .Replace("{paymentDate}", "")
                                         .Replace("{quantity}", "")
@@ -278,17 +298,18 @@ namespace logic.systems.school.managment.Controllers
                                         .Replace("{ClasseRoom}", "")
                                         .Replace("{Year}", "")
                                        .Replace("{payment}", "IVA 5%: " + (result.Sum(p => p.VatOfPayment)) + " MT"));
-
-
+             
+             
             TableLines.Add(
                    InvoiceTableLineDTO.LineForInvoice
+                                        .Replace("{desc}", "")
                                         .Replace("{unityPrice}", "")
                                         .Replace("{paymentDate}", "")
                                         .Replace("{quantity}", "")
                                         .Replace("{Classe}", "")
                                         .Replace("{ClasseRoom}", "")
                                         .Replace("{Year}", "")
-                                        .Replace("{payment}", "Total: " + (result.Sum(p => p.PaymentWithVat)) + " MT"));
+                                        .Replace("{payment}", "Total: " + (result.Sum(p => p.PaymentWithVat) + TotaltuitionFines) + " MT"));
 
 
             var TableLinesIntoOneTring = string.Empty;
@@ -320,13 +341,10 @@ namespace logic.systems.school.managment.Controllers
             var formattedHtml = htmlContent.Replace("{0}", result.Id.ToString())
                                            .Replace("{1}", result.CreatedDate.ToString("dd/MM/yyyy"))
                                            .Replace("{2}", DateTime.Now.ToString("dd/MM/yyyy"))
-
                                            .Replace("{3}", "Recibo de Matricula")
                                            .Replace("{4}", result.Enrollment.StudentId.ToString())
                                            .Replace("{5}", currentUser.UserName)
-
                                            .Replace("{6}", result.Enrollment.Student.Name)
-
                                            .Replace("{7}", "Matricula")
                                            .Replace("{paymentDate}", result.Date.ToString("dd/MM/yyyy"))
                                            .Replace("{8}", await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId))

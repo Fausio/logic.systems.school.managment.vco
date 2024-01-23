@@ -43,6 +43,7 @@ namespace logic.systems.school.managment.Controllers
                 foreach (var item in result)
                 {
                     item.Tuition.TuitionFines = null;
+                    item.Tuition.Enrollment = null;
                 }
                 return Json(result);
             }

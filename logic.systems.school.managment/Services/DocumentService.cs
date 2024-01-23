@@ -28,17 +28,20 @@ namespace logic.systems.school.managment.Services
 
         public async Task<List<TuitionPayment>> GetTuitionInvoiceById(int payementId)
         {
+
+      
             var result = await db.PaymentTuitions.Include(x => x.Tuition)
                                                  .ThenInclude(x => x.Enrollment).ThenInclude(x => x.Student)
                                                  .Include(x => x.Tuition.TuitionFines)
                                                  .FirstOrDefaultAsync(x => x.Id == payementId);
 
+            var student = await db.Students.FirstOrDefaultAsync(x => x.Id ==result.Tuition.StudentId);
 
             var listOfResult = await db.PaymentTuitions.Include(x => x.Tuition)
                                                        .ThenInclude(x => x.Enrollment)
                                                        .ThenInclude(x => x.Student)
                                                        .Include(x => x.Tuition.TuitionFines)
-                                                       .Where(x => x.CreatedDate == result.CreatedDate)
+                                                       .Where(x => x.CreatedDate == result.CreatedDate && x.Tuition.StudentId == student.Id)
                                                        .ToListAsync();
             return listOfResult;
         }

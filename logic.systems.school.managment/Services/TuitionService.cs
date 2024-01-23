@@ -409,7 +409,7 @@ namespace logic.systems.school.managment.Services
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
             }
 
-            var now = DateTime.Now;
+            var now = DateTime.Now.AddMonths(6);
 
             foreach (Student student in students)
             {
