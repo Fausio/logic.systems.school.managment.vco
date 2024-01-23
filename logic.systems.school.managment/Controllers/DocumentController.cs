@@ -218,56 +218,92 @@ namespace logic.systems.school.managment.Controllers
 
             string relativePath = "template/invoice.html";
             string filePath = Path.Combine(_hostingEnvironment.WebRootPath, relativePath);
-            // Lê o conteúdo do arquivo HTML
             var htmlContent = System.IO.File.ReadAllText(filePath);
 
-            var sum = result.PaymentWithoutVat + result.VatOfPayment;
+            //  var sum = result.PaymentWithoutVat + result.VatOfPayment;
+            //
+            //  if (result.Tuition.TuitionFines is not null)
+            //  {
+            //      sum = sum + 300;
+            //
+            //  }
+            //
+            //
+            //
 
-            if (result.Tuition.TuitionFines is not null)
-            {
-                sum = sum + 300;
 
-            }
-
-
-
-            var formattedHtml = htmlContent.Replace("{0}", result.Id.ToString())
-                                           .Replace("{1}", result.CreatedDate.ToString("dd/MM/yyyy"))
+            var formattedHtml = htmlContent.Replace("{0}", result.FirstOrDefault().Id.ToString())
+                                           .Replace("{1}", result.FirstOrDefault().CreatedDate.ToString("dd/MM/yyyy"))
                                            .Replace("{2}", DateTime.Now.ToString("dd/MM/yyyy"))
 
-                                           .Replace("{3}", $"Recibo de Mensalidade ({result.Tuition.MonthNumber + "-" + result.Tuition.MonthName + "-" + result.Tuition.Year})")
-                                           .Replace("{4}", result.Tuition.Enrollment.StudentId.ToString())
+                                           .Replace("{3}", $"Recibo de Mensalidade")
+                                           .Replace("{4}", result.FirstOrDefault().Tuition.Enrollment.StudentId.ToString())
                                            .Replace("{5}", currentUser.UserName)
 
-                                           .Replace("{6}", result.Tuition.Enrollment.Student.Name)
-
-                                           .Replace("{7}", "Mensalidade")
-                                           .Replace("{paymentDate}", result.PaymentDate.ToString("dd/MM/yyyy"))
-                                           .Replace("{8}", await _AppService.SempleEntityDescriptionById(result.Tuition.Enrollment.SchoolLevelId))
-                                           .Replace("{9}", await _AppService.SempleEntityDescriptionById(result.Tuition.Enrollment.SchoolClassRoomId))
-                                           .Replace("{10}", result.Tuition.Enrollment.EnrollmentYear.ToString())
-
-                                           .Replace("{11}", result.PaymentWithoutVat + " MT")
-                                           .Replace("{12}", result.VatOfPayment + " MT")
-                                           .Replace("{13}", sum + " MT");
+                                               .Replace("{6}", result.FirstOrDefault().Tuition.Enrollment.Student.Name + "<br> Mensalidades a pagar: " + string.Join(", ", result.Select(x => x.Tuition.MonthName).Distinct()));
 
 
-            if (result.Tuition.TuitionFines is not null)
+            var TableLines = new List<string>();
+ 
+            TableLines.Add(
+            InvoiceTableLineDTO.LineForInvoice
+                                .Replace("{unityPrice}", result.FirstOrDefault().PaymentWithVat + " MT")
+                                  .Replace("{quantity}", result.Count().ToString())
+                                .Replace("{paymentDate}", result.FirstOrDefault().PaymentDate.ToString("dd/MM/yyyy"))
+                                .Replace("{Classe}", await _AppService.SempleEntityDescriptionById(result.FirstOrDefault().Tuition.Enrollment.SchoolLevelId))
+                                .Replace("{ClasseRoom}", await _AppService.SempleEntityDescriptionById(result.FirstOrDefault().Tuition.Enrollment.SchoolClassRoomId))
+                                .Replace("{Year}", result.FirstOrDefault().Tuition.Enrollment.EnrollmentYear.ToString())
+                                .Replace("{payment}", result.Sum(p => p.PaymentWithoutVat) + " MT"));
+
+
+            //  }
+
+            //    totals
+            TableLines.Add(
+                    InvoiceTableLineDTO.LineForInvoice
+                                        .Replace("{unityPrice}", "")
+                                        .Replace("{paymentDate}", "")
+                                        .Replace("{quantity}", "")
+                                        .Replace("{Classe}", "")
+                                        .Replace("{ClasseRoom}", "")
+                                        .Replace("{Year}", "")
+                                        .Replace("{payment}", "SubTotal: " + (result.Sum(p => p.PaymentWithoutVat)) + " MT"));
+
+            TableLines.Add(
+                  InvoiceTableLineDTO.LineForInvoice
+                                        .Replace("{unityPrice}", "")
+                                        .Replace("{paymentDate}", "")
+                                        .Replace("{quantity}", "")
+                                        .Replace("{Classe}", "")
+                                        .Replace("{ClasseRoom}", "")
+                                        .Replace("{Year}", "")
+                                       .Replace("{payment}", "IVA 5%: " + (result.Sum(p => p.VatOfPayment)) + " MT"));
+
+
+            TableLines.Add(
+                   InvoiceTableLineDTO.LineForInvoice
+                                        .Replace("{unityPrice}", "")
+                                        .Replace("{paymentDate}", "")
+                                        .Replace("{quantity}", "")
+                                        .Replace("{Classe}", "")
+                                        .Replace("{ClasseRoom}", "")
+                                        .Replace("{Year}", "")
+                                        .Replace("{payment}", "Total: " + (result.Sum(p => p.PaymentWithVat)) + " MT"));
+
+
+            var TableLinesIntoOneTring = string.Empty;
+
+            foreach (var line in TableLines)
             {
-
-                var feepaymentDate = result.Tuition.TuitionFines.PaidDate.Value;
-
-                formattedHtml = formattedHtml.Replace("{feeDescription}", "Multa")
-                    .Replace("{FeepaymentDate}", feepaymentDate.ToString("dd/MM/yyyy"));
+                TableLinesIntoOneTring = TableLinesIntoOneTring + line;
             }
-            else
-            {
-                formattedHtml = formattedHtml.Replace("{FeeDisplay}", "none");
-            }
+
+            formattedHtml = formattedHtml.Replace("{items}", TableLinesIntoOneTring);
 
 
             // Retorna o conteúdo HTML como uma resposta JSON
             return Json(new { HtmlContent = formattedHtml });
+
         }
 
         public async Task<IActionResult> EnrollmentInvoicePDF(int id)
@@ -277,7 +313,6 @@ namespace logic.systems.school.managment.Controllers
 
             string relativePath = "template/invoiceForRntollment.html";
             string filePath = Path.Combine(_hostingEnvironment.WebRootPath, relativePath);
-            // Lê o conteúdo do arquivo HTML
             var htmlContent = System.IO.File.ReadAllText(filePath);
 
             var sum = result.Enrollment.PaymentEnrollment.PaymentWithoutVat + result.Enrollment.PaymentEnrollment.VatOfPayment;
@@ -308,14 +343,6 @@ namespace logic.systems.school.managment.Controllers
 
             var TableLines = new List<string>()
             {
-                // primeiro os dados da matricula
-                   InvoiceTableLineDTO.Line.Replace("{desc}", "Matricula")
-                                           .Replace("{paymentDate}", result.Date.ToString("dd/MM/yyyy"))
-                                           .Replace("{Classe}", await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolLevelId))
-                                           .Replace("{ClasseRoom}", await _AppService.SempleEntityDescriptionById(result.Enrollment.SchoolClassRoomId))
-                                           .Replace("{Year}", result.Enrollment.EnrollmentYear.ToString())
-                                           .Replace("{payment}", sum + " MT")
-
             };
 
 
@@ -383,7 +410,7 @@ namespace logic.systems.school.managment.Controllers
         }
 
         private async Task<FileContentResult> GenerateSuspended(List<BeneficiariesSuspededReportDTO> data, string Name = "")
-        { 
+        {
             using var workBook = new XLWorkbook();
             var worksheet = workBook.Worksheets.Add("Estudantes suspensos");
 
@@ -426,7 +453,7 @@ namespace logic.systems.school.managment.Controllers
                 worksheet.Cell(line, 1).Value = "Estudante";
                 worksheet.Cell(line, 2).Value = "Gênero";
                 worksheet.Cell(line, 3).Value = "Data de nascimento";
-                worksheet.Cell(line, 4).Value = "Classe actual"; 
+                worksheet.Cell(line, 4).Value = "Classe actual";
 
                 for (int i = 1; i <= 4; i++)
                 {
@@ -451,7 +478,7 @@ namespace logic.systems.school.managment.Controllers
                 worksheet.Cell(line, 9).Value = "Primeiro prazo de pagamento";
                 worksheet.Cell(line, 10).Value = "Multa da mensalidade";
                 worksheet.Cell(line, 11).Value = "Segundo prazo de pagamento (data de suspensão)";
-                  
+
 
                 for (int i = 5; i <= 11; i++)
                 {
@@ -476,7 +503,7 @@ namespace logic.systems.school.managment.Controllers
 
                     line++;
                 }
-                 
+
 
                 for (int i = 1; i <= 11; i++)
                 {
@@ -518,8 +545,8 @@ namespace logic.systems.school.managment.Controllers
             worksheet.Cell(1, 1).Value = Name;
             worksheet.Cell(2, 1).Value = "Data de Emissão: " + DateTime.Now;
             worksheet.Cell(3, 1).Value = "COOPERATIVA DE ENSINO KALIMANY";
-            worksheet.Cell(4, 1).Value = "Data inicial" + filters.StartDate +" - "+ "Data final" + filters.EndDate;
-             
+            worksheet.Cell(4, 1).Value = "Data inicial" + filters.StartDate + " - " + "Data final" + filters.EndDate;
+
             for (int i = 1; i <= 4; i++)
             {
                 worksheet.Range(@$"A{i}" + ":" + @$"K{i}").Merge();
@@ -528,24 +555,24 @@ namespace logic.systems.school.managment.Controllers
                 worksheet.Range(@$"A{i}" + ":" + @$"K{i}").Style.Fill.BackgroundColor = bgColorHeader;
                 worksheet.Range(@$"A{i}" + ":" + @$"K{i}").Style.Font.FontColor = fontColorHeader;
             }
-             
-            worksheet.Cell(6, 1).Value = "Tipo";   
+
+            worksheet.Cell(6, 1).Value = "Tipo";
             worksheet.Cell(6, 2).Value = "Estudante";
-            worksheet.Cell(6, 3).Value = "Gênero"; 
-            worksheet.Cell(6, 4).Value = "Data de nascimento"; 
-            worksheet.Cell(6, 5).Value = "Idade"; 
-            worksheet.Cell(6, 6).Value = "Turma";   
+            worksheet.Cell(6, 3).Value = "Gênero";
+            worksheet.Cell(6, 4).Value = "Data de nascimento";
+            worksheet.Cell(6, 5).Value = "Idade";
+            worksheet.Cell(6, 6).Value = "Turma";
             worksheet.Cell(6, 7).Value = "Classe do estudante";
             worksheet.Cell(6, 8).Value = "Descrição";
             worksheet.Cell(6, 9).Value = "Valor em Metical";
             worksheet.Cell(6, 10).Value = "Iva";
-            worksheet.Cell(6, 11).Value = "Total com IVA (5%)"; 
+            worksheet.Cell(6, 11).Value = "Total com IVA (5%)";
 
 
             for (int i = 1; i <= 11; i++)
             {
                 worksheet.Cell(6, i).Style.Fill.BackgroundColor = bgColorHeader;
-                worksheet.Cell(6, i).Style.Font.FontColor = fontColorHeader;     
+                worksheet.Cell(6, i).Style.Font.FontColor = fontColorHeader;
                 worksheet.Cell(6, i).Style.Font.SetBold();
             }
 
@@ -554,7 +581,7 @@ namespace logic.systems.school.managment.Controllers
             worksheet.Cell(3, 1).Style.Font.SetBold();
             worksheet.Cell(4, 1).Style.Font.SetBold();
             worksheet.Cell(4, 2).Style.Font.SetBold();
-   
+
             #endregion
 
             #region body
@@ -567,7 +594,7 @@ namespace logic.systems.school.managment.Controllers
             foreach (var item in results)
             {
                 currentRow++;
-                 
+
                 worksheet.Cell(currentRow, 1).Value = item.Type;
                 worksheet.Cell(currentRow, 2).Value = item.StudendName;
                 worksheet.Cell(currentRow, 3).Value = item.StudendGender;
@@ -579,7 +606,7 @@ namespace logic.systems.school.managment.Controllers
                 worksheet.Cell(currentRow, 9).Value = item.MonthlyFeeWithoutVat;
                 worksheet.Cell(currentRow, 10).Value = item.VatOfMonthlyFee;
                 worksheet.Cell(currentRow, 11).Value = item.MonthlyFeeWithVat;
-           
+
 
                 TotalMonthlyFeeWithoutVat = TotalMonthlyFeeWithoutVat + item.MonthlyFeeWithoutVat;
                 TotalVatOfMonthlyFee = TotalVatOfMonthlyFee + item.VatOfMonthlyFee;
@@ -597,10 +624,10 @@ namespace logic.systems.school.managment.Controllers
             worksheet.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Cell(currentRow, 1).Style.Font.SetBold();
 
-            worksheet.Cell(currentRow, 9 ).Value = TotalMonthlyFeeWithoutVat;
+            worksheet.Cell(currentRow, 9).Value = TotalMonthlyFeeWithoutVat;
             worksheet.Cell(currentRow, 10).Value = TotalVatOfMonthlyFee;
             worksheet.Cell(currentRow, 11).Value = TotalMonthlyFeeWithVat;
-             
+
 
             for (int i = 9; i <= 11; i++)
             {

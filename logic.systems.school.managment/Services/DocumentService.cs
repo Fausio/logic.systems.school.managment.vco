@@ -26,14 +26,21 @@ namespace logic.systems.school.managment.Services
 
 
 
-        public async Task<TuitionPayment> GetTuitionInvoiceById(int payementId)
+        public async Task<List<TuitionPayment>> GetTuitionInvoiceById(int payementId)
         {
             var result = await db.PaymentTuitions.Include(x => x.Tuition)
                                                  .ThenInclude(x => x.Enrollment).ThenInclude(x => x.Student)
                                                  .Include(x => x.Tuition.TuitionFines)
                                                  .FirstOrDefaultAsync(x => x.Id == payementId);
 
-            return result;
+
+            var listOfResult = await db.PaymentTuitions.Include(x => x.Tuition)
+                                                       .ThenInclude(x => x.Enrollment)
+                                                       .ThenInclude(x => x.Student)
+                                                       .Include(x => x.Tuition.TuitionFines)
+                                                       .Where(x => x.CreatedDate == result.CreatedDate)
+                                                       .ToListAsync();
+            return listOfResult;
         }
 
         public async Task<List<PaymentTuitionListReportDTO>> GetPaymentTuitionList(DateTime? startDate, DateTime? endDate)
@@ -63,9 +70,9 @@ namespace logic.systems.school.managment.Services
                                                 MonthPaid = t.MonthNumber + " - " + t.MonthName + " - " + t.Year,
                                                 MonthlyFeeWithoutVat = p.PaymentWithoutVat,
                                                 VatOfMonthlyFee = p.VatOfPayment,
-                                                MonthlyFeeWithVat = p.PaymentWithVat, 
+                                                MonthlyFeeWithVat = p.PaymentWithVat,
 
-                                                   PaymentDate = p.PaymentDate
+                                                PaymentDate = p.PaymentDate
 
                                             }).ToList();
 
@@ -94,7 +101,7 @@ namespace logic.systems.school.managment.Services
                                                    MonthPaid = t.Tuition.MonthNumber + " - " + t.Tuition.MonthName + " - " + t.Tuition.Year,
                                                    MonthlyFeeWithoutVat = t.FinesValue,
                                                    VatOfMonthlyFee = 0,
-                                                   MonthlyFeeWithVat = t.FinesValue, 
+                                                   MonthlyFeeWithVat = t.FinesValue,
                                                    PaymentDate = t.PaidDate.Value
 
                                                }).ToList();
@@ -118,12 +125,12 @@ namespace logic.systems.school.managment.Services
                                               StudendGender = e.Student.Gender,
                                               StudentClassRoom = classroom.Description,
                                               StudentClassLevel = classLevel.Description,
-                                              MonthPaid = "Inscrição de "+ e.EnrollmentYear,
+                                              MonthPaid = "Inscrição de " + e.EnrollmentYear,
                                               MonthlyFeeWithoutVat = pe.PaymentWithoutVat,
                                               VatOfMonthlyFee = pe.VatOfPayment,
                                               MonthlyFeeWithVat = pe.PaymentWithoutVat,
-                                                
-                                                   PaymentDate = pe.PaymentDate
+
+                                              PaymentDate = pe.PaymentDate
                                           }).ToList();
 
 
@@ -132,13 +139,13 @@ namespace logic.systems.school.managment.Services
                     results.AddRange(PaymentEnrolResult);
                 }
 
-                     
-                var PaymentEnrolItemsResult = (from e in db.Enrollments 
+
+                var PaymentEnrolItemsResult = (from e in db.Enrollments
                                                join pe in db.PaymentEnrollments on e.Id equals pe.EnrollmentId
                                                join classLevel in db.SimpleEntitys on e.SchoolLevelId equals classLevel.Id
-                                               join classroom in db.SimpleEntitys on e.Student.SchoolClassRoomId equals classroom.Id 
-                                               where pe.Paid == true && pe.PaymentDate >= startDate && pe.PaymentDate <= endDate 
-                                               from item in e.EnrollmentItems 
+                                               join classroom in db.SimpleEntitys on e.Student.SchoolClassRoomId equals classroom.Id
+                                               where pe.Paid == true && pe.PaymentDate >= startDate && pe.PaymentDate <= endDate
+                                               from item in e.EnrollmentItems
                                                select new PaymentTuitionListReportDTO()
                                                {
                                                    Type = "Item da Inscrição",
@@ -152,9 +159,9 @@ namespace logic.systems.school.managment.Services
                                                    MonthlyFeeWithoutVat = item.Price,
                                                    VatOfMonthlyFee = 0,
                                                    MonthlyFeeWithVat = item.Price,
-                                                 
+
                                                    PaymentDate = pe.PaymentDate
-                                               } 
+                                               }
                                                ).ToList();
 
 
@@ -163,7 +170,7 @@ namespace logic.systems.school.managment.Services
                     results.AddRange(PaymentEnrolItemsResult);
                 }
 
-                results = results.OrderBy( x=> x.PaymentDate). ThenBy(x => x.StudendName). ToList();
+                results = results.OrderBy(x => x.PaymentDate).ThenBy(x => x.StudendName).ToList();
 
                 return results;
             }

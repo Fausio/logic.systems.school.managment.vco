@@ -11,7 +11,7 @@ namespace logic.systems.school.managment.Interface
 
         public Task CreatePayment(List<CreatePaymentDTO> dto, string userid);
         public Task  CreateFeePayment(CreateFeePaymentDTO dto, string userid);
-        public Task<List<TuitionPayment>> GetPaymentsByStudantTuitionsId(int studentId);
+        public Task<List<TuitionPaymentPageDTO>> GetPaymentsByStudantTuitionsId(int studentId);
         public Task<List<Models.TuitionFine>> GetByStudantIdFinesBy(int StudantId);
         public string  GetMonthName(int monthNumber);
          

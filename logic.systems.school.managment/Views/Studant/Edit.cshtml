@@ -488,12 +488,7 @@
                         <tbody>
                         </tbody>
                     </table>
-                </div>
-
-
-
-
-
+                </div> 
             </div>
             <div class="modal-footer">
 
@@ -1468,7 +1463,9 @@
                 EnrollmentYear: EnrollmentYear,
             };
 
-
+            {
+                 
+            }
 
             $.ajax({
                 url: "/tuition/IndexPaymentByStudantId",
@@ -1478,12 +1475,13 @@
                     $("#tabelaItensPayments tbody").empty();
                     // Adicione os novos itens à tabela na sua página
                     $.each(MyList, function (index, item) {
+                        console.log(MyList);
                         var newRow = $("<tr>");
                         // Formata a data no formato "dd-mm-aaaa"
-                        var formattedDate = new Date(item.paymentDate).toLocaleDateString('pt-BR');
 
-                        newRow.append("<td>" + item.tuition.monthNumber + " - " + item.tuition.monthName + " - " + item.tuition.year + "</td>");
-                        newRow.append("<td>" + formattedDate + "</td>");
+
+                        newRow.append("<td>" + item.monthName + "</td>");
+                        newRow.append("<td>" +  item.paymentDate + "</td>");
                         newRow.append("<td>" + item.paymentWithoutVat + ",00 MT" + "</td>");
                         newRow.append("<td>" + item.vatOfPayment + ",00 MT" + "</td>");
                         newRow.append("<td>" + item.paymentWithVat + ",00 MT" + "</td>");

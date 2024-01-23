@@ -8,7 +8,7 @@ namespace logic.systems.school.managment.Interface
         public Task<List<PaymentTuitionListReportDTO>> GetPaymentTuitionList(DateTime? startDate, DateTime? endDate);
 
         public Task<EnrollmentInvoice> GetEnrollmentInvoiceByEnrollId(int EnrollId);
-        public Task<TuitionPayment> GetTuitionInvoiceById(int payementId); 
+        public Task<List<TuitionPayment>> GetTuitionInvoiceById(int payementId); 
         public Task<List<BeneficiariesSuspededReportDTO>> GetBeneficiariesSuspeded();
     }
 }
