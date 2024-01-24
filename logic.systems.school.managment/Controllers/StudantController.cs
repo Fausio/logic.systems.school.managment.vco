@@ -142,18 +142,15 @@ namespace logic.systems.school.managment.Controllers
             try
             {
                 await PopulateForms();
-
-
+                 
                 if (ModelState.IsValid)
                 {
 
                     var currentUser = await _userManager.GetUserAsync(User);
 
-                    // todo: ver duplicacação pelo BI
-
+                    // todo: ver duplicacação pelo BI 
                     if (await _IAppService.LimitOfStudentByClassRoomAndLevelYear(model.EnrollmentYear, model.CurrentSchoolLevelId, model.SchoolClassRoomId))
-                    {
-
+                    { 
                         var CurrentSchoolLevel = await _IAppService.SempleEntityDescriptionById(model.CurrentSchoolLevelId);
                         var SchoolClassRoom = await _IAppService.SempleEntityDescriptionById(model.SchoolClassRoomId);
                         TempData["MensagemError"] = $"Impossível gravar o estudante nesta turma. A turma {SchoolClassRoom} para {CurrentSchoolLevel} já atingiu o limite de 35 alunos para o ano {model.EnrollmentYear}.";
@@ -178,8 +175,7 @@ namespace logic.systems.school.managment.Controllers
                     var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear, result.SchoolClassRoomId);
                     await _ITuitionService.CreateByClassOfStudant(result, Enrollment, currentUser.Id);
                     TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
-                    return RedirectToAction("edit", "studant", new { id = result.Id });
-
+                    return RedirectToAction("edit", "studant", new { id = result.Id }); 
                 }
 
                 return View(model);
@@ -191,7 +187,7 @@ namespace logic.systems.school.managment.Controllers
             }
 
         }
-        
+
         public async Task<IActionResult> Transfer(int Id)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -205,7 +201,6 @@ namespace logic.systems.school.managment.Controllers
             {
                 var currentUser = await _userManager.GetUserAsync(User);
                 await _ITuitionService.CheckFee(id, currentUser.Id);
-                //    await _ITuitionService.AutomaticRegularization(id);
                 var model = await _StudentService.Read(id);
                 var result = StudantProfile.ToDTO(model);
                 await PopulateForms();

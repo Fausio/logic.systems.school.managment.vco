@@ -43,6 +43,7 @@ namespace logic.systems.school.managment.Controllers
                 foreach (var item in result)
                 {
                     item.Tuition.TuitionFines = null;
+                    item.Tuition.Enrollment = null;
                 }
                 return Json(result);
             }
@@ -57,7 +58,7 @@ namespace logic.systems.school.managment.Controllers
         public async Task<JsonResult> IndexPaymentByStudantId(getPaymentParamitersDTO id)
         {
             var result = await _ITuitionService.GetPaymentsByStudantTuitionsId(id.StudantId);
-            result = result.Where(x => x.Tuition.Year == id.EnrollmentYear).ToList();
+            result = result.Where(x => x.TuitionYear == id.EnrollmentYear).ToList();
 
             return Json(result);
         }
@@ -67,7 +68,7 @@ namespace logic.systems.school.managment.Controllers
             try
             {
                 var result = await _ITuitionService.GetByStudantId(id.StudantId);
-                result = result.Where(x => x.Year == id.EnrollmentYear).ToList();
+                result = result.Where(x => x.Year == id.EnrollmentYear && !x.Paid).ToList();
 
                 var resultDTO = new List<MultiPaymentTuitionDTO>();
                 foreach (var item in result)

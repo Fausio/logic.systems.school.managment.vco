@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.Build.Framework;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace logic.systems.school.managment.Models
 {
@@ -12,6 +13,7 @@ namespace logic.systems.school.managment.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
+        [Required]
         public int StudentId { get; set; }
         public int AssociatedLevelId { get; set; }
         public bool Paid { get; set; }

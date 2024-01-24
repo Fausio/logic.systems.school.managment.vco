@@ -157,25 +157,44 @@ namespace logic.systems.school.managment.Services
             }
         }
 
-        public async Task<List<TuitionPayment>> GetPaymentsByStudantTuitionsId(int studentId)
+        public async Task<List<TuitionPaymentPageDTO>> GetPaymentsByStudantTuitionsId(int studentId)
         {
             try
             {
                 var student = await db.Students.Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).FirstOrDefaultAsync(x => x.Id == studentId);
-                var listOfPayments = new List<TuitionPayment>();
+                var listOfPaymentsClass = new List<TuitionPayment>();
                 var tuitions = student.Enrollments.SelectMany(x => x.Tuitions).Select(x => x.Id).ToList();
                 foreach (int item in tuitions)
                 {
-                    var payment = await db.PaymentTuitions.FirstOrDefaultAsync(x => x.TuitionId == item);
+                    var payment = await db.PaymentTuitions.Include(x=> x.Tuition).FirstOrDefaultAsync(x => x.TuitionId == item);
 
                     if (payment is not null)
                     {
-                        payment.Tuition.Enrollment = null;
-                        listOfPayments.Add(payment);
+                        listOfPaymentsClass .Add(payment);
                     }
 
                 }
-                return listOfPayments;
+
+
+                var listOfPayments = new List<TuitionPaymentPageDTO>();
+               
+                var groupedByDate = listOfPaymentsClass.GroupBy(payment => payment.CreatedDate);
+             
+                List<TuitionPaymentPageDTO> result = groupedByDate.Select((group) =>
+                    new TuitionPaymentPageDTO
+                    {
+                        id = group.First().Id, // Pode ser qualquer ID, já que você está agrupando por data 
+                        TuitionYear=group.First().Tuition.Year,
+                        monthName = string.Join(", ", group.Select(p => p.Tuition.MonthName).Distinct()),
+                        paymentDate = group.First().PaymentDate.ToString("dd/MM/yyyy"),
+                        paymentWithoutVat = group.Sum(payment => payment.PaymentWithoutVat),
+                        vatOfPayment      = group.Sum(payment => payment.VatOfPayment),
+                        paymentWithVat     = group.Sum(payment => payment.PaymentWithVat),
+
+
+                    }).ToList();
+
+                return result;
             }
             catch (Exception e)
             {
@@ -211,8 +230,11 @@ namespace logic.systems.school.managment.Services
         }
         public async Task CreatePayment(List<CreatePaymentDTO> dtos, string userid)
         {
+
             try
             {
+                var nowTimeStep = DateTime.UtcNow;
+
                 foreach (var dto in dtos)
                 {
                     var studant = await db.Students.Include(x => x.Enrollments)
@@ -227,6 +249,7 @@ namespace logic.systems.school.managment.Services
                             TuitionId = dto.TuitionId,
                             PaymentDate = DateTime.Now,
                             PaymentWithoutVat = getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description),
+                            CreatedDate = nowTimeStep,
                             CreatedUSer = userid,
                         };
                         payment.VatOfPayment = VatCalc(payment.PaymentWithoutVat);
@@ -235,6 +258,7 @@ namespace logic.systems.school.managment.Services
                         var invoice = new TuitionInvoice()
                         {
                             Date = payment.PaymentDate,
+                            CreatedDate = nowTimeStep,
                             CreatedUSer = userid
                         };
 
@@ -385,7 +409,7 @@ namespace logic.systems.school.managment.Services
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
             }
 
-            var now = DateTime.Now;
+            var now = DateTime.Now.AddMonths(6);
 
             foreach (Student student in students)
             {
