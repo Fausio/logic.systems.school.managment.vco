@@ -151,6 +151,7 @@
         </div>
     </div>
 </div>
+ 
 
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
@@ -158,10 +159,22 @@
             <div class="row">
                 <div class="col-md-4">
                     <nav aria-label="Page navigation example">
-                        <ul class="pagination"> 
-                            <li class="page-item"><a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber-1)" asp-action="index" asp-controller="studant">Anterior</a></li>
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" asp-route-pageNumber="1" asp-action="index" asp-controller="studant">Primeira</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber-1)" asp-action="index" asp-controller="studant">Anterior</a>
+                            </li>
 
-                            @for (int i = 1; i <= Model.indexPage.totalPages; i++)
+                            @if (Model.indexPage.pageNumber > 3)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            }
+
+                            @for (int i = Math.Max(1, Model.indexPage.pageNumber - 2); i <= Math.Min(Model.indexPage.totalPages, Model.indexPage.pageNumber + 2); i++)
                             {
                                 var btn_activ = "";
                                 if (i == Model.indexPage.pageNumber)
@@ -169,17 +182,25 @@
                                     btn_activ = "active";
                                 }
 
-                                <li class="page-item @btn_activ"><a class="page-link" asp-route-pageNumber="@i" asp-action="index" asp-controller="studant">@i</a></li>
+                                <li class="page-item @btn_activ">
+                                    <a class="page-link" asp-route-pageNumber="@i" asp-action="index" asp-controller="studant">@i</a>
+                                </li>
                             }
-                            @{
-                                var btn_next_disable_css = "";
-                                if (Model.indexPage.pageNumber == (Model.indexPage.totalPages))
-                                {
-                                    btn_next_disable_css = "display:none";
-                                }
+
+                            @if (Model.indexPage.pageNumber < Model.indexPage.totalPages - 2)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
                             }
-                            <li class="page-item " style="@btn_next_disable_css"><a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber+1)" asp-action="index" asp-controller="studant">Próximo</a></li>
-                        </ul> 
+
+                            <li class="page-item">
+                                <a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber+1)" asp-action="index" asp-controller="studant">Próximo</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" asp-route-pageNumber="@Model.indexPage.totalPages" asp-action="index" asp-controller="studant">Última</a>
+                            </li>
+                        </ul>
                     </nav>
                 </div>
 
@@ -189,4 +210,3 @@
         </div>
     </div>
 </div>
-
