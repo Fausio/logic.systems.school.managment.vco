@@ -47,31 +47,14 @@ namespace logic.systems.school.managment.Dto
         #endregion
 
         public bool EnroolAllMonths { get; set; }
-
-        //public int StartTuition { get; set; }
-
-        //public List<Tuition>? Tuitions { get; set; } = new List<Tuition>();
-
+        public bool Internal { get; set; } 
+         
+         
         public CreateStudantDTO()
         {
+            this.Internal = true;
             this.BirthDate = DateTime.Now.AddYears(-21);
-            //string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
-            //for (int i = 1; i < meses.Length + 1; i++)
-            //{
-            //    int daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, i + 1);
-            //    DateTime startDate = new DateTime(DateTime.Now.Year, i + 1, 1);
-            //    DateTime endDate = new DateTime(DateTime.Now.Year, i + 1, daysInMonth);
-
-            //    Tuitions.Add(new Tuition()
-            //    {
-            //        MonthNumber = i,
-            //        MonthName = meses[i - 1],
-            //        StartDate = startDate,
-            //        EndDate = endDate,
-            //        Year = DateTime.Now.Year,
-            //        Enrollment = new Enrollment()
-            //    });
-            //}
+            
         }
 
     }

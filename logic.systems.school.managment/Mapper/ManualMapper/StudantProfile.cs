@@ -25,6 +25,7 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
                     Naturalness = dTO.Naturalness,
                     PersonId = dTO.PersonId,
                     DistrictId = dTO.DistrictId,
+                    Internal = dTO.Internal,
                     CurrentSchoolLevelId = dTO.CurrentSchoolLevelId,
                     SchoolClassRoomId = dTO.SchoolClassRoomId,
                 };
@@ -71,6 +72,7 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
                     SchoolClassRoomId = Class.SchoolClassRoomId,
                     Suspended = Class.Suspended,
                     Transferred = Class.Transferred,
+                    Internal = Class.Internal,
                     Enrollments = Class.Enrollments
                 };
 
