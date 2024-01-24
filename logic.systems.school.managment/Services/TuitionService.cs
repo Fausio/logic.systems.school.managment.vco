@@ -60,8 +60,7 @@ namespace logic.systems.school.managment.Services
                 string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
                 for (int i = 1; i < meses.Length + 1; i++)
                 {
-
-
+                     
                     int daysInMonth = DateTime.DaysInMonth(enrollment.EnrollmentYear, i + 1);
                     DateTime startDate = new DateTime(enrollment.EnrollmentYear, i + 1, 1);
                     DateTime endDate = new DateTime(enrollment.EnrollmentYear, i + 1, daysInMonth);
@@ -426,8 +425,7 @@ namespace logic.systems.school.managment.Services
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
             }
 
-            var now = DateTime.Now.AddMonths(6);
-
+            var now = DateTime.Now;
             foreach (Student student in students)
             {
 
@@ -450,10 +448,10 @@ namespace logic.systems.school.managment.Services
                             }
 
                             if (now > tuituionStartDate_part_2_b)
-                            {    // cria suspende se tiver passado 25 dias sem pagar a mensalidade
+                            {     // cria suspende se tiver passado 25 dias sem pagar a mensalidade
                                  //  Console.WriteLine("Suspenso");
                                 await CreateTuitionFine(tuition.Id, userid);
-
+                                  
                                 setSuspended = true;
                                 student.Suspended = setSuspended;
                                 await db.SaveChangesAsync();
@@ -478,7 +476,7 @@ namespace logic.systems.school.managment.Services
         {
 
             var havetuitionFines = await db.TuitionFines.FirstOrDefaultAsync(x => x.TuitionId == tuitionId);
-            // para nao duplicar multas
+            // para nao duplicar multa principal de 300
             if (havetuitionFines == null)
             {
                 var tuitionFines = new TuitionFine()
@@ -490,6 +488,46 @@ namespace logic.systems.school.managment.Services
                 await db.TuitionFines.AddAsync(tuitionFines);
                 await db.SaveChangesAsync();
             }
+            else
+            {
+                // criar multa diaria de 25mt
+                // tudo: daily fee 
+                var now = DateTime.Now; ;
+                var tuitionDate = havetuitionFines.Tuition.StartDate.AddDays(24);
+
+                if (now > tuitionDate)
+                {
+                    for (var i = tuitionDate; i <= now; i = i.AddDays(1))
+                    {
+
+                        if (i.DayOfWeek != DayOfWeek.Saturday && i.DayOfWeek != DayOfWeek.Sunday)
+                        {
+                            // Execute o código que deseja dentro do loop
+                            // Console.WriteLine(i.ToString("yyyy-MM-dd"));
+
+                            var allDailyFee = await db.TuitionFineDailies.Where(x => x.TuitionFineId == havetuitionFines.Id).ToListAsync();
+
+                            foreach (var t in allDailyFee)
+                            {
+                              var  haveDailyFee = t.CreatedDate.ToShortDateString() == i.ToShortDateString();
+                                if (haveDailyFee)
+                                {
+                                    var obj = new TuitionFineDaily()
+                                    {
+                                        CreatedDate = now,
+                                        CreatedUSer = userid,
+                                        TuitionFineId = havetuitionFines.TuitionId
+                                    };
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+
+
+
 
         }
 

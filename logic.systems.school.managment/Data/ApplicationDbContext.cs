@@ -60,11 +60,12 @@ namespace logic.systems.school.managment.Data
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<EnrollmentItem> EnrollmentItems { get; set; }
 
-        public DbSet<TuitionPayment> PaymentTuitions { get; set; } 
+        public DbSet<TuitionPayment> PaymentTuitions { get; set; }
         public DbSet<EnrollmentPayment> PaymentEnrollments { get; set; }
         public DbSet<EnrollmentInvoice> EnrollmentInvoices { get; set; }
         public DbSet<TuitionInvoice> TuitionInvoices { get; set; }
         public DbSet<IdentityUser> IdentityUsers { get; set; }
+        public DbSet<TuitionFineDaily> TuitionFineDailies { get; set; }
 
     }
 }

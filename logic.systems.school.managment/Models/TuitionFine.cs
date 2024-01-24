@@ -15,5 +15,8 @@ namespace logic.systems.school.managment.Models
         }
         public bool Paid { get; set; }
         public DateTime? PaidDate { get; set; }
+
+        public List<TuitionFineDaily>  TuitionFineDailies { get; set; }
+
     }
 }
