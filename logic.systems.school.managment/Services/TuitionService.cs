@@ -60,7 +60,7 @@ namespace logic.systems.school.managment.Services
                 string[] meses = { "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
                 for (int i = 1; i < meses.Length + 1; i++)
                 {
-                     
+
                     int daysInMonth = DateTime.DaysInMonth(enrollment.EnrollmentYear, i + 1);
                     DateTime startDate = new DateTime(enrollment.EnrollmentYear, i + 1, 1);
                     DateTime endDate = new DateTime(enrollment.EnrollmentYear, i + 1, daysInMonth);
@@ -165,30 +165,30 @@ namespace logic.systems.school.managment.Services
                 var tuitions = student.Enrollments.SelectMany(x => x.Tuitions).Select(x => x.Id).ToList();
                 foreach (int item in tuitions)
                 {
-                    var payment = await db.PaymentTuitions.Include(x=> x.Tuition).FirstOrDefaultAsync(x => x.TuitionId == item);
+                    var payment = await db.PaymentTuitions.Include(x => x.Tuition).FirstOrDefaultAsync(x => x.TuitionId == item);
 
                     if (payment is not null)
                     {
-                        listOfPaymentsClass .Add(payment);
+                        listOfPaymentsClass.Add(payment);
                     }
 
                 }
 
 
                 var listOfPayments = new List<TuitionPaymentPageDTO>();
-               
+
                 var groupedByDate = listOfPaymentsClass.GroupBy(payment => payment.CreatedDate);
-             
+
                 List<TuitionPaymentPageDTO> result = groupedByDate.Select((group) =>
                     new TuitionPaymentPageDTO
                     {
                         id = group.First().Id, // Pode ser qualquer ID, já que você está agrupando por data 
-                        TuitionYear=group.First().Tuition.Year,
+                        TuitionYear = group.First().Tuition.Year,
                         monthName = string.Join(", ", group.Select(p => p.Tuition.MonthName).Distinct()),
                         paymentDate = group.First().PaymentDate.ToString("dd/MM/yyyy"),
                         paymentWithoutVat = group.Sum(payment => payment.PaymentWithoutVat),
-                        vatOfPayment      = group.Sum(payment => payment.VatOfPayment),
-                        paymentWithVat     = group.Sum(payment => payment.PaymentWithVat),
+                        vatOfPayment = group.Sum(payment => payment.VatOfPayment),
+                        paymentWithVat = group.Sum(payment => payment.PaymentWithVat),
 
 
                     }).ToList();
@@ -244,7 +244,7 @@ namespace logic.systems.school.managment.Services
                     var discount = (decimal)0;
 
                     if (studant is not null)
-                    { 
+                    {
 
                         if (studant.DiscountType == Student.DiscountPersonInCharge)
                         {
@@ -256,7 +256,7 @@ namespace logic.systems.school.managment.Services
                         }
                     }
 
-                  
+
 
                     if (dto.StudantId > 0 && dto.TuitionId > 0 && studant is not null)
                     {
@@ -264,7 +264,7 @@ namespace logic.systems.school.managment.Services
                         {
                             TuitionId = dto.TuitionId,
                             PaymentDate = DateTime.Now,
-                            PaymentWithoutVat =  (getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount),
+                            PaymentWithoutVat = (getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount),
                             CreatedDate = nowTimeStep,
                             CreatedUSer = userid,
                         };
@@ -414,18 +414,20 @@ namespace logic.systems.school.managment.Services
 
             var students = new List<Student>();
 
-            if (studantId is not null || studantId > 0)
+            if (studantId is not null && studantId > 0)
             {
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted && x.Id == studantId).ToListAsync();
 
             }
 
-            if (studantId is not null || studantId == 0)
+            if (studantId is not null && studantId == 0)
             {
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
             }
 
-            var now = DateTime.Now;
+            var now = DateTime.Now.AddMonths(2);
+            now.AddDays(10);
+            now = now.AddDays(10);
             foreach (Student student in students)
             {
 
@@ -449,9 +451,9 @@ namespace logic.systems.school.managment.Services
 
                             if (now > tuituionStartDate_part_2_b)
                             {     // cria suspende se tiver passado 25 dias sem pagar a mensalidade
-                                 //  Console.WriteLine("Suspenso");
+                                  //  Console.WriteLine("Suspenso");
                                 await CreateTuitionFine(tuition.Id, userid);
-                                  
+
                                 setSuspended = true;
                                 student.Suspended = setSuspended;
                                 await db.SaveChangesAsync();
@@ -492,43 +494,45 @@ namespace logic.systems.school.managment.Services
             {
                 // criar multa diaria de 25mt
                 // tudo: daily fee 
-                var now = DateTime.Now; ;
+                var now = DateTime.Now.AddMonths(2);
+                now = now.AddDays(10);
                 var tuitionDate = havetuitionFines.Tuition.StartDate.AddDays(24);
 
+                var listOfTuitionFineDaily = new List<TuitionFineDaily>();
+           
                 if (now > tuitionDate)
                 {
+
                     for (var i = tuitionDate; i <= now; i = i.AddDays(1))
                     {
 
                         if (i.DayOfWeek != DayOfWeek.Saturday && i.DayOfWeek != DayOfWeek.Sunday)
                         {
-                            // Execute o código que deseja dentro do loop
-                            // Console.WriteLine(i.ToString("yyyy-MM-dd"));
-
-                            var allDailyFee = await db.TuitionFineDailies.Where(x => x.TuitionFineId == havetuitionFines.Id).ToListAsync();
-
-                            foreach (var t in allDailyFee)
+                            var NotExistForThisDay = await db.TuitionFineDailies.FirstOrDefaultAsync(x => x.TuitionFineId == havetuitionFines.Id && x.FinesDate == i);
+                            //        var NotExistForThisDay = allDailyFee.FirstOrDefault(x => x.FinesDate.ToShortDateString() == i.ToShortDateString());
+                            // x.FinesDate.ToShortDateString() == i.ToShortDateString()
+                            if (NotExistForThisDay == null)
                             {
-                              var  haveDailyFee = t.CreatedDate.ToShortDateString() == i.ToShortDateString();
-                                if (haveDailyFee)
+                                await db.TuitionFineDailies.AddAsync(new TuitionFineDaily()
                                 {
-                                    var obj = new TuitionFineDaily()
-                                    {
-                                        CreatedDate = now,
-                                        CreatedUSer = userid,
-                                        TuitionFineId = havetuitionFines.TuitionId
-                                    };
-                                }
+                                    FinesDate = i,
+                                    CreatedDate = now,
+                                    CreatedUSer = userid,
+                                    TuitionFineId = havetuitionFines.Id
+                                });
+
+                                await db.SaveChangesAsync();
                             }
+
+
                         }
+
                     }
                 }
 
+
+
             }
-
-
-
-
         }
 
         public async Task AutomaticRegularization(int? studentId)
