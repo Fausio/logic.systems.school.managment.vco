@@ -26,6 +26,7 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
                     PersonId = dTO.PersonId,
                     DistrictId = dTO.DistrictId,
                     Internal = dTO.Internal,
+                    DiscountType = dTO.DiscountType,
                     CurrentSchoolLevelId = dTO.CurrentSchoolLevelId,
                     SchoolClassRoomId = dTO.SchoolClassRoomId,
                 };
@@ -73,7 +74,8 @@ namespace logic.systems.school.managment.Mapper.ManualMapper
                     Suspended = Class.Suspended,
                     Transferred = Class.Transferred,
                     Internal = Class.Internal,
-                    Enrollments = Class.Enrollments
+                    Enrollments = Class.Enrollments,
+                    DiscountType = Class.DiscountType,
                 };
 
                 dto.SponsorName = Class.Sponsor.Name;

@@ -142,7 +142,7 @@ namespace logic.systems.school.managment.Controllers
             try
             {
                 await PopulateForms();
-                 
+
                 if (ModelState.IsValid)
                 {
 
@@ -150,7 +150,7 @@ namespace logic.systems.school.managment.Controllers
 
                     // todo: ver duplicacação pelo BI 
                     if (await _IAppService.LimitOfStudentByClassRoomAndLevelYear(model.EnrollmentYear, model.CurrentSchoolLevelId, model.SchoolClassRoomId))
-                    { 
+                    {
                         var CurrentSchoolLevel = await _IAppService.SempleEntityDescriptionById(model.CurrentSchoolLevelId);
                         var SchoolClassRoom = await _IAppService.SempleEntityDescriptionById(model.SchoolClassRoomId);
                         TempData["MensagemError"] = $"Impossível gravar o estudante nesta turma. A turma {SchoolClassRoom} para {CurrentSchoolLevel} já atingiu o limite de 35 alunos para o ano {model.EnrollmentYear}.";
@@ -175,7 +175,7 @@ namespace logic.systems.school.managment.Controllers
                     var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear, result.SchoolClassRoomId);
                     await _ITuitionService.CreateByClassOfStudant(result, Enrollment, currentUser.Id);
                     TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
-                    return RedirectToAction("edit", "studant", new { id = result.Id }); 
+                    return RedirectToAction("edit", "studant", new { id = result.Id });
                 }
 
                 return View(model);
@@ -328,8 +328,14 @@ namespace logic.systems.school.managment.Controllers
         private async Task PopulateForms()
         {
             ViewBag.Gender = new List<string>{
-                "Masculino",
-                "Feminino"
+               Student.genderM,
+               Student.genderF
+            };
+             
+            ViewBag.DiscountType = new List<string>{
+               Student.DiscountWithout,
+               Student.DiscountPersonInCharge,
+               Student.DiscountTeacher,
             };
 
             ViewBag.Provinces = await _IOrgUnitServiceService.GetOrgUnitProvinces();

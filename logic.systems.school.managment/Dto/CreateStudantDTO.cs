@@ -31,7 +31,7 @@ namespace logic.systems.school.managment.Dto
         public int CurrentSchoolLevelId { get; set; }
         [Required(ErrorMessage = "O campo Turma é obrigatório.")]
         public int SchoolClassRoomId { get; set; }
-    
+
         [Required(ErrorMessage = "O campo Ano de inscrição  é obrigatório.")]
         public int EnrollmentYear { get; set; }
 
@@ -47,14 +47,14 @@ namespace logic.systems.school.managment.Dto
         #endregion
 
         public bool EnroolAllMonths { get; set; }
-        public bool Internal { get; set; } 
-         
-         
+        public bool Internal { get; set; }
+        public string DiscountType { get; set; }
+
         public CreateStudantDTO()
         {
-            this.Internal = true;
-            this.BirthDate = DateTime.Now.AddYears(-21);
-            
+            Internal = true;
+            BirthDate = DateTime.Now.AddYears(-21);
+            DiscountType = Student.DiscountWithout;
         }
 
     }

@@ -97,7 +97,7 @@
 
                         <div class="form-row mb-3">
                             <div class="col-md-4">
-                                <label for="">Sexo</label>    <span asp-validation-for="Gender" class="text-danger"></span>
+                                <label for="">Sexo</label>     
                                 <select class="form-control form-control-lg pb-3 pt-3" asp-for="Gender">
                                     @foreach (string item in ViewBag.Gender)
                                     {
@@ -129,9 +129,22 @@
 
                         <fieldset class="border p-2 pb-0">
                             <legend class="w-auto">Dados pedagógicos</legend>
+
+                           
+
                             <div class="form-row mb-4">
+                                <div class="col-md-4">
+                                    <label for="">Tipo de desconto</label>
+                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="DiscountType">
+                                        @foreach (string item in ViewBag.DiscountType)
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="DiscountType" class="text-danger"></span>
+                                </div>
                                 <div class="col-md-4 form-inline">
-                                    <label for="chkInternal" class="mr-2">É aluno interno?</label>
+                                    <label for="chkInternal" class="mr-2 ml-4">É aluno interno?</label>
                                     @Html.CheckBoxFor(model => model.Internal, new { @class = "form-control", id = "chkInternal" })
                                 </div>
                             </div>
@@ -244,7 +257,7 @@
 
         function DisableSubmit() {
 
-           // $("#submitBtn").hide();
+            // $("#submitBtn").hide();
         }
 
         function hideMyMonthLabel() {

@@ -10,6 +10,12 @@ namespace logic.systems.school.managment.Models
     { 
         public const string genderM = "Masculino";
         public const string genderF = "Feminino"; 
+    
+        public const string DiscountWithout = "Sem desconto"; 
+        public const string DiscountPersonInCharge = "Encarregado 100,00 MT"; 
+        public const string DiscountTeacher = "Professor 500,00 MT";
+
+         
 
         [Required(ErrorMessage = "O campo Nome é obrigatório.")]
         public string Name { get; set; }
@@ -41,7 +47,11 @@ namespace logic.systems.school.managment.Models
         [NotMapped]
         public bool haveFee { get; set; } 
         public bool Transferred { get; set; }
-        public bool Internal { get; set; } 
+        public bool Internal { get; set; }
+
+        
+        public string DiscountType { get; set; }
+
 
         public int GetAgeInDay()
         {

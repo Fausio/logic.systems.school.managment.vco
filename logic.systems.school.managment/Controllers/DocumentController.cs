@@ -258,7 +258,7 @@ namespace logic.systems.school.managment.Controllers
 
 
             var TotaltuitionFines =(decimal) 0;
-            if (result.Select(x => x.Tuition.TuitionFines).Count() > 0 )
+            if (result.Where(x => x.Tuition.TuitionFines is not null).Count() > 0 )
             {
 
                 var tuitionFines = result.Where(x => x.Tuition.TuitionFines is not null).Select(x => x.Tuition.TuitionFines);
