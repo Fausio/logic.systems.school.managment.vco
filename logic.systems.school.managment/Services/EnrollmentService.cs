@@ -187,6 +187,8 @@ namespace logic.systems.school.managment.Services
                 // 12 - 4200 matricula   
                 #endregion
 
+               
+
 
                 switch (level.Description)
                 {
@@ -222,17 +224,7 @@ namespace logic.systems.school.managment.Services
                                     {
                                         Description = "Fichas",
                                         Price = 1000,
-                                    },
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Pasta",
-                                        Price = 750,
-                                    },
-                                    // new EnrollmentItem()
-                                    //{
-                                    //    Description = "Caderneta",
-                                    //    Price = 150,
-                                    //},
+                                    }, 
                                 }
                         };
                         break;
@@ -336,6 +328,20 @@ namespace logic.systems.school.managment.Services
                 enrollment.SchoolLevelId = SchoolLevelId;
                 enrollment.PaymentEnrollment.Paid = true;
                 enrollment.PaymentEnrollment.PaymentDate = DateTime.Now;
+
+                var student = await db.Students.FirstOrDefaultAsync(x => x.Id == studantId);
+
+                if (!student.Internal)
+                {
+                    enrollment.EnrollmentItems.Add(
+                     new EnrollmentItem()
+                    {
+                        Description = "Caderneta e Pasta",
+                        Price = 750,
+                    });
+                }
+             
+
                 return enrollment;
             }
             else
