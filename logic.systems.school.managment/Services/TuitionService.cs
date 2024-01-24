@@ -242,13 +242,30 @@ namespace logic.systems.school.managment.Services
                                              .Include(x => x.CurrentSchoolLevel)
                                              .FirstOrDefaultAsync(x => x.Id == dto.StudantId);
 
+                    var discount = (decimal)0;
+
+                    if (studant is not null)
+                    { 
+
+                        if (studant.DiscountType == Student.DiscountPersonInCharge)
+                        {
+                            discount = 100;
+                        }
+                        else if (studant.DiscountType == Student.DiscountTeacher)
+                        {
+                            discount = 500;
+                        }
+                    }
+
+                  
+
                     if (dto.StudantId > 0 && dto.TuitionId > 0 && studant is not null)
                     {
                         var payment = new TuitionPayment()
                         {
                             TuitionId = dto.TuitionId,
                             PaymentDate = DateTime.Now,
-                            PaymentWithoutVat = getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description),
+                            PaymentWithoutVat =  (getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount),
                             CreatedDate = nowTimeStep,
                             CreatedUSer = userid,
                         };

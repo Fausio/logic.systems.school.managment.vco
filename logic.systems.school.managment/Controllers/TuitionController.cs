@@ -10,10 +10,12 @@ namespace logic.systems.school.managment.Controllers
     [Authorize]
     public class TuitionController : Controller
     {
+        private IstudantService _StudentService;
         private ITuitionService _ITuitionService;
         private UserManager<IdentityUser> _userManager;
-        public TuitionController(ITuitionService ITuitionService, UserManager<IdentityUser> userManager)
+        public TuitionController(IstudantService StudentService,ITuitionService ITuitionService, UserManager<IdentityUser> userManager)
         {
+            this._StudentService = StudentService;
             this._ITuitionService = ITuitionService;
             this._userManager = userManager;
         }
@@ -70,11 +72,26 @@ namespace logic.systems.school.managment.Controllers
                 var result = await _ITuitionService.GetByStudantId(id.StudantId);
                 result = result.Where(x => x.Year == id.EnrollmentYear && !x.Paid).ToList();
 
+                var student = await _StudentService.Read(id.StudantId);
+                var discount = (decimal)0;
+                if (student is not null)
+                {
+
+                    if (student.DiscountType == Student.DiscountPersonInCharge)
+                    {
+                        discount = 100;
+                    }
+                    else if (student.DiscountType == Student.DiscountTeacher)
+                    {
+                        discount = 500;
+                    }
+                }
+
                 var resultDTO = new List<MultiPaymentTuitionDTO>();
                 foreach (var item in result)
                 {
                     var _schoolLevel = item.Enrollment.SchoolLevel.Description;
-                    var _tuitionValue = _ITuitionService.getTuitionValueByschoolLevel(_schoolLevel);
+                    var _tuitionValue = ( _ITuitionService.getTuitionValueByschoolLevel(_schoolLevel) - discount);
                     resultDTO.Add(new MultiPaymentTuitionDTO()
                     {
                         id = item.Id,
