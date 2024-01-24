@@ -258,8 +258,8 @@ namespace logic.systems.school.managment.Controllers
                     TableLines.Add(
                        InvoiceTableLineDTO.Line
                        .Replace("{desc}", "Multa")
-                       .Replace("{unityPrice}", tuitionFines.FirstOrDefault().Tuition.TuitionFines.FinesValue + " MT")
-                       .Replace("{quantity}", tuitionFines.Count().ToString())
+                       .Replace("{unityPrice}", TotaltuitionFines + " MT")
+                       .Replace("{quantity}", "1")
                        .Replace("{paymentDate}", tuitionFines.FirstOrDefault().PaidDate.Value.ToString("dd/MM/yyyy"))
                        .Replace("{Classe}", await _AppService.SempleEntityDescriptionById(result.FirstOrDefault().Tuition.Enrollment.SchoolLevelId))
                        .Replace("{ClasseRoom}", await _AppService.SempleEntityDescriptionById(result.FirstOrDefault().Tuition.Enrollment.SchoolClassRoomId))

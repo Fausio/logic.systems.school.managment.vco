@@ -137,10 +137,21 @@ namespace logic.systems.school.managment.Services
                 {
                     foreach (var item in tuitions)
                     {
-                        var finded = await db.TuitionFines.FirstOrDefaultAsync(x => x.TuitionId == item.Id);
+                        var finded = await db.TuitionFines.Include(x => x.TuitionFineDailies)
+                                                          .FirstOrDefaultAsync(x => x.TuitionId == item.Id);
+
+
 
                         if (finded is not null)
                         {
+                            if (finded.TuitionFineDailies.Count > 0)
+                            {
+                                finded.FinesValue = (finded.FinesValue + finded.TuitionFineDailies.Sum(x => x.FinesValue));
+
+                                finded.TuitionFineDailies = null;
+                            }
+
+
                             tuitionsFines.Add(finded);
                         }
 
@@ -245,7 +256,6 @@ namespace logic.systems.school.managment.Services
 
                     if (studant is not null)
                     {
-
                         if (studant.DiscountType == Student.DiscountPersonInCharge)
                         {
                             discount = 100;
@@ -255,8 +265,6 @@ namespace logic.systems.school.managment.Services
                             discount = 500;
                         }
                     }
-
-
 
                     if (dto.StudantId > 0 && dto.TuitionId > 0 && studant is not null)
                     {
@@ -291,7 +299,7 @@ namespace logic.systems.school.managment.Services
                         await db.PaymentTuitions.AddAsync(payment);
                         await db.SaveChangesAsync();
 
-                        var tuitionPayed = db.Tuitions.Include(x => x.TuitionFines).FirstOrDefault(x => x.Id == dto.TuitionId);
+                        var tuitionPayed = db.Tuitions.Include(x => x.TuitionFines).ThenInclude(x => x.TuitionFineDailies).FirstOrDefault(x => x.Id == dto.TuitionId);
 
                         if (tuitionPayed != null)
                         {
@@ -307,6 +315,24 @@ namespace logic.systems.school.managment.Services
                             // create Fee Payment if Tuition have it  
                             if (tuitionPayed.TuitionFines is not null)
                             {
+
+                                var DailyFees = (decimal)0;
+
+                                if (tuitionPayed.TuitionFines.TuitionFineDailies.Count > 0)
+                                {
+                                    DailyFees = tuitionPayed.TuitionFines.TuitionFineDailies.Sum(x => x.FinesValue);
+
+                                    foreach (var item in tuitionPayed.TuitionFines.TuitionFineDailies)
+                                    {
+                                        item.UpdatedUSer = userid;
+                                        item.Row = Common.Modified;
+                                        item.PaidDate = payment.PaymentDate;
+                                        item.Paid = true; 
+                                    }
+                                }
+
+
+                                tuitionPayed.TuitionFines.FinesValue += DailyFees;
                                 tuitionPayed.TuitionFines.Paid = true;
                                 tuitionPayed.TuitionFines.PaidDate = payment.PaymentDate;
                                 tuitionPayed.UpdatedUSer = userid;
@@ -425,9 +451,7 @@ namespace logic.systems.school.managment.Services
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
             }
 
-            var now = DateTime.Now.AddMonths(2);
-            now.AddDays(10);
-            now = now.AddDays(10);
+            var now = DateTime.Now;
             foreach (Student student in students)
             {
 
@@ -494,12 +518,12 @@ namespace logic.systems.school.managment.Services
             {
                 // criar multa diaria de 25mt
                 // tudo: daily fee 
-                var now = DateTime.Now.AddMonths(2);
-                now = now.AddDays(10);
+                var now = DateTime.Now;
+
                 var tuitionDate = havetuitionFines.Tuition.StartDate.AddDays(24);
 
                 var listOfTuitionFineDaily = new List<TuitionFineDaily>();
-           
+
                 if (now > tuitionDate)
                 {
 
@@ -509,8 +533,7 @@ namespace logic.systems.school.managment.Services
                         if (i.DayOfWeek != DayOfWeek.Saturday && i.DayOfWeek != DayOfWeek.Sunday)
                         {
                             var NotExistForThisDay = await db.TuitionFineDailies.FirstOrDefaultAsync(x => x.TuitionFineId == havetuitionFines.Id && x.FinesDate == i);
-                            //        var NotExistForThisDay = allDailyFee.FirstOrDefault(x => x.FinesDate.ToShortDateString() == i.ToShortDateString());
-                            // x.FinesDate.ToShortDateString() == i.ToShortDateString()
+
                             if (NotExistForThisDay == null)
                             {
                                 await db.TuitionFineDailies.AddAsync(new TuitionFineDaily()

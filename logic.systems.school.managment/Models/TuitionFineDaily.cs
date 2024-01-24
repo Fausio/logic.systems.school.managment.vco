@@ -8,6 +8,9 @@ namespace logic.systems.school.managment.Models
         public TuitionFine TuitionFine { get; set; }
         public int TuitionFineId { get; set; }
 
+        public bool Paid { get; set; }
+        public DateTime? PaidDate { get; set; }
+
         public decimal FinesValue { get; set; }
         public DateTime FinesDate { get; set; }
 
