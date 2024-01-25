@@ -487,7 +487,7 @@ namespace logic.systems.school.managment.Services
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
             }
 
-            var now = DateTime.Now.AddMonths(2);
+            var now = DateTime.Now;
             foreach (Student student in students)
             {
 
@@ -554,7 +554,7 @@ namespace logic.systems.school.managment.Services
             {
                 // criar multa diaria de 25mt
                 // tudo: daily fee 
-                var now = DateTime.Now.AddMonths(2);
+                var now = DateTime.Now;
 
                 var tuitionDate = havetuitionFines.Tuition.StartDate.AddDays(24);
 
