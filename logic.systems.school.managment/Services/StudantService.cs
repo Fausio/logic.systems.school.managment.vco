@@ -72,6 +72,7 @@ namespace logic.systems.school.managment.Services
                 // pegar sempre o mais recente
                 var result = await db.Students.Include(x => x.CurrentSchoolLevel)
                                         .Include(x => x.District).ThenInclude(x => x.OrgUnitProvince)
+                                        .Include(x => x.Enrollments).ThenInclude(t => t.SchoolLevel) 
                                         .Include(x => x.Enrollments).ThenInclude(t => t.Tuitions)
                                         .Include(x => x.Sponsor)
                                         .ThenInclude(x => x.Contacts)
@@ -242,6 +243,22 @@ namespace logic.systems.school.managment.Services
 
                 throw;
             }
+        }
+
+        public async Task UpdateEnrollment(FixEnrollmentDTO dto, string updatedUser)
+        {
+            var result = await Read(dto.StudantId);
+
+            if (result is not null)
+            {
+                result.CurrentSchoolLevelId = int.Parse( dto.NewSchoolLevelId); 
+                result.Internal = dto.NewchkInternal;
+                result.SchoolClassRoomId = int.Parse(dto.NewSchoolClassRoomId);
+
+                await Update(result, updatedUser);
+            }
+
+           
         }
     }
 }

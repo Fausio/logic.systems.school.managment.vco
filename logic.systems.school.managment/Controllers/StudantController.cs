@@ -201,25 +201,31 @@ namespace logic.systems.school.managment.Controllers
             {
                 var currentUser = await _userManager.GetUserAsync(User);
                 await _ITuitionService.CheckFee(id, currentUser.Id);
+
                 var model = await _StudentService.Read(id);
                 var result = StudantProfile.ToDTO(model);
+
                 await PopulateForms();
                 await PopuLateDetailsForm(model);
 
                 var currentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
                 ViewBag.CurrentSchoolLevels = currentSchoolLevels.Where(x => x.Id > result.CurrentSchoolLevelId);
+                ViewBag.FixCurrentSchoolLevels = currentSchoolLevels;
                 ViewBag.EnrollmentYears = new List<string>{
-                   DateTime.Now.AddYears(1). Year.ToString(),
+                   DateTime.Now.AddYears(1).Year.ToString(),
+                 };
+
+                ViewBag.FixEnrollmentYears = new List<string>{
+                    DateTime.Now.Year.ToString(),
+                     DateTime.Now.AddYears(1).Year.ToString(),
                  };
 
                 var ClassRoom = await _SempleEntityService.GetById(result.SchoolClassRoomId);
-
 
                 if (model.BirthDate != null)
                 {
                     result.age = model.GetAgeInDay();
                 }
-
 
                 var createdUser = await _userManager.FindByIdAsync(model.CreatedUSer);
 
@@ -331,7 +337,7 @@ namespace logic.systems.school.managment.Controllers
                Student.genderM,
                Student.genderF
             };
-             
+
             ViewBag.DiscountType = new List<string>{
                Student.DiscountWithout,
                Student.DiscountPersonInCharge,

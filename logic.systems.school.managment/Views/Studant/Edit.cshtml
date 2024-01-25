@@ -351,6 +351,10 @@
                                     <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
                                         Matrícular como repetente
                                     </a>
+
+                                    <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                        Retificar Matricula
+                                    </a>
                                 }
                                 else
                                 {
@@ -360,6 +364,10 @@
 
                                     <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
                                         Matrícular como repetente
+                                    </a>
+
+                                    <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#FixEnrollmentRepitModal" onclick="form_FixEnrollmentRepit_btns()">
+                                        Retificar Matricula
                                     </a>
                                 }
                             }
@@ -492,7 +500,7 @@
                         <tbody>
                         </tbody>
                     </table>
-                </div> 
+                </div>
             </div>
             <div class="modal-footer">
 
@@ -681,6 +689,144 @@
         </div>
     </div>
 </div>
+
+
+
+
+<div class="modal fade" id="FixEnrollmentRepitModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Conteúdo do modal -->
+            <div class="modal-header">
+                <h4 class="modal-title">Formulário de retifiçacão matricula</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Conteúdo do formulário aqui -->
+
+                <fieldset class="border p-2">
+                    <legend class="w-auto">Alerta </legend>
+                    <div id="validation-summary-enroll-repit" class="alert alert-danger" role="alert" style="display:none">
+                        <p><strong id="validation-summary-msg-repit"> </strong></p>
+                    </div>
+                    <h2>Alerta Importante</h2>
+                    <p>Ao prosseguir com a retificação da matrícula, todos os dados associados serão permanentemente apagados do sistema. <br /> Certifique-se da necessidade desta ação antes de continuar.</p>
+
+
+                </fieldset>
+
+                <fieldset class="border p-2">
+                    <legend class="w-auto"> Dados pedagógicos </legend>
+
+
+
+                    <div class="form-row">
+                        <div class="col-12">
+                            <label for="">Matricular a ser retificada </label>
+                            <select class="form-control form-control-lg pb-3 pt-3" id="OldEnrollment">
+
+                                @foreach (var item in Model.Enrollments)
+                                {
+                                    <option value="@item.Id">@item.SchoolLevel.Description  -  @item.EnrollmentYear</option>
+                                }
+                            </select>
+                            <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-12">
+                            <label for="">Matricular na Classe </label>
+                            <select class="form-control form-control-lg pb-3 pt-3" id="NewSchoolLevelId">
+
+                                @foreach (SimpleEntity item in ViewBag.FixCurrentSchoolLevels)
+                                {
+                                    <option value="@item.Id">@item.Description</option>
+                                }
+                            </select>
+                            <span asp-validation-for="CurrentSchoolLevelId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-12">
+                            <label for="">Turma / Grupo</label>
+                            <select class="form-control form-control-lg pb-3 pt-3" id="NewSchoolClassRoomId">
+
+                                @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
+                                {
+                                    <option value="@item.Id">@item.Description</option>
+                                }
+                            </select>
+                            <span asp-validation-for="SchoolClassRoomId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-12">
+                            <label for="">Ano</label>
+                            <select class="form-control form-control-lg pb-3 pt-3" id="NewEnrollmentYear">
+
+                                @foreach (var item in ViewBag.FixEnrollmentYears)
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                            </select>
+                            <span asp-validation-for="EnrollmentYear" class="text-danger " style="display:none">O campo Ano de inscrição  é obrigatório.</span>
+                        </div>
+                    </div>
+
+                    <div class="row form-inline mt-4 mb-4">
+
+                        <label for="chkInternal" class="mr-2 ml-4">É aluno interno?</label>
+                        <input type="checkbox" class="form-control" id="NewchkInternal" />
+
+                    </div>
+
+
+
+                </fieldset>
+            </div>
+
+
+
+
+            <fieldset class="border p-2">
+                <legend class="w-auto">Ações</legend>
+
+
+                <div id="fix_EnrollmentRepit_btns_repit">
+                    <div class="template-demo">
+                        <button type="button" class="btn btn-danger btn-icon-text" onclick="fixEnrollmentRepit()">
+                            Mudificar
+                        </button>
+                    </div>
+                </div>
+                <div id="fix_EnrollmentRepit_spinner_repit" style="display:none">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- Seu modal -->
 <div class="modal fade" id="EnrollmentRepitModal">
@@ -933,6 +1079,12 @@
             $("#form_EnrollmentRepit_spinner_repit").hide();
         }
 
+        function form_FixEnrollmentRepit_btns() {
+
+            $("#form_EnrollmentRepit_btns_repit").show();
+            $("#form_EnrollmentRepit_spinner_repit").hide();
+        }
+
 
         function DonloadEnrollmentInvoice(id) {
 
@@ -1125,6 +1277,62 @@
 
 
 
+
+        }
+
+        function fixEnrollmentRepit() {
+
+
+
+            var confirmacao = confirm("Tem certeza de que deseja prosseguir com a retificação da matrícula?");
+
+            if (confirmacao) {
+
+                var data = {
+                    StudantId: @Model.id,
+                    OldEnrollment: $("#OldEnrollment").val(),
+                    NewSchoolLevelId: $("#NewSchoolLevelId").val(),
+                    NewSchoolClassRoomId: $("#NewSchoolClassRoomId").val(),
+                    NewEnrollmentYear: $("#NewEnrollmentYear").val(),
+                    NewchkInternal: $("#NewchkInternal").prop("checked"),
+
+                };
+
+                console.log("data:", data)
+
+
+                $("#fix_EnrollmentRepit_btns_repit").hide();
+                $("#fix_EnrollmentRepit_spinner_repit").show();
+
+
+                $.ajax({
+                    url: "/Enrollment/Fix",
+                    type: "POST",
+                    data: data,
+                    success: function (result) {
+
+                        $("#fix_EnrollmentRepit_btns_repit").show();
+                        $("#fix_EnrollmentRepit_spinner_repit").hide();
+                        alert("Alteração da inscrição feita com sucesso !")
+                        $('#FixEnrollmentRepitModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function (error) {
+                        console.error('Erro ao Retificar a matricula:', error);
+
+                        $("#fix_EnrollmentRepit_btns_repit").show();
+                        $("#fix_EnrollmentRepit_spinner_repit").hide();
+                        $('#FixEnrollmentRepitModal').modal('hide');
+                    }
+                });
+
+            }
+            else {
+
+
+                $('#FixEnrollmentRepitModal').modal('hide');
+
+            }
 
         }
 
@@ -1357,7 +1565,7 @@
                 type: "GET",
                 data: data,
                 success: function (MyList) {
-                     
+
 
                     $("#PayAllTabelaIten tbody").empty();
                     $.each(MyList, function (index, item) {
@@ -1387,11 +1595,11 @@
 
             var checkbox = event.target;
             if (checkbox.checked) {
-                // Checkbox is checked 
+                // Checkbox is checked
                 TotalToPay = TotalToPay + itemId;
 
             } else {
-                // Checkbox is not checked 
+                // Checkbox is not checked
                 TotalToPay = TotalToPay - itemId;
 
             }
@@ -1405,7 +1613,7 @@
             // Exibir um diálogo de confirmação
             var userConfirmation = confirm("Tem certeza de que deseja prosseguir com o pagamento múltiplo?");
             var selectedIds = [];
-           
+
             // Verificar a resposta do usuário
             if (userConfirmation) {
 
@@ -1427,7 +1635,7 @@
 
 
                 });
-                 
+
 
                 $.ajax({
                     url: "/Tuition/CreateMultiPayment",
@@ -1442,6 +1650,7 @@
                         $("#btn_multipayments").show();
                         $("#spinner_multipayments").hide();
                         $('#multipayments').modal('hide');
+
                     },
                     error: function (error) {
                         console.error('Erro ao baixar o relatório:', error);
@@ -1450,7 +1659,7 @@
                         $("#spinner_multipayments").hide();
                     }
                 });
-                 
+
             } else {
 
 
@@ -1468,7 +1677,7 @@
             };
 
             {
-                 
+
             }
 
             $.ajax({
@@ -1485,7 +1694,7 @@
 
 
                         newRow.append("<td>" + item.monthName + "</td>");
-                        newRow.append("<td>" +  item.paymentDate + "</td>");
+                        newRow.append("<td>" + item.paymentDate + "</td>");
                         newRow.append("<td>" + item.paymentWithoutVat + ",00 MT" + "</td>");
                         newRow.append("<td>" + item.vatOfPayment + ",00 MT" + "</td>");
                         newRow.append("<td>" + item.paymentWithVat + ",00 MT" + "</td>");

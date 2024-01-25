@@ -73,15 +73,15 @@ namespace logic.systems.school.managment.Services
 
         public async Task<List<EnrollmentListDTO>> EnrollmentsByStudantId(EnrollmentCreateDTO model, string userId)
         {
- 
+
 
             var enrollment = await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId);
-             
+
 
             await _ITuitionService.CreateByClassOfStudant(await _StudentService.Read(model.StudantId), enrollment, userId);
             var student = await db.Students.FirstOrDefaultAsync(x => x.Id == model.StudantId);
             student.CurrentSchoolLevelId = model.SchoolLevelId;
-            await db.SaveChangesAsync(); 
+            await db.SaveChangesAsync();
 
             return await EnrollmentsByStudantId(model.StudantId);
         }
@@ -119,8 +119,7 @@ namespace logic.systems.school.managment.Services
 
 
         public async Task<bool> CheckIfHaveEnrollmentIntheYear(EnrollmentCreateDTO model)
-          => await db.Enrollments.AnyAsync(x => x.EnrollmentYear == model.EnrollmentYear && x.StudentId == model.StudantId); 
-       
+          => await db.Enrollments.AnyAsync(x => x.EnrollmentYear == model.EnrollmentYear && x.StudentId == model.StudantId);
 
 
 
@@ -129,7 +128,7 @@ namespace logic.systems.school.managment.Services
 
 
 
-        #region private Region
+
         private static async Task<string> getEnrollmentItems(List<EnrollmentItem> enrolemntItens)
         {
 
@@ -187,9 +186,6 @@ namespace logic.systems.school.managment.Services
                 // 12 - 4200 matricula   
                 #endregion
 
-               
-
-
                 switch (level.Description)
                 {
                     case "Pré-escola":
@@ -224,7 +220,7 @@ namespace logic.systems.school.managment.Services
                                     {
                                         Description = "Fichas",
                                         Price = 1000,
-                                    }, 
+                                    },
                                 }
                         };
                         break;
@@ -335,12 +331,12 @@ namespace logic.systems.school.managment.Services
                 {
                     enrollment.EnrollmentItems.Add(
                      new EnrollmentItem()
-                    {
-                        Description = "Caderneta e Pasta",
-                        Price = 750,
-                    });
+                     {
+                         Description = "Caderneta e Pasta",
+                         Price = 750,
+                     });
                 }
-             
+
 
                 return enrollment;
             }
@@ -351,10 +347,111 @@ namespace logic.systems.school.managment.Services
 
         }
 
+        public async Task DeleteParmanentyById(int Id)
+        {
+            try
+            {
+                var obj = await db.Enrollments.Include(x => x.EnrollmentItems).FirstOrDefaultAsync(x => x.Id == Id);
+
+                if (obj != null)
+                {
+                    var tuitions = await db.Tuitions.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
+                    if (tuitions.Count > 0)
+                    {
+                        db.Tuitions.RemoveRange(tuitions);
+                        await db.SaveChangesAsync();
+                    }
+
+                    var invoice = await db.EnrollmentInvoices.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
+                    if (invoice.Count > 0)
+                    {
+                        db.EnrollmentInvoices.RemoveRange(invoice);
+                        await db.SaveChangesAsync();
+                    }
+
+                    var payments = await db.PaymentEnrollments.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
+                    if (payments.Count > 0)
+                    {
+                        db.PaymentEnrollments.RemoveRange(payments);
+                        await db.SaveChangesAsync();
+                    }
+
+                    if (obj.EnrollmentItems != null && obj.EnrollmentItems.Count > 0)
+                    {
+                        var items = obj.EnrollmentItems.ToList();
+                        db.EnrollmentItems.RemoveRange(items);
+                        await db.SaveChangesAsync();
+                    }
+
+                    db.Enrollments.Remove(obj);
+                    await db.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Tratar a exceção aqui, como registrar ou lidar com ela de alguma forma apropriada para sua aplicação.
+                Console.WriteLine($"Ocorreu uma exceção: {ex.Message}");
+                // throw; // Pode ser removido ou mantido, dependendo da necessidade.
+            }
+
+            //try
+            //{
+            //    var obj = await db.Enrollments.FirstOrDefaultAsync(x => x.Id == Id);
+
+            //    if (obj is not null)
+            //    {
+            //        var tuitions = await db.Tuitions.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
+
+            //        if (tuitions.Count() > 0)
+            //        {
+            //            db.Tuitions.RemoveRange(tuitions);
+            //            await db.SaveChangesAsync();
+            //        }
+
+            //        var invoice = await db.EnrollmentInvoices.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
+            //        if (invoice.Count() > 0)
+            //        {
+            //            db.EnrollmentInvoices.RemoveRange(invoice);
+            //            await db.SaveChangesAsync();
+            //        }
+
+
+            //        var payments = await db.PaymentEnrollments.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
+            //        if (payments.Count() > 0)
+            //        {
+            //            db.PaymentEnrollments.RemoveRange(payments);
+            //            await db.SaveChangesAsync();
+            //        }
+
+            //        if (obj.EnrollmentItems.Count > 0)
+            //        {
+            //            var itens = obj.EnrollmentItems;
+            //            db.EnrollmentItems.RemoveRange(itens);
+            //            await db.SaveChangesAsync();
+            //        }
+
+
+            //        db.Enrollments.Remove(obj);
+            //        await db.SaveChangesAsync();
+            //    }
 
 
 
-        #endregion
+            //}
+            //catch (Exception ex)
+            //{
 
+            //    throw;
+            //    //}
+
+
+
+            //}
+
+
+
+
+        }
     }
+
 }

@@ -12,12 +12,16 @@ namespace logic.systems.school.managment.Controllers
     public class EnrollmentController : Controller
     {
         private IEnrollment _EnrollmentService;
+        private IstudantService _StudentService;
+        private ITuitionService _ITuitionService;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public EnrollmentController(IEnrollment enrollmentService, UserManager<IdentityUser> userManager)
+        public EnrollmentController(IstudantService StudentService, IEnrollment enrollmentService, UserManager<IdentityUser> userManager, ITuitionService iTuitionService)
         {
             _EnrollmentService = enrollmentService;
+            this._ITuitionService = iTuitionService;
             this._userManager = userManager;
+            this._StudentService = StudentService;
         }
         public async Task<IActionResult> Create(EnrollmentCreateDTO model)
         {
@@ -47,6 +51,33 @@ namespace logic.systems.school.managment.Controllers
             }
 
         }
-   
+
+        public async Task<IActionResult> Fix(FixEnrollmentDTO dto)
+        {
+
+            try
+            {
+                var currentUser = await _userManager.GetUserAsync(User);
+                // todo: apagar aquela matricula, criar outra kkkkk
+                await _EnrollmentService.DeleteParmanentyById(int.Parse(dto.OldEnrollment));
+
+                // tood: update student 
+                await _StudentService.UpdateEnrollment(dto, currentUser.Id);
+           
+                var Enrollment = await _EnrollmentService.EnrollmentByStudantId(dto.StudantId, int.Parse(dto.NewSchoolLevelId), int.Parse(dto.NewEnrollmentYear), int.Parse(dto.NewSchoolClassRoomId));
+                await _ITuitionService.CreateByClassOfStudant(await _StudentService.Read(dto.StudantId), Enrollment, currentUser.Id);
+
+
+                return Json("CheckIfHaveEnrollmentIntheYear");
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+         
+
+        }
+
     }
 }
