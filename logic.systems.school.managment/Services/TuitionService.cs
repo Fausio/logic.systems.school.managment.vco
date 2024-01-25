@@ -459,7 +459,7 @@ namespace logic.systems.school.managment.Services
                     item.VatOfPayment = VatCalc(item.PaymentWithoutVat);
                     item.PaymentWithVat = item.VatOfPayment + item.PaymentWithoutVat;
 
-                    await db.PaymentTuitions.AddAsync(item);
+                      db.PaymentTuitions.Update(item);
                     await db.SaveChangesAsync();
                 }
 
