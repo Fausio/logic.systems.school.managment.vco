@@ -343,26 +343,27 @@
 
                         @{
 
-                            if (!Model.Transferred)
+                            if (Model.Transferred)
                             {
-                                if (Model.Suspended)
-                                {
-                                    <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                        Matricular
-                                    </a>
-
-                                    <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                        Matrícular como repetente
-                                    </a>
 
 
 
- 
-                                   
-                                }
+                            }
+                            else
+                            if (!Model.Transferred  && Model.Suspended)
+                            {
+                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                    Matricular
+                                </a>
+
+                                <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                    Matrícular como repetente
+                                </a>
+
+
 
                                 var user = await userManager.GetUserAsync(User);
-
+                              
                                 if (user is not null)
                                 {
                                     if (user.Email == "admin@Kalimany.com")
@@ -372,20 +373,20 @@
                                         </a>
                                     }
 
-                                }
-                                    
-                                }
-                                else
-                                {
-                                    <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
-                                        Matricular
-                                    </a>
+                                } 
+                            }
+                            else if (!Model.Transferred && !Model.Suspended)
+                            {
+                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
+                                    Matricular
+                                </a>
 
-                                    <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
-                                        Matrícular como repetente
-                                    </a>
+                                <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
+                                    Matrícular como repetente
+                                </a>
 
-                                var user = await userManager.GetUserAsync(User);
+                                   var user = await userManager.GetUserAsync(User);
+                                
 
                                 if (user is not null)
                                 {
@@ -395,11 +396,10 @@
                                             Retificar Matricula
                                         </a>
                                     }
-
+                                
                                 }
 
-                                   
-                                }
+
                             }
 
                         }
@@ -1705,7 +1705,7 @@
                 StudantId: @Model.id,
                 EnrollmentYear: EnrollmentYear,
             };
-             
+
             $.ajax({
                 url: "/tuition/IndexPaymentByStudantId",
                 type: "GET",
