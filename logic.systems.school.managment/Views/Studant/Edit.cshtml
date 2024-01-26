@@ -1,4 +1,7 @@
-﻿@model logic.systems.school.managment.Dto.EditStudantDTO
+﻿@using Microsoft.AspNetCore.Identity;
+@model logic.systems.school.managment.Dto.EditStudantDTO
+@inject SignInManager<IdentityUser> signInManager
+@inject UserManager<IdentityUser> userManager
 
 @{
     ViewData["Title"] = "Actualizar estudante";
@@ -352,9 +355,25 @@
                                         Matrícular como repetente
                                     </a>
 
-                                    <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                        Retificar Matricula
-                                    </a>
+
+
+ 
+                                   
+                                }
+
+                                var user = await userManager.GetUserAsync(User);
+
+                                if (user is not null)
+                                {
+                                    if (user.Email == "admin@Kalimany.com")
+                                    {
+                                        <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                            Retificar Matricula
+                                        </a>
+                                    }
+
+                                }
+                                    
                                 }
                                 else
                                 {
@@ -366,9 +385,20 @@
                                         Matrícular como repetente
                                     </a>
 
-                                    <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#FixEnrollmentRepitModal" onclick="form_FixEnrollmentRepit_btns()">
-                                        Retificar Matricula
-                                    </a>
+                                var user = await userManager.GetUserAsync(User);
+
+                                if (user is not null)
+                                {
+                                    if (user.Email == "admin@Kalimany.com")
+                                    {
+                                        <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#FixEnrollmentRepitModal" onclick="form_FixEnrollmentRepit_btns()">
+                                            Retificar Matricula
+                                        </a>
+                                    }
+
+                                }
+
+                                   
                                 }
                             }
 
@@ -1675,11 +1705,7 @@
                 StudantId: @Model.id,
                 EnrollmentYear: EnrollmentYear,
             };
-
-            {
-
-            }
-
+             
             $.ajax({
                 url: "/tuition/IndexPaymentByStudantId",
                 type: "GET",
