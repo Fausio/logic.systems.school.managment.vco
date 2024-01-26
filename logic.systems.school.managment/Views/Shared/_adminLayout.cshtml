@@ -82,12 +82,12 @@
                             <span class="nav-profile-name" Utilizador </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                      @*       <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
-                                <i class="typcn typcn-cog text-info"></i>
-                                Meu perfil 
+                            @*       <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                            <i class="typcn typcn-cog text-info"></i>
+                            Meu perfil
                             </a> *@
                             <a class="dropdown-item">
-                                <i class="typcn typcn-power text-info"></i> 
+                                <i class="typcn typcn-power text-info"></i>
                                 <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                                     <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
                                 </form>
@@ -127,7 +127,7 @@
                                 }
 
 
-                              
+
                                 <p class="sidebar-designation">Bem-vindo</p>
 
 
@@ -211,7 +211,7 @@
                                     <a class="nav-link" asp-action="createdistrict" asp-controller="setting">
                                         Adicionar Distritos
                                     </a>
-                                </li> 
+                                </li>
                             </ul>
                         </div>
                     </li>
@@ -225,7 +225,7 @@
                     <li>
                         <center> <p class="sidebar-menu-title" style="color:white">versão 2.0.0.1</p></center>
                     </li>
-                    
+
                 </ul>
             </nav>
             <!-- partial -->

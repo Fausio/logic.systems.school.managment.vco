@@ -257,7 +257,6 @@ namespace logic.systems.school.managment.Services
 
                 await Update(result, updatedUser);
             }
-
            
         }
     }
