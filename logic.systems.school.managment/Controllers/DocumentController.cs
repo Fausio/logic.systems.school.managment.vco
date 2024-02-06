@@ -598,37 +598,35 @@ namespace logic.systems.school.managment.Controllers
 
 
             worksheet.Cell(1, 1).Value = Name;
-            worksheet.Cell(2, 1).Value = "Data de Emissão: " + DateTime.Now;
-            worksheet.Cell(3, 1).Value = "COOPERATIVA DE ENSINO KALIMANY";
-            worksheet.Cell(4, 1).Value = "Data inicial" + filters.StartDate + " - " + "Data final" + filters.EndDate;
+            worksheet.Cell(2, 1).Value = "Data de Emissão: " + results.EmissionDate;
+            worksheet.Cell(3, 1).Value = results.Site;
+            worksheet.Cell(4, 1).Value = "Data inicial" + results.StartDate + " - " + "Data final" + results.EndDate;
 
             for (int i = 1; i <= 4; i++)
             {
-                worksheet.Range(@$"A{i}" + ":" + @$"K{i}").Merge();
-                worksheet.Range(@$"A{i}" + ":" + @$"K{i}").Style.Font.SetBold();
-                worksheet.Range(@$"A{i}" + ":" + @$"K{i}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                worksheet.Range(@$"A{i}" + ":" + @$"K{i}").Style.Fill.BackgroundColor = bgColorHeader;
-                worksheet.Range(@$"A{i}" + ":" + @$"K{i}").Style.Font.FontColor = fontColorHeader;
+                worksheet.Range(@$"A{i}" + ":" + @$"E{i}").Merge();
+                worksheet.Range(@$"A{i}" + ":" + @$"E{i}").Style.Font.SetBold();
+                worksheet.Range(@$"A{i}" + ":" + @$"E{i}").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Range(@$"A{i}" + ":" + @$"E{i}").Style.Fill.BackgroundColor = bgColorHeader;
+                worksheet.Range(@$"A{i}" + ":" + @$"E{i}").Style.Font.FontColor = fontColorHeader;
+                worksheet.Column(i).AdjustToContents();
+
             }
 
-            worksheet.Cell(6, 1).Value = "Tipo";
-            worksheet.Cell(6, 2).Value = "Estudante";
-            worksheet.Cell(6, 3).Value = "Gênero";
-            worksheet.Cell(6, 4).Value = "Data de nascimento";
-            worksheet.Cell(6, 5).Value = "Idade";
-            worksheet.Cell(6, 6).Value = "Turma";
-            worksheet.Cell(6, 7).Value = "Classe do estudante";
-            worksheet.Cell(6, 8).Value = "Descrição";
-            worksheet.Cell(6, 9).Value = "Valor em Metical";
-            worksheet.Cell(6, 10).Value = "Iva";
-            worksheet.Cell(6, 11).Value = "Total com IVA (5%)";
+            worksheet.Cell(6, 1).Value = "NºR";
+            worksheet.Cell(6, 2).Value = "Nome";
+            worksheet.Cell(6, 3).Value = "Valor";
+            worksheet.Cell(6, 4).Value = "Iva (5%)";
+            worksheet.Cell(6, 5).Value = "Total";
+             
 
 
-            for (int i = 1; i <= 11; i++)
+            for (int i = 1; i <= 5; i++)
             {
                 worksheet.Cell(6, i).Style.Fill.BackgroundColor = bgColorHeader;
                 worksheet.Cell(6, i).Style.Font.FontColor = fontColorHeader;
                 worksheet.Cell(6, i).Style.Font.SetBold();
+                worksheet.Column(i).AdjustToContents();
             }
 
             worksheet.Cell(1, 1).Style.Font.SetBold();
@@ -646,49 +644,39 @@ namespace logic.systems.school.managment.Controllers
             decimal TotalVatOfMonthlyFee = 0;
             decimal TotalMonthlyFeeWithVat = 0;
 
-            foreach (var item in results)
+            foreach (var item in results.InvoiceLine)
             {
                 currentRow++;
 
-                worksheet.Cell(currentRow, 1).Value = item.Type;
-                worksheet.Cell(currentRow, 2).Value = item.StudendName;
-                worksheet.Cell(currentRow, 3).Value = item.StudendGender;
-                worksheet.Cell(currentRow, 4).Value = item.StudendBirthDate;
-                worksheet.Cell(currentRow, 5).Value = item.StudendAge;
-                worksheet.Cell(currentRow, 6).Value = item.StudentClassRoom;
-                worksheet.Cell(currentRow, 7).Value = item.StudentClassLevel;
-                worksheet.Cell(currentRow, 8).Value = item.MonthPaid;
-                worksheet.Cell(currentRow, 9).Value = item.MonthlyFeeWithoutVat;
-                worksheet.Cell(currentRow, 10).Value = item.VatOfMonthlyFee;
-                worksheet.Cell(currentRow, 11).Value = item.MonthlyFeeWithVat;
-
-
-                TotalMonthlyFeeWithoutVat = TotalMonthlyFeeWithoutVat + item.MonthlyFeeWithoutVat;
-                TotalVatOfMonthlyFee = TotalVatOfMonthlyFee + item.VatOfMonthlyFee;
-                TotalMonthlyFeeWithVat = TotalMonthlyFeeWithVat + item.MonthlyFeeWithVat;
-
+              worksheet.Cell(currentRow, 1).Value = item.InvoiceId;
+              worksheet.Cell(currentRow, 2).Value = item.Type;
+              worksheet.Cell(currentRow, 3).Value = item.InvoicePrice;
+              worksheet.Cell(currentRow, 4).Value = item.InvoiceVat;
+              worksheet.Cell(currentRow, 5).Value = item.InvoicePriceWithVat; 
+             
             }
 
             currentRow++;
 
-            worksheet.Range(@$"A{currentRow}" + ":" + @$"H{currentRow}").Merge();
-            worksheet.Range(@$"A{currentRow}" + ":" + @$"H{currentRow}").Style.Fill.BackgroundColor = bgColorHeader;
-            worksheet.Range(@$"A{currentRow}" + ":" + @$"H{currentRow}").Style.Font.FontColor = fontColorHeader;
+            worksheet.Range(@$"A{currentRow}" + ":" + @$"B{currentRow}").Merge();
+            worksheet.Range(@$"A{currentRow}" + ":" + @$"B{currentRow}").Style.Fill.BackgroundColor = bgColorHeader;
+            worksheet.Range(@$"A{currentRow}" + ":" + @$"B{currentRow}").Style.Font.FontColor = fontColorHeader;
 
             worksheet.Cell(currentRow, 1).Value = "TOTAL";
             worksheet.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Cell(currentRow, 1).Style.Font.SetBold();
 
-            worksheet.Cell(currentRow, 9).Value = TotalMonthlyFeeWithoutVat;
-            worksheet.Cell(currentRow, 10).Value = TotalVatOfMonthlyFee;
-            worksheet.Cell(currentRow, 11).Value = TotalMonthlyFeeWithVat;
+            worksheet.Cell(currentRow, 3).Value =  results.TotalInvoicePrice;
+            worksheet.Cell(currentRow, 4).Value = results.TotalInvoiceVat;
+            worksheet.Cell(currentRow, 5).Value = results.TotalInvoicePriceWithVat;
 
 
-            for (int i = 9; i <= 11; i++)
+            for (int i = 1; i <= 5; i++)
             {
                 worksheet.Cell(currentRow, i).Style.Font.SetBold();
                 worksheet.Cell(currentRow, i).Style.Fill.BackgroundColor = bgColorHeader;
                 worksheet.Cell(currentRow, i).Style.Font.FontColor = fontColorHeader;
+                worksheet.Column(i).AdjustToContents();
             }
 
             #endregion

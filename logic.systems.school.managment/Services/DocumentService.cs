@@ -46,134 +46,79 @@ namespace logic.systems.school.managment.Services
             return listOfResult;
         }
 
-        public async Task<List<PaymentTuitionListReportDTO>> GetPaymentTuitionList(DateTime? startDate, DateTime? endDate)
+        public async Task<AccountClosingReportDTO> GetPaymentTuitionList(DateTime? startDate, DateTime? endDate)
         {
             try
             {
 
 
 
-                var results = new List<PaymentTuitionListReportDTO>();
+                var results = new AccountClosingReportDTO()
+                {
 
-                var PaymentTuitionResult = (from t in db.Tuitions
-                                            join s in db.Students on t.StudentId equals s.Id
-                                            join classLevel in db.SimpleEntitys on s.CurrentSchoolLevelId equals classLevel.Id
-                                            join classroom in db.SimpleEntitys on s.SchoolClassRoomId equals classroom.Id
+                    EmissionDate = DateTime.Now,
+                    EndDate = endDate.Value,
+                    StartDate = startDate.Value,
+                    Site = "COOPERATIVA DE ENSINO KALIMANY",
+
+                };
+
+
+                var x = await db.Tuitions.Include(x => x.TuitionFines)
+                                         .ThenInclude(d => d.TuitionFineDailies)
+                                         .Where(x => x.Paid)
+                                         .ToListAsync();
+
+
+
+
+                var PaymentTuitionResult = (from t in db.Tuitions.Include(x => x.TuitionFines).ThenInclude(d => d.TuitionFineDailies)
                                             join p in db.PaymentTuitions on t.Id equals p.TuitionId
                                             where t.Paid == true && p.PaymentDate >= startDate && p.PaymentDate <= endDate
-                                            select new PaymentTuitionListReportDTO()
+                                            select new AccountClosingLineDTO()
                                             {
+                                                InvoiceId = t.Id,
                                                 Type = "Mensalidade",
-                                                StudendName = s.Name,
-                                                StudendBirthDate = s.BirthDate.ToString("dd/MM/yyyy"),
-                                                StudendAge = s.GetAgeInDay(),
-                                                StudendGender = s.Gender,
-                                                StudentClassRoom = classroom.Description,
-                                                StudentClassLevel = classLevel.Description,
-                                                MonthPaid = t.MonthNumber + " - " + t.MonthName + " - " + t.Year,
-                                                MonthlyFeeWithoutVat = p.PaymentWithoutVat,
-                                                VatOfMonthlyFee = p.VatOfPayment,
-                                                MonthlyFeeWithVat = p.PaymentWithVat,
-
-                                                PaymentDate = p.PaymentDate
-
+                                                InvoicePrice = p.PaymentWithoutVat +
+                                                                                                       (t.TuitionFines != null ? t.TuitionFines.FinesValue : 0) +
+                                                                                                       (t.TuitionFines != null && t.TuitionFines.TuitionFineDailies != null
+                                                                                                            ? t.TuitionFines.TuitionFineDailies.Sum(x => x.FinesValue)
+                                                                                                            : 0),
+                                                InvoiceVat = p.VatOfPayment,
+                                                InvoicePriceWithVat = p.PaymentWithVat +
+                                                                                                              (t.TuitionFines != null ? t.TuitionFines.FinesValue : 0) +
+                                                                                                              (t.TuitionFines != null && t.TuitionFines.TuitionFineDailies != null
+                                                                                                                   ? t.TuitionFines.TuitionFineDailies.Sum(x => x.FinesValue)
+                                                                                                                   : 0),
                                             }).ToList();
+
 
                 if (PaymentTuitionResult != null && PaymentTuitionResult.Count > 0)
                 {
-                    results.AddRange(PaymentTuitionResult);
+                    results.InvoiceLine.AddRange(PaymentTuitionResult);
                 }
 
-
-
-                var PaymentTuitionFeeResult = (from t in db.TuitionFines
-                                               join s in db.Students on t.Tuition.StudentId equals s.Id
-                                               join classLevel in db.SimpleEntitys on s.CurrentSchoolLevelId equals classLevel.Id
-                                               join classroom in db.SimpleEntitys on s.SchoolClassRoomId equals classroom.Id
-                                               join p in db.PaymentTuitions on t.Id equals p.TuitionId
-                                               where t.Paid == true && t.PaidDate >= startDate && t.PaidDate <= endDate
-                                               select new PaymentTuitionListReportDTO()
-                                               {
-                                                   Type = "Multa",
-                                                   StudendName = s.Name,
-                                                   StudendBirthDate = s.BirthDate.ToString("dd/MM/yyyy"),
-                                                   StudendAge = s.GetAgeInDay(),
-                                                   StudendGender = s.Gender,
-                                                   StudentClassRoom = classroom.Description,
-                                                   StudentClassLevel = classLevel.Description,
-                                                   MonthPaid = t.Tuition.MonthNumber + " - " + t.Tuition.MonthName + " - " + t.Tuition.Year,
-                                                   MonthlyFeeWithoutVat = t.FinesValue,
-                                                   VatOfMonthlyFee = 0,
-                                                   MonthlyFeeWithVat = t.FinesValue,
-                                                   PaymentDate = t.PaidDate.Value
-
-                                               }).ToList();
-
-                if (PaymentTuitionFeeResult != null && PaymentTuitionFeeResult.Count > 0)
-                {
-                    results.AddRange(PaymentTuitionFeeResult);
-                }
-
-                var PaymentEnrolResult = (from e in db.Enrollments
-                                          join pe in db.PaymentEnrollments on e.Id equals pe.EnrollmentId
-                                          join classLevel in db.SimpleEntitys on e.SchoolLevelId equals classLevel.Id
-                                          join classroom in db.SimpleEntitys on e.Student.SchoolClassRoomId equals classroom.Id
-                                          where pe.Paid == true && pe.PaymentDate >= startDate && pe.PaymentDate <= endDate
-                                          select new PaymentTuitionListReportDTO()
+                var PaymentEnrolResult = (from e in db.Enrollments.Include(x => x.EnrollmentItems).Include(x => x.PaymentEnrollment)
+                                          where e.PaymentEnrollment != null && e.PaymentEnrollment.Paid == true &&
+                                                e.PaymentEnrollment.PaymentDate >= startDate && e.PaymentEnrollment.PaymentDate <= endDate
+                                          select new AccountClosingLineDTO()
                                           {
+                                              InvoiceId = e.Id,
                                               Type = "Inscrição",
-                                              StudendName = e.Student.Name,
-                                              StudendBirthDate = e.Student.BirthDate.ToString("dd/MM/yyyy"),
-                                              StudendAge = e.Student.GetAgeInDay(),
-                                              StudendGender = e.Student.Gender,
-                                              StudentClassRoom = classroom.Description,
-                                              StudentClassLevel = classLevel.Description,
-                                              MonthPaid = "Inscrição de " + e.EnrollmentYear,
-                                              MonthlyFeeWithoutVat = pe.PaymentWithoutVat,
-                                              VatOfMonthlyFee = pe.VatOfPayment,
-                                              MonthlyFeeWithVat = pe.PaymentWithoutVat,
-
-                                              PaymentDate = pe.PaymentDate
+                                              InvoicePrice = e.PaymentEnrollment.PaymentWithoutVat +
+                                                             (e.EnrollmentItems != null ? e.EnrollmentItems.Sum(x => x.Price) : 0),
+                                              InvoiceVat = e.PaymentEnrollment.VatOfPayment,
+                                              InvoicePriceWithVat = e.PaymentEnrollment.PaymentWithoutVat +
+                                                                    (e.EnrollmentItems != null ? e.EnrollmentItems.Sum(x => x.Price) : 0),
                                           }).ToList();
+
 
 
                 if (PaymentEnrolResult != null && PaymentEnrolResult.Count > 0)
                 {
-                    results.AddRange(PaymentEnrolResult);
+                    results.InvoiceLine.AddRange(PaymentEnrolResult);
                 }
 
-
-                var PaymentEnrolItemsResult = (from e in db.Enrollments
-                                               join pe in db.PaymentEnrollments on e.Id equals pe.EnrollmentId
-                                               join classLevel in db.SimpleEntitys on e.SchoolLevelId equals classLevel.Id
-                                               join classroom in db.SimpleEntitys on e.Student.SchoolClassRoomId equals classroom.Id
-                                               where pe.Paid == true && pe.PaymentDate >= startDate && pe.PaymentDate <= endDate
-                                               from item in e.EnrollmentItems
-                                               select new PaymentTuitionListReportDTO()
-                                               {
-                                                   Type = "Item da Inscrição",
-                                                   StudendName = e.Student.Name,
-                                                   StudendBirthDate = e.Student.BirthDate.ToString("dd/MM/yyyy"),
-                                                   StudendAge = e.Student.GetAgeInDay(),
-                                                   StudendGender = e.Student.Gender,
-                                                   StudentClassRoom = classroom.Description,
-                                                   StudentClassLevel = classLevel.Description,
-                                                   MonthPaid = item.Description,
-                                                   MonthlyFeeWithoutVat = item.Price,
-                                                   VatOfMonthlyFee = 0,
-                                                   MonthlyFeeWithVat = item.Price,
-
-                                                   PaymentDate = pe.PaymentDate
-                                               }
-                                               ).ToList();
-
-
-                if (PaymentEnrolItemsResult != null && PaymentEnrolItemsResult.Count > 0)
-                {
-                    results.AddRange(PaymentEnrolItemsResult);
-                }
-
-                results = results.OrderBy(x => x.PaymentDate).ThenBy(x => x.StudendName).ToList();
 
                 return results;
             }
@@ -229,7 +174,7 @@ namespace logic.systems.school.managment.Services
                                                       )
                                                 .ToArrayAsync();
 
-                      
+
 
                         foreach (var t in Tuituins)
                         {
