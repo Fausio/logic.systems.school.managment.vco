@@ -17,7 +17,7 @@ namespace logic.systems.school.managment.Services
         {
             try
             {
-                Student student = await db.Students.FirstOrDefaultAsync(x => x.PersonId == PersonalId);
+                Student student = await db.Students.FirstOrDefaultAsync(x => x.PersonId == PersonalId && x.Row != Common.Deleted);
 
                 if (student is not null)
                 {
@@ -55,7 +55,10 @@ namespace logic.systems.school.managment.Services
             {
                 var model = await Read(modelID);
                 model.Row = Common.Deleted;
-                await Update(model, UpdatedById);
+                model.UpdatedUSer = UpdatedById;
+                model.UpdatedDate = DateTime.Now;
+                db.Students.Update(model);
+                await db.SaveChangesAsync();
 
             }
             catch (Exception)
@@ -63,6 +66,40 @@ namespace logic.systems.school.managment.Services
 
                 throw;
             }
+        }
+
+        public async Task Delete(DeleteStudentDTO dto, string userId)
+        {
+            try
+            {
+                var student = await Read(dto.studantId);
+
+                if (student is not null)
+                {
+                    await Delete(dto.studantId, userId);
+
+                    var audit = new Audit()
+                    {
+                        Id = 0,
+                        ActionReason = dto.reason,
+                        Action = Common.Deleted,
+                        StudentId = student.Id,
+                        CreatedUSer = userId,
+                        CreatedDate = DateTime.Now,
+
+                    };
+
+                    await db.Audits.AddAsync(audit);
+                    await db.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        
+             
         }
 
         public async Task<Student> Read(int modelID)
@@ -103,7 +140,12 @@ namespace logic.systems.school.managment.Services
             var models = new List<Student>();
 
 
-            models = await db.Students.Include(x => x.SchoolClassRoom).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).ThenInclude(x => x.TuitionFines).Include(x => x.CurrentSchoolLevel).Where(x => x.Row != Common.Deleted)
+            models = await db.Students.Include(x => x.SchoolClassRoom)
+                                      .Include(x => x.Enrollments)
+                                        .ThenInclude(x => x.Tuitions)
+                                        .ThenInclude(x => x.TuitionFines)
+                                      .Include(x => x.CurrentSchoolLevel)
+                                      .Where(x => x.Row != Common.Deleted)
                                          .Skip(skip)
                                          .Take(pageSize)
                                          .Select(u => new Student()

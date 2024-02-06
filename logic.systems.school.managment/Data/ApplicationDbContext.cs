@@ -66,6 +66,7 @@ namespace logic.systems.school.managment.Data
         public DbSet<TuitionInvoice> TuitionInvoices { get; set; }
         public DbSet<IdentityUser> IdentityUsers { get; set; }
         public DbSet<TuitionFineDaily> TuitionFineDailies { get; set; }
+  public DbSet<Audit> Audits { get; set; }
 
     }
 }

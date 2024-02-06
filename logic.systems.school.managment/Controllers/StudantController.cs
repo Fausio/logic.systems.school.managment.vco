@@ -364,5 +364,13 @@ namespace logic.systems.school.managment.Controllers
             ViewBag.Tuitions = Student.Enrollments.SelectMany(x => x.Tuitions.Where(x => !x.Paid));
             ViewBag.TuitionsFee = await _ITuitionService.GetByStudantIdFinesBy(Student.Id);
         }
+
+
+        public async Task<IActionResult> delete(DeleteStudentDTO dto)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            await _StudentService.Delete(dto, currentUser.Id);
+            return RedirectToAction("index");
+        }
     }
 }

@@ -394,61 +394,7 @@ namespace logic.systems.school.managment.Services
                 // throw; // Pode ser removido ou mantido, dependendo da necessidade.
             }
 
-            //try
-            //{
-            //    var obj = await db.Enrollments.FirstOrDefaultAsync(x => x.Id == Id);
-
-            //    if (obj is not null)
-            //    {
-            //        var tuitions = await db.Tuitions.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
-
-            //        if (tuitions.Count() > 0)
-            //        {
-            //            db.Tuitions.RemoveRange(tuitions);
-            //            await db.SaveChangesAsync();
-            //        }
-
-            //        var invoice = await db.EnrollmentInvoices.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
-            //        if (invoice.Count() > 0)
-            //        {
-            //            db.EnrollmentInvoices.RemoveRange(invoice);
-            //            await db.SaveChangesAsync();
-            //        }
-
-
-            //        var payments = await db.PaymentEnrollments.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
-            //        if (payments.Count() > 0)
-            //        {
-            //            db.PaymentEnrollments.RemoveRange(payments);
-            //            await db.SaveChangesAsync();
-            //        }
-
-            //        if (obj.EnrollmentItems.Count > 0)
-            //        {
-            //            var itens = obj.EnrollmentItems;
-            //            db.EnrollmentItems.RemoveRange(itens);
-            //            await db.SaveChangesAsync();
-            //        }
-
-
-            //        db.Enrollments.Remove(obj);
-            //        await db.SaveChangesAsync();
-            //    }
-
-
-
-            //}
-            //catch (Exception ex)
-            //{
-
-            //    throw;
-            //    //}
-
-
-
-            //}
-
-
+          
 
 
         }

@@ -118,7 +118,7 @@ namespace logic.systems.school.managment.Services
         {
             try
             {
-                return await db.Tuitions.Include(e => e.Enrollment.SchoolLevel).Where(x => x.StudentId == StudantId).ToListAsync();
+                return await db.Tuitions.Include(e => e.Enrollment.SchoolLevel).Where(x => x.StudentId == StudantId ).ToListAsync();
             }
             catch (Exception)
             {
@@ -171,7 +171,7 @@ namespace logic.systems.school.managment.Services
         {
             try
             {
-                var student = await db.Students.Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).FirstOrDefaultAsync(x => x.Id == studentId);
+                var student = await db.Students.Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).FirstOrDefaultAsync(x => x.Id == studentId && x.Row != Common.Deleted);
                 var listOfPaymentsClass = new List<TuitionPayment>();
                 var tuitions = student.Enrollments.SelectMany(x => x.Tuitions).Select(x => x.Id).ToList();
                 foreach (int item in tuitions)
@@ -250,7 +250,7 @@ namespace logic.systems.school.managment.Services
                     var studant = await db.Students.Include(x => x.Enrollments)
                                              .ThenInclude(x => x.Tuitions)
                                              .Include(x => x.CurrentSchoolLevel)
-                                             .FirstOrDefaultAsync(x => x.Id == dto.StudantId);
+                                             .FirstOrDefaultAsync(x => x.Id == dto.StudantId && x.Row != Common.Deleted);
 
                     var discount = (decimal)0;
 
@@ -440,7 +440,7 @@ namespace logic.systems.school.managment.Services
                 var studant = await db.Students.Include(x => x.Enrollments)
                                            .ThenInclude(x => x.Tuitions)
                                            .Include(x => x.CurrentSchoolLevel)
-                                           .FirstOrDefaultAsync(x => x.Id == item.Tuition.StudentId);
+                                           .FirstOrDefaultAsync(x => x.Id == item.Tuition.StudentId && x.Row != Common.Deleted);
 
                 var discount = (decimal)0; 
              

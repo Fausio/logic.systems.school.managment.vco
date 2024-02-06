@@ -10,5 +10,7 @@ namespace logic.systems.school.managment.Interface
         public Task<bool> CheckIfExists(string PersonalId);
         public Task Transfer(int id, string userId);
        public Task UpdateEnrollment(FixEnrollmentDTO dto, string updatedUser);
+
+        public Task Delete(DeleteStudentDTO dto, string userId);
     }
 }

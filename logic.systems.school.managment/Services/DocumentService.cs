@@ -79,6 +79,7 @@ namespace logic.systems.school.managment.Services
                                             {
                                                 InvoiceId = t.Id,
                                                 Type = "Mensalidade",
+                                                Student = t.Enrollment.Student.Name,
                                                 InvoicePrice = p.PaymentWithoutVat +
                                                                                                        (t.TuitionFines != null ? t.TuitionFines.FinesValue : 0) +
                                                                                                        (t.TuitionFines != null && t.TuitionFines.TuitionFineDailies != null
@@ -105,6 +106,7 @@ namespace logic.systems.school.managment.Services
                                           {
                                               InvoiceId = e.Id,
                                               Type = "Inscrição",
+                                              Student =e.Student.Name,
                                               InvoicePrice = e.PaymentEnrollment.PaymentWithoutVat +
                                                              (e.EnrollmentItems != null ? e.EnrollmentItems.Sum(x => x.Price) : 0),
                                               InvoiceVat = e.PaymentEnrollment.VatOfPayment,
