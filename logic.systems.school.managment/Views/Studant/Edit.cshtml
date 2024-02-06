@@ -127,7 +127,7 @@
                                     <td>Desconto :</td>
                                     <td>@Model.DiscountType </td>
                                 </tr>
-                              
+
                             </table>
                         </div>
                     </fieldset>
@@ -150,15 +150,15 @@
                                     <td>@Model.SponsorContacts[0]</td>
                                 </tr>
 
-                                
+
 
 
 
 
                             </table>
                         </div>
-                    </fieldset> 
-                 
+                    </fieldset>
+
                 </div>
             </div>
 
@@ -224,13 +224,13 @@
 
                                         if (!Model.Transferred)
                                         {
-                                                        <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
-                                                            Adicionar Pagamento de mensalidade
-                                                        </a>
+                                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
+                                                Adicionar Pagamento de mensalidade
+                                            </a>
 
-                                                        <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#multipayments" onclick="form_multi_pay_btns()">
-                                                            Adicionar Multiplus Pagamentos de mensalidade
-                                                        </a>
+                                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#multipayments" onclick="form_multi_pay_btns()">
+                                                Adicionar Multiplus Pagamentos de mensalidade
+                                            </a>
                                         }
 
                                     }
@@ -359,44 +359,44 @@
                             else
                             if (!Model.Transferred && Model.Suspended)
                             {
-                                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                                Matricular
-                                            </a>
+                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                    Matricular
+                                </a>
 
-                                            <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                                Matrícular como repetente
-                                            </a>
-                                 
+                                <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                    Matrícular como repetente
+                                </a>
+
 
                                 if (user is not null)
                                 {
                                     if (user.Email == "admin@Kalimany.com")
                                     {
-                                                    <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                                        Retificar Matricula
-                                                    </a>
+                                        <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                            Retificar Matricula
+                                        </a>
                                     }
 
                                 }
                             }
                             else if (!Model.Transferred && !Model.Suspended)
                             {
-                                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
-                                                Matricular
-                                            </a>
+                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
+                                    Matricular
+                                </a>
 
-                                            <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
-                                                Matrícular como repetente
-                                            </a>
+                                <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
+                                    Matrícular como repetente
+                                </a>
 
-                              
+
                                 if (user is not null)
                                 {
                                     if (user.Email == "admin@Kalimany.com")
                                     {
-                                                    <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#FixEnrollmentRepitModal" onclick="form_FixEnrollmentRepit_btns()">
-                                                        Retificar Matricula
-                                                    </a>
+                                        <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#FixEnrollmentRepitModal" onclick="form_FixEnrollmentRepit_btns()">
+                                            Retificar Matricula
+                                        </a>
                                     }
 
                                 }
@@ -448,26 +448,21 @@
 
                         if (!Model.Transferred)
                         {
-                                        <button class="btn btn-sm btn-warning btn-icon-text text-white" data-toggle="modal" data-target="#TransferModal" onclick="form_pay_btns()">
-                                            Transferir studante
-                                        </button>
+                            <button class="btn btn-sm btn-warning btn-icon-text text-white" data-toggle="modal" data-target="#TransferModal" onclick="form_pay_btns()">
+                                Transferir studante
+                            </button>
                         }
 
-                     
-                        if (user is not null)
-                        {
-                            if (user.Email == "admin@Kalimany.com")
-                            {
 
 
-                                            <a class="btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#DeleteStudent" onclick="form_FixEnrollmentRepit_btns()">
-                                                Apagar estudante
-                                            </a>
 
 
-                            }
+                        <a class="btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#DeleteStudent" onclick="form_FixEnrollmentRepit_btns()">
+                            Apagar estudante
+                        </a>
 
-                        }
+
+
                     }
 
                 </div>
@@ -492,15 +487,15 @@
                         @{
                             if (Model.CreatedUSer is not null && !string.IsNullOrEmpty(Model.CreatedUSer))
                             {
-                                            <li><strong>Criado por:</strong> @Model.CreatedUSer</li>
-                                            <li><strong>Data de Criação:</strong> @Model.CreatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
+                                <li><strong>Criado por:</strong> @Model.CreatedUSer</li>
+                                <li><strong>Data de Criação:</strong> @Model.CreatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
 
                             }
 
                             if (Model.UpdatedUSer is not null && !string.IsNullOrEmpty(Model.UpdatedUSer))
                             {
-                                            <li><strong>Actulizado por:</strong> @Model.UpdatedUSer</li>
-                                            <li><strong>Data de Actulização:</strong> @Model.UpdatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
+                                <li><strong>Actulizado por:</strong> @Model.UpdatedUSer</li>
+                                <li><strong>Data de Actulização:</strong> @Model.UpdatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
 
                             }
                         }
@@ -768,9 +763,11 @@
                     {
                         <p>Prezado  @user.Email</p>
                     }
-                    
-                    <p>Esta mensagem serve como um alerta importante sobre a exclusão de um estudante em nosso sistema. 
-                        Informamos que a ação que predente realizar será registrada para possíveis fins de auditoria de dados.</p>
+
+                    <p>
+                        Esta mensagem serve como um alerta importante sobre a exclusão de um estudante em nosso sistema.
+                        Informamos que a ação que predente realizar será registrada para possíveis fins de auditoria de dados.
+                    </p>
 
 
                     <p><strong>Detalhes da exclusão:</strong></p>
@@ -780,7 +777,7 @@
                         {
                             <li>Usuário responsável: @user.Email</li>
                         }
-                      
+
                         <li>Data e Hora da exclusão: @DateTime.Now</li>
                     </ul>
 
@@ -791,22 +788,22 @@
 
                     <p>Solicitamos que, por favor, forneça o motivo específico para a exclusão deste estudante. Essa informação é crucial para mantermos um registro adequado e entendermos os motivos por trás da ação realizada.</p>
 
-                     
-                
-                 
+
+
+
                 </fieldset>
-             
+
                 <fieldset class="border p-2">
                     <legend class="w-auto"> <strong>Motivo da Exclusão: </strong></legend>
-                     
+
                     <div class="form-row">
                         <div class="col-12">
                             <label for=""> Descrição:</label>
                             <textarea class="form-control form-control-lg  " id="deleteDiscription">
- 
-                            </textarea> 
+
+                            </textarea>
                         </div>
-                    </div>  
+                    </div>
 
                 </fieldset>
             </div>
@@ -1438,7 +1435,7 @@
 
         function GotoDeleteBen() {
 
-            var reasonDescription =$("#deleteDiscription").val();
+            var reasonDescription = $("#deleteDiscription").val();
 
             if (!reasonDescription || reasonDescription.trim() === "" || reasonDescription === null) {
                 alert("A descrição do Motivo da Exclusão é obrigatória.")
@@ -1463,22 +1460,22 @@
                     type: "POST",
                     data: data,
                     success: function (result) {
- 
+
                         alert("Exclusão feita com sucesso !")
                         window.location.href = "/Studant/Index";
                     },
                     error: function (error) {
 
-                        alert('Erro ao excluir estudante: '+ error)
+                        alert('Erro ao excluir estudante: ' + error)
 
                         $("#btnDelete").show();
                         $("#spinnerDelete").hide();
-                       
+
                     }
                 });
 
             } else {
-                 
+
                 $('#DeleteStudent').modal('hide');
 
             }
@@ -1502,7 +1499,7 @@
 
                 };
 
-                
+
                 $("#fix_EnrollmentRepit_btns_repit").hide();
                 $("#fix_EnrollmentRepit_spinner_repit").show();
 
