@@ -1,5 +1,6 @@
 ﻿using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
+using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,12 @@ namespace logic.systems.school.managment.Controllers
         public async Task<JsonResult> GetDistricts(int Id)
         {
             var result = await _IOrgUnitServiceService.GetOrgUnitDistrictsByProvinceId(Id);
+            return Json(result);
+        }
+   
+        public async Task<JsonResult> GetSubjects(int Id)
+        {
+            var result = await _SempleEntityService.GetSubjectsBySchoolLevel(Id);
             return Json(result);
         }
 

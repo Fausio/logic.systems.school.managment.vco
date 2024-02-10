@@ -1,4 +1,5 @@
-﻿using logic.systems.school.managment.Dto;
+﻿using DocumentFormat.OpenXml.Office.CustomUI;
+using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Models;
 
 namespace logic.systems.school.managment.Interface
@@ -11,5 +12,6 @@ namespace logic.systems.school.managment.Interface
         public Task<bool> CheckIfHaveEnrollmentIntheYear(EnrollmentCreateDTO model);
 
         public Task DeleteParmanentyById(int Id);
+ 
     }
 }

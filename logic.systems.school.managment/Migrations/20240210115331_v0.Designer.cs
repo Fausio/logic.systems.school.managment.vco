@@ -12,8 +12,8 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240210114720_qNumbrek")]
-    partial class qNumbrek
+    [Migration("20240210115331_v0")]
+    partial class v0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

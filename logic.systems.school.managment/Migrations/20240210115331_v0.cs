@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace logic.systems.school.managment.Migrations
 {
-    public partial class v1 : Migration
+    public partial class v0 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -46,6 +46,23 @@ namespace logic.systems.school.managment.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Audit",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ActionReason = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Audit", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -299,6 +316,9 @@ namespace logic.systems.school.managment.Migrations
                     SchoolClassRoomId = table.Column<int>(type: "int", nullable: false),
                     DistrictId = table.Column<int>(type: "int", nullable: false),
                     SponsorId = table.Column<int>(type: "int", nullable: false),
+                    Transferred = table.Column<bool>(type: "bit", nullable: false),
+                    Internal = table.Column<bool>(type: "bit", nullable: false),
+                    DiscountType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -449,6 +469,30 @@ namespace logic.systems.school.managment.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Quarter",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EnrollmentId = table.Column<int>(type: "int", nullable: true),
+                    Number = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Quarter", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Quarter_Enrollment_EnrollmentId",
+                        column: x => x.EnrollmentId,
+                        principalTable: "Enrollment",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tuition",
                 columns: table => new
                 {
@@ -477,6 +521,35 @@ namespace logic.systems.school.managment.Migrations
                         name: "FK_Tuition_Enrollment_EnrollmentId",
                         column: x => x.EnrollmentId,
                         principalTable: "Enrollment",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Assessment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SubjectId = table.Column<int>(type: "int", nullable: true),
+                    QuarterId = table.Column<int>(type: "int", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Assessment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Assessment_Quarter_QuarterId",
+                        column: x => x.QuarterId,
+                        principalTable: "Quarter",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Assessment_SimpleEntity_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "SimpleEntity",
                         principalColumn: "Id");
                 });
 
@@ -543,6 +616,61 @@ namespace logic.systems.school.managment.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Grade",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AssessmentId = table.Column<int>(type: "int", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Value = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Number = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Grade", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Grade_Assessment_AssessmentId",
+                        column: x => x.AssessmentId,
+                        principalTable: "Assessment",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TuitionFineDaily",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TuitionFineId = table.Column<int>(type: "int", nullable: false),
+                    Paid = table.Column<bool>(type: "bit", nullable: false),
+                    PaidDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FinesValue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    FinesDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TuitionFineDaily", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TuitionFineDaily_TuitionFine_TuitionFineId",
+                        column: x => x.TuitionFineId,
+                        principalTable: "TuitionFine",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -583,6 +711,16 @@ namespace logic.systems.school.managment.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Assessment_QuarterId",
+                table: "Assessment",
+                column: "QuarterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Assessment_SubjectId",
+                table: "Assessment",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Contacts_SponsorId",
                 table: "Contacts",
                 column: "SponsorId");
@@ -614,9 +752,19 @@ namespace logic.systems.school.managment.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Grade_AssessmentId",
+                table: "Grade",
+                column: "AssessmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrgUnitDistrict_OrgUnitProvinceId",
                 table: "OrgUnitDistrict",
                 column: "OrgUnitProvinceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quarter_EnrollmentId",
+                table: "Quarter",
+                column: "EnrollmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Student_CurrentSchoolLevelId",
@@ -650,6 +798,11 @@ namespace logic.systems.school.managment.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_TuitionFineDaily_TuitionFineId",
+                table: "TuitionFineDaily",
+                column: "TuitionFineId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TuitionPayment_TuitionId",
                 table: "TuitionPayment",
                 column: "TuitionId");
@@ -678,6 +831,9 @@ namespace logic.systems.school.managment.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Audit");
+
+            migrationBuilder.DropTable(
                 name: "Contacts");
 
             migrationBuilder.DropTable(
@@ -690,7 +846,10 @@ namespace logic.systems.school.managment.Migrations
                 name: "EnrollmentPayment");
 
             migrationBuilder.DropTable(
-                name: "TuitionFine");
+                name: "Grade");
+
+            migrationBuilder.DropTable(
+                name: "TuitionFineDaily");
 
             migrationBuilder.DropTable(
                 name: "TuitionPayment");
@@ -702,10 +861,19 @@ namespace logic.systems.school.managment.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Tuition");
+                name: "Assessment");
+
+            migrationBuilder.DropTable(
+                name: "TuitionFine");
 
             migrationBuilder.DropTable(
                 name: "TuitionInvoice");
+
+            migrationBuilder.DropTable(
+                name: "Quarter");
+
+            migrationBuilder.DropTable(
+                name: "Tuition");
 
             migrationBuilder.DropTable(
                 name: "Enrollment");
