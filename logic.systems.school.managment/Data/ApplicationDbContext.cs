@@ -68,5 +68,14 @@ namespace logic.systems.school.managment.Data
         public DbSet<TuitionFineDaily> TuitionFineDailies { get; set; }
   public DbSet<Audit> Audits { get; set; }
 
+
+
+
+
+
+
+  public DbSet<Assessment> Assessments { get; set; }
+  public DbSet<Quarter> Quarters { get; set; }
+
     }
 }
