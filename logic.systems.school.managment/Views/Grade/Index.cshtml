@@ -47,7 +47,7 @@
                         <div class="col-md-12">
                             <label for="">Classe</label>
                             <select class="form-control form-control-lg pb-3 pt-3" asp-for="ClassLevel" id="SchoolLevels">
-                                <option selected>...</option>
+                                <option selected>... selecione ...</option>
                                 @foreach (SimpleEntity item in ViewBag.SchoolLevels)
                                 {
                                     <option value="@item.Id">@item.Description</option>
@@ -61,7 +61,7 @@
                         <div class="col-md-12">
                             <label for="">Turma</label>
                             <select class="form-control form-control-lg pb-3 pt-3" asp-for="ClassRoom" id="SchoolClassRooms">
-                                <option selected>...</option>
+                                <option selected>... selecione ...</option>
                                 @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
                                 {
                                     <option value="@item.Id">@item.Description</option>
@@ -76,7 +76,7 @@
                         <div class="col-md-12">
                             <label for="">Disciplina</label>
                             <select class="form-control form-control-lg pb-3 pt-3" asp-for="Subject" id="Subjects">
-                                <option selected>...</option>
+                                <option selected>... selecione ...</option>
                                 @foreach (SimpleEntity item in ViewBag.Subjects)
                                 {
                                     <option value="@item.Id">@item.Description</option>
@@ -91,7 +91,7 @@
                         <div class="col-md-12">
                             <label for="">Trimestre</label>
                             <select class="form-control form-control-lg pb-3 pt-3" asp-for="Quarter" id="Quarter">
-                                <option selected>...</option>
+                                <option selected>... selecione ...</option>
                                 @foreach (var item in ViewBag.Quarters)
                                 {
                                     <option value="@item">@item</option>
@@ -126,7 +126,34 @@
 
                     
 @section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#submitBtn').on('click', function (e) {
+                // Prevent form submission
+                e.preventDefault();
 
+                // Reset previous error messages
+                $('.text-danger').text('');
+
+                // Flag to check if all dropdowns are selected
+                var isValid = true;
+
+                // Check each dropdown
+                $('.form-control').each(function () {
+                    if ($(this).val() === '... selecione ...') {
+                        // Set error message for the corresponding dropdown
+                        $(this).next('.text-danger').text('Please select a value.');
+                        isValid = false;
+                    }
+                });
+
+                // If all dropdowns are selected, submit the form
+                if (isValid) {
+                    $('form').submit();
+                }
+            });
+        });
+    </script>
     <script>
         $(document).ready(function () {
             $("#SchoolLevels").change(function () {
@@ -140,8 +167,8 @@
 
                         // Adiciona a opção padrão
                         $("#Subjects").append($('<option>', {
-                            value: '',
-                            text: '--- Selecione a Matéria ---', // Você pode alterar o texto conforme necessário
+                            value: '... selecione ...',
+                            text: '... selecione ...', // Você pode alterar o texto conforme necessário
                             selected: true // Define o atributo 'selected' como true
                         }));
 

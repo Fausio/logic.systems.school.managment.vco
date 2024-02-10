@@ -27,33 +27,40 @@ namespace logic.systems.school.managment.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create(GradeConfigDTO dto)
+        public async Task<IActionResult> Create(GradeConfigDTO param)
         {
-            ViewBag.GradeHeader = await GetGradeHeader(dto);
-
-            return View(new AssessmentCreateDTO()
-            {dto= dto,
-                Assessments = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectQuarter(dto)
-            });
+            
+                ViewBag.GradeHeader = await GetGradeHeader(param);
+                return View(new AssessmentCreateDTO()
+                {
+                    dto = param,
+                    Assessments = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectQuarter(param)
+                });
+         
         }
 
         [HttpPost]
-        public ActionResult Create(AssessmentCreateDTO CreateDTO)
+        public async Task<IActionResult> Create(AssessmentCreateDTO CreateDTO)
         {
-            ViewBag.GradeHeader =   GetGradeHeader(CreateDTO.dto).Result;
-            TempData["MensagemSucess"] = "Lançamento de notas bem-sucedida!";
-            ViewBag.Mensagem = TempData["MensagemSucess"];
-            return View(CreateDTO);
+            if (ModelState.IsValid)
+            {
+                ViewBag.GradeHeader = GetGradeHeader(CreateDTO.dto).Result;
+                TempData["MensagemSucess"] = "Lançamento de notas bem-sucedida!";
+                ViewBag.Mensagem = TempData["MensagemSucess"];
+                return View(CreateDTO);
+            }
+
+       //     return RedirectToAction("config", "Grade", new { dto = CreateDTO.dto });
+            return RedirectToAction("Config", "Grade", CreateDTO.dto);
         }
 
-        public async Task<IActionResult> Config(GradeConfigDTO dto)
+        public async Task<IActionResult> Config([FromQuery] GradeConfigDTO dto)
         {
             await ConfigView();
 
             if (ModelState.IsValid)
             {
-                string serializedDto = JsonConvert.SerializeObject(dto);
-                TempData["ConfigDTO"] = serializedDto;
+                string serializedDto = JsonConvert.SerializeObject(dto); 
                 return RedirectToAction("Create", "Grade");
             }
 
