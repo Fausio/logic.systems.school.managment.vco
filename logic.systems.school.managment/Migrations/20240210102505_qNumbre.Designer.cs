@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using logic.systems.school.managment.Data;
 
@@ -11,9 +12,10 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240210102505_qNumbre")]
+    partial class qNumbre
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -317,54 +319,6 @@ namespace logic.systems.school.managment.Migrations
                         .IsUnique();
 
                     b.ToTable("EnrollmentPayment");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.Grade", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("AssessmentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUSer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Row")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUSer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AssessmentId");
-
-                    b.ToTable("Grade");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.OrgUnitDistrict", b =>
@@ -1166,15 +1120,6 @@ namespace logic.systems.school.managment.Migrations
                     b.Navigation("Enrollment");
                 });
 
-            modelBuilder.Entity("logic.systems.school.managment.Models.Grade", b =>
-                {
-                    b.HasOne("logic.systems.school.managment.Models.Assessment", "Assessment")
-                        .WithMany("Grades")
-                        .HasForeignKey("AssessmentId");
-
-                    b.Navigation("Assessment");
-                });
-
             modelBuilder.Entity("logic.systems.school.managment.Models.OrgUnitDistrict", b =>
                 {
                     b.HasOne("logic.systems.school.managment.Models.OrgUnitProvince", "OrgUnitProvince")
@@ -1329,11 +1274,6 @@ namespace logic.systems.school.managment.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.Assessment", b =>
-                {
-                    b.Navigation("Grades");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.Enrollment", b =>

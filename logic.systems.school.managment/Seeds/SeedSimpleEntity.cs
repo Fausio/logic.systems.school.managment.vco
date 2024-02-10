@@ -56,25 +56,25 @@ namespace logic.systems.school.managment.Seeds
             {
                 List<SimpleEntity> schoolLevels = new List<SimpleEntity>
                 {
-                new SimpleEntity { Type = "Subject", Description = "Português" },
-                new SimpleEntity { Type = "Subject", Description = "Matemática" },
-                new SimpleEntity { Type = "Subject", Description = "Inglês" },
-                new SimpleEntity { Type = "Subject", Description = "Francês" },
-                new SimpleEntity { Type = "Subject", Description = "Educação física" },
-                new SimpleEntity { Type = "Subject", Description = "Ciências sociais" },
-                new SimpleEntity { Type = "Subject", Description = "Ciências naturais" },
-                new SimpleEntity { Type = "Subject", Description = "TIC's (Tecnologias da Informação e Comunicação)" },
-                new SimpleEntity { Type = "Subject", Description = "Educação visual & ofício" },
-                new SimpleEntity { Type = "Subject", Description = "História" },
-                new SimpleEntity { Type = "Subject", Description = "Geografia" },
-                new SimpleEntity { Type = "Subject", Description = "Biologia" },
-                new SimpleEntity { Type = "Subject", Description = "Noções de contabilidade" },
-                new SimpleEntity { Type = "Subject", Description = "Agropecuária" },
-                new SimpleEntity { Type = "Subject", Description = "Educação visual" },
-                new SimpleEntity { Type = "Subject", Description = "Química" },
-                new SimpleEntity { Type = "Subject", Description = "Física" },
-                new SimpleEntity { Type = "Subject", Description = "Filosofia" },
-                new SimpleEntity { Type = "Subject", Description = "Desenho geométrico descritivo" }
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Português" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Matemática" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Inglês" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Francês" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Educação física" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Ciências sociais" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Ciências naturais" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "TIC's (Tecnologias da Informação e Comunicação)" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Educação visual & ofício" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "História" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Geografia" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Biologia" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Noções de contabilidade" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Agropecuária" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Educação visual" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Química" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Física" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Filosofia" },
+                new SimpleEntity { Type = SimpleEntity.Type_Subject, Description = "Desenho geométrico descritivo" }
 
                 };
 

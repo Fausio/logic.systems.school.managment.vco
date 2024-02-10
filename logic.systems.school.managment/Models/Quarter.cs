@@ -8,10 +8,10 @@ namespace logic.systems.school.managment.Models
         public virtual Enrollment? Enrollment { get; set; }
         public int? EnrollmentId { get; set; }
 
-
+        public int Number { get; set; }
 
         // avaliacoes o numero depende de disciplinas
-        public List<Assessment> Assessments { get; set; }
+        public List<Assessment> Assessments { get; set; } = new List<Assessment>();
 
 
 

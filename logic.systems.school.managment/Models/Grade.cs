@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace logic.systems.school.managment.Models
 {
-    [Table("Assessment")]
+    [Table("Grade")]
     public class Grade : Common
     {
         public const string GradeType_ACS = "ACS";
@@ -13,6 +13,8 @@ namespace logic.systems.school.managment.Models
         public int? AssessmentId { get; set; } 
 
         public DateTime? Date { get; set; }
-        public decimal Value { get; set; }
+        public decimal Value { get; set; } 
+        public string Type { get; set; }
+        public int Number { get; set; }
     }
 }

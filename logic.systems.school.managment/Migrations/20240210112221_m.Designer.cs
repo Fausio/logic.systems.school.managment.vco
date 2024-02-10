@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using logic.systems.school.managment.Data;
 
@@ -11,9 +12,10 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240210112221_m")]
+    partial class m
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -339,9 +341,6 @@ namespace logic.systems.school.managment.Migrations
 
                     b.Property<DateTime?>("Date")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
 
                     b.Property<string>("Row")
                         .IsRequired()
@@ -1169,7 +1168,7 @@ namespace logic.systems.school.managment.Migrations
             modelBuilder.Entity("logic.systems.school.managment.Models.Grade", b =>
                 {
                     b.HasOne("logic.systems.school.managment.Models.Assessment", "Assessment")
-                        .WithMany("Grades")
+                        .WithMany("Grade")
                         .HasForeignKey("AssessmentId");
 
                     b.Navigation("Assessment");
@@ -1333,7 +1332,7 @@ namespace logic.systems.school.managment.Migrations
 
             modelBuilder.Entity("logic.systems.school.managment.Models.Assessment", b =>
                 {
-                    b.Navigation("Grades");
+                    b.Navigation("Grade");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.Enrollment", b =>

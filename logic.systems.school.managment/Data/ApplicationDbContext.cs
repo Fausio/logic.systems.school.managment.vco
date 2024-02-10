@@ -76,6 +76,7 @@ namespace logic.systems.school.managment.Data
 
   public DbSet<Assessment> Assessments { get; set; }
   public DbSet<Quarter> Quarters { get; set; }
+  public DbSet<Grade> Grades { get; set; }
 
     }
 }
