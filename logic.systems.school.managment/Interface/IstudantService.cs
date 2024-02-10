@@ -3,14 +3,13 @@ using logic.systems.school.managment.Models;
 
 namespace logic.systems.school.managment.Interface
 {
-    public interface IstudantService : ICRUD<Student>
+    public interface IGradeService : ICRUD<Grade>
     {
-        public Task<PaginationDTO<Student>> SearchRecord(string Name, int CurrentSchoolLevelId);
-
-        public Task<bool> CheckIfExists(string PersonalId);
-        public Task Transfer(int id, string userId);
-       public Task UpdateEnrollment(FixEnrollmentDTO dto, string updatedUser);
-
-        public Task Delete(DeleteStudentDTO dto, string userId);
+        public Task<PaginationDTO<Grade>> SearchRecord(string Name, int CurrentSchoolLevelId);
+         
+        public Task Create(List<Grade> models, string userId);
+        public Task<List<Assessment>> ReadAssessmentsByClassLevelClassRoomSubjectQuarter(
+           GradeConfigDTO dto 
+            );
     }
 }

@@ -48,6 +48,8 @@ builder.Services.AddScoped<IDashBoard, DashboardService>();
 builder.Services.AddScoped<IApp, AppService>();
 builder.Services.AddScoped<Idocument, DocumentService>();
 builder.Services.AddScoped<IEnrollment, EnrollmentService>();
+
+builder.Services.AddScoped<IGradeService, GradeService>();
 // Register DinkToPdf converter
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 

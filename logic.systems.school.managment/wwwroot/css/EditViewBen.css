@@ -65,3 +65,17 @@ fieldset {
     border-top: 1px solid #ddd; /* Adicionar borda superior */
     padding: 10px; /* Espaçamento interno do fieldset */
 }
+
+
+.gradeTable {
+    width: 100%;
+}
+.gradeTable-td {
+    width: 100%;
+}
+
+
+
+.nwrap  {
+    white-space: nowrap;
+}

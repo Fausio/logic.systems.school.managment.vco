@@ -213,7 +213,7 @@ namespace logic.systems.school.managment.Services
                         {
                             var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
                                                     q.Assessments.Add(
-                                                             new Assessment()
+                                                             new Assessment(true)
                                                              {
                                                                  CreatedUSer = userId,
                                                                  SubjectId = subjectId.Id
@@ -250,7 +250,7 @@ namespace logic.systems.school.managment.Services
                         {
                             var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
                            q.Assessments.Add(
-                                                             new Assessment()
+                                                             new Assessment(true)
                                                              {
                                                                  CreatedUSer = userId,
                                                                  SubjectId = subjectId.Id
@@ -291,7 +291,7 @@ namespace logic.systems.school.managment.Services
                         {
                             var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
                            q.Assessments.Add(
-                                                             new Assessment()
+                                                             new Assessment(true)
                                                              {
                                                                  CreatedUSer = userId,
                                                                  SubjectId = subjectId.Id
@@ -345,7 +345,7 @@ namespace logic.systems.school.managment.Services
                         {
                             var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
                            q.Assessments.Add(
-                                                             new Assessment()
+                                                             new Assessment(true)
                                                              {
                                                                  CreatedUSer = userId,
                                                                  SubjectId = subjectId.Id
@@ -400,7 +400,7 @@ namespace logic.systems.school.managment.Services
                         {
                             var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
                            q.Assessments.Add(
-                                                             new Assessment()
+                                                             new Assessment(true)
                                                              {
                                                                  CreatedUSer = userId,
                                                                  SubjectId = subjectId.Id
@@ -447,7 +447,7 @@ namespace logic.systems.school.managment.Services
                         {
                             var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
                            q.Assessments.Add(
-                                                             new Assessment()
+                                                             new Assessment(true)
                                                              {
                                                                  CreatedUSer = userId,
                                                                  SubjectId = subjectId.Id

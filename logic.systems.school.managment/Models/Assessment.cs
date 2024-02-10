@@ -8,38 +8,42 @@ namespace logic.systems.school.managment.Models
     public class Assessment : Common
     {
 
-
         public Assessment()
         {
-
-            Grades.AddRange(
-                   new List<Grade>()
-                    {
-                     new Grade()
-                       {
-                        Type = Grade.GradeType_ACS,
-                        Number = 1
-                       },
-                     new Grade()
-                       {
-                        Type = Grade.GradeType_ACS,
-                        Number = 2
-                       },
-                     new Grade()
-                       {
-                        Type = Grade.GradeType_ACS,
-                        Number = 3
-                       },
-                     new Grade()
-                       {
-                        Type = Grade.GradeType_AP,
-                        Number = 1
-                       },
-                    }
-           );
-
-
+                
         }
+
+        public Assessment(bool instanceWithGrade)
+         {
+         
+             Grades.AddRange(
+                    new List<Grade>()
+                     {
+                      new Grade()
+                        {
+                         Type = Grade.GradeType_ACS,
+                         Number = 1
+                        },
+                      new Grade()
+                        {
+                         Type = Grade.GradeType_ACS,
+                         Number = 2
+                        },
+                      new Grade()
+                        {
+                         Type = Grade.GradeType_ACS,
+                         Number = 3
+                        },
+                      new Grade()
+                        {
+                         Type = Grade.GradeType_AP,
+                         Number = 1
+                        },
+                     }
+            );
+         
+         
+         }
 
 
         public SimpleEntity? Subject { get; set; }
@@ -52,39 +56,24 @@ namespace logic.systems.school.managment.Models
 
 
 
+        public decimal GetACSAverage()
+        {
+            decimal totalACS = Grades.Where(x => x.Type == Grade.GradeType_ACS).Sum(x => x.Value);
+            return totalACS == 0 ? 0 : totalACS / 3;
+        }
 
-        // public Grade AP { get; set; } = new Grade();
-        //
-        // public void GetACSAverage()
-        // {
-        //     decimal TotalACS = 0;
-        //     foreach (var item in ACSs)
-        //     {
-        //         TotalACS = TotalACS + item.Value;
-        //     }
-        //
-        //     if (TotalACS == 0)
-        //     {
-        //         ACSAverage = 0;
-        //     }
-        //     else
-        //     {
-        //         ACSAverage = TotalACS / 3;
-        //     }
-        // }
-        //
-        // public void GetQuarterAverage()
-        // {
-        //     GetACSAverage();
-        //
-        //
-        //     if (AP.Value > 0 )
-        //     {
-        //         var result = (2 * ACSAverage + AP.Value) / 3;
-        //     }
-        //
-        //     
-        // }
+        public decimal GetQuarterAverage()
+        {
+            GetACSAverage();
+
+            var AP = Grades.FirstOrDefault(x => x.Type == Grade.GradeType_AP);
+
+            var Numerator = 2 * GetACSAverage() + (AP?.Value ?? 0);
+
+            return Numerator == 0 ? 0 : Numerator / 3;
+
+
+        }
 
 
     }

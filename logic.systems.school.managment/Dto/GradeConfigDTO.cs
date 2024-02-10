@@ -1,5 +1,5 @@
 ﻿namespace logic.systems.school.managment.Dto
-{
+{ 
     public class GradeConfigDTO
     {
         public int ClassLevel { get; set; }
