@@ -20,5 +20,15 @@ namespace logic.systems.school.managment.Models
 
         public int EnrollmentYear { get; set; }
         public int SchoolClassRoomId { get; set; }
+
+
+        public decimal GetYearQuartersAverage()
+        {
+            var Assessments = Quarter.SelectMany(a => a.Assessments).ToList(); 
+            decimal total = Assessments.Sum(x => x.GetQuarterAverage());
+            var result = Math.Round((total == 0 ? 0 : total / 3), 2);
+
+            return result;
+        }
     }
 }

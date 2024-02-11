@@ -11,5 +11,10 @@ namespace logic.systems.school.managment.Interface
         public Task<List<Assessment>> ReadAssessmentsByClassLevelClassRoomSubjectQuarter(
            GradeConfigDTO dto 
             );
+
+
+        public Task<List<Assessment>> ReadAssessmentsByClassLevelClassRoomSubjectYear(
+      GradeConfigDTO dto
+       );
     }
 }

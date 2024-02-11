@@ -25,6 +25,18 @@ namespace logic.systems.school.managment.Controllers
             await ConfigView();
             return View(new GradeConfigDTO());
         }
+        public async Task<IActionResult> YearView()
+        {
+            await ConfigView();
+            return View(new GradeConfigDTO());
+        }
+
+
+        public async Task<IActionResult> FilterYearView()
+        {
+            await ConfigView();
+            return View(new GradeConfigDTO());
+        }
 
         public async Task<IActionResult> Filter()
         {
@@ -33,6 +45,21 @@ namespace logic.systems.school.managment.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> YearViewGrade(GradeConfigDTO param)
+        {
+            await ConfigView();
+            ViewBag.Filter = new GradeConfigDTO();
+            ViewBag.GradeHeader = await GetGradeHeader(param);
+            return View(new AssessmentCreateDTO()
+            {
+                dto = param,
+                Assessments = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectYear(param)
+            });
+
+        }   
+        
+        
         [HttpGet]
         public async Task<IActionResult> Create(GradeConfigDTO param)
         {
@@ -73,6 +100,10 @@ namespace logic.systems.school.managment.Controllers
             ViewBag.SchoolClassRooms = await _SempleEntityService.GetByTypeOrderById("SchoolClassRoom");
             ViewBag.Subjects = await _SempleEntityService.GetByTypeOrderById("Subject");
             ViewBag.Quarters = new List<int>() { 1, 2, 3 };
+            ViewBag.EnrollmentYears = new List<int>{
+                     int.Parse(DateTime.Now.Year.ToString()),
+                      int.Parse(DateTime.Now.AddYears(-1).Year.ToString()),
+                 };
         }
 
         private async Task<GradeHeaderDTO> GetGradeHeader(GradeConfigDTO dto)
@@ -81,16 +112,17 @@ namespace logic.systems.school.managment.Controllers
             var SchoolLevel = await _SempleEntityService.GetById(dto.ClassLevel);
             var SchoolClassRoom = await _SempleEntityService.GetById(dto.ClassRoom);
             var Subject = await _SempleEntityService.GetById(dto.Subject);
-            var Quarter = dto.Quarter;
+           
 
 
 
             var dtoResult = new GradeHeaderDTO()
             {
-                ClassLevel = SchoolLevel.Description,
-                ClassRoom = SchoolClassRoom.Description,
-                Subject = Subject.Description,
-                Quarter = Quarter.ToString(),
+                ClassLevel = SchoolLevel == null ? "" : SchoolLevel.Description,
+                ClassRoom = SchoolClassRoom  == null ?  "": SchoolClassRoom.Description,
+                Subject = Subject == null ? "" : Subject.Description,
+                Quarter = dto.Quarter.ToString(),
+                EnrollmentYears = dto.EnrollmentYears.ToString()
             };
 
 

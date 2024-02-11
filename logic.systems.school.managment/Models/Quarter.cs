@@ -2,7 +2,7 @@
 
 namespace logic.systems.school.managment.Models
 {
-    [Table("Quarter")] 
+    [Table("Quarter")]
     public class Quarter : Common
     {
         public virtual Enrollment? Enrollment { get; set; }
@@ -15,7 +15,7 @@ namespace logic.systems.school.managment.Models
 
 
 
-
+       
 
     }
 }

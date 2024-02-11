@@ -39,7 +39,7 @@ namespace logic.systems.school.managment.Services
 
         public async Task<Grade> Read(int modelID) => await db.Grades.FirstOrDefaultAsync(x => x.Id == modelID);
 
-        public async Task<List<Assessment>> ReadAssessmentsByClassLevelClassRoomSubjectQuarter(GradeConfigDTO dto )
+        public async Task<List<Assessment>> ReadAssessmentsByClassLevelClassRoomSubjectYear(GradeConfigDTO dto )
         {
             var results = await db.Assessments
                                   .Include(g => g.Grades)
@@ -50,6 +50,28 @@ namespace logic.systems.school.managment.Services
                                        .ThenInclude(q => q.Student)
                                    .Where(
                                               x => x.Quarter.Enrollment.SchoolLevelId == dto.ClassLevel &&
+                                                   x.Quarter.Enrollment.EnrollmentYear == dto.EnrollmentYears && 
+                                                   x.Quarter.Enrollment.SchoolClassRoomId == dto.ClassRoom &&
+                                                   x.SubjectId == dto.Subject   
+                                          )
+                                   .ToListAsync();
+            
+
+
+
+            return results;
+        }  public async Task<List<Assessment>> ReadAssessmentsByClassLevelClassRoomSubjectQuarter(GradeConfigDTO dto )
+        {
+            var results = await db.Assessments
+                                  .Include(g => g.Grades)
+                                  .Include(s => s.Subject)
+                                 
+                                  .Include(q => q.Quarter)
+                                       .ThenInclude(q => q.Enrollment)
+                                       .ThenInclude(q => q.Student)
+                                   .Where(
+                                              x => x.Quarter.Enrollment.SchoolLevelId == dto.ClassLevel &&
+                                                   x.Quarter.Enrollment.EnrollmentYear == dto.EnrollmentYears && 
                                                    x.Quarter.Enrollment.SchoolClassRoomId == dto.ClassRoom &&
                                                    x.SubjectId == dto.Subject &&
                                                    x.Quarter.Number == dto.Quarter

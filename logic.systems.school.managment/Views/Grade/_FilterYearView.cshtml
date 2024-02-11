@@ -1,8 +1,8 @@
 ﻿@model logic.systems.school.managment.Dto.GradeConfigDTO
 
- 
+
 <!DOCTYPE html>
-<html >
+<html>
 <head>
     <link rel="stylesheet" href="~/css/EditViewBen.css" />
     <script src="~/js/jquery-3.6.4.min.js"></script>
@@ -11,7 +11,7 @@
 
 
 
-    <form asp-action="Create" asp-controller="grade" method="get" id="yourFormId">
+    <form asp-action="YearViewGrade" asp-controller="grade" method="get" id="yourFormId">
         <div class="col-lg-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
@@ -42,7 +42,6 @@
                                         <th><center>Classe       </center>             </th>
                                         <th><center>Turma     </center>             </th>
                                         <th><center>Disciplina      </center>             </th>
-                                        <th><center>Trimestre </center>             </th>
                                         <th><center>Ano </center>             </th>
                                     </tr>
                                 </thead>
@@ -88,19 +87,7 @@
                                                 <span asp-validation-for="Subject" class="text-danger"></span>
                                             </center>
                                         </td>
-
-                                        <td>
-                                            <center>
-                                                <select class="select-control" style=" width: 100%;" asp-for="Quarter" id="Quarter">
-                                                    <option selected>... selecione ...</option>
-                                                    @foreach (var item in ViewBag.Quarters)
-                                                    {
-                                                        <option value="@item">@item</option>
-                                                    }
-                                                </select>
-                                                <span asp-validation-for="Quarter" class="text-danger"></span>
-                                            </center>
-                                        </td>
+ 
                                         <td>
                                             <center>
                                                 <select class="select-control" style=" width: 100%;" asp-for="EnrollmentYears" id="EnrollmentYears">
@@ -119,7 +106,7 @@
                         </div>
 
                         <div class="template-demo pb-2 m-0">
-                            <button type="submit" class="btn btn-sm btn-info btn-icon-text"  id="submitBtn">
+                            <button type="submit" class="btn btn-sm btn-info btn-icon-text" id="submitBtn">
                                 ver notas
                             </button>
 
@@ -200,4 +187,3 @@
 
 
 
- 
