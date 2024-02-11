@@ -175,6 +175,9 @@
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#menu2" onclick="getEnrollments(@Model.id)">Matriculas</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#menu3" onclick="getEnrollments(@Model.id)">Material Escolar</a>
+                </li>
             </ul>
 
             <!-- Tab panes -->
@@ -292,10 +295,7 @@
 
 
                     </div>
-
-
-
-
+                     
                 </div>
                 <div id="menu1" class="tab-pane fade">
 
@@ -423,6 +423,65 @@
                                                 <th>Valor da matricula </th>
                                                 <th><b>Total:</b> (Valor da matricula + itens)</th>
                                                 <th>Recibo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Os itens da lista serão adicionados aqui -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="menu3" class="tab-pane fade">
+ 
+
+                    <div id="menu_3_info">
+
+                        @{
+
+                            if (Model.Transferred)
+                            {
+
+
+
+                            }
+                            else
+                            if (!Model.Transferred && Model.Suspended)
+                            {
+                               
+                                <a class="btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                    Vender Material escolar
+                                </a> 
+                            }
+                            else if (!Model.Transferred && !Model.Suspended)
+                            {
+
+
+                                <a class="btn btn-sm btn-success btn-icon-text text-white" asp-action="Create" asp-controller="Sales" asp-route-id="@Model.id">
+                                    Vender Material escolar
+                                </a>
+ 
+
+                            }
+
+                        }
+
+
+
+
+
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="MytabelaItens" id="ProductsTables" border="1">
+                                        <thead>
+                                            <tr>
+                                                <th>#Recibo</th>
+                                                <th>Descrição</th>
+                                                <th>Valor</th> 
+                                                <th>Açõoes</th>
                                             </tr>
                                         </thead>
                                         <tbody>

@@ -2,20 +2,20 @@
 
 namespace logic.systems.school.managment.Models
 {
-    [Table("TuitionInvoice")]
-    public class TuitionInvoice : Common
+    [Table("ProductInvoice")]
+    public class ProductInvoice : Invoice
     {
+
         public Invoice? Invoice { get; set; }
         public int? InvoiceId { get; set; }
 
         public DateTime Date { get; set; }
         public string Type { get; set; }
 
-        public TuitionInvoice()
+        public ProductInvoice()
         {
-            this.Type = "TuitionInvoice";
+            this.Type = "ProductInvoice";
             this.Date = DateTime.Now;
         }
-
     }
 }

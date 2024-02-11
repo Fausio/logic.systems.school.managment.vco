@@ -22,9 +22,7 @@ namespace logic.systems.school.managment.Controllers
         private ITuitionService _ITuitionService;
         private IEnrollment _IEnrollmentService;
         private IApp _IAppService;
-
-        // temp
-        private readonly ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
+         
 
         public StudantController(IstudantService StudentService,
             IOrgUnit IOrgUnitServiceService,
@@ -47,31 +45,7 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
-                #region temp fix
-                var currentUser = await _userManager.GetUserAsync(User);
-                var studentToSeedTuition = await db.Enrollments.Include(x => x.Student)
-                                                               .ThenInclude(x => x.CurrentSchoolLevel)
-                                                               .Include(x => x.Tuitions)
-                                                               .Include(x => x.SchoolLevel)
-                                                               .ToListAsync();
-
-
-                foreach (var item in studentToSeedTuition)
-                {
-                    if (item.Tuitions.Count <= 0)
-                    {
-
-
-                        if (item.SchoolLevel.Description == "Pré-escola")
-                        {
-                            await _ITuitionService.CreateByClassOfStudant(item.Student, item, currentUser.Id);
-                        }
-
-
-                    }
-                }
-
-                #endregion
+       
 
 
                 var result = await _StudentService.ReadPagenation(pageNumber.Value, pageSize.Value);

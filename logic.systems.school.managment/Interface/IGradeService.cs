@@ -12,5 +12,6 @@ namespace logic.systems.school.managment.Interface
        public Task UpdateEnrollment(FixEnrollmentDTO dto, string updatedUser);
 
         public Task Delete(DeleteStudentDTO dto, string userId);
+       public Task<List<Product>> ReadProducts();
     }
 }

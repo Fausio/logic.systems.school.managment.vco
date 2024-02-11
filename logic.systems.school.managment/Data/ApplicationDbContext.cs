@@ -66,17 +66,27 @@ namespace logic.systems.school.managment.Data
         public DbSet<TuitionInvoice> TuitionInvoices { get; set; }
         public DbSet<IdentityUser> IdentityUsers { get; set; }
         public DbSet<TuitionFineDaily> TuitionFineDailies { get; set; }
-  public DbSet<Audit> Audits { get; set; }
+        public DbSet<Audit> Audits { get; set; }
+
+
+         
+
+        public DbSet<Assessment> Assessments { get; set; }
+        public DbSet<Quarter> Quarters { get; set; }
+        public DbSet<Grade> Grades { get; set; }
 
 
 
 
+        public DbSet<ProductInvoice> ProductInvoices { get; set; }
+        public DbSet<ProductPayment> ProductPayments { get; set; }
+        public DbSet<Product> Products { get; set; }
+
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
 
 
-  public DbSet<Assessment> Assessments { get; set; }
-  public DbSet<Quarter> Quarters { get; set; }
-  public DbSet<Grade> Grades { get; set; }
 
     }
 }

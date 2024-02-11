@@ -41,6 +41,7 @@ namespace logic.systems.school.managment.Services
                     if (enrollment is not null)
                     {
                         var PaymentEnrollment = enrollment.PaymentEnrollment;
+                         
                         await db.Enrollments.AddAsync(enrollment);
                         await db.SaveChangesAsync();
 
@@ -51,7 +52,9 @@ namespace logic.systems.school.managment.Services
 
                         var invoice = new EnrollmentInvoice()
                         {
-                            EnrollmentId = enrollment.Id
+                            EnrollmentId = enrollment.Id,
+                            Invoice = new Invoice() { }
+                            
                         };
 
                         await db.EnrollmentInvoices.AddAsync(invoice);

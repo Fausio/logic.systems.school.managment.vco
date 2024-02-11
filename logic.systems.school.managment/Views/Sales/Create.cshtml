@@ -1,0 +1,142 @@
+﻿@model logic.systems.school.managment.Dto.SalesProductDTO
+<link rel="stylesheet" href="~/css/EditViewBen.css" />
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="studant">Detalhe do Estudante</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Materal escolar</li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0 pt-2">
+            <h2>Materal escolar</h2>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<form asp-action="Create" asp-controller="grade" method="get" id="yourFormId">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+
+
+                <fieldset class="border pt-0 mt-0 p-2 pb-0">
+                    <legend class="w-auto p-0 m-0 "> dados do estudante </legend>
+
+                    <div class="table-responsive  p-0 m-0">
+                        <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
+                            <thead>
+                                <tr>
+                                    <th><center>N#       </center> </th>
+                                    <th><center>Nome       </center> </th>
+                                    <th><center>classe     </center> </th>
+                                    <th><center>   Turma   </center> </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <center>
+                                            @Model.Student.Id
+                                        </center>
+                                    </td>
+
+                                    <td>
+                                        <center>
+                                            @Model.Student.Name
+                                        </center>
+                                    </td>
+
+                                    <td>
+                                        <center>
+                                            @Model.Student.CurrentSchoolLevel.Description
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            @Model.Student.SchoolClassRoom.Description
+                                        </center>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </fieldset>
+
+
+
+
+                <fieldset class="border p-2 ">
+                    <legend class="w-auto">Ações</legend>
+
+                    <a asp-action="edit" asp-controller="studant" asp-route-id="@Model.Student.Id" class="btn mt-0  btn-sm btn-light btn-icon-text">
+                        Voltar para detalhes
+                    </a>
+
+                </fieldset>
+
+
+
+
+                <fieldset class="border pt-0 mt-0 p-2 pb-0">
+                    <legend class="w-auto p-0 m-0 "> dados do estudante </legend>
+
+                    <div class="table-responsive  p-0 m-0">
+                        <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
+                            <thead>
+                                <tr>
+                                    <th><center> Material     </center> </th>
+                                    <th><center> Quantidade       </center> </th>
+
+                                    <th><center>       </center> </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+
+                                    <td>
+                                        <center>
+                                            <select class="select-control" style=" width: 100%;" id="SchoolLevels">
+                                                <option selected>... selecione ...</option>
+                                                @foreach (var item in Model.Products)
+                                                {
+                                                    <option value="@item.Id">@item.Description  @item.Price MT</option>
+                                                }
+                                            </select>
+                                            <span asp-validation-for="Products" class="text-danger"></span>
+                                        </center>
+                                    </td>
+
+                                    <td><input type="number" style=" width: 100%;" /></td>
+
+                                    <td>
+                                        <center>
+                                            <a   class="btn mt-0  btn-sm btn-success btn-icon-text">
+                                               Adicionar
+                                            </a>
+                                        </center>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </fieldset>
+
+            </div>
+        </div>
+    </div>
+
+
+</form>
+

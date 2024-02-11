@@ -49,6 +49,8 @@ builder.Services.AddScoped<IApp, AppService>();
 builder.Services.AddScoped<Idocument, DocumentService>();
 builder.Services.AddScoped<IEnrollment, EnrollmentService>();
 
+builder.Services.AddScoped<ISalesService, SalesService>();
+
 builder.Services.AddScoped<IGradeService, GradeService>();
 // Register DinkToPdf converter
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
@@ -153,5 +155,6 @@ using (var scope = app.Services.CreateScope())
 
 await SeedOrgUnit.Run();
 await SeedSimpleEntity.Run();
+await SeedProducts.Run();
 
 app.Run();

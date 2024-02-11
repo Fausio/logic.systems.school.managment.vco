@@ -283,7 +283,8 @@ namespace logic.systems.school.managment.Services
                         {
                             Date = payment.PaymentDate,
                             CreatedDate = nowTimeStep,
-                            CreatedUSer = userid
+                            CreatedUSer = userid,
+                            Invoice = new Invoice() { }
                         };
 
                         await db.TuitionInvoices.AddAsync(invoice);

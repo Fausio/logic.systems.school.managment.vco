@@ -66,6 +66,23 @@ namespace logic.systems.school.managment.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Invoice",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoice", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrgUnitProvince",
                 columns: table => new
                 {
@@ -81,6 +98,47 @@ namespace logic.systems.school.managment.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrgUnitProvince", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Paid = table.Column<bool>(type: "bit", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentWithoutVat = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    VatOfPayment = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PaymentWithVat = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payment", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Product",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Product", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -120,25 +178,6 @@ namespace logic.systems.school.managment.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sponsor", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TuitionInvoice",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TuitionInvoice", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -248,6 +287,55 @@ namespace logic.systems.school.managment.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductInvoice",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    InvoiceId = table.Column<int>(type: "int", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductInvoice", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductInvoice_Invoice_Id",
+                        column: x => x.Id,
+                        principalTable: "Invoice",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductInvoice_Invoice_InvoiceId",
+                        column: x => x.InvoiceId,
+                        principalTable: "Invoice",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TuitionInvoice",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    InvoiceId = table.Column<int>(type: "int", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TuitionInvoice", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TuitionInvoice_Invoice_InvoiceId",
+                        column: x => x.InvoiceId,
+                        principalTable: "Invoice",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrgUnitDistrict",
                 columns: table => new
                 {
@@ -268,6 +356,30 @@ namespace logic.systems.school.managment.Migrations
                         name: "FK_OrgUnitDistrict_OrgUnitProvince_OrgUnitProvinceId",
                         column: x => x.OrgUnitProvinceId,
                         principalTable: "OrgUnitProvince",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductPayment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductPayment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductPayment_Payment_Id",
+                        column: x => x.Id,
+                        principalTable: "Payment",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductPayment_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -395,13 +507,14 @@ namespace logic.systems.school.managment.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EnrollmentId = table.Column<int>(type: "int", nullable: false),
+                    InvoiceId = table.Column<int>(type: "int", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -412,6 +525,11 @@ namespace logic.systems.school.managment.Migrations
                         principalTable: "Enrollment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EnrollmentInvoice_Invoice_InvoiceId",
+                        column: x => x.InvoiceId,
+                        principalTable: "Invoice",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -443,19 +561,8 @@ namespace logic.systems.school.managment.Migrations
                 name: "EnrollmentPayment",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EnrollmentId = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Paid = table.Column<bool>(type: "bit", nullable: false),
-                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentWithoutVat = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    VatOfPayment = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PaymentWithVat = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    EnrollmentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -466,6 +573,11 @@ namespace logic.systems.school.managment.Migrations
                         principalTable: "Enrollment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EnrollmentPayment_Payment_Id",
+                        column: x => x.Id,
+                        principalTable: "Payment",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -584,24 +696,18 @@ namespace logic.systems.school.managment.Migrations
                 name: "TuitionPayment",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     TuitionId = table.Column<int>(type: "int", nullable: false),
-                    TuitionInvoiceId = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Row = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedUSer = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Paid = table.Column<bool>(type: "bit", nullable: false),
-                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentWithoutVat = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    VatOfPayment = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PaymentWithVat = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    TuitionInvoiceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TuitionPayment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TuitionPayment_Payment_Id",
+                        column: x => x.Id,
+                        principalTable: "Payment",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TuitionPayment_Tuition_TuitionId",
                         column: x => x.TuitionId,
@@ -741,6 +847,11 @@ namespace logic.systems.school.managment.Migrations
                 column: "EnrollmentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EnrollmentInvoice_InvoiceId",
+                table: "EnrollmentInvoice",
+                column: "InvoiceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EnrollmentItem_EnrollmentId",
                 table: "EnrollmentItem",
                 column: "EnrollmentId");
@@ -749,7 +860,8 @@ namespace logic.systems.school.managment.Migrations
                 name: "IX_EnrollmentPayment_EnrollmentId",
                 table: "EnrollmentPayment",
                 column: "EnrollmentId",
-                unique: true);
+                unique: true,
+                filter: "[EnrollmentId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Grade_AssessmentId",
@@ -760,6 +872,16 @@ namespace logic.systems.school.managment.Migrations
                 name: "IX_OrgUnitDistrict_OrgUnitProvinceId",
                 table: "OrgUnitDistrict",
                 column: "OrgUnitProvinceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductInvoice_InvoiceId",
+                table: "ProductInvoice",
+                column: "InvoiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductPayment_ProductId",
+                table: "ProductPayment",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Quarter_EnrollmentId",
@@ -801,6 +923,11 @@ namespace logic.systems.school.managment.Migrations
                 name: "IX_TuitionFineDaily_TuitionFineId",
                 table: "TuitionFineDaily",
                 column: "TuitionFineId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TuitionInvoice_InvoiceId",
+                table: "TuitionInvoice",
+                column: "InvoiceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TuitionPayment_TuitionId",
@@ -849,6 +976,12 @@ namespace logic.systems.school.managment.Migrations
                 name: "Grade");
 
             migrationBuilder.DropTable(
+                name: "ProductInvoice");
+
+            migrationBuilder.DropTable(
+                name: "ProductPayment");
+
+            migrationBuilder.DropTable(
                 name: "TuitionFineDaily");
 
             migrationBuilder.DropTable(
@@ -864,7 +997,13 @@ namespace logic.systems.school.managment.Migrations
                 name: "Assessment");
 
             migrationBuilder.DropTable(
+                name: "Product");
+
+            migrationBuilder.DropTable(
                 name: "TuitionFine");
+
+            migrationBuilder.DropTable(
+                name: "Payment");
 
             migrationBuilder.DropTable(
                 name: "TuitionInvoice");
@@ -874,6 +1013,9 @@ namespace logic.systems.school.managment.Migrations
 
             migrationBuilder.DropTable(
                 name: "Tuition");
+
+            migrationBuilder.DropTable(
+                name: "Invoice");
 
             migrationBuilder.DropTable(
                 name: "Enrollment");
