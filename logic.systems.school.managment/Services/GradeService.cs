@@ -21,10 +21,19 @@ namespace logic.systems.school.managment.Services
                 model.UpdatedUSer = userId;
                 model.Value = item.Value;
                 listOfGrades.Add(model); 
+
+                var assessment = await db.Assessments.FirstOrDefaultAsync( x => x.Id == item.AssessmentId);
+                assessment.UpdatedDate = DateTime.Now; 
+                assessment.UpdatedUSer = userId;
+                db.Assessments.Update(assessment);
+
             }
 
             db.Grades.UpdateRange(listOfGrades);
             await db.SaveChangesAsync();
+
+
+            
         }
 
         public Task<Grade> Create(Grade model, string CreatedById)

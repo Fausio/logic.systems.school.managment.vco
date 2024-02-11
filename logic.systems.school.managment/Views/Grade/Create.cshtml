@@ -28,7 +28,7 @@
 
             @if (Model.Assessments.Count <= 0)
             {
-                <div class="alert alert-warning mb-0 pb-0 mt-0 pt-0" role="alert" id="msg-summary"  >
+                <div class="alert alert-warning mb-0 pb-0 mt-0 pt-0" role="alert" id="msg-summary">
                     <p><center><strong>Sem dados para o filtro escolhido</strong></center></p>
                 </div>
 
@@ -105,6 +105,7 @@
                                     <input type="hidden" asp-for="@Model.dto.ClassRoom" value="@Model.dto.ClassRoom" />
                                     <input type="hidden" asp-for="@Model.dto.Subject" value="@Model.dto.Subject" />
                                     <input type="hidden" asp-for="@Model.dto.Quarter" value="@Model.dto.Quarter" />
+                                    <input type="hidden" asp-for="@Model.dto.EnrollmentYears" value="@Model.dto.EnrollmentYears" />
 
                                     @for (int i = 0; i < Model.Assessments.Count; i++)
                                     {
@@ -165,7 +166,54 @@
 
 
 
+<div class="card">
+    <div class="card-body ">
+        <div class="row justify-content-end">
+            <div class="col-12 text-right">
+                <!-- Conteúdo da sua div aqui -->
+                <fieldset class="p-2">
+                    <legend class="w-auto">Dados de Auditoria</legend>
+                    <ul class="list-unstyled  ">
 
+
+                        @{
+                            if (ViewBag.CreatedUSer is not null && !string.IsNullOrEmpty(ViewBag.CreatedUSer))
+                            {
+                                <li><strong>Criado por:</strong> @ViewBag.CreatedUSer</li>
+                                if (ViewBag.CreatedDate is not null)
+                                {
+                                    <li><strong>Data de Criação:</strong> @ViewBag.CreatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
+
+                                }
+
+                            }
+
+
+
+                            if (ViewBag.UpdatedUSer is not null && !string.IsNullOrEmpty(ViewBag.UpdatedUSer))
+                            {
+                                <li><strong>Actulizado por:</strong> @ViewBag.UpdatedUSer</li>
+
+                                if (ViewBag.UpdatedDate is not null)
+                                {
+                                    <li><strong>Data de Actulização:</strong> @ViewBag.UpdatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
+
+                                }
+                            
+                            }
+                        }
+
+
+
+
+                    </ul>
+                </fieldset>
+
+
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script>

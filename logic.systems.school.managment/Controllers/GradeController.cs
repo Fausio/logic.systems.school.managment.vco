@@ -57,19 +57,22 @@ namespace logic.systems.school.managment.Controllers
                 Assessments = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectYear(param)
             });
 
-        }   
-        
-        
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> Create(GradeConfigDTO param)
         {
             await ConfigView();
             ViewBag.Filter = new GradeConfigDTO();
             ViewBag.GradeHeader = await GetGradeHeader(param);
+            var data = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectQuarter(param);
+
+            await GetAuditData(data[0]);
             return View(new AssessmentCreateDTO()
             {
                 dto = param,
-                Assessments = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectQuarter(param)
+                Assessments = data
             });
 
         }
@@ -77,14 +80,15 @@ namespace logic.systems.school.managment.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(AssessmentCreateDTO CreateDTO)
         {
-
+            ViewBag.Filter = CreateDTO.dto;
             ViewBag.GradeHeader = GetGradeHeader(CreateDTO.dto).Result;
             await ConfigView();
             var currentUser = await _userManager.GetUserAsync(User);
             await _IGradeService.Create(CreateDTO.Assessments.SelectMany(x => x.Grades).ToList(), currentUser.Id);
             TempData["MensagemSucess"] = "Lançamento de notas bem-sucedida!";
-            ViewBag.Mensagem = TempData["MensagemSucess"]; 
+            ViewBag.Mensagem = TempData["MensagemSucess"];
             CreateDTO.Assessments = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectQuarter(CreateDTO.dto);
+            await GetAuditData(CreateDTO.Assessments[0]);
             return View(CreateDTO);
 
 
@@ -112,14 +116,14 @@ namespace logic.systems.school.managment.Controllers
             var SchoolLevel = await _SempleEntityService.GetById(dto.ClassLevel);
             var SchoolClassRoom = await _SempleEntityService.GetById(dto.ClassRoom);
             var Subject = await _SempleEntityService.GetById(dto.Subject);
-           
+
 
 
 
             var dtoResult = new GradeHeaderDTO()
             {
                 ClassLevel = SchoolLevel == null ? "" : SchoolLevel.Description,
-                ClassRoom = SchoolClassRoom  == null ?  "": SchoolClassRoom.Description,
+                ClassRoom = SchoolClassRoom == null ? "" : SchoolClassRoom.Description,
                 Subject = Subject == null ? "" : Subject.Description,
                 Quarter = dto.Quarter.ToString(),
                 EnrollmentYears = dto.EnrollmentYears.ToString()
@@ -128,6 +132,35 @@ namespace logic.systems.school.managment.Controllers
 
             return dtoResult;
         }
+
+        private async Task GetAuditData(Assessment data)
+        {
+            if (data is not null)
+            {
+                ViewBag.CreatedDate = data.CreatedDate;
+                ViewBag.CreatedUSer = "logicsystems.co.mz";
+
+
+                var createdUser = await _userManager.FindByIdAsync(data.CreatedUSer);
+                if (createdUser is not null)
+                {
+                    ViewBag.CreatedUSer = createdUser.UserName;
+                }
+
+
+
+
+                if (data.UpdatedDate is not null)
+                {
+                    var updatedUser = await _userManager.FindByIdAsync(data.UpdatedUSer);
+
+                    if (updatedUser is not null)
+                    {
+                        ViewBag.UpdatedUSer = updatedUser.UserName;
+                        ViewBag.UpdatedDate = data.UpdatedDate.Value;
+                    }
+                }
+            }
+        }
     }
 }
- 

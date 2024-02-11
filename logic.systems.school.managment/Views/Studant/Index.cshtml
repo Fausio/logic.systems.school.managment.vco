@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Estudantes";
 }
+<link rel="stylesheet" href="~/css/EditViewBen.css" />
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -11,11 +12,11 @@
     </ol>
 </nav>
 
-<form asp-action="search" asp-controller="studant" > 
-<div class="col-lg-12 grid-margin stretch-card">
-    <div class="card">
-        <div class="card-body pb-0">
-            <div class="row">
+<form asp-action="search" asp-controller="studant">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body pb-0">
+                <div class="row">
                     <div class="col-md-4 col-sm-6">
                         <div class="form-group">
                             <div class="input-group">
@@ -24,134 +25,219 @@
                             </div>
                         </div>
                     </div>
-                <div class="col-md-4 col-sm-6">
-                    <div class="form-group">
-                        <div class="input-group">
-                           
-                                <select class="form-control form-control-lg pb-3 pt-2" asp-for="CurrentSchoolLevelId"  >
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <div class="input-group">
+
+                                <select class="form-control form-control-lg pb-3 pt-2" asp-for="CurrentSchoolLevelId">
                                     <option selected>... Filtrar pela classe do estudante</option>
                                     @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
                                     {
                                         <option value="@item.Id">@item.Description</option>
                                     }
-                                </select> 
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </div>  
-             
-                <div class="col-md-4 col-sm-6">
-                    <button type="submit" class="btn btn-info btn-icon-text" >
-                       Pesquisar
-                    </button>
-                </div>
-            </div>
 
+                    <div class="col-md-4 col-sm-6">
+                        <button type="submit" class="btn  btn-sm btn-info btn-icon-text">
+                            Pesquisar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
-</div>
 </form>
 
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body pb-0">
-            
+
             <div class="row">
                 <div class="col-auto mr-auto">
                     <h4 class="card-title">Lista</h4>
                     <p class="card-description">   estudantes  </p>
                 </div>
                 <div class="col-auto">
-                    
-                        <a type="button" class="btn btn-info btn-icon-text" asp-action="create" asp-controller="studant">
-                            Cadastrar novo estudante
-                        </a>
-                    
+
+                    <a type="button" class="btn  btn-sm btn-info btn-icon-text" asp-action="create" asp-controller="studant">
+                        Cadastrar novo estudante
+                    </a>
+
                 </div>
             </div>
-           
 
-            <div class="table-responsive">
-                <table class="table table-hover">
 
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Estudante</th>
-                            <th scope="col">Classe actual</th>
-                            <th scope="col">Turma </th>
-                            <th scope="col">Tem multa ?</th>
-                            <th scope="col">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <fieldset class="border pt-0 mt-0 p-2 pb-0">
+                <legend class="w-auto p-0 m-0 ">Filtro </legend>
 
-                        @foreach (var item in Model.indexPage.records)
-                        {
+                <div class="table-responsive  p-0 m-0">
+                    <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
+                        <thead>
+
                             <tr>
-                                <th scope="row">
-                                
-                                        @item.Id
-                                
-                                </th>
-                                <td>
-                                    <a asp-action="edit" asp-controller="studant" asp-route-id="@item.Id"> 
-                                        @item.Name
-                                    </a>
-                                </td>
-                                <td>@item.CurrentSchoolLevel.Description</td>
-                                <td>@item.SchoolClassRoom.Description</td>
-                                <td>
-                                    @if (item.haveFee)
-                                    {
-                                        <label class="badge badge-danger">Sim</label>
-                                    }
-                                    else
-                                    {
-                                        <label class="badge badge-success">Não</label>
-                                    }
-                                </td>
-                                <td>
 
-                                     
+                                <th scope="col"><center> #                </center>      </th>
+                                <th scope="col"><center> Estudante        </center>  </th>
+                                <th scope="col"><center> Classe actual    </center>      </th>
+                                <th scope="col"><center> Turma            </center>  </th>
+                                <th scope="col"><center> Tem multa ?      </center>      </th>
+                                <th scope="col"><center> Estado           </center>      </th>
 
-                                        @if (!item.Transferred)
-                                        {
-                                            if (item.Suspended)
+                            </tr>
+
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.indexPage.records)
+                            {
+                                <tr>
+                                    <td scope="row">
+
+                                        <center>   @item.Id </center>
+
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <a asp-action="edit" asp-controller="studant" asp-route-id="@item.Id">
+                                                @item.Name
+                                            </a>
+                                        </center>
+
+                                    </td>
+                                    <td><center>  @item.CurrentSchoolLevel.Description   </center>  </td>
+                                    <td><center>  @item.SchoolClassRoom.Description      </center>  </td>
+                                    <td>
+                                        <center>
+                                            @if (item.haveFee)
                                             {
-                                                <label class="badge badge-danger">Suspenso</label>
+                                                <label class="badge badge-danger">Sim</label>
                                             }
                                             else
                                             {
-                                                <label class="badge badge-success">Resolvido</label>
+                                                <label class="badge badge-success">Não</label>
                                             }
-                                        }
-                                        else
-                                        {
-                                            <label class="badge badge-warning text-white">Transferido</label>
-                                        }
+                                        </center>
 
-                                  
+                                    </td>
+                                    <td>
+                                        <center>
+                                            @if (!item.Transferred)
+                                            {
+                                                if (item.Suspended)
+                                                {
+                                                    <label class="badge badge-danger">Suspenso</label>
+                                                }
+                                                else
+                                                {
+                                                    <label class="badge badge-success">Resolvido</label>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <label class="badge badge-warning text-white">Transferido</label>
+                                            }
+                                        </center>
 
 
-                                   
+                                    </td>
+                                </tr>
+                            }
 
 
-                                </td>
-                            </tr>
-                        }
+                        </tbody>
+                    </table>
+                </div>
+
+            </fieldset>
 
 
-                    </tbody>
-                </table>
-                 
+            @*
+            <div class="table-responsive">
+            <table class="table table-hover">
 
-            </div>
+            <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Estudante</th>
+            <th scope="col">Classe actual</th>
+            <th scope="col">Turma </th>
+            <th scope="col">Tem multa ?</th>
+            <th scope="col">Estado</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            @foreach (var item in Model.indexPage.records)
+            {
+            <tr>
+            <th scope="row">
+
+            @item.Id
+
+            </th>
+            <td>
+            <a asp-action="edit" asp-controller="studant" asp-route-id="@item.Id">
+            @item.Name
+            </a>
+            </td>
+            <td>@item.CurrentSchoolLevel.Description</td>
+            <td>@item.SchoolClassRoom.Description</td>
+            <td>
+            @if (item.haveFee)
+            {
+            <label class="badge badge-danger">Sim</label>
+            }
+            else
+            {
+            <label class="badge badge-success">Não</label>
+            }
+            </td>
+            <td>
+
+
+
+            @if (!item.Transferred)
+            {
+            if (item.Suspended)
+            {
+            <label class="badge badge-danger">Suspenso</label>
+            }
+            else
+            {
+            <label class="badge badge-success">Resolvido</label>
+            }
+            }
+            else
+            {
+            <label class="badge badge-warning text-white">Transferido</label>
+            }
+
+
+
+
+
+
+
+            </td>
+            </tr>
+            }
+
+
+            </tbody>
+            </table>
+
+
+            </div> *@
 
 
         </div>
     </div>
 </div>
- 
+
 
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
