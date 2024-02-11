@@ -10,15 +10,15 @@ namespace logic.systems.school.managment.Models
 
         public Assessment()
         {
-                
+
         }
 
         public Assessment(bool instanceWithGrade)
-         {
-         
-             Grades.AddRange(
-                    new List<Grade>()
-                     {
+        {
+
+            Grades.AddRange(
+                   new List<Grade>()
+                    {
                       new Grade()
                         {
                          Type = Grade.GradeType_ACS,
@@ -39,11 +39,11 @@ namespace logic.systems.school.managment.Models
                          Type = Grade.GradeType_AP,
                          Number = 1
                         },
-                     }
-            );
-         
-         
-         }
+                    }
+           );
+
+
+        }
 
 
         public SimpleEntity? Subject { get; set; }
@@ -59,7 +59,9 @@ namespace logic.systems.school.managment.Models
         public decimal GetACSAverage()
         {
             decimal totalACS = Grades.Where(x => x.Type == Grade.GradeType_ACS).Sum(x => x.Value);
-            return totalACS == 0 ? 0 : totalACS / 3;
+            var result = Math.Round((totalACS == 0 ? 0 : totalACS / 3), 2);
+
+            return result;
         }
 
         public decimal GetQuarterAverage()
@@ -70,11 +72,12 @@ namespace logic.systems.school.managment.Models
 
             var Numerator = 2 * GetACSAverage() + (AP?.Value ?? 0);
 
-            return Numerator == 0 ? 0 : Numerator / 3;
+            var result = Math.Round((Numerator == 0 ? 0 : Numerator / 3), 2);
 
-
+            return result;
         }
 
+ 
 
     }
 }

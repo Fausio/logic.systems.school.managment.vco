@@ -10,9 +10,21 @@ namespace logic.systems.school.managment.Services
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
 
-        public Task Create(List<Grade> models, string userId)
+        public async Task Create(List<Grade> models, string userId)
         {
-            throw new NotImplementedException();
+            //   
+            var listOfGrades = new List<Grade>();
+            foreach (var item in models)
+            {
+                var model = await Read(item.Id);
+                model.UpdatedDate = DateTime.Now;
+                model.UpdatedUSer = userId;
+                model.Value = item.Value;
+                listOfGrades.Add(model); 
+            }
+
+            db.Grades.UpdateRange(listOfGrades);
+            await db.SaveChangesAsync();
         }
 
         public Task<Grade> Create(Grade model, string CreatedById)
@@ -25,10 +37,7 @@ namespace logic.systems.school.managment.Services
             throw new NotImplementedException();
         }
 
-        public Task<Grade> Read(int modelID)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<Grade> Read(int modelID) => await db.Grades.FirstOrDefaultAsync(x => x.Id == modelID);
 
         public async Task<List<Assessment>> ReadAssessmentsByClassLevelClassRoomSubjectQuarter(GradeConfigDTO dto )
         {

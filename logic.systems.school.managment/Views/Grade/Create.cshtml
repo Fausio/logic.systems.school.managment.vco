@@ -17,6 +17,7 @@
 
 
 
+<partial name="_Filter" model="@ViewBag.Filter" />
 
 
 <div class="col-lg-12 grid-margin stretch-card">
@@ -27,7 +28,7 @@
                 <p><strong>@ViewBag.Mensagem</strong></p>
             </div>
 
-
+             
             <fieldset class="border pt-0 mt-0 p-2 pb-0">
                 <legend class="w-auto p-0 m-0 ">Cabeçalho </legend>
 
@@ -35,20 +36,22 @@
                     <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
                         <thead>
                             <tr>
-                                <th>Classe</th>
-                                <th>Turma</th>
-                                <th>Disciplina</th>
-                                <th>Trimestre</th>
-                                <th>Professor</th>
+                                <th><center>Data       </center>             </th>
+                                <th><center>Classe     </center>             </th>
+                                <th><center>Turma      </center>             </th>
+                                <th><center>Disciplina </center>             </th>
+                                <th><center>Trimestre  </center>             </th>
+                                <th><center>Professor  </center>             </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>@ViewBag.GradeHeader.ClassLevel</td>
-                                <td>@ViewBag.GradeHeader.ClassRoom</td>
-                                <td>@ViewBag.GradeHeader.Subject</td>
-                                <td>@ViewBag.GradeHeader.Quarter</td>
-                                <td> "n/a"</td>
+                                <td><input style=" width: 100%;" type="date" /></td>
+                                <td><center>@ViewBag.GradeHeader.ClassLevel     </center>       </td>
+                                <td><center>@ViewBag.GradeHeader.ClassRoom      </center>       </td>
+                                <td><center>@ViewBag.GradeHeader.Subject        </center>       </td>
+                                <td><center>@ViewBag.GradeHeader.Quarter        </center>       </td>
+                                <td><center> "n/a"                              </center>       </td>
                             </tr>
                         </tbody>
                     </table>
@@ -71,15 +74,14 @@
                                     <th style="border: 1px solid black;background-color:white;" colspan="5">   </th>
                                 </tr>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Nome</th>
-                                    <th> 1ª </th>
-                                    <th> 2ª </th>
-                                    <th> 3ª </th>
-                                    <th> Media ACS </th>
-
-                                    <th> AP </th>
-                                    <th> Media Trimestral </th>
+                                    <th><center> #                                               </center> </th>
+                                    <th><center> Nome                                            </center> </th>
+                                    <th><center>  1ª                                             </center> </th>
+                                    <th><center>  2ª                                             </center> </th>
+                                    <th><center>  3ª                                             </center> </th>
+                                    <th><center>  Media ACS                                      </center> </th>
+                                    <th><center>  AP                                             </center> </th>
+                                    <th><center>  Media Trimestral                               </center></th>
 
                                 </tr>
                             </thead>
@@ -97,10 +99,9 @@
                                     @Html.HiddenFor(x => x.Assessments[i].QuarterId)
                                     @Html.HiddenFor(x => x.Assessments[i].SubjectId)
 
-                                    for (int j = 0; j < 3; j++)
+                                    for (int j = 0; j < 4; j++)
                                     {
                                         @Html.HiddenFor(x => x.Assessments[i].Grades[j].Id)
-                                        //     @Html.HiddenFor(x => x.Assessments[i].Grades[j].Value)
                                         @Html.HiddenFor(x => x.Assessments[i].Grades[j].Type)
                                         @Html.HiddenFor(x => x.Assessments[i].Grades[j].AssessmentId)
                                         @Html.HiddenFor(x => x.Assessments[i].Grades[j].Number)
@@ -109,12 +110,12 @@
                                     <tr>
                                         <td class="nwrap"><center>@Model.Assessments[i].Quarter.Enrollment.Student.Id</center></td>
                                         <td class="nwrap"><center>@Model.Assessments[i].Quarter.Enrollment.Student.Name</center></td>
-                                        <td><input asp-for="@Model.Assessments[i].Grades[0].Value" type="number" class="gradeTable-td" /></td> 
-                                        <td><input asp-for="@Model.Assessments[i].Grades[1].Value" type="number" class="gradeTable-td" /></td>
-                                        <td><input asp-for="@Model.Assessments[i].Grades[2].Value" type="number" class="gradeTable-td" /></td>
-                                        <td><input disabled type="number" value="@Model.Assessments[i].GetACSAverage()" class="gradeTable-td" /></td>
-                                        <td><input asp-for="@Model.Assessments[i].Grades[3].Value" type="number" class="gradeTable-td" /></td>
-                                        <td><input disabled type="number" value="@Model.Assessments[i].GetQuarterAverage()" class="gradeTable-td" /></td>
+                                        <td><input asp-for="@Model.Assessments[i].Grades[0].Value" type="number" style=" width: 100%;" /></td>
+                                        <td><input asp-for="@Model.Assessments[i].Grades[1].Value" type="number" style=" width: 100%;" /></td>
+                                        <td><input asp-for="@Model.Assessments[i].Grades[2].Value" type="number" style=" width: 100%;" /></td>
+                                        <td><input disabled type="number" value="@Model.Assessments[i].GetACSAverage()" style=" width: 100%;" /></td>
+                                        <td><input asp-for="@Model.Assessments[i].Grades[3].Value" type="number" style=" width: 100%;" /></td>
+                                        <td><input disabled type="number" value="@Model.Assessments[i].GetQuarterAverage()" style=" width: 100%;" /></td>
 
 
                                     </tr>

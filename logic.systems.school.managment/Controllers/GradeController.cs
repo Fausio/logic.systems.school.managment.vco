@@ -26,46 +26,43 @@ namespace logic.systems.school.managment.Controllers
             return View(new GradeConfigDTO());
         }
 
+        public async Task<IActionResult> Filter()
+        {
+            await ConfigView();
+            return View(new GradeConfigDTO());
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> Create(GradeConfigDTO param)
         {
-            
-                ViewBag.GradeHeader = await GetGradeHeader(param);
-                return View(new AssessmentCreateDTO()
-                {
-                    dto = param,
-                    Assessments = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectQuarter(param)
-                });
-         
+            await ConfigView();
+            ViewBag.Filter = new GradeConfigDTO();
+            ViewBag.GradeHeader = await GetGradeHeader(param);
+            return View(new AssessmentCreateDTO()
+            {
+                dto = param,
+                Assessments = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectQuarter(param)
+            });
+
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(AssessmentCreateDTO CreateDTO)
         {
-            if (ModelState.IsValid)
-            {
-                ViewBag.GradeHeader = GetGradeHeader(CreateDTO.dto).Result;
-                TempData["MensagemSucess"] = "Lançamento de notas bem-sucedida!";
-                ViewBag.Mensagem = TempData["MensagemSucess"];
-                return View(CreateDTO);
-            }
 
-       //     return RedirectToAction("config", "Grade", new { dto = CreateDTO.dto });
-            return RedirectToAction("Config", "Grade", CreateDTO.dto);
-        }
-
-        public async Task<IActionResult> Config([FromQuery] GradeConfigDTO dto)
-        {
+            ViewBag.GradeHeader = GetGradeHeader(CreateDTO.dto).Result;
             await ConfigView();
+            var currentUser = await _userManager.GetUserAsync(User);
+            await _IGradeService.Create(CreateDTO.Assessments.SelectMany(x => x.Grades).ToList(), currentUser.Id);
+            TempData["MensagemSucess"] = "Lançamento de notas bem-sucedida!";
+            ViewBag.Mensagem = TempData["MensagemSucess"]; 
+            CreateDTO.Assessments = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectQuarter(CreateDTO.dto);
+            return View(CreateDTO);
 
-            if (ModelState.IsValid)
-            {
-                string serializedDto = JsonConvert.SerializeObject(dto); 
-                return RedirectToAction("Create", "Grade");
-            }
 
-            return View(dto);
         }
+
 
 
 
@@ -101,3 +98,4 @@ namespace logic.systems.school.managment.Controllers
         }
     }
 }
+ 
