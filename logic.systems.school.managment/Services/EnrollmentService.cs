@@ -700,6 +700,29 @@ namespace logic.systems.school.managment.Services
                         await db.SaveChangesAsync();
                     }
 
+                    var quarters = await db.Quarters.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
+                    if (quarters.Count > 0)
+                    {
+                        foreach (var quarter in quarters)
+                        {
+                            var assessments = await db.Assessments.Where(x => x.QuarterId == quarter.Id).ToListAsync();
+
+                            foreach (var assessment in assessments)
+                            {
+                                var grade = await db.Grades.Where(x => x.AssessmentId == assessment.Id).ToListAsync();
+
+                                db.Grades.RemoveRange(grade);
+                                await db.SaveChangesAsync();
+                            }
+
+                            db.Assessments.RemoveRange(assessments);
+                            await db.SaveChangesAsync();
+                        }
+
+                        db.Quarters.RemoveRange(quarters);
+                        await db.SaveChangesAsync();
+                    } 
+
                     db.Enrollments.Remove(obj);
                     await db.SaveChangesAsync();
                 }
