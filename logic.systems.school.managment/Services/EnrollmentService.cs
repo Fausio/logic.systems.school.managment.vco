@@ -487,79 +487,18 @@ namespace logic.systems.school.managment.Services
         {
 
             var level = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Id == SchoolLevelId);
+            var student = await db.Students.FirstOrDefaultAsync(x => x.Id == studantId);
 
             if (level is not null)
             {
                 var enrollment = new Enrollment();
-
-                #region logic em pt language
-                // Pre - 3500 matricula  1000 fichas     = 4500 
-                // 1- 4000 matricula 1000 fichas 750 pasta  150 caderneta = 5750 
-                // 2-  - 3700 matricula  1000 fichas     = 4700
-                // [3-6] -  3700 matricula
-                // 7 -  3700 matricula 1500 certidão = 5200 
-                // [8-10] - 3800 matricula
-                // 11 - 4200 matricula 1500 certidao = 5700
-                // 12 - 4200 matricula   
-                #endregion
+                 
 
                 switch (level.Description)
                 {
-                    case "Pré-escola":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 3500,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Fichas",
-                                        Price = 1000,
-                                    }
-                                }
-                        };
-                        break;
+ 
                     case "1ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 4000,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Fichas",
-                                        Price = 1000,
-                                    },
-                                }
-                        };
-                        break;
                     case "2ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 3700,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Fichas",
-                                        Price = 1000,
-                                    }
-                                }
-                        };
-                        break;
-
                     case "3ª classe":
                     case "4ª classe":
                     case "5ª classe":
@@ -569,30 +508,12 @@ namespace logic.systems.school.managment.Services
                             StudentId = studantId,
                             PaymentEnrollment = new EnrollmentPayment()
                             {
-                                PaymentWithoutVat = 3700,
-                            }
+                                PaymentWithoutVat = 1800  + (student.Internal ? 0 : 200),
+                            }, 
                         };
                         break;
-                    case "7ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-
-                                PaymentWithoutVat = 3700,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Certidão",
-                                        Price = 1500,
-                                    }
-                                }
-                        };
-                        break;
-
+ 
+                    case "7ª classe": 
                     case "8ª classe":
                     case "9ª classe":
                     case "10ª classe":
@@ -601,39 +522,11 @@ namespace logic.systems.school.managment.Services
                             StudentId = studantId,
                             PaymentEnrollment = new EnrollmentPayment()
                             {
-                                PaymentWithoutVat = 3800,
+                                PaymentWithoutVat = 2000 + (student.Internal ? 0 : 100),
                             }
                         };
                         break;
-                    case "11ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 4200,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Certidão",
-                                        Price = 1500,
-                                    }
-                                }
-                        };
-                        break;
-                    case "12ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 4200,
-                            }
-                        };
-                        break;
-
+                
                     default:
                         Console.WriteLine("Class");
                         break;
@@ -642,17 +535,7 @@ namespace logic.systems.school.managment.Services
                 enrollment.PaymentEnrollment.Paid = true;
                 enrollment.PaymentEnrollment.PaymentDate = DateTime.Now;
 
-                var student = await db.Students.FirstOrDefaultAsync(x => x.Id == studantId);
-
-                if (!student.Internal)
-                {
-                    enrollment.EnrollmentItems.Add(
-                     new EnrollmentItem()
-                     {
-                         Description = "Caderneta e Pasta",
-                         Price = 750,
-                     });
-                }
+            
 
 
                 return enrollment;

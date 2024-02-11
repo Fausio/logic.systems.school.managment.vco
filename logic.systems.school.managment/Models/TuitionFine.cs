@@ -11,7 +11,7 @@ namespace logic.systems.school.managment.Models
         public decimal FinesValue { get; set; }
         public TuitionFine()
         {
-            FinesValue = 300;
+            FinesValue = 0;
         }
         public bool Paid { get; set; }
         public DateTime? PaidDate { get; set; }
