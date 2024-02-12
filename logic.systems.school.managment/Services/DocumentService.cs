@@ -59,7 +59,7 @@ namespace logic.systems.school.managment.Services
                     EmissionDate = DateTime.Now,
                     EndDate = endDate.Value,
                     StartDate = startDate.Value,
-                    Site = "COOPERATIVA DE ENSINO KALIMANY",
+                    Site = "ESCOLA PRIMÁRIA E SECUNDÁRIA PANDA ALEGRIA NACALA-PORTO",
 
                 };
 

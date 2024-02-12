@@ -28,8 +28,8 @@ namespace logic.systems.school.managment.Seeds
             var user = new IdentityUser
             {
 
-                Email = "admin@Kalimany.com",
-                NormalizedEmail = "admin@Kalimany.com",
+                Email = "admin@pandaalegria.com",
+                NormalizedEmail = "admin@pandaalegria.com",
                 UserName = "admin",
                 NormalizedUserName = "admin",
                 EmailConfirmed = true,

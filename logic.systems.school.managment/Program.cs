@@ -107,20 +107,36 @@ using (var scope = app.Services.CreateScope())
     var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
 
-    if (await UserManager.FindByEmailAsync("admin@Kalimany.com") is null)
+    if (await UserManager.FindByEmailAsync("admin@pandaalegria.com") is null)
     {
 
         var users = new List<IdentityUser>()
         {
                new IdentityUser()
             {
-                Email =  "admin@Kalimany.com",
-                NormalizedEmail = "admin@Kalimany.com",
-                UserName =  "admin@Kalimany.com",
-                NormalizedUserName = "admin", 
+                Email =  "admin@pandaalegria.com",
+                NormalizedEmail = "admin@pandaalegria.com",
+                UserName =  "admin@pandaalegria.com",
+                NormalizedUserName = "admin",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-            } 
+            }  ,   new IdentityUser()
+            {
+                Email =  "fausio.matsinhe@logicsystems.co.mz",
+                NormalizedEmail = "fausio.matsinhe@logicsystems.co.mz",
+                UserName =  "fausio.matsinhe@logicsystems.co.mz",
+                NormalizedUserName = "master",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            } ,    new IdentityUser()
+            {
+                Email =  "ronilson.cuco@logicsystems.co.mz",
+                NormalizedEmail = "ronilson.cuco@logicsystems.co.mz",
+                UserName =  "ronilson.cuco@logicsystems.co.mz",
+                NormalizedUserName = "master",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            }
         };
 
 
@@ -128,26 +144,27 @@ using (var scope = app.Services.CreateScope())
         {
             var email = item.Email;
 
-            if (email == "admin@Kalimany.com")
+            if (email == "admin@pandaalegria.com")
             {
                 var pass = "admin1234";
                 await UserManager.CreateAsync(item, pass);
                 await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
             }
 
-            if (email == "assane.sulemange@Kalimany.com")
+            if (email == "fausio.matsinhe@logicsystems.co.mz")
             {
-                var pass = "Assane1234";
+                var pass = "Madara1122";
                 await UserManager.CreateAsync(item, pass);
                 await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
             }
 
-            if (email == "nilza.rodrigues@Kalimany.com")
+            if (email == "ronilson.cuco@logicsystems.co.mz")
             {
-                var pass = "Nilza1234";
+                var pass = "Madara1122";
                 await UserManager.CreateAsync(item, pass);
                 await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
             }
+
         }
     }
 }
