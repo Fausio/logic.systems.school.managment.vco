@@ -108,9 +108,9 @@
                                         <center>
                                             <select class="select-control" style=" width: 100%;" id="SchoolLevels">
                                                 <option selected>... selecione ...</option>
-                                                @foreach (var item in Model.Products)
+                                                @foreach (Product item in Model.Products)
                                                 {
-                                                    <option value="@item.Id">@item.Description  @item.Price MT</option>
+                                                    <option value="@item">@item.Description  @item.Price MT</option>
                                                 }
                                             </select>
                                             <span asp-validation-for="Products" class="text-danger"></span>
@@ -121,7 +121,7 @@
 
                                     <td>
                                         <center>
-                                            <a   class="btn mt-0  btn-sm btn-success btn-icon-text">
+                                            <a id="btnAdicionar" class="btn mt-0  btn-sm btn-success btn-icon-text">
                                                Adicionar
                                             </a>
                                         </center>
@@ -129,6 +129,37 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="table-responsive  p-0 m-0">
+                        <table class="MytabelaItens  p-0 m-0" id="itens" border="1">
+                            <thead>
+                                <tr>
+                                    <th><center> Descrição     </center> </th>
+                                    <th><center> Preço       </center> </th>
+                                    <th><center> Quantidade       </center> </th>
+                                    <th><center> Total       </center> </th>
+                                    <th><center>       </center> </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                            
+                                <tr>
+
+                                    
+
+                                    <td colspan="5">
+                                        <center>
+                                        <label>Total : #</label>
+                                        </center>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                       
                     </div>
 
                 </fieldset>
@@ -140,3 +171,78 @@
 
 </form>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Quando o botão Adicionar for clicado
+            $("#btnAdicionar").click(function () {
+                // Obtenha os valores do formulário
+                var material = $("#SchoolLevels option:selected").text();
+                var preco = parseFloat($("#SchoolLevels option:selected").val()); // Adicione esta linha para obter o preço do item
+                var quantidade = parseFloat($("input[type='number']").val());
+
+                // Calcular o total
+                var total = preco * quantidade;
+
+                // Adicione uma nova linha à tabela de itens
+                $("#itens tbody").append(
+                    "<tr>" +
+                    "<td><center><label>" + material + "</label></center></td>" +
+                    "<td><center><label>" + preco + " MT</label></center></td>" +
+                    "<td><center><label>" + quantidade + "</label></center></td>" +
+                    "<td><center><label>" + total + " MT</label></center></td>" +
+                    "<td><center><a class='btn mt-0 btn-sm btn-danger btn-icon-text text-white btnRemover'>Remover</a></center></td>" +
+                    "</tr>"
+                );
+
+                // Atualize o total geral
+                atualizarTotalGeral();
+
+                // Limpe os campos do formulário
+                $("#SchoolLevels").val("");
+                $("input[type='number']").val("");
+            });
+
+            // Quando o botão Remover for clicado
+            $(document).on("click", ".btnRemover", function () {
+                // Remova a linha da tabela
+                $(this).closest("tr").remove();
+
+                // Atualize o total geral após a remoção
+                atualizarTotalGeral();
+            });
+
+            // Função para atualizar o total geral
+            function atualizarTotalGeral() {
+                var totalGeral = 0;
+
+                // Iterar sobre todas as linhas da tabela de itens
+                $("#itens tbody tr").each(function () {
+                    // Obter o valor total da linha e adicionar ao total geral
+                    var totalLinha = parseFloat($(this).find("td:eq(3) label").text().replace(" MT", ""));
+                    totalGeral += totalLinha;
+                });
+
+                // Atualizar o elemento de texto do total geral
+                $("#itens tbody tr:last td center label").text("Total: " + totalGeral.toFixed(2) + " MT");
+            }
+        });
+    </script>
+
+
+}
