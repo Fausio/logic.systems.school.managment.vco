@@ -6,6 +6,6 @@ namespace logic.systems.school.managment.Dto
     {
 
         public Student Student { get; set; } = new Student();
-        public List<Product> Products { get; set; } = new List<Product>();
+        public List<ProductDropDownDTO> Products { get; set; } = new List<ProductDropDownDTO>();
     }
 }

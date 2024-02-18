@@ -31,17 +31,19 @@ namespace logic.systems.school.managment.Services
 
 
 
-        public async Task<Enrollment> EnrollmentByStudantId(int studantId, int CurrentSchoolLevelId, int EnrollmentYear, int SchoolClassRoomId)
+        public async Task<Enrollment> EnrollmentByStudantId(int studantId, int CurrentSchoolLevelId, int EnrollmentYear, int SchoolClassRoomId, decimal EnrollmentPrice, decimal TuitionPrice)
         {
             try
             {
                 if (studantId > 0 && CurrentSchoolLevelId > 0)
                 {
-                    var enrollment = await GenerateEnrollmentDataByLevel(studantId, CurrentSchoolLevelId);
+                    var enrollment = await GenerateEnrollmentDataByLevel(studantId, CurrentSchoolLevelId, EnrollmentPrice);
+
                     if (enrollment is not null)
                     {
+                        enrollment.TuitionPrice = TuitionPrice;
                         var PaymentEnrollment = enrollment.PaymentEnrollment;
-                         
+
                         await db.Enrollments.AddAsync(enrollment);
                         await db.SaveChangesAsync();
 
@@ -54,7 +56,7 @@ namespace logic.systems.school.managment.Services
                         {
                             EnrollmentId = enrollment.Id,
                             Invoice = new Invoice() { }
-                            
+
                         };
 
                         await db.EnrollmentInvoices.AddAsync(invoice);
@@ -82,7 +84,7 @@ namespace logic.systems.school.managment.Services
         {
 
 
-            var enrollment = await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId);
+            var enrollment = await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId, model.EnrollmentPrice, model.TuitionPrice);
 
 
             await _ITuitionService.CreateByClassOfStudant(await _StudentService.Read(model.StudantId), enrollment, userId);
@@ -209,19 +211,19 @@ namespace logic.systems.school.managment.Services
                         };
 
 
-                      foreach (var q in quarter)
-                    { 
+                    foreach (var q in quarter)
+                    {
 
                         foreach (var subjectParamiter in Subjects_1_3)
                         {
                             var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
-                                                    q.Assessments.Add(
-                                                             new Assessment(true)
-                                                             {
-                                                                 CreatedUSer = userId,
-                                                                 SubjectId = subjectId.Id
-                                                             }
-                                                     );
+                            q.Assessments.Add(
+                                     new Assessment(true)
+                                     {
+                                         CreatedUSer = userId,
+                                         SubjectId = subjectId.Id
+                                     }
+                             );
                         }
                     }
                     break;
@@ -247,18 +249,18 @@ namespace logic.systems.school.managment.Services
 
 
                     foreach (var q in quarter)
-                    { 
+                    {
 
                         foreach (var subjectParamiter in Subjects_4)
                         {
                             var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
-                           q.Assessments.Add(
-                                                             new Assessment(true)
-                                                             {
-                                                                 CreatedUSer = userId,
-                                                                 SubjectId = subjectId.Id
-                                                             }
-                                                     );
+                            q.Assessments.Add(
+                                                              new Assessment(true)
+                                                              {
+                                                                  CreatedUSer = userId,
+                                                                  SubjectId = subjectId.Id
+                                                              }
+                                                      );
                         }
                     }
                     break;
@@ -288,18 +290,18 @@ namespace logic.systems.school.managment.Services
 
 
                     foreach (var q in quarter)
-                    { 
+                    {
 
                         foreach (var subjectParamiter in Subjects_5_6)
                         {
                             var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
-                           q.Assessments.Add(
-                                                             new Assessment(true)
-                                                             {
-                                                                 CreatedUSer = userId,
-                                                                 SubjectId = subjectId.Id
-                                                             }
-                                                     );
+                            q.Assessments.Add(
+                                                              new Assessment(true)
+                                                              {
+                                                                  CreatedUSer = userId,
+                                                                  SubjectId = subjectId.Id
+                                                              }
+                                                      );
                         }
                     }
                     break;
@@ -342,18 +344,18 @@ namespace logic.systems.school.managment.Services
 
 
                     foreach (var q in quarter)
-                    { 
+                    {
 
                         foreach (var subjectParamiter in Subjects_7)
                         {
                             var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
-                           q.Assessments.Add(
-                                                             new Assessment(true)
-                                                             {
-                                                                 CreatedUSer = userId,
-                                                                 SubjectId = subjectId.Id
-                                                             }
-                                                     );
+                            q.Assessments.Add(
+                                                              new Assessment(true)
+                                                              {
+                                                                  CreatedUSer = userId,
+                                                                  SubjectId = subjectId.Id
+                                                              }
+                                                      );
                         }
                     }
                     break;
@@ -398,17 +400,17 @@ namespace logic.systems.school.managment.Services
 
 
                     foreach (var q in quarter)
-                    { 
+                    {
                         foreach (var subjectParamiter in Subjects_8_9_10)
                         {
                             var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
-                           q.Assessments.Add(
-                                                             new Assessment(true)
-                                                             {
-                                                                 CreatedUSer = userId,
-                                                                 SubjectId = subjectId.Id
-                                                             }
-                                                     );
+                            q.Assessments.Add(
+                                                              new Assessment(true)
+                                                              {
+                                                                  CreatedUSer = userId,
+                                                                  SubjectId = subjectId.Id
+                                                              }
+                                                      );
                         }
                     }
                     break;
@@ -444,18 +446,18 @@ namespace logic.systems.school.managment.Services
 
 
                     foreach (var q in quarter)
-                    { 
+                    {
 
                         foreach (var subjectParamiter in Subjects_11)
                         {
                             var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
-                           q.Assessments.Add(
-                                                             new Assessment(true)
-                                                             {
-                                                                 CreatedUSer = userId,
-                                                                 SubjectId = subjectId.Id
-                                                             }
-                                                     );
+                            q.Assessments.Add(
+                                                              new Assessment(true)
+                                                              {
+                                                                  CreatedUSer = userId,
+                                                                  SubjectId = subjectId.Id
+                                                              }
+                                                      );
                         }
                     }
                     break;
@@ -475,9 +477,9 @@ namespace logic.systems.school.managment.Services
             foreach (var item in quarter)
             {
                 item.EnrollmentId = enrollment.Id;
-                
-             
-                
+
+
+
 
             }
 
@@ -486,7 +488,7 @@ namespace logic.systems.school.managment.Services
         }
 
 
-        private async Task<Enrollment> GenerateEnrollmentDataByLevel(int studantId, int SchoolLevelId)
+        private async Task<Enrollment> GenerateEnrollmentDataByLevel(int studantId, int SchoolLevelId, decimal EnrollmentPrice)
         {
 
             var level = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Id == SchoolLevelId);
@@ -495,51 +497,20 @@ namespace logic.systems.school.managment.Services
             if (level is not null)
             {
                 var enrollment = new Enrollment();
-                 
 
-                switch (level.Description)
+
+                enrollment = new Enrollment()
                 {
- 
-                    case "1ª classe":
-                    case "2ª classe":
-                    case "3ª classe":
-                    case "4ª classe":
-                    case "5ª classe":
-                    case "6ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 1800  + (student.Internal ? 0 : 200),
-                            }, 
-                        };
-                        break;
- 
-                    case "7ª classe": 
-                    case "8ª classe":
-                    case "9ª classe":
-                    case "10ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 2000 + (student.Internal ? 0 : 100),
-                            }
-                        };
-                        break;
-                
-                    default:
-                        Console.WriteLine("Class");
-                        break;
-                }
+                    StudentId = studantId,
+                    PaymentEnrollment = new EnrollmentPayment()
+                    {
+                        PaymentWithoutVat = EnrollmentPrice,
+                    },
+                };
+                enrollment.EnrollmentPrice = EnrollmentPrice;
                 enrollment.SchoolLevelId = SchoolLevelId;
                 enrollment.PaymentEnrollment.Paid = true;
                 enrollment.PaymentEnrollment.PaymentDate = DateTime.Now;
-
-            
-
 
                 return enrollment;
             }
@@ -607,7 +578,7 @@ namespace logic.systems.school.managment.Services
 
                         db.Quarters.RemoveRange(quarters);
                         await db.SaveChangesAsync();
-                    } 
+                    }
 
                     db.Enrollments.Remove(obj);
                     await db.SaveChangesAsync();
@@ -623,6 +594,36 @@ namespace logic.systems.school.managment.Services
 
 
 
+        }
+
+        public async Task UpdatePrices(EditStudantDTO model)
+        {
+            var enrolments = await db.Enrollments.Include(x=> x.PaymentEnrollment).OrderBy(x=> x.Id).LastOrDefaultAsync(x => x.StudentId == model.id);
+            if (enrolments is not null)
+            {
+                var commite = false;
+
+                if (enrolments.TuitionPrice != model.TuitionPrice)
+                {
+                    enrolments.TuitionPrice = model.TuitionPrice;
+                    commite = true;
+                } 
+                
+                if (enrolments.EnrollmentPrice != model.EnrollmentPrice)
+                {
+                    enrolments.EnrollmentPrice = model.EnrollmentPrice;
+                    enrolments.PaymentEnrollment.PaymentWithoutVat = model.EnrollmentPrice;
+                    commite = true;
+                }
+
+                if (commite)
+                { 
+                    enrolments.UpdatedDate = DateTime.Now;
+                    db.Enrollments.Update(enrolments);
+                    await db.SaveChangesAsync(true);
+                }
+       
+            }
         }
     }
 

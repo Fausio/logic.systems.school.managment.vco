@@ -1,4 +1,5 @@
-﻿@model logic.systems.school.managment.Dto.SalesProductDTO
+﻿@using logic.systems.school.managment.Dto;
+@model logic.systems.school.managment.Dto.SalesProductDTO
 <link rel="stylesheet" href="~/css/EditViewBen.css" />
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -16,113 +17,69 @@
     </div>
 </div>
 
-
-
-
-
-
-<form asp-action="Create" asp-controller="grade" method="get" id="yourFormId">
+<form asp-action="Create" asp-controller="grade" method="post" id="yourFormId">
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-
-
+                <!-- dados do estudante -->
                 <fieldset class="border pt-0 mt-0 p-2 pb-0">
                     <legend class="w-auto p-0 m-0 "> dados do estudante </legend>
-
                     <div class="table-responsive  p-0 m-0">
                         <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
                             <thead>
                                 <tr>
-                                    <th><center>N#       </center> </th>
-                                    <th><center>Nome       </center> </th>
-                                    <th><center>classe     </center> </th>
-                                    <th><center>   Turma   </center> </th>
-
+                                    <th><center>N#</center></th>
+                                    <th><center>Nome</center></th>
+                                    <th><center>classe</center></th>
+                                    <th><center>Turma</center></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>
-                                        <center>
-                                            @Model.Student.Id
-                                        </center>
-                                    </td>
-
-                                    <td>
-                                        <center>
-                                            @Model.Student.Name
-                                        </center>
-                                    </td>
-
-                                    <td>
-                                        <center>
-                                            @Model.Student.CurrentSchoolLevel.Description
-                                        </center>
-                                    </td>
-                                    <td>
-                                        <center>
-                                            @Model.Student.SchoolClassRoom.Description
-                                        </center>
-                                    </td>
+                                    <td><center>@Model.Student.Id</center></td>
+                                    <td><center>@Model.Student.Name</center></td>
+                                    <td><center>@Model.Student.CurrentSchoolLevel.Description</center></td>
+                                    <td><center>@Model.Student.SchoolClassRoom.Description</center></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-
                 </fieldset>
 
+              
 
-
-
-                <fieldset class="border p-2 ">
-                    <legend class="w-auto">Ações</legend>
-
-                    <a asp-action="edit" asp-controller="studant" asp-route-id="@Model.Student.Id" class="btn mt-0  btn-sm btn-light btn-icon-text">
-                        Voltar para detalhes
-                    </a>
-
-                </fieldset>
-
-
-
-
+                <!-- dados do estudante -->
                 <fieldset class="border pt-0 mt-0 p-2 pb-0">
                     <legend class="w-auto p-0 m-0 "> dados do estudante </legend>
-
                     <div class="table-responsive  p-0 m-0">
                         <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
                             <thead>
                                 <tr>
-                                    <th><center> Material     </center> </th>
-                                    <th><center> Quantidade       </center> </th>
-
-                                    <th><center>       </center> </th>
-
+                                    <th><center> Material </center></th>
+                                    <th><center> Quantidade </center></th>
+                                    <th><center></center></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-
                                     <td>
                                         <center>
-                                            <select class="select-control" style=" width: 100%;" id="SchoolLevels">
+                                            <select class="select-control" style="width: 100%;" id="SchoolLevels">
                                                 <option selected>... selecione ...</option>
-                                                @foreach (Product item in Model.Products)
+                                                @foreach (ProductDropDownDTO item in Model.Products)
                                                 {
-                                                    <option value="@item">@item.Description  @item.Price MT</option>
+                                                    var productJson = Newtonsoft.Json.JsonConvert.SerializeObject(item);
+                                                    <option value="@productJson">@item.Description @item.Price MT</option>
                                                 }
                                             </select>
                                             <span asp-validation-for="Products" class="text-danger"></span>
                                         </center>
                                     </td>
-
-                                    <td><input type="number" style=" width: 100%;" /></td>
-
+                                    <td><input type="number" style="width: 100%;" id="quantityInput" /></td>
                                     <td>
                                         <center>
-                                            <a id="btnAdicionar" class="btn mt-0  btn-sm btn-success btn-icon-text">
-                                               Adicionar
+                                            <a id="btnAdicionar" class="btn mt-0 btn-sm btn-success btn-icon-text">
+                                                Adicionar
                                             </a>
                                         </center>
                                     </td>
@@ -130,119 +87,78 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <div class="table-responsive  p-0 m-0">
-                        <table class="MytabelaItens  p-0 m-0" id="itens" border="1">
+                    <div class="table-responsive p-0 m-0">
+                        <table class="MytabelaItens p-0 m-0" id="itens" border="1">
                             <thead>
                                 <tr>
-                                    <th><center> Descrição     </center> </th>
-                                    <th><center> Preço       </center> </th>
-                                    <th><center> Quantidade       </center> </th>
-                                    <th><center> Total       </center> </th>
-                                    <th><center>       </center> </th>
-
+                                    <th><center> Descrição </center></th>
+                                    <th><center> Preço </center></th>
+                                    <th><center> Quantidade </center></th>
+                                    <th><center> Total </center></th>
+                                    <th><center></center></th>
                                 </tr>
                             </thead>
                             <tbody>
-                            
-                                <tr>
-
-                                    
-
-                                    <td colspan="5">
-                                        <center>
-                                        <label>Total : #</label>
-                                        </center>
-                                    </td>
-                                </tr>
-                                
+                                <!-- Display items here dynamically using JavaScript -->
                             </tbody>
                         </table>
-
-                       
                     </div>
-
                 </fieldset>
+                <!-- Ações -->
+                <fieldset class="border p-2">
+                    <legend class="w-auto">Ações</legend>
 
+                    <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#DeleteStudent" onclick="form_FixEnrollmentRepit_btns()">
+                     Comprar
+                    </a>
+
+                    <a asp-action="edit" asp-controller="studant" asp-route-id="@Model.Student.Id" class="btn mt-0 btn-sm btn-light btn-icon-text">
+                        Voltar para detalhes
+                    </a>
+                </fieldset>
             </div>
         </div>
     </div>
-
-
 </form>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @section scripts {
     <script>
         $(document).ready(function () {
-            // Quando o botão Adicionar for clicado
             $("#btnAdicionar").click(function () {
-                // Obtenha os valores do formulário
-                var material = $("#SchoolLevels option:selected").text();
-                var preco = parseFloat($("#SchoolLevels option:selected").val()); // Adicione esta linha para obter o preço do item
-                var quantidade = parseFloat($("input[type='number']").val());
+                var selectedProductJson = $("#SchoolLevels option:selected").val();
+                var selectedProduct = JSON.parse(selectedProductJson);
 
-                // Calcular o total
-                var total = preco * quantidade;
+                console.log("material:", selectedProduct);
 
-                // Adicione uma nova linha à tabela de itens
-                $("#itens tbody").append(
-                    "<tr>" +
-                    "<td><center><label>" + material + "</label></center></td>" +
-                    "<td><center><label>" + preco + " MT</label></center></td>" +
-                    "<td><center><label>" + quantidade + "</label></center></td>" +
-                    "<td><center><label>" + total + " MT</label></center></td>" +
-                    "<td><center><a class='btn mt-0 btn-sm btn-danger btn-icon-text text-white btnRemover'>Remover</a></center></td>" +
-                    "</tr>"
-                );
+                var preco = parseFloat(selectedProduct.Price);
+                var quantidade = parseFloat($("#quantityInput").val());
 
-                // Atualize o total geral
-                atualizarTotalGeral();
+                if (quantidade > 0) {
+                    var total = preco * quantidade;
 
-                // Limpe os campos do formulário
-                $("#SchoolLevels").val("");
-                $("input[type='number']").val("");
+                    $("#itens tbody").append(
+                        "<tr>" +
+                        "<td><center><label>" + selectedProduct.Description + "</label></center></td>" +
+                        "<td><center><label>" + preco + " MT</label></center></td>" +
+                        "<td><center><label>" + quantidade + "</label></center></td>" +
+                        "<td><center><label>" + total + " MT</label></center></td>" +
+                        "<td><center><a class='btn mt-0 btn-sm btn-danger btn-icon-text text-white btnRemover'>Remover</a></center></td>" +
+                        "</tr>"
+                    );
+
+                    $("#SchoolLevels").val("");
+                    $("#quantityInput").val("");
+                    $("#errorMessage").text("");
+                } else {
+                    $("#errorMessage").text("Please enter a quantity greater than zero.");
+                }
             });
 
-            // Quando o botão Remover for clicado
             $(document).on("click", ".btnRemover", function () {
-                // Remova a linha da tabela
                 $(this).closest("tr").remove();
-
-                // Atualize o total geral após a remoção
-                atualizarTotalGeral();
+                // Adicione qualquer lógica adicional necessária após remover uma linha
             });
-
-            // Função para atualizar o total geral
-            function atualizarTotalGeral() {
-                var totalGeral = 0;
-
-                // Iterar sobre todas as linhas da tabela de itens
-                $("#itens tbody tr").each(function () {
-                    // Obter o valor total da linha e adicionar ao total geral
-                    var totalLinha = parseFloat($(this).find("td:eq(3) label").text().replace(" MT", ""));
-                    totalGeral += totalLinha;
-                });
-
-                // Atualizar o elemento de texto do total geral
-                $("#itens tbody tr:last td center label").text("Total: " + totalGeral.toFixed(2) + " MT");
-            }
         });
+
     </script>
-
-
 }

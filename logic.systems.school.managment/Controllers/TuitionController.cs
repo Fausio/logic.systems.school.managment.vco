@@ -91,7 +91,7 @@ namespace logic.systems.school.managment.Controllers
                 foreach (var item in result)
                 {
                     var _schoolLevel = item.Enrollment.SchoolLevel.Description;
-                    var _tuitionValue = ( _ITuitionService.getTuitionValueByschoolLevel(_schoolLevel) - discount);
+                    var _tuitionValue = item.Enrollment.TuitionPrice;
                     resultDTO.Add(new MultiPaymentTuitionDTO()
                     {
                         id = item.Id,

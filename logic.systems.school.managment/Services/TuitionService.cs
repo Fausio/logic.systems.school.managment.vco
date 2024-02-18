@@ -4,6 +4,7 @@ using Humanizer;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
+using logic.systems.school.managment.Migrations;
 using logic.systems.school.managment.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -118,7 +119,7 @@ namespace logic.systems.school.managment.Services
         {
             try
             {
-                return await db.Tuitions.Include(e => e.Enrollment.SchoolLevel).Where(x => x.StudentId == StudantId ).ToListAsync();
+                return await db.Tuitions.Include(e => e.Enrollment.SchoolLevel).Where(x => x.StudentId == StudantId).ToListAsync();
             }
             catch (Exception)
             {
@@ -247,24 +248,12 @@ namespace logic.systems.school.managment.Services
 
                 foreach (var dto in dtos)
                 {
+                    var TuitionPrice = await db.Tuitions.Include(x => x.Enrollment).FirstOrDefaultAsync(x => x.Id == dto.TuitionId);
+
                     var studant = await db.Students.Include(x => x.Enrollments)
                                              .ThenInclude(x => x.Tuitions)
                                              .Include(x => x.CurrentSchoolLevel)
                                              .FirstOrDefaultAsync(x => x.Id == dto.StudantId && x.Row != Common.Deleted);
-
-                    var discount = (decimal)0;
-
-                    if (studant is not null)
-                    {
-                      // if (studant.DiscountType == Student.DiscountPersonInCharge)
-                      // {
-                      //     discount = 100;
-                      // }
-                      // else if (studant.DiscountType == Student.DiscountTeacher)
-                      // {
-                      //     discount = 500;
-                      // }
-                    }
 
                     if (dto.StudantId > 0 && dto.TuitionId > 0 && studant is not null)
                     {
@@ -272,12 +261,13 @@ namespace logic.systems.school.managment.Services
                         {
                             TuitionId = dto.TuitionId,
                             PaymentDate = DateTime.Now,
-                            PaymentWithoutVat = (getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount),
                             CreatedDate = nowTimeStep,
                             CreatedUSer = userid,
                         };
-                        payment.VatOfPayment = VatCalc(payment.PaymentWithoutVat);
-                        payment.PaymentWithVat = payment.VatOfPayment + payment.PaymentWithoutVat;
+
+                        payment.PaymentWithVat = TuitionPrice.Enrollment.TuitionPrice;
+                        payment.VatOfPayment = VatCalc(TuitionPrice.Enrollment.TuitionPrice);
+                        payment.PaymentWithoutVat = payment.PaymentWithVat - payment.VatOfPayment;
 
                         var invoice = new TuitionInvoice()
                         {
@@ -326,7 +316,7 @@ namespace logic.systems.school.managment.Services
                                         item.UpdatedUSer = userid;
                                         item.Row = Common.Modified;
                                         item.PaidDate = payment.PaymentDate;
-                                        item.Paid = true; 
+                                        item.Paid = true;
                                     }
                                 }
 
@@ -367,15 +357,15 @@ namespace logic.systems.school.managment.Services
 
         public decimal getTuitionValueByschoolLevel(string schoolLevel)
         {
-           
-         
-            var Price_4095= new List<string>()
+
+
+            var Price_4095 = new List<string>()
             {   "1ª classe"     ,
                 "2ª classe"     ,
                 "3ª classe"     ,
                 "4ª classe"     ,
                 "5ª classe"     ,
-                "6ª classe"     
+                "6ª classe"
             };
             var Price_4305 = new List<string>()
             {   "7ª classe"     ,
@@ -386,9 +376,9 @@ namespace logic.systems.school.managment.Services
                 "12ª classe"
             };
 
-            if (Price_4095.Contains(schoolLevel)) {     return 4095; }
+            if (Price_4095.Contains(schoolLevel)) { return 4095; }
             else if (Price_4305.Contains(schoolLevel)) { return 4305; }
-           
+
             else
             {
                 return 0;
@@ -398,9 +388,10 @@ namespace logic.systems.school.managment.Services
 
         private async Task CheckFeeZiro()
         {
-           var payments = await db.PaymentTuitions.Include(x => x.Tuition)
-                                                  .Where(x => x.PaymentWithoutVat == (decimal)0)
-                                                  .ToListAsync();
+            var payments = await db.PaymentTuitions.Include(x => x.Tuition)
+                                                    .ThenInclude(x => x.Enrollment)
+                                                   .Where(x => x.PaymentWithoutVat == (decimal)0)
+                                                   .ToListAsync();
 
             foreach (var item in payments)
             {
@@ -408,29 +399,18 @@ namespace logic.systems.school.managment.Services
                                            .ThenInclude(x => x.Tuitions)
                                            .Include(x => x.CurrentSchoolLevel)
                                            .FirstOrDefaultAsync(x => x.Id == item.Tuition.StudentId && x.Row != Common.Deleted);
-
-                var discount = (decimal)0; 
-             
+                 
                 if (studant is not null)
                 {
-                 //  if (studant.DiscountType == Student.DiscountPersonInCharge)
-                 //  {
-                 //      discount = 100;
-                 //  }
-                 //  else if (studant.DiscountType == Student.DiscountTeacher)
-                 //  {
-                 //      discount = 500;
-                 //  }
+                    item.PaymentWithVat = item.Tuition.Enrollment.TuitionPrice;
+                    item.VatOfPayment = VatCalc(item.Tuition.Enrollment.TuitionPrice);
+                    item.PaymentWithoutVat = item.PaymentWithVat - item.VatOfPayment; 
 
-                    item.PaymentWithoutVat = (getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount);
-                    item.VatOfPayment = VatCalc(item.PaymentWithoutVat);
-                    item.PaymentWithVat = item.VatOfPayment + item.PaymentWithoutVat;
-
-                      db.PaymentTuitions.Update(item);
+                    db.PaymentTuitions.Update(item);
                     await db.SaveChangesAsync();
                 }
 
-            
+
             }
 
         }
@@ -454,7 +434,7 @@ namespace logic.systems.school.managment.Services
                 students = await db.Students.Include(x => x.CurrentSchoolLevel).Include(x => x.Enrollments).ThenInclude(x => x.Tuitions).Where(x => x.Row != Common.Deleted).ToListAsync();
             }
 
-            var now = DateTime.Now; 
+            var now = DateTime.Now;
             foreach (Student student in students)
             {
 
@@ -470,9 +450,9 @@ namespace logic.systems.school.managment.Services
                         // recebe multa de 20% se nao pagar mensalidade entre dia 25 e 5 do outro mês.
 
                         if (now >= tuituionStartDate_part_1)
-                        { 
-                                await CreateTuitionFine(tuition.Id, userid);
-                           
+                        {
+                            await CreateTuitionFine(tuition.Id, userid);
+
                         }
                     }
 
@@ -504,15 +484,15 @@ namespace logic.systems.school.managment.Services
                     {
                         TuitionId = tuitionId,
                         CreatedUSer = userid,
-                        FinesValue = getTuitionValueByschoolLevel(tuition.Enrollment.SchoolLevel.Description) * 0.2m,
+                        FinesValue = tuition.Enrollment.TuitionPrice * 0.2m,
 
                     };
                     await db.TuitionFines.AddAsync(tuitionFines);
                     await db.SaveChangesAsync();
                 }
             }
-               
-           
+
+
         }
 
         public async Task AutomaticRegularization(int? studentId)

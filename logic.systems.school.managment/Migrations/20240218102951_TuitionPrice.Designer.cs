@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using logic.systems.school.managment.Data;
 
@@ -11,9 +12,10 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240218102951_TuitionPrice")]
+    partial class TuitionPrice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,9 +151,6 @@ namespace logic.systems.school.managment.Migrations
                     b.Property<string>("CreatedUSer")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("EnrollmentPrice")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("EnrollmentYear")
                         .HasColumnType("int");
@@ -1138,16 +1137,11 @@ namespace logic.systems.school.managment.Migrations
                     b.Property<int?>("InvoiceId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StudentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasIndex("InvoiceId");
-
-                    b.HasIndex("StudentId");
 
                     b.ToTable("ProductInvoice");
                 });
@@ -1159,15 +1153,10 @@ namespace logic.systems.school.managment.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductInvoiceId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductInvoiceId");
 
                     b.ToTable("ProductPayment");
                 });
@@ -1442,13 +1431,7 @@ namespace logic.systems.school.managment.Migrations
                         .WithMany()
                         .HasForeignKey("InvoiceId");
 
-                    b.HasOne("logic.systems.school.managment.Models.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId");
-
                     b.Navigation("Invoice");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.ProductPayment", b =>
@@ -1459,17 +1442,13 @@ namespace logic.systems.school.managment.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("logic.systems.school.managment.Models.Product", "Product")
+                    b.HasOne("logic.systems.school.managment.Models.Product", "Enrollment")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("logic.systems.school.managment.Models.ProductInvoice", null)
-                        .WithMany("ProductPayments")
-                        .HasForeignKey("ProductInvoiceId");
-
-                    b.Navigation("Product");
+                    b.Navigation("Enrollment");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.TuitionPayment", b =>
@@ -1537,11 +1516,6 @@ namespace logic.systems.school.managment.Migrations
             modelBuilder.Entity("logic.systems.school.managment.Models.TuitionFine", b =>
                 {
                     b.Navigation("TuitionFineDailies");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.ProductInvoice", b =>
-                {
-                    b.Navigation("ProductPayments");
                 });
 #pragma warning restore 612, 618
         }

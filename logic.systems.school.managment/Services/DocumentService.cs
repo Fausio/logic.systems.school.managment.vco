@@ -194,20 +194,7 @@ namespace logic.systems.school.managment.Services
 
                             }
 
-                            var discount = (decimal)0;
-                            if (t.Enrollment.Student is not null)
-                            {
-
-                                if (t.Enrollment.Student.DiscountType == Student.DiscountPersonInCharge)
-                                {
-                                    discount = 100;
-                                }
-                                else if (t.Enrollment.Student.DiscountType == Student.DiscountTeacher)
-                                {
-                                    discount = 500;
-                                }
-                            }
-                            var _MonthTuitionValue = (getTuitionValueByschoolLevel(associatedLeve.Description) - discount); ;
+                            var _MonthTuitionValue = t.Enrollment.TuitionPrice;
 
                             suspendedInfo.Add(new BeneficiariesSuspededReportItemDTO()
                             {

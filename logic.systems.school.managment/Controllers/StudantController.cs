@@ -22,7 +22,7 @@ namespace logic.systems.school.managment.Controllers
         private ITuitionService _ITuitionService;
         private IEnrollment _IEnrollmentService;
         private IApp _IAppService;
-         
+
 
         public StudantController(IstudantService StudentService,
             IOrgUnit IOrgUnitServiceService,
@@ -45,7 +45,7 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
-       
+
 
 
                 var result = await _StudentService.ReadPagenation(pageNumber.Value, pageSize.Value);
@@ -80,7 +80,7 @@ namespace logic.systems.school.managment.Controllers
                 });
             }
             catch (Exception)
-            { 
+            {
                 throw;
             }
 
@@ -145,7 +145,7 @@ namespace logic.systems.school.managment.Controllers
                     }
 
                     var result = await _StudentService.Create(StudantProfile.ToClass(model), currentUser.Id);
-                    var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear, result.SchoolClassRoomId);
+                    var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear, result.SchoolClassRoomId, model.EnrollmentPrice, model.TuitionPrice);
                     await _ITuitionService.CreateByClassOfStudant(result, Enrollment, currentUser.Id);
                     TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
                     return RedirectToAction("edit", "studant", new { id = result.Id });
@@ -225,6 +225,22 @@ namespace logic.systems.school.managment.Controllers
                 {
                     ViewBag.Mensagem = TempData["MensagemSucess"];
                 }
+
+
+
+                var products = await _StudentService.ReadProducts();
+                var SalesProducts = new SalesProductDTO();
+
+
+                SalesProducts.Products = products.Select(x => new ProductDropDownDTO()
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                    Price = x.Price,
+
+                }).ToList();
+
+                result.SalesProduct = SalesProducts;
                 return View(result);
             }
             catch (Exception)
@@ -245,7 +261,7 @@ namespace logic.systems.school.managment.Controllers
                 myClass.Id = model.id;
                 var currentUser = await _userManager.GetUserAsync(User);
                 var result = await _StudentService.Update(myClass, currentUser.Id);
-
+                await _IEnrollmentService.UpdatePrices(model);
                 TempData["MensagemSucess"] = "Estudante Actualizado com sucesso!";
 
 
@@ -267,7 +283,17 @@ namespace logic.systems.school.managment.Controllers
                 var model = await _StudentService.Read(id);
 
                 var result = StudantProfile.ToDTO(model);
-                result.EnrollmentYear = model.Enrollments.LastOrDefault().EnrollmentYear;
+
+                var currentEnrolment = model.Enrollments.LastOrDefault();
+
+
+                if (currentEnrolment is not null)
+                {
+                    result.EnrollmentYear = currentEnrolment.EnrollmentYear;
+                    result.EnrollmentPrice = currentEnrolment.EnrollmentPrice;
+                    result.TuitionPrice = currentEnrolment.TuitionPrice;
+                }
+
                 await PopulateForms();
 
                 var createdUser = await _userManager.FindByIdAsync(model.CreatedUSer);

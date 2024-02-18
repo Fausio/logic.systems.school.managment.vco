@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using logic.systems.school.managment.Data;
 
@@ -11,9 +12,10 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240218154132_student")]
+    partial class student
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1459,7 +1461,7 @@ namespace logic.systems.school.managment.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("logic.systems.school.managment.Models.Product", "Product")
+                    b.HasOne("logic.systems.school.managment.Models.Product", "Enrollment")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1469,7 +1471,7 @@ namespace logic.systems.school.managment.Migrations
                         .WithMany("ProductPayments")
                         .HasForeignKey("ProductInvoiceId");
 
-                    b.Navigation("Product");
+                    b.Navigation("Enrollment");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.TuitionPayment", b =>
