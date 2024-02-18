@@ -80,6 +80,8 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
+              
+
               var currentUser = await _userManager.GetUserAsync(User);
                await _SalesService.Sell(obj, currentUser.Id);
                return Json("");

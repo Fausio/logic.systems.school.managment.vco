@@ -1192,10 +1192,19 @@
                 <fieldset class="border p-2">
                     <legend class="w-auto">Ações</legend>
 
-                    <a class="btn btn-sm btn-success btn-icon-text text-white" id="comprarBtn">
-                        Comprar
-                    </a>
-
+                   
+                    <div id="btn_Comprar">
+                        <a class="btn btn-sm btn-success btn-icon-text text-white" id="comprarBtn">
+                            Comprar
+                        </a>
+                    </div>
+                    <div id="spinner_Comprar" style="display:none">
+                        <div class="d-flex justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
                 </fieldset>
 
             </div>
@@ -1344,6 +1353,13 @@
             // Event listener for the "Comprar" button
             $("#comprarBtn").on("click", function () {
                 // Gather data from the "itens" table
+
+
+                $("#btn_Comprar").hide();
+                $("#spinner_Comprar").show();
+            
+
+
                 var products = [];
                 var quantities = [];
 
@@ -1369,10 +1385,19 @@
                         // Fechar o modal
                         getProducts(@Model.id);
                         $("#MaterialModal").modal("hide");
+
+
+                        $("#btn_Comprar").show();
+                        $("#spinner_Comprar").hide();
+                         
                     },
                     error: function (error) {
                         // Handle the error response
                         console.log(error);
+
+                        $("#btn_Comprar").show();
+                        $("#spinner_Comprar").hide();
+
                     }
                 });
             });
@@ -1982,6 +2007,7 @@
 
         function getProducts(id) {
 
+      
             $.ajax({
                 url: "/admin/GetgetProducts?id=" + id,
                 type: "GET",

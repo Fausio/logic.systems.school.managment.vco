@@ -59,6 +59,7 @@ namespace logic.systems.school.managment.Controllers
 
         public async Task<JsonResult> IndexPaymentByStudantId(getPaymentParamitersDTO id)
         {
+         
             var result = await _ITuitionService.GetPaymentsByStudantTuitionsId(id.StudantId);
             result = result.Where(x => x.TuitionYear == id.EnrollmentYear).ToList();
 
