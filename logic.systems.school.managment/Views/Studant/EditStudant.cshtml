@@ -141,20 +141,17 @@
                             </div>
                         </div>
 
-
+                     
                         <fieldset class="border p-2 pb-0">
                             <legend class="w-auto">Dados pedagógicos</legend>
                             <div class="form-row mb-4">
-                                <div class="col-md-4">
-                                    <label for="">Tipo de desconto</label>
-                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="DiscountType">
-                                        @foreach (string item in ViewBag.DiscountType)
-                                        {
-                                            <option value="@item">@item</option>
-                                        }
-                                    </select>
-                                    <span asp-validation-for="DiscountType" class="text-danger"></span>
-                                </div> 
+                                <div class="form-row mb-4">
+                                    <div class="col-md-4">
+                                        <label for="">Preço da propina</label>
+                                        <input type="text" class="form-control" asp-for="TuitionPrice">
+                                        <span asp-validation-for="TuitionPrice" class="text-danger"></span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-row mb-1">
                                 <div class="col-md-4">

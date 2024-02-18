@@ -13,6 +13,7 @@ namespace logic.systems.school.managment.Models
         public virtual Student Student { get; set; }
         public int StudentId { get; set; }
 
+        public decimal TuitionPrice { get; set; }
         public List<Tuition> Tuitions { get; set; } = new List<Tuition>();
         public List<EnrollmentItem> EnrollmentItems { get; set; } = new List<EnrollmentItem>();
 
