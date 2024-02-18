@@ -28,7 +28,7 @@
     <!-- Campo oculto para o ID -->
     <input type="hidden" asp-for="@Model.id" />
     @* <input type="hidden" asp-for="@Model.CreatedUSer" />
-        <input type="hidden" asp-for="@Model.SchoolClassRoomId" /> *@
+    <input type="hidden" asp-for="@Model.SchoolClassRoomId" /> *@
     <input type="hidden" asp-for="@Model.CurrentSchoolLevelId" />
     <input type="hidden" asp-for="@Model.Enrollments" />
 
@@ -141,16 +141,20 @@
                             </div>
                         </div>
 
-                     
+
                         <fieldset class="border p-2 pb-0">
                             <legend class="w-auto">Dados pedagógicos</legend>
+
                             <div class="form-row mb-4">
-                                <div class="form-row mb-4">
-                                    <div class="col-md-4">
-                                        <label for="">Preço da propina</label>
-                                        <input type="text" class="form-control" asp-for="TuitionPrice">
-                                        <span asp-validation-for="TuitionPrice" class="text-danger"></span>
-                                    </div>
+                                <div class="col-md-4">
+                                    <label for="">Preço da inscrição</label>
+                                    <input type="text" class="form-control" asp-for="EnrollmentPrice" disabled>
+                                    <span asp-validation-for="EnrollmentPrice" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="">Preço da propina</label>
+                                    <input type="text" class="form-control" asp-for="TuitionPrice">
+                                    <span asp-validation-for="TuitionPrice" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="form-row mb-1">
@@ -184,7 +188,7 @@
                                         {
                                             <option value="@item">@item</option>
                                         }
-                                    </select> 
+                                    </select>
                                     <span asp-validation-for="EnrollmentYear" class="text-danger " style="display:none">O campo Ano de inscrição  é obrigatório.</span>
                                 </div>
                             </div>
@@ -229,18 +233,18 @@
                         <legend class="w-auto">Ações</legend>
                         <div class="template-demo">
 
-                            
 
-                                @if (!Model.Transferred)
-                                {
+
+                            @if (!Model.Transferred)
+                            {
                                 <button type="submit" class="btn  btn-sm btn-info btn-icon-text">
-                                        Actualizar
-                                        <i class="typcn typcn-edit btn-icon-append"></i>
-                                    </button>
-                                }
+                                    Actualizar
+                                    <i class="typcn typcn-edit btn-icon-append"></i>
+                                </button>
+                            }
 
-                            
-                          
+
+
                             <a asp-action="edit" asp-controller="studant" asp-route-id="@Model.id" class="btn  btn-sm btn-light btn-icon-text">
                                 Voltar para detalhes
                             </a>

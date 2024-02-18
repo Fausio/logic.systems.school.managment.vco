@@ -134,6 +134,11 @@
 
                             <div class="form-row mb-4">
                                 <div class="col-md-4">
+                                    <label for="">Preço da inscrição</label>
+                                    <input type="text" class="form-control" asp-for="EnrollmentPrice">
+                                    <span asp-validation-for="EnrollmentPrice" class="text-danger"></span>
+                                </div>  
+                                <div class="col-md-4">
                                     <label for="">Preço da propina</label>
                                     <input type="text" class="form-control" asp-for="TuitionPrice">
                                     <span asp-validation-for="TuitionPrice" class="text-danger"></span>

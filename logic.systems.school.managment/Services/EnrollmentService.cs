@@ -31,15 +31,17 @@ namespace logic.systems.school.managment.Services
 
 
 
-        public async Task<Enrollment> EnrollmentByStudantId(int studantId, int CurrentSchoolLevelId, int EnrollmentYear, int SchoolClassRoomId)
+        public async Task<Enrollment> EnrollmentByStudantId(int studantId, int CurrentSchoolLevelId, int EnrollmentYear, int SchoolClassRoomId, decimal EnrollmentPrice, decimal TuitionPrice)
         {
             try
             {
                 if (studantId > 0 && CurrentSchoolLevelId > 0)
                 {
-                    var enrollment = await GenerateEnrollmentDataByLevel(studantId, CurrentSchoolLevelId);
+                    var enrollment = await GenerateEnrollmentDataByLevel(studantId, CurrentSchoolLevelId, EnrollmentPrice);
+
                     if (enrollment is not null)
                     {
+                        enrollment.TuitionPrice = TuitionPrice;
                         var PaymentEnrollment = enrollment.PaymentEnrollment;
                          
                         await db.Enrollments.AddAsync(enrollment);
@@ -82,7 +84,7 @@ namespace logic.systems.school.managment.Services
         {
 
 
-            var enrollment = await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId);
+            var enrollment = await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId, model.EnrollmentPrice, model.TuitionPrice);
 
 
             await _ITuitionService.CreateByClassOfStudant(await _StudentService.Read(model.StudantId), enrollment, userId);
@@ -486,7 +488,7 @@ namespace logic.systems.school.managment.Services
         }
 
 
-        private async Task<Enrollment> GenerateEnrollmentDataByLevel(int studantId, int SchoolLevelId)
+        private async Task<Enrollment> GenerateEnrollmentDataByLevel(int studantId, int SchoolLevelId, decimal EnrollmentPrice)
         {
 
             var level = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Id == SchoolLevelId);
@@ -495,52 +497,21 @@ namespace logic.systems.school.managment.Services
             if (level is not null)
             {
                 var enrollment = new Enrollment();
-                 
 
-                switch (level.Description)
+
+                enrollment = new Enrollment()
                 {
- 
-                    case "1ª classe":
-                    case "2ª classe":
-                    case "3ª classe":
-                    case "4ª classe":
-                    case "5ª classe":
-                    case "6ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 1800  + (student.Internal ? 0 : 200),
-                            }, 
-                        };
-                        break;
- 
-                    case "7ª classe": 
-                    case "8ª classe":
-                    case "9ª classe":
-                    case "10ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 2000 + (student.Internal ? 0 : 100),
-                            }
-                        };
-                        break;
-                
-                    default:
-                        Console.WriteLine("Class");
-                        break;
-                }
+                    StudentId = studantId,
+                    PaymentEnrollment = new EnrollmentPayment()
+                    {
+                        PaymentWithoutVat = EnrollmentPrice,
+                    },
+                };
+                enrollment.EnrollmentPrice = EnrollmentPrice;
                 enrollment.SchoolLevelId = SchoolLevelId;
                 enrollment.PaymentEnrollment.Paid = true;
                 enrollment.PaymentEnrollment.PaymentDate = DateTime.Now;
-
-            
-
-
+                 
                 return enrollment;
             }
             else

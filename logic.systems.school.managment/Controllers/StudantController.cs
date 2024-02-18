@@ -145,7 +145,7 @@ namespace logic.systems.school.managment.Controllers
                     }
 
                     var result = await _StudentService.Create(StudantProfile.ToClass(model), currentUser.Id);
-                    var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear, result.SchoolClassRoomId);
+                    var Enrollment = await _IEnrollmentService.EnrollmentByStudantId(result.Id, model.CurrentSchoolLevelId, model.EnrollmentYear, result.SchoolClassRoomId, model.EnrollmentPrice, model.TuitionPrice);
                     await _ITuitionService.CreateByClassOfStudant(result, Enrollment, currentUser.Id);
                     TempData["MensagemSucess"] = "Estudante Registrado com sucesso!";
                     return RedirectToAction("edit", "studant", new { id = result.Id });

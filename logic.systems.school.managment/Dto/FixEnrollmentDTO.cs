@@ -9,6 +9,7 @@
         public string NewSchoolClassRoomId { get; set; }
         public string NewEnrollmentYear { get; set; }
         public bool NewchkInternal { get; set; }
-
+        public decimal TuitionPrice { get; set; }
+        public decimal EnrollmentPrice { get; set; }
     }
 }
