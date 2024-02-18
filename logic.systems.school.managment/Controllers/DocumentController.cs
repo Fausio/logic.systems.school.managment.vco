@@ -236,7 +236,7 @@ namespace logic.systems.school.managment.Controllers
             TableLines.Add(
             InvoiceTableLineDTO.Line
                                 .Replace("{desc}", "Mensalidade")
-                                .Replace("{unityPrice}", result.FirstOrDefault().PaymentWithVat + " MT")
+                                .Replace("{unityPrice}", result.FirstOrDefault().PaymentWithoutVat + " MT")
                                 .Replace("{quantity}", result.Count().ToString())
                                 .Replace("{paymentDate}", result.FirstOrDefault().PaymentDate.ToString("dd/MM/yyyy"))
                                 .Replace("{Classe}", await _AppService.SempleEntityDescriptionById(result.FirstOrDefault().Tuition.Enrollment.SchoolLevelId))

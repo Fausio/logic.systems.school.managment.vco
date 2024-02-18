@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity;
+@using logic.systems.school.managment.Dto;
 @model logic.systems.school.managment.Dto.EditStudantDTO
 @inject SignInManager<IdentityUser> signInManager
 @inject UserManager<IdentityUser> userManager
@@ -176,7 +177,7 @@
                     <a class="nav-link" data-toggle="tab" href="#menu2" onclick="getEnrollments(@Model.id)">Matriculas</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#menu3" onclick="getEnrollments(@Model.id)">Material Escolar</a>
+                    <a class="nav-link" data-toggle="tab" href="#menu3" onclick="getProducts(@Model.id)">Material Escolar</a>
                 </li>
             </ul>
 
@@ -227,13 +228,13 @@
 
                                         if (!Model.Transferred)
                                         {
-                                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
-                                                Adicionar Pagamento de mensalidade
-                                            </a>
+                                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
+                                                    Adicionar Pagamento de mensalidade
+                                                </a>
 
-                                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#multipayments" onclick="form_multi_pay_btns()">
-                                                Adicionar Multiplus Pagamentos de mensalidade
-                                            </a>
+                                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#multipayments" onclick="form_multi_pay_btns()">
+                                                    Adicionar Multiplus Pagamentos de mensalidade
+                                                </a>
                                         }
 
                                     }
@@ -295,7 +296,7 @@
 
 
                     </div>
-                     
+
                 </div>
                 <div id="menu1" class="tab-pane fade">
 
@@ -359,44 +360,44 @@
                             else
                             if (!Model.Transferred && Model.Suspended)
                             {
-                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                    Matricular
-                                </a>
+                                    <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                        Matricular
+                                    </a>
 
-                                <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                    Matrícular como repetente
-                                </a>
+                                    <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                        Matrícular como repetente
+                                    </a>
 
 
                                 if (user is not null)
                                 {
                                     if (user.Email == "admin@pandaalegria.com")
                                     {
-                                        <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                            Retificar Matricula
-                                        </a>
+                                            <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                                Retificar Matricula
+                                            </a>
                                     }
 
                                 }
                             }
                             else if (!Model.Transferred && !Model.Suspended)
                             {
-                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
-                                    Matricular
-                                </a>
+                                    <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
+                                        Matricular
+                                    </a>
 
-                                <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
-                                    Matrícular como repetente
-                                </a>
+                                    <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
+                                        Matrícular como repetente
+                                    </a>
 
 
                                 if (user is not null)
                                 {
                                     if (user.Email == "admin@pandaalegria.com")
                                     {
-                                        <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#FixEnrollmentRepitModal" onclick="form_FixEnrollmentRepit_btns()">
-                                            Retificar Matricula
-                                        </a>
+                                            <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#FixEnrollmentRepitModal" onclick="form_FixEnrollmentRepit_btns()">
+                                                Retificar Matricula
+                                            </a>
                                     }
 
                                 }
@@ -435,7 +436,7 @@
                     </div>
                 </div>
                 <div id="menu3" class="tab-pane fade">
- 
+
 
                     <div id="menu_3_info">
 
@@ -450,19 +451,17 @@
                             else
                             if (!Model.Transferred && Model.Suspended)
                             {
-                               
-                                <a class="btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                    Vender Material escolar
-                                </a> 
+
+                                    <a class="btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                        Vender Material escolar
+                                    </a>
                             }
                             else if (!Model.Transferred && !Model.Suspended)
                             {
-
-
-                                <a class="btn btn-sm btn-success btn-icon-text text-white" asp-action="Create" asp-controller="Sales" asp-route-id="@Model.id">
-                                    Vender Material escolar
-                                </a>
- 
+                                 
+                                    <a class="   btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#MaterialModal">
+                                        Vender Material escolar
+                                    </a>
 
                             }
 
@@ -479,9 +478,10 @@
                                         <thead>
                                             <tr>
                                                 <th>#Recibo</th>
+                                                <th>#Data</th>
                                                 <th>Descrição</th>
-                                                <th>Valor</th> 
-                                                <th>Açõoes</th>
+                                                <th>Valor</th>
+                                                <th>Ações</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -507,18 +507,18 @@
 
                         if (!Model.Transferred)
                         {
-                            <button class="btn btn-sm btn-warning btn-icon-text text-white" data-toggle="modal" data-target="#TransferModal" onclick="form_pay_btns()">
-                                Transferir studante
-                            </button>
+                                <button class="btn btn-sm btn-warning btn-icon-text text-white" data-toggle="modal" data-target="#TransferModal" onclick="form_pay_btns()">
+                                    Transferir studante
+                                </button>
                         }
 
 
 
 
 
-                        <a class="btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#DeleteStudent" onclick="form_FixEnrollmentRepit_btns()">
-                            Apagar estudante
-                        </a>
+                            <a class="btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#DeleteStudent" onclick="form_FixEnrollmentRepit_btns()">
+                                Apagar estudante
+                            </a>
 
 
 
@@ -546,15 +546,15 @@
                         @{
                             if (Model.CreatedUSer is not null && !string.IsNullOrEmpty(Model.CreatedUSer))
                             {
-                                <li><strong>Criado por:</strong> @Model.CreatedUSer</li>
-                                <li><strong>Data de Criação:</strong> @Model.CreatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
+                                    <li><strong>Criado por:</strong> @Model.CreatedUSer</li>
+                                    <li><strong>Data de Criação:</strong> @Model.CreatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
 
                             }
 
                             if (Model.UpdatedUSer is not null && !string.IsNullOrEmpty(Model.UpdatedUSer))
                             {
-                                <li><strong>Actulizado por:</strong> @Model.UpdatedUSer</li>
-                                <li><strong>Data de Actulização:</strong> @Model.UpdatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
+                                    <li><strong>Actulizado por:</strong> @Model.UpdatedUSer</li>
+                                    <li><strong>Data de Actulização:</strong> @Model.UpdatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
 
                             }
                         }
@@ -1119,6 +1119,101 @@
     </div>
 </div>
 
+
+
+<div class="modal fade" id="MaterialModal">
+    <div class="modal-dialog w-50" style="width:50%">
+        <div class="modal-content">
+
+            <!-- Conteúdo do modal -->
+            <div class="modal-header">
+                <h4 class="modal-title">Material escolar</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body mb-0">
+                <!-- Conteúdo do formulário aqui -->
+                <!-- dados do estudante -->
+                <fieldset class="border pt-0 mt-0 p-2 pb-0">
+                    <legend class="w-auto p-0 m-0 "> Material escolar </legend>
+                    <div class="table-responsive  p-0 m-0">
+                        <table class="MytabelaItens  p-0 m-0" id="MyMaterialtabelaItens" border="1">
+                            <thead>
+                                <tr>
+                                    <th><center> Material </center></th>
+                                    <th><center> Quantidade </center></th>
+                                    <th><center></center></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <center>
+                                            <select class="select-control" style="width: 100%;" id="SchoolLevels">
+                                                <option selected>... selecione ...</option>
+                                                @foreach (ProductDropDownDTO item in Model.SalesProduct.Products)
+                                                {
+                                                    var productJson = Newtonsoft.Json.JsonConvert.SerializeObject(item);
+                                                    <option value="@productJson">@item.Description @item.Price MT</option>
+                                                }
+                                            </select>
+                                            <span asp-validation-for="@Model.SalesProduct.Products" class="text-danger"></span>
+                                        </center>
+                                    </td>
+                                    <td><input type="number" style="width: 100%;" id="quantityInput" /></td>
+                                    <td>
+                                        <center>
+                                            <a id="btnAdicionar" class="btn mt-0 btn-sm btn-success btn-icon-text">
+                                                Adicionar
+                                            </a>
+                                        </center>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-responsive p-0 m-0">
+                        <table class="MytabelaItens p-0 m-0" id="itens" border="1">
+                            <thead>
+                                <tr>
+                                    <th><center> Descrição </center></th>
+                                    <th><center> Preço </center></th>
+                                    <th><center> Quantidade </center></th>
+                                    <th><center> Total </center></th>
+                                    <th><center></center></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Display items here dynamically using JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+                <fieldset class="border p-2">
+                    <legend class="w-auto">Ações</legend>
+
+                    <a class="btn btn-sm btn-success btn-icon-text text-white" id="comprarBtn">
+                        Comprar
+                    </a>
+
+                </fieldset>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="modal fade" id="SuspendedModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -1220,6 +1315,75 @@
 
 @section scripts {
     <script src="https://cdn.skypack.dev/pdf-lib/core"></script>
+    <!-- Add the following script at the end of your HTML file -->
+    <script>
+        $(document).ready(function () {
+            // Event listener for the "Adicionar" button
+            $("#btnAdicionar").on("click", function () {
+                // Get the selected product, quantity, and product ID
+                var selectedProduct = $("#SchoolLevels option:selected").text();
+                var quantity = $("#quantityInput").val();
+                var productId = JSON.parse($("#SchoolLevels").val()).Id;
+
+                // Add a new row to the "itens" table with the selected data
+                $("#itens tbody").append("<tr>" +
+                    "<td><center>" + selectedProduct + "</center></td>" +
+                    "<td><center>" + JSON.parse($("#SchoolLevels").val()).Price + " MT</center></td>" +
+                    "<td><center>" + quantity + "</center></td>" +
+                    "<td><center>" + (JSON.parse($("#SchoolLevels").val()).Price * quantity) + " MT</center></td>" +
+                    "<td><center><a class='btn btn-sm btn-danger btn-icon-text' onclick='removeItem(this)'>Remover</a></center></td>" +
+                    "<input type='hidden' name='products' value='" + productId + "' />" +
+                    "<input type='hidden' name='quantities' value='" + quantity + "' />" +
+                    "</tr>");
+
+                // Clear the input fields
+                $("#SchoolLevels").val("... selecione ...");
+                $("#quantityInput").val("");
+            });
+
+            // Event listener for the "Comprar" button
+            $("#comprarBtn").on("click", function () {
+                // Gather data from the "itens" table
+                var products = [];
+                var quantities = [];
+
+                $("#itens tbody tr").each(function () {
+                    var productId = $(this).find("input[name='products']").val();
+                    var quantity = $(this).find("input[name='quantities']").val();
+
+                    products.push({ studentId: '@Model.id', product: productId, quantity: quantity });
+                });
+
+                // Now you have an array of objects with product IDs and quantities
+                console.log(products);
+
+
+                // Send data to the controller via AJAX
+                $.ajax({
+                    type: "POST",
+                    url: "/Sales/Sell",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(products),
+                    success: function (result) {
+                        alert("Compra efetuada com sucesso!"); 
+                        // Fechar o modal
+                        getProducts(@Model.id);
+                        $("#MaterialModal").modal("hide");
+                    },
+                    error: function (error) {
+                        // Handle the error response
+                        console.log(error);
+                    }
+                });
+            });
+        });
+
+        // Function to remove a row from the "itens" table
+        function removeItem(element) {
+            $(element).closest("tr").remove();
+        }
+    </script>
+
     <script>
         $(document).ready(function () {
             $("#provinces").change(function () {
@@ -1811,6 +1975,41 @@
             });
 
         }
+
+
+
+
+
+        function getProducts(id) {
+
+            $.ajax({
+                url: "/admin/GetgetProducts?id=" + id,
+                type: "GET",
+                success: function (MyList) {
+                    $("#ProductsTables tbody").empty();
+
+                    console.log("MyList", MyList);
+
+                       $.each(MyList, function (index, item) {
+                           var newRow = $("<tr>");
+                           
+                           newRow.append("<td>" + item.id + "</td>");
+                           newRow.append("<td>" + item.date + "</td>");
+                           newRow.append("<td>" + item.description + "</td>");
+                           newRow.append("<td>" + item.paymentWithVat + "</td>");
+                           newRow.append("<td>" + " <div id='enrolls_btns' > <button onclick='PrintProductInvoice(" + item.id + " )'   type='button'  class='btn btn-sm btn-dark btn-block btn-icon-text text-white  mb-0 mt-0 ' >  Imprimir </button>      </div>   <div id='Product_spinner' style='display:none'><div class='d-flex justify-content-center'><div class='spinner-border spinner-border-sm' role='status'><span class='sr-only'>Loading...</span></div></div></div> " + "</td>");
+                     
+                           $("#ProductsTables tbody").append(newRow);
+                       });
+
+                }
+            });
+
+        }
+
+
+
+
 
         function getMultiPayments(id, EnrollmentYear) {
             var data = {

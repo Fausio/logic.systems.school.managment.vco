@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using logic.systems.school.managment.Data;
 
@@ -11,9 +12,10 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240218145552_sdf")]
+    partial class sdf
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1138,16 +1140,11 @@ namespace logic.systems.school.managment.Migrations
                     b.Property<int?>("InvoiceId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StudentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasIndex("InvoiceId");
-
-                    b.HasIndex("StudentId");
 
                     b.ToTable("ProductInvoice");
                 });
@@ -1442,13 +1439,7 @@ namespace logic.systems.school.managment.Migrations
                         .WithMany()
                         .HasForeignKey("InvoiceId");
 
-                    b.HasOne("logic.systems.school.managment.Models.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId");
-
                     b.Navigation("Invoice");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.ProductPayment", b =>
@@ -1459,7 +1450,7 @@ namespace logic.systems.school.managment.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("logic.systems.school.managment.Models.Product", "Product")
+                    b.HasOne("logic.systems.school.managment.Models.Product", "Enrollment")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1469,7 +1460,7 @@ namespace logic.systems.school.managment.Migrations
                         .WithMany("ProductPayments")
                         .HasForeignKey("ProductInvoiceId");
 
-                    b.Navigation("Product");
+                    b.Navigation("Enrollment");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.TuitionPayment", b =>

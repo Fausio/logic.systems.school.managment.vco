@@ -399,9 +399,7 @@ namespace logic.systems.school.managment.Services
                                            .ThenInclude(x => x.Tuitions)
                                            .Include(x => x.CurrentSchoolLevel)
                                            .FirstOrDefaultAsync(x => x.Id == item.Tuition.StudentId && x.Row != Common.Deleted);
-
-                var discount = (decimal)0;
-
+                 
                 if (studant is not null)
                 {
                     item.PaymentWithVat = item.Tuition.Enrollment.TuitionPrice;

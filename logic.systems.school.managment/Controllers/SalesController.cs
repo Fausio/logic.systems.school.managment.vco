@@ -26,11 +26,18 @@ namespace logic.systems.school.managment.Controllers
             try
             {
                 var currentUser = await _userManager.GetUserAsync(User);
+                var products = await _StudentService.ReadProducts();
                  
                 return View(new SalesProductDTO()
                 {
                     Student =  await _StudentService.Read(id),
-                    Products = await _StudentService.ReadProducts()
+                    Products = products.Select(x => new ProductDropDownDTO()
+                    {
+                        Id = x.Id,
+                        Description = x.Description,
+                        Price = x.Price,
+
+                    }).ToList(),
                 });
             }
             catch (Exception)
@@ -41,6 +48,50 @@ namespace logic.systems.school.managment.Controllers
 
         }
 
+        public async Task<IActionResult> _Create(int id)
+        {
+            try
+            {
+                var currentUser = await _userManager.GetUserAsync(User);
+                var products = await _StudentService.ReadProducts();
 
+                return View(new SalesProductDTO()
+                {
+                    Student = await _StudentService.Read(id),
+                    Products = products.Select(x => new ProductDropDownDTO()
+                    {
+                        Id = x.Id,
+                        Description = x.Description,
+                        Price = x.Price,
+
+                    }).ToList(),
+                });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Sell([FromBody] List<ProductSellDTO> obj)
+        {
+            try
+            {
+              var currentUser = await _userManager.GetUserAsync(User);
+               await _SalesService.Sell(obj, currentUser.Id);
+               return Json("");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+         
     }
 }

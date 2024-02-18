@@ -23,12 +23,12 @@
 </div>
 
 
-<form asp-action="Edit" asp-controller="studant">
+<form asp-action="Edit" asp-controller="studant" class="needs-validation" novalidate>
 
     <!-- Campo oculto para o ID -->
     <input type="hidden" asp-for="@Model.id" />
-    @* <input type="hidden" asp-for="@Model.CreatedUSer" />
-    <input type="hidden" asp-for="@Model.SchoolClassRoomId" /> *@
+    @* <input type="hidden" asp-for="@Model.CreatedUSer" /> *@
+    
     <input type="hidden" asp-for="@Model.CurrentSchoolLevelId" />
     <input type="hidden" asp-for="@Model.Enrollments" />
 
@@ -57,7 +57,7 @@
                     <p><strong>@ViewBag.Mensagem</strong></p>
                 </div>
 
-                <form class="needs-validation" novalidate>
+               
 
 
 
@@ -147,8 +147,8 @@
 
                             <div class="form-row mb-4">
                                 <div class="col-md-4">
-                                    <label for="">Preço da inscrição</label>
-                                    <input type="text" class="form-control" asp-for="EnrollmentPrice" disabled>
+                                <label for="">Preço da inscrição actual</label>
+                                    <input type="text" class="form-control" asp-for="EnrollmentPrice"  >
                                     <span asp-validation-for="EnrollmentPrice" class="text-danger"></span>
                                 </div>
                                 <div class="col-md-4">
@@ -253,7 +253,7 @@
                     </fieldset>
 
 
-                </form>
+              
 
 
             </div>
