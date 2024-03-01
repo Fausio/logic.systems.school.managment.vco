@@ -118,7 +118,7 @@ namespace logic.systems.school.managment.Services
         {
             try
             {
-                return await db.Tuitions.Include(e => e.Enrollment.SchoolLevel).Where(x => x.StudentId == StudantId ).ToListAsync();
+                return await db.Tuitions.Include(e => e.Enrollment.SchoolLevel).Where(x => x.StudentId == StudantId).ToListAsync();
             }
             catch (Exception)
             {
@@ -247,10 +247,11 @@ namespace logic.systems.school.managment.Services
 
                 foreach (var dto in dtos)
                 {
-                    var studant = await db.Students.Include(x => x.Enrollments)
-                                             .ThenInclude(x => x.Tuitions)
-                                             .Include(x => x.CurrentSchoolLevel)
-                                             .FirstOrDefaultAsync(x => x.Id == dto.StudantId && x.Row != Common.Deleted);
+                    var studant = await db.Students
+                                          .Include(x => x.Enrollments)
+                                          .ThenInclude(x => x.Tuitions)
+                                          .Include(x => x.CurrentSchoolLevel)
+                                          .FirstOrDefaultAsync(x => x.Id == dto.StudantId && x.Row != Common.Deleted);
 
                     var discount = (decimal)0;
 
@@ -271,7 +272,7 @@ namespace logic.systems.school.managment.Services
                         var payment = new TuitionPayment()
                         {
                             TuitionId = dto.TuitionId,
-                            PaymentDate = DateTime.Now,
+                            PaymentDate = dto.PaymentDate,
                             PaymentWithoutVat = (getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount),
                             CreatedDate = nowTimeStep,
                             CreatedUSer = userid,
@@ -303,12 +304,37 @@ namespace logic.systems.school.managment.Services
                         {
                             tuitionPayed.Row = Common.Modified;
                             tuitionPayed.UpdatedDate = DateTime.Now;
-                            tuitionPayed.PaidDate = DateTime.Now;
+                            tuitionPayed.PaidDate = dto.PaymentDate;
                             tuitionPayed.Paid = true;
                             tuitionPayed.UpdatedUSer = userid;
 
                             db.Tuitions.Update(tuitionPayed);
                             await db.SaveChangesAsync();
+
+                            if (tuitionPayed.TuitionFines is not null)
+                            {
+                                if (tuitionPayed.PaidDate <= tuitionPayed.StartDate.AddDays(14))
+                                {
+                                    var tuitionFinesTODelete = await db.TuitionFines
+                                    .Include(x => x.TuitionFineDailies)
+                                    .FirstOrDefaultAsync(x => x.Id == tuitionPayed.TuitionFines.Id);
+
+                                    var TuitionFineDailies = tuitionFinesTODelete?.TuitionFineDailies;
+                                    if (TuitionFineDailies?.Count > 0)
+                                    {
+                                        db.TuitionFineDailies.RemoveRange(TuitionFineDailies);
+                                        await db.SaveChangesAsync();
+                                    }
+
+                                    db.TuitionFines.Remove(tuitionFinesTODelete);
+                                    await db.SaveChangesAsync();
+
+                                }
+                            }
+
+
+
+                            tuitionPayed = db.Tuitions.Include(x => x.TuitionFines).ThenInclude(x => x.TuitionFineDailies).FirstOrDefault(x => x.Id == dto.TuitionId);
 
                             // create Fee Payment if Tuition have it  
                             if (tuitionPayed.TuitionFines is not null)
@@ -325,7 +351,7 @@ namespace logic.systems.school.managment.Services
                                         item.UpdatedUSer = userid;
                                         item.Row = Common.Modified;
                                         item.PaidDate = payment.PaymentDate;
-                                        item.Paid = true; 
+                                        item.Paid = true;
                                     }
                                 }
 
@@ -431,9 +457,9 @@ namespace logic.systems.school.managment.Services
 
         private async Task CheckFeeZiro()
         {
-           var payments = await db.PaymentTuitions.Include(x => x.Tuition)
-                                                  .Where(x => x.PaymentWithoutVat == (decimal)0)
-                                                  .ToListAsync();
+            var payments = await db.PaymentTuitions.Include(x => x.Tuition)
+                                                   .Where(x => x.PaymentWithoutVat == (decimal)0)
+                                                   .ToListAsync();
 
             foreach (var item in payments)
             {
@@ -442,8 +468,8 @@ namespace logic.systems.school.managment.Services
                                            .Include(x => x.CurrentSchoolLevel)
                                            .FirstOrDefaultAsync(x => x.Id == item.Tuition.StudentId && x.Row != Common.Deleted);
 
-                var discount = (decimal)0; 
-             
+                var discount = (decimal)0;
+
                 if (studant is not null)
                 {
                     if (studant.DiscountType == Student.DiscountPersonInCharge)
@@ -459,11 +485,11 @@ namespace logic.systems.school.managment.Services
                     item.VatOfPayment = VatCalc(item.PaymentWithoutVat);
                     item.PaymentWithVat = item.VatOfPayment + item.PaymentWithoutVat;
 
-                      db.PaymentTuitions.Update(item);
+                    db.PaymentTuitions.Update(item);
                     await db.SaveChangesAsync();
                 }
 
-            
+
             }
 
         }

@@ -221,7 +221,6 @@
                                 var divId = $"tuitionHome{item.Id}";
                                 <div id="@divId" class="@styleActive">
                                     @{
-
                                         if (!Model.Transferred)
                                         {
                                             <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
@@ -232,7 +231,6 @@
                                                 Adicionar Multiplus Pagamentos de mensalidade
                                             </a>
                                         }
-
                                     }
 
 
@@ -453,15 +451,9 @@
                             </button>
                         }
 
-
-
-
-
                         <a class="btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#DeleteStudent" onclick="form_FixEnrollmentRepit_btns()">
                             Apagar estudante
                         </a>
-
-
 
                     }
 
@@ -527,22 +519,34 @@
             </div>
             <div class="modal-body">
 
+
+
                 <label id="TotalPayAllTabelaIten">Total a pagar:</label>
 
-                <div class="table-responsive mt-0">
-                    <table class="MytabelaItens mt-0" id="PayAllTabelaIten" border="1">
-                        <thead>
-                            <tr>
-                                <th>Mensalidades a pagar </th>
-                                <th>Data</th>
-                                <th> </th>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                <div class="form-row mb-3">
+
+                    <label for="SinglePaymentDate">Data de Pagamento</label>
+                    <input type="date" class="form-control date-input" id="MultiPaymentDate">
+
                 </div>
+                <div class="form-row mb-3">
+                    <div class="table-responsive mt-0">
+                        <table class="MytabelaItens mt-0" id="PayAllTabelaIten" border="1">
+                            <thead>
+                                <tr>
+                                    <th>Mensalidades a pagar </th>
+                                    <th>Data</th>
+                                    <th> </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer">
 
@@ -610,16 +614,19 @@
                         <legend class="w-auto">Mensalidades a pagar (@ViewBag.CurrentSchoolLevel) </legend>
                         <div class="form-row mb-3">
                             <div class="col-md-12 col-sm-12">
+                                <label for="SinglePaymentDate">Data de Pagamento</label>
+                                <input type="date" class="form-control date-input" id="SinglePaymentDate">
+                            </div>
+                        </div>
+                        <div class="form-row mb-3">
+                            <div class="col-md-12 col-sm-12">
                                 <label for="">Meses</label>
                                 <select class="form-control form-control-lg pb-3 pt-3" id="tuitionPayment">
-
 
                                     @foreach (Tuition item in ViewBag.Tuitions)
                                     {
                                         <option value="@item.Id">@item.MonthNumber - @item.MonthName - @item.Year</option>
                                     }
-
-
 
                                 </select>
                             </div>
@@ -1207,13 +1214,9 @@
         }
 
         function form_pay_btns() {
-
             $("#form_pay_btns").show();
             $("#form_pay_spinner").hide();
         }
-
-
-
 
         function form_payfee_btns() {
 
@@ -1258,8 +1261,6 @@
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-
-
 
                     $('#enrolls_btns').show();
                     $('#enrolls_spinner').hide();
@@ -1382,10 +1383,14 @@
         }
 
         function createPayment() {
-
+            if ($("#SinglePaymentDate").val() == null || $("#SinglePaymentDate").val() == "") {
+                alert("Data de pagamento invalida!");
+                return;
+            }
             var data = {
                 StudantId: @Model.id,
-                TuitionId: $("#tuitionPayment").val()
+                TuitionId: $("#tuitionPayment").val(),
+                PaymentDate: $("#SinglePaymentDate").val()
             };
 
             $("#form_pay_btns").hide();
@@ -1806,6 +1811,12 @@
             $("#TotalPayAllTabelaIten").text("Total a pagar: " + TotalToPay + ".00 MT");
         }
         function confirmarMultiPayment() {
+
+            if ($("#MultiPaymentDate").val() == null || $("#MultiPaymentDate").val() == "") {
+                alert("Data de pagamento invalida!");
+                return;
+            }
+
             $("#btn_multipayments").hide();
             $("#spinner_multipayments").show();
 
@@ -1829,7 +1840,8 @@
 
                     selectedIds.push({
                         StudantId: @Model.id,
-                        TuitionId: itemId
+                        TuitionId: itemId,
+                        PaymentDate: $("#MultiPaymentDate").val(),
                     });
 
 

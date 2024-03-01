@@ -7,6 +7,8 @@ namespace logic.systems.school.managment.Dto
         
         public int StudantId { get; set; }
         public int TuitionId { get; set; }
+
+        public DateTime PaymentDate { get; set; }
     }
 }
  
