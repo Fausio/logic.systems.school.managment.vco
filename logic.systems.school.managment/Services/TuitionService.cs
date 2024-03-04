@@ -310,7 +310,7 @@ namespace logic.systems.school.managment.Services
 
                             db.Tuitions.Update(tuitionPayed);
                             await db.SaveChangesAsync();
-
+                            // remove as multas depois da data de pagamento
                             if (tuitionPayed.TuitionFines is not null)
                             {
                                 if (tuitionPayed.PaidDate <= tuitionPayed.StartDate.AddDays(14))
@@ -328,6 +328,32 @@ namespace logic.systems.school.managment.Services
 
                                     db.TuitionFines.Remove(tuitionFinesTODelete);
                                     await db.SaveChangesAsync();
+                                }
+
+                                // remove as multas diarias depois da data de pagamento
+                                if (tuitionPayed.TuitionFines is not null)
+                                {
+
+                                    if (tuitionPayed.TuitionFines.TuitionFineDailies.Count > 0)
+                                    {
+                                        var ListTuitionFineDailiesToDelete = new List<TuitionFineDaily>();
+
+                                        foreach (var daily in tuitionPayed.TuitionFines.TuitionFineDailies)
+                                        {
+                                            if (daily.FinesDate > tuitionPayed.PaidDate)
+                                            {
+                                                ListTuitionFineDailiesToDelete.Add(daily);
+                                            }
+                                        }
+
+                                        if (ListTuitionFineDailiesToDelete.Count() > 0)
+                                        {
+
+                                            db.TuitionFineDailies.RemoveRange(ListTuitionFineDailiesToDelete);
+                                            await db.SaveChangesAsync();
+                                        }
+                                    }
+
 
                                 }
                             }
@@ -354,7 +380,6 @@ namespace logic.systems.school.managment.Services
                                         item.Paid = true;
                                     }
                                 }
-
 
                                 tuitionPayed.TuitionFines.FinesValue += DailyFees;
                                 tuitionPayed.TuitionFines.Paid = true;
@@ -521,7 +546,7 @@ namespace logic.systems.school.managment.Services
                 {
                     var Tuitions = student.Enrollments.SelectMany(x => x.Tuitions.Where(t => !t.Paid));
                     var setSuspended = false;
-                    var TuitionsToClean = new List<Tuition>();  
+                    var TuitionsToClean = new List<Tuition>();
                     foreach (Tuition tuition in Tuitions)
                     {
                         // nao verificar adicionar multas se o estudante entrou no meio do ano
@@ -556,7 +581,7 @@ namespace logic.systems.school.managment.Services
                         }
                         else
                         {
-                            TuitionsToClean.Add(tuition); 
+                            TuitionsToClean.Add(tuition);
                         }
 
 
@@ -564,7 +589,7 @@ namespace logic.systems.school.managment.Services
 
 
 
-                    if (TuitionsToClean.Count> 0)
+                    if (TuitionsToClean.Count > 0)
                     {
                         db.Tuitions.RemoveRange(TuitionsToClean);
                         await db.SaveChangesAsync();
@@ -599,47 +624,43 @@ namespace logic.systems.school.managment.Services
                 await db.TuitionFines.AddAsync(tuitionFines);
                 await db.SaveChangesAsync();
             }
-            else
+
+            // criar multa diaria de 25mt
+            // tudo: daily fee 
+            var now = DateTime.Now;
+
+            var _havetuitionFines = await db.TuitionFines.FirstOrDefaultAsync(x => x.TuitionId == tuitionId);
+            var tuitionDate = _havetuitionFines.Tuition.StartDate.AddDays(24);
+
+            var listOfTuitionFineDaily = new List<TuitionFineDaily>();
+
+            if (now > tuitionDate)
             {
-                // criar multa diaria de 25mt
-                // tudo: daily fee 
-                var now = DateTime.Now;
 
-                var tuitionDate = havetuitionFines.Tuition.StartDate.AddDays(24);
-
-                var listOfTuitionFineDaily = new List<TuitionFineDaily>();
-
-                if (now > tuitionDate)
+                for (var i = tuitionDate; i <= now; i = i.AddDays(1))
                 {
 
-                    for (var i = tuitionDate; i <= now; i = i.AddDays(1))
+                    if (i.DayOfWeek != DayOfWeek.Saturday && i.DayOfWeek != DayOfWeek.Sunday)
                     {
+                        var NotExistForThisDay = await db.TuitionFineDailies.FirstOrDefaultAsync(x => x.TuitionFineId == _havetuitionFines.Id && x.FinesDate == i);
 
-                        if (i.DayOfWeek != DayOfWeek.Saturday && i.DayOfWeek != DayOfWeek.Sunday)
+                        if (NotExistForThisDay == null)
                         {
-                            var NotExistForThisDay = await db.TuitionFineDailies.FirstOrDefaultAsync(x => x.TuitionFineId == havetuitionFines.Id && x.FinesDate == i);
-
-                            if (NotExistForThisDay == null)
+                            await db.TuitionFineDailies.AddAsync(new TuitionFineDaily()
                             {
-                                await db.TuitionFineDailies.AddAsync(new TuitionFineDaily()
-                                {
-                                    FinesDate = i,
-                                    CreatedDate = now,
-                                    CreatedUSer = userid,
-                                    TuitionFineId = havetuitionFines.Id
-                                });
+                                FinesDate = i,
+                                CreatedDate = now,
+                                CreatedUSer = userid,
+                                TuitionFineId = _havetuitionFines.Id
+                            });
 
-                                await db.SaveChangesAsync();
-                            }
-
-
+                            await db.SaveChangesAsync();
                         }
 
+
                     }
+
                 }
-
-
-
             }
         }
 

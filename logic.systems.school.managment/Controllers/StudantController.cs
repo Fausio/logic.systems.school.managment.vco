@@ -200,8 +200,8 @@ namespace logic.systems.school.managment.Controllers
             try
             {
                 var currentUser = await _userManager.GetUserAsync(User);
-                await _ITuitionService.CheckFee(id, currentUser.Id);
-
+                await _ITuitionService.CheckFee(id, currentUser.Id); 
+               
                 var model = await _StudentService.Read(id);
                 var result = StudantProfile.ToDTO(model);
 
