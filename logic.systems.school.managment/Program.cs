@@ -136,6 +136,13 @@ using (var scope = app.Services.CreateScope())
                 NormalizedUserName = "master",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
+            } ,   new IdentityUser() {
+                Email =  "bernardete.paulino@pandaalegria.com",
+                NormalizedEmail = "bernardete.paulino@pandaalegria.com",
+                UserName =  "bernardete.paulino@pandaalegria.com",
+                NormalizedUserName = "Bernardete Paulino",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
             }
         };
 
@@ -161,6 +168,13 @@ using (var scope = app.Services.CreateScope())
             if (email == "ronilson.cuco@logicsystems.co.mz")
             {
                 var pass = "Madara1122";
+                await UserManager.CreateAsync(item, pass);
+                await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
+            }
+
+            if (email == "bernardete.paulino@pandaalegria.com")
+            {
+                var pass = "Bernardete1122";
                 await UserManager.CreateAsync(item, pass);
                 await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
             }
