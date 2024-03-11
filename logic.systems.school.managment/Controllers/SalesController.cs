@@ -1,10 +1,12 @@
 ﻿using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace logic.systems.school.managment.Controllers
 {
+    [Authorize]
     public class SalesController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
