@@ -30,4 +30,12 @@
     <Folder Include="wwwroot\Document\Template\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\FausioMatsinhe\source\repos\logic.systems.school.managment.vco\logic.systems.school.managment\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\FausioMatsinhe\source\repos\logic.systems.school.managment.vco\logic.systems.school.managment\.editorconfig" />
+  </ItemGroup>
+
 </Project>

@@ -20,10 +20,10 @@ namespace logic.systems.school.managment.Services
                 model.UpdatedDate = DateTime.Now;
                 model.UpdatedUSer = userId;
                 model.Value = item.Value;
-                listOfGrades.Add(model); 
+                listOfGrades.Add(model);
 
-                var assessment = await db.Assessments.FirstOrDefaultAsync( x => x.Id == item.AssessmentId);
-                assessment.UpdatedDate = DateTime.Now; 
+                var assessment = await db.Assessments.FirstOrDefaultAsync(x => x.Id == item.AssessmentId);
+                assessment.UpdatedDate = DateTime.Now;
                 assessment.UpdatedUSer = userId;
                 db.Assessments.Update(assessment);
 
@@ -33,7 +33,7 @@ namespace logic.systems.school.managment.Services
             await db.SaveChangesAsync();
 
 
-            
+
         }
 
         public Task<Grade> Create(Grade model, string CreatedById)
@@ -48,45 +48,50 @@ namespace logic.systems.school.managment.Services
 
         public async Task<Grade> Read(int modelID) => await db.Grades.FirstOrDefaultAsync(x => x.Id == modelID);
 
-        public async Task<List<Assessment>> ReadAssessmentsByClassLevelClassRoomSubjectYear(GradeConfigDTO dto )
+        public async Task<List<Assessment>> ReadAssessmentsByClassLevelClassRoomSubjectYear(GradeConfigDTO dto)
         {
             var results = await db.Assessments
                                   .Include(g => g.Grades)
                                   .Include(s => s.Subject)
-                                 
+
                                   .Include(q => q.Quarter)
                                        .ThenInclude(q => q.Enrollment)
                                        .ThenInclude(q => q.Student)
                                    .Where(
                                               x => x.Quarter.Enrollment.SchoolLevelId == dto.ClassLevel &&
-                                                   x.Quarter.Enrollment.EnrollmentYear == dto.EnrollmentYears && 
+                                                   x.Quarter.Enrollment.EnrollmentYear == dto.EnrollmentYears &&
                                                    x.Quarter.Enrollment.SchoolClassRoomId == dto.ClassRoom &&
-                                                   x.SubjectId == dto.Subject   
+                                                   x.SubjectId == dto.Subject &&
+                                                   x.Quarter.Enrollment.Student.Row != Common.Deleted ||
+                                                   x.Quarter.Enrollment.Student.Suspended
                                           )
                                    .ToListAsync();
-            
+
 
 
 
             return results;
-        }  public async Task<List<Assessment>> ReadAssessmentsByClassLevelClassRoomSubjectQuarter(GradeConfigDTO dto )
+        }
+        public async Task<List<Assessment>> ReadAssessmentsByClassLevelClassRoomSubjectQuarter(GradeConfigDTO dto)
         {
             var results = await db.Assessments
                                   .Include(g => g.Grades)
                                   .Include(s => s.Subject)
-                                 
+
                                   .Include(q => q.Quarter)
                                        .ThenInclude(q => q.Enrollment)
                                        .ThenInclude(q => q.Student)
                                    .Where(
                                               x => x.Quarter.Enrollment.SchoolLevelId == dto.ClassLevel &&
-                                                   x.Quarter.Enrollment.EnrollmentYear == dto.EnrollmentYears && 
+                                                   x.Quarter.Enrollment.EnrollmentYear == dto.EnrollmentYears &&
                                                    x.Quarter.Enrollment.SchoolClassRoomId == dto.ClassRoom &&
                                                    x.SubjectId == dto.Subject &&
-                                                   x.Quarter.Number == dto.Quarter
+                                                   x.Quarter.Number == dto.Quarter &&
+                                                   x.Quarter.Enrollment.Student.Row != Common.Deleted ||
+                                                   x.Quarter.Enrollment.Student.Suspended
                                           )
                                    .ToListAsync();
-            
+
 
 
 

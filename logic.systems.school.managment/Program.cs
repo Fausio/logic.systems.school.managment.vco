@@ -10,6 +10,8 @@ using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +57,10 @@ builder.Services.AddScoped<IGradeService, GradeService>();
 // Register DinkToPdf converter
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
+
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -73,9 +79,20 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.Use(async (context, next) =>
+{
+    await next();
+
+    if (context.Response.StatusCode == 403)
+    {
+        // O status de acesso negado (403) foi retornado, redirecione conforme necessário
+        context.Response.Redirect("/Identity/Account/Login");
+    }
+  
+});
 
 app.MapControllerRoute(
     name: "default",
@@ -189,3 +206,4 @@ await SeedSimpleEntity.Run();
 await SeedProducts.Run();
 
 app.Run();
+
