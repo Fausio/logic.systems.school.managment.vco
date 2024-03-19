@@ -56,6 +56,18 @@ builder.Services.AddScoped<IGradeService, GradeService>();
 // Register DinkToPdf converter
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
+
+
+
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+    // Define o tempo de validade do token para um período longo ou indefinido
+    options.ValidationInterval = TimeSpan.FromDays(365); // Expira em 1 ano
+});
+
+
+
+
 var app = builder.Build();
 // cookie de autenticação para nunca expirar
 app.UseCookiePolicy(new CookiePolicyOptions
@@ -72,25 +84,14 @@ app.Use(async (context, next) =>
     await next();
 
     var statusCode = context.Response.StatusCode;
-    if (statusCode == 400 || statusCode == 403 )
+
+    var statusCodeString = statusCode.ToString();
+    if (statusCode == 400 || statusCode == 403 || statusCodeString.Contains("40"))
     {
         context.Response.Redirect("Identity/Account/Login");
     }
 });
-
-
-app.Use(async (context, next) =>
-{
-    await next();
-
-    if (context.Response.StatusCode == 403)
-    {
-        // O status de acesso negado (403) foi retornado, redirecione conforme necessário
-        context.Response.Redirect("/Identity/Account/Login");
-    }
-
-});
-
+ 
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
