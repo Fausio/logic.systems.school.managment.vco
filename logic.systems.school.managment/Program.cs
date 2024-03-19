@@ -10,8 +10,7 @@ using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Net;
+using Microsoft.AspNetCore.CookiePolicy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,11 +56,28 @@ builder.Services.AddScoped<IGradeService, GradeService>();
 // Register DinkToPdf converter
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
-
-
-
-
 var app = builder.Build();
+// cookie de autenticação para nunca expirar
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.Strict,
+    Secure = CookieSecurePolicy.Always,
+    HttpOnly = HttpOnlyPolicy.Always
+});
+
+
+// Configurar middleware para redirecionar para a tela de login em caso de erro 400
+app.Use(async (context, next) =>
+{
+    await next();
+
+    var statusCode = context.Response.StatusCode;
+    if (statusCode == 400 || statusCode == 403 )
+    {
+        context.Response.Redirect("Identity/Account/Login");
+    }
+});
+
 
 app.Use(async (context, next) =>
 {
