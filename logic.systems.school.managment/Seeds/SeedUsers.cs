@@ -25,7 +25,7 @@ namespace logic.systems.school.managment.Seeds
                 }
             }
 
-            var user = new IdentityUser
+            var user = new AppUser
             {
 
                 Email = "admin@pandaalegria.com",
@@ -54,7 +54,7 @@ namespace logic.systems.school.managment.Seeds
         public async static Task<IdentityResult> AssignRoles(IServiceProvider services, string email, string[] roles)
         {
             UserManager<AppUser> _userManager = services.GetService<UserManager<AppUser>>();
-            IdentityUser user = await _userManager.FindByEmailAsync(email);
+            AppUser user = await _userManager.FindByEmailAsync(email);
             var result = await _userManager.AddToRolesAsync(user, roles);
             return result;
         }
