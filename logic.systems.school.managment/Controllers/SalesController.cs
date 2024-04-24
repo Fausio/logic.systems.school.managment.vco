@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace logic.systems.school.managment.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "ADMINISTRATOR")]
     public class SalesController : Controller
     {
         private readonly UserManager<AppUser> _userManager;

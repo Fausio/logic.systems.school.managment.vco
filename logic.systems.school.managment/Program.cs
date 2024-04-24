@@ -39,6 +39,16 @@ builder.Services.AddDefaultIdentity<AppUser>(options =>
 //);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy =>
+        policy.RequireRole("Administrator".ToUpper()));
+
+    options.AddPolicy("RequireEmployeeRole", policy =>
+        policy.RequireRole("employee".ToUpper()));
+
+    // Add more policies as needed for other roles
+});
 
 
 builder.Services.AddScoped<IstudantService, StudantService>();
@@ -61,7 +71,7 @@ builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new 
 
 builder.Services.Configure<SecurityStampValidatorOptions>(options =>
 {
-    // Define o tempo de validade do token para um período longo ou indefinido
+    // Define o tempo de validade do token para um perï¿½odo longo ou indefinido
     options.ValidationInterval = TimeSpan.FromDays(365); // Expira em 1 ano
 });
 
@@ -69,7 +79,7 @@ builder.Services.Configure<SecurityStampValidatorOptions>(options =>
 
 
 var app = builder.Build();
-// cookie de autenticação para nunca expirar
+// cookie de autenticaï¿½ï¿½o para nunca expirar
 app.UseCookiePolicy(new CookiePolicyOptions
 {
     MinimumSameSitePolicy = SameSiteMode.Strict,

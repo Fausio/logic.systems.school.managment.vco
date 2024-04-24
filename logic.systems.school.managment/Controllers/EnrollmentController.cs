@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace logic.systems.school.managment.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "ADMINISTRATOR")]
     public class EnrollmentController : Controller
     {
         private IEnrollment _EnrollmentService;

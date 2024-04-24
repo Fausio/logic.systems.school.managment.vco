@@ -1,0 +1,25 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Acesso negado";
+}
+
+<header>
+    <h1 class="text-danger">Acesso negado</h1>
+    <p class="text-danger">Acesso não autorizado a este recurso..</p>
+</header>
+
+@* @if (User.IsInRole("Admin"))
+{
+    <div>
+        <!-- Admin-only content -->
+    </div>
+}
+ 
+@if (User.IsInRole("Manager"))
+{
+    <div>
+        <!-- Manager-only content -->
+    </div>
+} *@
+

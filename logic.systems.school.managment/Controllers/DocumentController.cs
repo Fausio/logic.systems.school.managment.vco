@@ -19,7 +19,7 @@ using static NuGet.Packaging.PackagingConstants;
 
 namespace logic.systems.school.managment.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "ADMINISTRATOR")]
     public class DocumentController : Controller
     {
         private readonly UserManager<AppUser> _userManager;

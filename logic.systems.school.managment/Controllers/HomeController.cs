@@ -10,7 +10,8 @@ using System.Security.Claims;
 
 namespace logic.systems.school.managment.Controllers
 {
-    [Authorize]
+
+    [Authorize(Roles = "ADMINISTRATORs")]
     public class HomeController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
