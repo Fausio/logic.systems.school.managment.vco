@@ -12,8 +12,8 @@ namespace logic.systems.school.managment.Controllers
     {
         private IstudantService _StudentService;
         private ITuitionService _ITuitionService;
-        private UserManager<IdentityUser> _userManager;
-        public TuitionController(IstudantService StudentService,ITuitionService ITuitionService, UserManager<IdentityUser> userManager)
+        private UserManager<AppUser> _userManager;
+        public TuitionController(IstudantService StudentService,ITuitionService ITuitionService, UserManager<AppUser> userManager)
         {
             this._StudentService = StudentService;
             this._ITuitionService = ITuitionService;

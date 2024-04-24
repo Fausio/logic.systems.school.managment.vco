@@ -39,11 +39,11 @@ namespace logic.systems.school.managment.Seeds
 
             if (!await db.Users.AnyAsync(u => u.UserName == user.UserName))
             {
-                var password = new PasswordHasher<IdentityUser>();
+                var password = new PasswordHasher<AppUser>();
                 var hashed = password.HashPassword(user, "admin1234");
                 user.PasswordHash = hashed;
 
-                var userStore = new UserStore<IdentityUser>(db);
+                var userStore = new UserStore<AppUser>(db);
                 var result = userStore.CreateAsync(user);
             }
 
@@ -53,7 +53,7 @@ namespace logic.systems.school.managment.Seeds
 
         public async static Task<IdentityResult> AssignRoles(IServiceProvider services, string email, string[] roles)
         {
-            UserManager<IdentityUser> _userManager = services.GetService<UserManager<IdentityUser>>();
+            UserManager<AppUser> _userManager = services.GetService<UserManager<AppUser>>();
             IdentityUser user = await _userManager.FindByEmailAsync(email);
             var result = await _userManager.AddToRolesAsync(user, roles);
             return result;

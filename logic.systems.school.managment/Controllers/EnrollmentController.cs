@@ -14,9 +14,9 @@ namespace logic.systems.school.managment.Controllers
         private IEnrollment _EnrollmentService;
         private IstudantService _StudentService;
         private ITuitionService _ITuitionService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
 
-        public EnrollmentController(IstudantService StudentService, IEnrollment enrollmentService, UserManager<IdentityUser> userManager, ITuitionService iTuitionService)
+        public EnrollmentController(IstudantService StudentService, IEnrollment enrollmentService, UserManager<AppUser> userManager, ITuitionService iTuitionService)
         {
             _EnrollmentService = enrollmentService;
             this._ITuitionService = iTuitionService;

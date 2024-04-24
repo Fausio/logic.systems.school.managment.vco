@@ -13,14 +13,14 @@ namespace logic.systems.school.managment.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<HomeController> _logger;
         private ITuitionService _ITuitionService;
         private IDashBoard _IDashBoard;
         private ISempleEntityService _SempleEntityService;
         public HomeController(ILogger<HomeController> logger,
              ITuitionService iTuitionService,
-             UserManager<IdentityUser> userManager,
+             UserManager<AppUser> userManager,
                 ISempleEntityService SempleEntityService,
              IDashBoard iDashBoard)
         {

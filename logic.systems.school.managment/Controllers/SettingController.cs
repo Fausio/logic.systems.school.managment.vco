@@ -10,10 +10,10 @@ namespace logic.systems.school.managment.Controllers
     [Authorize]
     public class SettingController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private IOrgUnit _IOrgUnitServiceService;
 
-        public SettingController(IOrgUnit IOrgUnitServiceService, UserManager<IdentityUser> userManager)
+        public SettingController(IOrgUnit IOrgUnitServiceService, UserManager<AppUser> userManager)
         {
             this._IOrgUnitServiceService = IOrgUnitServiceService;
             this._userManager = userManager;

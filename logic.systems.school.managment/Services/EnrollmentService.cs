@@ -307,22 +307,7 @@ namespace logic.systems.school.managment.Services
                     break;
                 #endregion
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                     
                 #region 7
                 case "7ª classe":
 
@@ -360,21 +345,7 @@ namespace logic.systems.school.managment.Services
                     }
                     break;
                 #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
                 #region 8, 9 e 10
                 case "8ª classe":
                 case "9ª classe":

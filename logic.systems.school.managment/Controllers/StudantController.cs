@@ -15,7 +15,7 @@ namespace logic.systems.school.managment.Controllers
     [Authorize]
     public class StudantController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private IstudantService _StudentService;
         private IOrgUnit _IOrgUnitServiceService;
         private ISempleEntityService _SempleEntityService;
@@ -30,7 +30,7 @@ namespace logic.systems.school.managment.Controllers
             IEnrollment IEnrollment,
             IApp IAppService,
         ITuitionService iTuitionService,
-        UserManager<IdentityUser> userManager)
+        UserManager<AppUser> userManager)
         {
             this._StudentService = StudentService;
             this._IOrgUnitServiceService = IOrgUnitServiceService;

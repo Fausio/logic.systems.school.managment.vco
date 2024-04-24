@@ -11,11 +11,11 @@ namespace logic.systems.school.managment.Controllers
     [Authorize]
     public class GradeController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private ISempleEntityService _SempleEntityService;
         private IGradeService _IGradeService;
 
-        public GradeController(UserManager<IdentityUser> _userManager, ISempleEntityService SempleEntityService, IGradeService iGradeService)
+        public GradeController(UserManager<AppUser> _userManager, ISempleEntityService SempleEntityService, IGradeService iGradeService)
         {
             this._userManager = _userManager;
             this._SempleEntityService = SempleEntityService;

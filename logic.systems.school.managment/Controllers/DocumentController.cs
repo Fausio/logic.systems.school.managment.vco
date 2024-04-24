@@ -22,7 +22,7 @@ namespace logic.systems.school.managment.Controllers
     [Authorize]
     public class DocumentController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private Idocument _DocumentService;
         private IApp _AppService;
         private readonly IWebHostEnvironment _hostingEnvironment;
@@ -35,7 +35,7 @@ namespace logic.systems.school.managment.Controllers
                                   IWebHostEnvironment hostingEnvironment,
                                   IApp appService,
                                    ITuitionService iTuitionService,
-                                  UserManager<IdentityUser> userManager,
+                                  UserManager<AppUser> userManager,
                                   IConverter pdfConverter
                                   )
         {
