@@ -12,7 +12,7 @@ using System.Diagnostics.Metrics;
 
 namespace logic.systems.school.managment.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "ADMINISTRATOR")]  
     public class StudantController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
