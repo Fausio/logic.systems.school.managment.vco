@@ -2,6 +2,6 @@
 {
     public static class Appsettings
     {
-        public const string DefaultConnection = "Server=51.91.14.5;Database=logicsys_logic.systems.school.managment.panda;Trusted_Connection=false;MultipleActiveResultSets=true;Persist Security Info=true;User Id=AmeconAssociation;Password=5hbXx5%02;";
+        public const string DefaultConnection = "Server=localhost;Database=logicsys_logic.systems.school.managment.panda;Trusted_Connection=True;MultipleActiveResultSets=true;Persist Security Info=true;User ID=sa;Password=0l0ga;Integrated Security=false";
     }
-}
+} 
