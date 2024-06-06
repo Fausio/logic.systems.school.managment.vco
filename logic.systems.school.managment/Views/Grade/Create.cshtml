@@ -1,0 +1,227 @@
+﻿@model logic.systems.school.managment.Dto.AssessmentCreateDTO
+<link rel="stylesheet" href="~/css/EditViewBen.css" />
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Lançamento de Notas</li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0 pt-2">
+            <h2>Lançamento de Notas</h2>
+        </div>
+    </div>
+</div>
+
+
+
+<partial name="_Filter" model="@ViewBag.Filter" />
+
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+
+
+
+            @if (Model.Assessments.Count <= 0)
+            {
+                <div class="alert alert-warning mb-0 pb-0 mt-0 pt-0" role="alert" id="msg-summary">
+                    <p><center><strong>Sem dados para o filtro escolhido</strong></center></p>
+                </div>
+
+            }
+            else
+            {
+
+                <div class="alert alert-success" role="alert" id="msg-summary" style="display: @(string.IsNullOrEmpty(ViewBag.Mensagem) ? "none" : "block")">
+                    <p><strong>@ViewBag.Mensagem</strong></p>
+                </div>
+
+
+                <fieldset class="border pt-0 mt-0 p-2 pb-0">
+                    <legend class="w-auto p-0 m-0 ">Cabeçalho </legend>
+
+                    <div class="table-responsive  p-0 m-0">
+                        <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
+                            <thead>
+                                <tr>
+                                    <th><center>Data       </center>             </th>
+                                    <th><center>Classe     </center>             </th>
+                                    <th><center>Turma      </center>             </th>
+                                    <th><center>Disciplina </center>             </th>
+                                    <th><center>Trimestre  </center>             </th>
+                                    <th><center>Ano  </center>             </th>
+                                    <th><center>Professor  </center>             </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input style=" width: 100%;" type="date" /></td>
+                                    <td><center>@ViewBag.GradeHeader.ClassLevel     </center>       </td>
+                                    <td><center>@ViewBag.GradeHeader.ClassRoom      </center>       </td>
+                                    <td><center>@ViewBag.GradeHeader.Subject        </center>       </td>
+                                    <td><center>@ViewBag.GradeHeader.Quarter        </center>       </td>
+                                    <td><center>@ViewBag.GradeHeader.EnrollmentYears        </center>       </td>
+                                    <td><center> "n/a"                              </center>       </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </fieldset>
+                <form asp-action="Create" method="post">
+
+
+
+                    <fieldset class="border pt-0 mt-0 p-2 pb-0">
+                        <legend class="w-auto p-0 m-0 ">Lista </legend>
+
+                        <div class="table-responsive  p-0 m-0">
+                            <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
+                                <thead>
+                                    <tr>
+                                        <th style="border: 1px solid black; background-color:white;" colspan="2"> </th>
+                                        <th style="border: 1px solid black;" colspan="4"><center>ACS</center></th>
+                                        <th style="border: 1px solid black;background-color:white;" colspan="5">   </th>
+                                    </tr>
+                                    <tr>
+                                        <th><center> #                                               </center> </th>
+                                        <th><center> Nome                                            </center> </th>
+                                        <th><center>  1ª                                             </center> </th>
+                                        <th><center>  2ª                                             </center> </th>
+                                        <th><center>  3ª                                             </center> </th>
+                                        <th><center>  Media ACS                                      </center> </th>
+                                        <th><center>  AP                                             </center> </th>
+                                        <th><center>  Media Trimestral                               </center></th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <input type="hidden" asp-for="@Model.dto.ClassLevel" value="@Model.dto.ClassLevel" />
+                                    <input type="hidden" asp-for="@Model.dto.ClassRoom" value="@Model.dto.ClassRoom" />
+                                    <input type="hidden" asp-for="@Model.dto.Subject" value="@Model.dto.Subject" />
+                                    <input type="hidden" asp-for="@Model.dto.Quarter" value="@Model.dto.Quarter" />
+                                    <input type="hidden" asp-for="@Model.dto.EnrollmentYears" value="@Model.dto.EnrollmentYears" />
+
+                                    @for (int i = 0; i < Model.Assessments.Count; i++)
+                                    {
+
+                                        @Html.HiddenFor(x => x.Assessments[i].Id)
+                                        @Html.HiddenFor(x => x.Assessments[i].QuarterId)
+                                        @Html.HiddenFor(x => x.Assessments[i].SubjectId)
+
+                                        for (int j = 0; j < 4; j++)
+                                        {
+                                            @Html.HiddenFor(x => x.Assessments[i].Grades[j].Id)
+                                            @Html.HiddenFor(x => x.Assessments[i].Grades[j].Type)
+                                            @Html.HiddenFor(x => x.Assessments[i].Grades[j].AssessmentId)
+                                            @Html.HiddenFor(x => x.Assessments[i].Grades[j].Number)
+                                        }
+
+                                        <tr>
+                                            <td class="nwrap"><center>@Model.Assessments[i].Quarter.Enrollment.Student.Id</center></td>
+                                            <td class="nwrap"><center>@Model.Assessments[i].Quarter.Enrollment.Student.Name</center></td>
+                                            <td><input asp-for="@Model.Assessments[i].Grades[0].Value" type="number" style=" width: 100%;" /></td>
+                                            <td><input asp-for="@Model.Assessments[i].Grades[1].Value" type="number" style=" width: 100%;" /></td>
+                                            <td><input asp-for="@Model.Assessments[i].Grades[2].Value" type="number" style=" width: 100%;" /></td>
+                                            <td><input disabled type="number" value="@Model.Assessments[i].GetACSAverage()" style=" width: 100%;" /></td>
+                                            <td><input asp-for="@Model.Assessments[i].Grades[3].Value" type="number" style=" width: 100%;" /></td>
+                                            <td><input disabled type="number" value="@Model.Assessments[i].GetQuarterAverage()" style=" width: 100%;" /></td>
+
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </fieldset>
+
+                    <fieldset class="border pt-0 mb-0">
+                        <legend class="w-auto  p-0 m-0">Ações</legend>
+                        <div class="template-demo  p-0 m-0">
+                            <button type="submit" class="btn btn-sm btn-info btn-icon-text" onclick="DisableSubmit()" id="submitBtn">
+                                Lançar notas
+                                <i class="typcn typcn-edit btn-icon-append"></i>
+                            </button>
+
+                        </div>
+                    </fieldset>
+                </form>
+            }
+
+
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-body ">
+        <div class="row justify-content-end">
+            <div class="col-12 text-right">
+                <!-- Conteúdo da sua div aqui -->
+                <fieldset class="p-2">
+                    <legend class="w-auto">Dados de Auditoria</legend>
+                    <ul class="list-unstyled  ">
+
+
+                        @{
+                            if (ViewBag.CreatedUSer is not null && !string.IsNullOrEmpty(ViewBag.CreatedUSer))
+                            {
+                                <li><strong>Criado por:</strong> @ViewBag.CreatedUSer</li>
+                                if (ViewBag.CreatedDate is not null)
+                                {
+                                    <li><strong>Data de Criação:</strong> @ViewBag.CreatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
+
+                                }
+
+                            }
+
+
+
+                            if (ViewBag.UpdatedUSer is not null && !string.IsNullOrEmpty(ViewBag.UpdatedUSer))
+                            {
+                                <li><strong>Actulizado por:</strong> @ViewBag.UpdatedUSer</li>
+
+                                if (ViewBag.UpdatedDate is not null)
+                                {
+                                    <li><strong>Data de Actulização:</strong> @ViewBag.UpdatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
+
+                                }
+                            
+                            }
+                        }
+
+
+
+
+                    </ul>
+                </fieldset>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Oculta o alerta após 5 segundos
+            setTimeout(function () {
+                $('#msg-summary').fadeOut('slow');
+            }, 5000);
+        });
+    </script>
+}

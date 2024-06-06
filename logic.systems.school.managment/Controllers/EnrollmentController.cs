@@ -64,7 +64,7 @@ namespace logic.systems.school.managment.Controllers
                 // tood: update student 
                 await _StudentService.UpdateEnrollment(dto, currentUser.Id);
            
-                var Enrollment = await _EnrollmentService.EnrollmentByStudantId(dto.StudantId, int.Parse(dto.NewSchoolLevelId), int.Parse(dto.NewEnrollmentYear), int.Parse(dto.NewSchoolClassRoomId));
+                var Enrollment = await _EnrollmentService.EnrollmentByStudantId(dto.StudantId, int.Parse(dto.NewSchoolLevelId), int.Parse(dto.NewEnrollmentYear), int.Parse(dto.NewSchoolClassRoomId), dto.EnrollmentPrice, dto.TuitionPrice);
                 await _ITuitionService.CreateByClassOfStudant(await _StudentService.Read(dto.StudantId), Enrollment, currentUser.Id);
 
 

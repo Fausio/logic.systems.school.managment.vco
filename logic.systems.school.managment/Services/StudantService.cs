@@ -108,6 +108,7 @@ namespace logic.systems.school.managment.Services
             {
                 // pegar sempre o mais recente
                 var result = await db.Students.Include(x => x.CurrentSchoolLevel)
+                    .Include(x => x.SchoolClassRoom)
                                         .Include(x => x.District).ThenInclude(x => x.OrgUnitProvince)
                                         .Include(x => x.Enrollments).ThenInclude(t => t.SchoolLevel) 
                                         .Include(x => x.Enrollments).ThenInclude(t => t.Tuitions)
@@ -176,6 +177,7 @@ namespace logic.systems.school.managment.Services
             return records;
         }
 
+        public async Task<List<Product>> ReadProducts() => await db.Products.ToListAsync();
         public Task<PaginationDTO<Student>> SearchRecord(string searchString)
         {
             throw new NotImplementedException();

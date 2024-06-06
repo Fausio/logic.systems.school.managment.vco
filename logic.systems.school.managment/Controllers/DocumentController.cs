@@ -236,7 +236,7 @@ namespace logic.systems.school.managment.Controllers
             TableLines.Add(
             InvoiceTableLineDTO.Line
                                 .Replace("{desc}", "Mensalidade")
-                                .Replace("{unityPrice}", result.FirstOrDefault().PaymentWithVat + " MT")
+                                .Replace("{unityPrice}", result.FirstOrDefault().PaymentWithoutVat + " MT")
                                 .Replace("{quantity}", result.Count().ToString())
                                 .Replace("{paymentDate}", result.FirstOrDefault().PaymentDate.ToString("dd/MM/yyyy"))
                                 .Replace("{Classe}", await _AppService.SempleEntityDescriptionById(result.FirstOrDefault().Tuition.Enrollment.SchoolLevelId))
@@ -464,7 +464,7 @@ namespace logic.systems.school.managment.Controllers
 
             worksheet.Cell(1, 1).Value = Name;
             worksheet.Cell(2, 1).Value = "Data de Emissão: " + DateTime.Now;
-            worksheet.Cell(3, 1).Value = "COOPERATIVA DE ENSINO KALIMANY";
+            worksheet.Cell(3, 1).Value = "ESCOLA PRIMÁRIA E SECUNDÁRIA PANDA ALEGRIA NACALA-PORTO";
 
             worksheet.Range(@$"A{1}" + ":" + @$"K{1}").Style.Font.SetBold();
             worksheet.Range(@$"A{2}" + ":" + @$"K{2}").Style.Font.SetBold();

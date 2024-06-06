@@ -33,8 +33,9 @@ namespace logic.systems.school.managment.Dto
         public int SchoolClassRoomId { get; set; }
 
         [Required(ErrorMessage = "O campo Ano de inscrição  é obrigatório.")]
-        public int EnrollmentYear { get; set; }
-
+        public int EnrollmentYear { get; set; } 
+        public decimal EnrollmentPrice { get; set; }
+     public decimal TuitionPrice { get; set; }
         #region  Sponsor
         [Required(ErrorMessage = "O campo Nome do encarregado de Educação é obrigatório.")]
         public string SponsorName { get; set; }

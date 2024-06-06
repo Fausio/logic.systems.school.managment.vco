@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
@@ -27,16 +28,22 @@ namespace logic.systems.school.managment.Services
 
         }
 
-        public async Task<Enrollment> EnrollmentByStudantId(int studantId, int CurrentSchoolLevelId, int EnrollmentYear, int SchoolClassRoomId)
+
+
+
+        public async Task<Enrollment> EnrollmentByStudantId(int studantId, int CurrentSchoolLevelId, int EnrollmentYear, int SchoolClassRoomId, decimal EnrollmentPrice, decimal TuitionPrice)
         {
             try
             {
                 if (studantId > 0 && CurrentSchoolLevelId > 0)
                 {
-                    var enrollment = await GenerateEnrollmentDataByLevel(studantId, CurrentSchoolLevelId);
+                    var enrollment = await GenerateEnrollmentDataByLevel(studantId, CurrentSchoolLevelId, EnrollmentPrice);
+
                     if (enrollment is not null)
                     {
+                        enrollment.TuitionPrice = TuitionPrice;
                         var PaymentEnrollment = enrollment.PaymentEnrollment;
+
                         await db.Enrollments.AddAsync(enrollment);
                         await db.SaveChangesAsync();
 
@@ -47,12 +54,14 @@ namespace logic.systems.school.managment.Services
 
                         var invoice = new EnrollmentInvoice()
                         {
-                            EnrollmentId = enrollment.Id
+                            EnrollmentId = enrollment.Id,
+                            Invoice = new Invoice() { }
+
                         };
 
                         await db.EnrollmentInvoices.AddAsync(invoice);
                         await db.SaveChangesAsync();
-
+                        await GeneratePedgogicalData(enrollment, enrollment.CreatedUSer);
                         return enrollment;
                     }
                     else
@@ -75,7 +84,7 @@ namespace logic.systems.school.managment.Services
         {
 
 
-            var enrollment = await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId);
+            var enrollment = await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId, model.EnrollmentPrice, model.TuitionPrice);
 
 
             await _ITuitionService.CreateByClassOfStudant(await _StudentService.Read(model.StudantId), enrollment, userId);
@@ -166,177 +175,342 @@ namespace logic.systems.school.managment.Services
             }
         }
 
-        private async Task<Enrollment> GenerateEnrollmentDataByLevel(int studantId, int SchoolLevelId)
+        private async Task GeneratePedgogicalData(Enrollment enrollment, string userId)
+        {
+            var quarter = new List<Quarter>();
+            quarter.Add(new Quarter()
+            {
+                Number = 1,
+                CreatedUSer = enrollment.CreatedUSer
+            }); quarter.Add(new Quarter()
+            {
+                Number = 2,
+                CreatedUSer = enrollment.CreatedUSer
+            }); quarter.Add(new Quarter()
+            {
+                Number = 3,
+                CreatedUSer = enrollment.CreatedUSer
+            });
+
+
+            switch (enrollment.SchoolLevel.Description)
+            {
+
+                #region 1 a 3
+                case "1ª classe":
+                case "2ª classe":
+                case "3ª classe":
+
+                    List<string> Subjects_1_3 = new List<string>
+                        {
+                            "Português",
+                            "Matemática",
+                            "Inglês",
+                            "Francês",
+                            "Educação física"
+                        };
+
+
+                    foreach (var q in quarter)
+                    {
+
+                        foreach (var subjectParamiter in Subjects_1_3)
+                        {
+                            var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
+                            q.Assessments.Add(
+                                     new Assessment(true)
+                                     {
+                                         CreatedUSer = userId,
+                                         SubjectId = subjectId.Id
+                                     }
+                             );
+                        }
+                    }
+                    break;
+                #endregion
+
+
+
+
+                #region 4
+                case "4ª classe":
+
+                    List<string> Subjects_4 = new List<string>
+                        {
+                       "Português",
+    "Matemática",
+    "Inglês",
+    "Francês",
+    "Ciências sociais",
+    "Ciências naturais",
+    "TIC's (Tecnologias da Informação e Comunicação)",
+    "Educação física"
+                        };
+
+
+                    foreach (var q in quarter)
+                    {
+
+                        foreach (var subjectParamiter in Subjects_4)
+                        {
+                            var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
+                            q.Assessments.Add(
+                                                              new Assessment(true)
+                                                              {
+                                                                  CreatedUSer = userId,
+                                                                  SubjectId = subjectId.Id
+                                                              }
+                                                      );
+                        }
+                    }
+                    break;
+                #endregion
+
+
+
+
+
+
+                #region 5 a 6
+                case "5ª classe":
+                case "6ª classe":
+
+                    List<string> Subjects_5_6 = new List<string>
+                        {
+    "Português",
+    "Matemática",
+    "Inglês",
+    "Francês",
+    "Ciências sociais",
+    "Ciências naturais",
+    "TIC's (Tecnologias da Informação e Comunicação)",
+    "Educação visual & ofício",
+    "Educação física"
+                        };
+
+
+                    foreach (var q in quarter)
+                    {
+
+                        foreach (var subjectParamiter in Subjects_5_6)
+                        {
+                            var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
+                            q.Assessments.Add(
+                                                              new Assessment(true)
+                                                              {
+                                                                  CreatedUSer = userId,
+                                                                  SubjectId = subjectId.Id
+                                                              }
+                                                      );
+                        }
+                    }
+                    break;
+                #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                #region 7
+                case "7ª classe":
+
+                    List<string> Subjects_7 = new List<string>
+                        {
+"Português",
+    "Matemática",
+    "Inglês",
+    "Francês",
+    "História",
+    "Geografia",
+    "TIC's (Tecnologias da Informação e Comunicação)",
+    "Biologia",
+    "Noções de contabilidade",
+    "Agropecuária",
+    "Educação visual",
+    "Educação física"
+                        };
+
+
+                    foreach (var q in quarter)
+                    {
+
+                        foreach (var subjectParamiter in Subjects_7)
+                        {
+                            var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
+                            q.Assessments.Add(
+                                                              new Assessment(true)
+                                                              {
+                                                                  CreatedUSer = userId,
+                                                                  SubjectId = subjectId.Id
+                                                              }
+                                                      );
+                        }
+                    }
+                    break;
+                #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                #region 8, 9 e 10
+                case "8ª classe":
+                case "9ª classe":
+                case "10ª classe":
+
+                    List<string> Subjects_8_9_10 = new List<string>
+                        {
+    "Português",
+    "Matemática",
+    "Biologia",
+    "Química",
+    "Física",
+    "Geografia",
+    "História",
+    "Educação visual",
+    "TIC's (Tecnologias da Informação e Comunicação)",
+    "Agropecuária",
+    "Noções de contabilidade",
+    "Francês",
+    "Inglês",
+    "Educação física"
+                        };
+
+
+                    foreach (var q in quarter)
+                    {
+                        foreach (var subjectParamiter in Subjects_8_9_10)
+                        {
+                            var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
+                            q.Assessments.Add(
+                                                              new Assessment(true)
+                                                              {
+                                                                  CreatedUSer = userId,
+                                                                  SubjectId = subjectId.Id
+                                                              }
+                                                      );
+                        }
+                    }
+                    break;
+                #endregion
+
+
+
+
+
+
+
+
+
+
+                #region 11
+                case "11ª classe":
+
+                    List<string> Subjects_11 = new List<string>
+                        {
+    "Português",
+    "Matemática",
+    "Inglês",
+    "Francês",
+    "Geografia",
+    "Biologia",
+    "Química",
+    "Filosofia",
+    "TIC's (Tecnologias da Informação e Comunicação)",
+    "Física",
+    "Desenho geométrico descritivo",
+    "Educação física"
+                        };
+
+
+                    foreach (var q in quarter)
+                    {
+
+                        foreach (var subjectParamiter in Subjects_11)
+                        {
+                            var subjectId = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Type == SimpleEntity.Type_Subject && x.Description == subjectParamiter);
+                            q.Assessments.Add(
+                                                              new Assessment(true)
+                                                              {
+                                                                  CreatedUSer = userId,
+                                                                  SubjectId = subjectId.Id
+                                                              }
+                                                      );
+                        }
+                    }
+                    break;
+                #endregion
+
+
+
+
+                default:
+                    Console.WriteLine("Class");
+                    break;
+            }
+
+
+
+
+            foreach (var item in quarter)
+            {
+                item.EnrollmentId = enrollment.Id;
+
+
+
+
+            }
+
+            await db.Quarters.AddRangeAsync(quarter);
+            await db.SaveChangesAsync();
+        }
+
+
+        private async Task<Enrollment> GenerateEnrollmentDataByLevel(int studantId, int SchoolLevelId, decimal EnrollmentPrice)
         {
 
             var level = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Id == SchoolLevelId);
+            var student = await db.Students.FirstOrDefaultAsync(x => x.Id == studantId);
 
             if (level is not null)
             {
                 var enrollment = new Enrollment();
 
-                #region logic em pt language
-                // Pre - 3500 matricula  1000 fichas     = 4500 
-                // 1- 4000 matricula 1000 fichas 750 pasta  150 caderneta = 5750 
-                // 2-  - 3700 matricula  1000 fichas     = 4700
-                // [3-6] -  3700 matricula
-                // 7 -  3700 matricula 1500 certidão = 5200 
-                // [8-10] - 3800 matricula
-                // 11 - 4200 matricula 1500 certidao = 5700
-                // 12 - 4200 matricula   
-                #endregion
 
-                switch (level.Description)
+                enrollment = new Enrollment()
                 {
-                    case "Pré-escola":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 3500,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Fichas",
-                                        Price = 1000,
-                                    }
-                                }
-                        };
-                        break;
-                    case "1ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 4000,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Fichas",
-                                        Price = 1000,
-                                    },
-                                }
-                        };
-                        break;
-                    case "2ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 3700,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Fichas",
-                                        Price = 1000,
-                                    }
-                                }
-                        };
-                        break;
-
-                    case "3ª classe":
-                    case "4ª classe":
-                    case "5ª classe":
-                    case "6ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 3700,
-                            }
-                        };
-                        break;
-                    case "7ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-
-                                PaymentWithoutVat = 3700,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Certidão",
-                                        Price = 1500,
-                                    }
-                                }
-                        };
-                        break;
-
-                    case "8ª classe":
-                    case "9ª classe":
-                    case "10ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 3800,
-                            }
-                        };
-                        break;
-                    case "11ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 4200,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Certidão",
-                                        Price = 1500,
-                                    }
-                                }
-                        };
-                        break;
-                    case "12ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 4200,
-                            }
-                        };
-                        break;
-
-                    default:
-                        Console.WriteLine("Class");
-                        break;
-                }
+                    StudentId = studantId,
+                    PaymentEnrollment = new EnrollmentPayment()
+                    {
+                        PaymentWithoutVat = EnrollmentPrice,
+                    },
+                };
+                enrollment.EnrollmentPrice = EnrollmentPrice;
                 enrollment.SchoolLevelId = SchoolLevelId;
                 enrollment.PaymentEnrollment.Paid = true;
                 enrollment.PaymentEnrollment.PaymentDate = DateTime.Now;
-
-                var student = await db.Students.FirstOrDefaultAsync(x => x.Id == studantId);
-
-                if (!student.Internal)
-                {
-                    enrollment.EnrollmentItems.Add(
-                     new EnrollmentItem()
-                     {
-                         Description = "Caderneta e Pasta",
-                         Price = 750,
-                     });
-                }
-
 
                 return enrollment;
             }
@@ -383,6 +557,29 @@ namespace logic.systems.school.managment.Services
                         await db.SaveChangesAsync();
                     }
 
+                    var quarters = await db.Quarters.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
+                    if (quarters.Count > 0)
+                    {
+                        foreach (var quarter in quarters)
+                        {
+                            var assessments = await db.Assessments.Where(x => x.QuarterId == quarter.Id).ToListAsync();
+
+                            foreach (var assessment in assessments)
+                            {
+                                var grade = await db.Grades.Where(x => x.AssessmentId == assessment.Id).ToListAsync();
+
+                                db.Grades.RemoveRange(grade);
+                                await db.SaveChangesAsync();
+                            }
+
+                            db.Assessments.RemoveRange(assessments);
+                            await db.SaveChangesAsync();
+                        }
+
+                        db.Quarters.RemoveRange(quarters);
+                        await db.SaveChangesAsync();
+                    }
+
                     db.Enrollments.Remove(obj);
                     await db.SaveChangesAsync();
                 }
@@ -394,9 +591,39 @@ namespace logic.systems.school.managment.Services
                 // throw; // Pode ser removido ou mantido, dependendo da necessidade.
             }
 
-          
 
 
+
+        }
+
+        public async Task UpdatePrices(EditStudantDTO model)
+        {
+            var enrolments = await db.Enrollments.Include(x=> x.PaymentEnrollment).OrderBy(x=> x.Id).LastOrDefaultAsync(x => x.StudentId == model.id);
+            if (enrolments is not null)
+            {
+                var commite = false;
+
+                if (enrolments.TuitionPrice != model.TuitionPrice)
+                {
+                    enrolments.TuitionPrice = model.TuitionPrice;
+                    commite = true;
+                } 
+                
+                if (enrolments.EnrollmentPrice != model.EnrollmentPrice)
+                {
+                    enrolments.EnrollmentPrice = model.EnrollmentPrice;
+                    enrolments.PaymentEnrollment.PaymentWithoutVat = model.EnrollmentPrice;
+                    commite = true;
+                }
+
+                if (commite)
+                { 
+                    enrolments.UpdatedDate = DateTime.Now;
+                    db.Enrollments.Update(enrolments);
+                    await db.SaveChangesAsync(true);
+                }
+       
+            }
         }
     }
 

@@ -4,6 +4,7 @@ using Humanizer;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
+using logic.systems.school.managment.Migrations;
 using logic.systems.school.managment.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -247,44 +248,33 @@ namespace logic.systems.school.managment.Services
 
                 foreach (var dto in dtos)
                 {
-                    var studant = await db.Students
-                                          .Include(x => x.Enrollments)
-                                          .ThenInclude(x => x.Tuitions)
-                                          .Include(x => x.CurrentSchoolLevel)
-                                          .FirstOrDefaultAsync(x => x.Id == dto.StudantId && x.Row != Common.Deleted);
+                    var TuitionPrice = await db.Tuitions.Include(x => x.Enrollment).FirstOrDefaultAsync(x => x.Id == dto.TuitionId);
 
-                    var discount = (decimal)0;
-
-                    if (studant is not null)
-                    {
-                        if (studant.DiscountType == Student.DiscountPersonInCharge)
-                        {
-                            discount = 100;
-                        }
-                        else if (studant.DiscountType == Student.DiscountTeacher)
-                        {
-                            discount = 500;
-                        }
-                    }
+                    var studant = await db.Students.Include(x => x.Enrollments)
+                                             .ThenInclude(x => x.Tuitions)
+                                             .Include(x => x.CurrentSchoolLevel)
+                                             .FirstOrDefaultAsync(x => x.Id == dto.StudantId && x.Row != Common.Deleted);
 
                     if (dto.StudantId > 0 && dto.TuitionId > 0 && studant is not null)
                     {
                         var payment = new TuitionPayment()
                         {
                             TuitionId = dto.TuitionId,
-                            PaymentDate = dto.PaymentDate,
-                            PaymentWithoutVat = (getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount),
+                            PaymentDate = DateTime.Now,
                             CreatedDate = nowTimeStep,
                             CreatedUSer = userid,
                         };
-                        payment.VatOfPayment = VatCalc(payment.PaymentWithoutVat);
-                        payment.PaymentWithVat = payment.VatOfPayment + payment.PaymentWithoutVat;
+
+                        payment.PaymentWithVat = TuitionPrice.Enrollment.TuitionPrice;
+                        payment.VatOfPayment = VatCalc(TuitionPrice.Enrollment.TuitionPrice);
+                        payment.PaymentWithoutVat = payment.PaymentWithVat - payment.VatOfPayment;
 
                         var invoice = new TuitionInvoice()
                         {
                             Date = payment.PaymentDate,
                             CreatedDate = nowTimeStep,
-                            CreatedUSer = userid
+                            CreatedUSer = userid,
+                            Invoice = new Invoice() { }
                         };
 
                         await db.TuitionInvoices.AddAsync(invoice);
@@ -418,61 +408,27 @@ namespace logic.systems.school.managment.Services
         public decimal getTuitionValueByschoolLevel(string schoolLevel)
         {
 
-            #region a logica da KALIMANY
-            //3500-- Pré - escola A
-            //3500-- Pré - escola B
-            //3500-- Pré - escola C
-            //-------------------- -
-            //4000-- 1ª classe
-            //---------------------
-            //3700-- 2ª classe
-            //3700-- 3ª classe
-            //3700-- 4ª classe
-            //3700-- 5ª classe
-            //3700-- 6ª classe
-            //3700-- 7ª classe
-            //---------------------
-            //3800-- 8ª classe
-            //3800-- 9ª classe
-            //3800-- 10ª classe
-            //---------------------
-            //4200-- 11ª classe
-            //4200-- 12ª classe
-            #endregion
 
-
-            var Price_3500 = new List<string>()
-            {
-                "Pré-escola"
-            };
-            var Price_4000 = new List<string>() { "1ª classe" };
-            var Price_3700 = new List<string>()
-            {
+            var Price_4095 = new List<string>()
+            {   "1ª classe"     ,
                 "2ª classe"     ,
                 "3ª classe"     ,
                 "4ª classe"     ,
                 "5ª classe"     ,
-                "6ª classe"     ,
-                "7ª classe"
+                "6ª classe"
             };
-            var Price_3800 = new List<string>()
-            {
-                "8ª classe"      ,
+            var Price_4305 = new List<string>()
+            {   "7ª classe"     ,
+                "8ª classe"     ,
                 "9ª classe"     ,
-                "10ª classe"
-
-            };
-            var Price_4200 = new List<string>()
-            {
-                "11ª classe"    ,
+                "10ª classe"     ,
+                "11ª classe"     ,
                 "12ª classe"
             };
 
-            if (Price_3500.Contains(schoolLevel)) { return 3500; }
-            else if (Price_4000.Contains(schoolLevel)) { return 4000; }
-            else if (Price_3700.Contains(schoolLevel)) { return 3700; }
-            else if (Price_3800.Contains(schoolLevel)) { return 3800; }
-            else if (Price_4200.Contains(schoolLevel)) { return 4200; }
+            if (Price_4095.Contains(schoolLevel)) { return 4095; }
+            else if (Price_4305.Contains(schoolLevel)) { return 4305; }
+
             else
             {
                 return 0;
@@ -482,9 +438,9 @@ namespace logic.systems.school.managment.Services
 
         private async Task CheckFeeZiro()
         {
-            var payments = await db.PaymentTuitions.Include(x => x.Tuition)
-                                                   .Where(x => x.PaymentWithoutVat == (decimal)0)
-                                                   .ToListAsync();
+           var payments = await db.PaymentTuitions.Include(x => x.Tuition)
+                                                  .Where(x => x.PaymentWithoutVat == (decimal)0)
+                                                  .ToListAsync();
 
             foreach (var item in payments)
             {
@@ -493,22 +449,13 @@ namespace logic.systems.school.managment.Services
                                            .Include(x => x.CurrentSchoolLevel)
                                            .FirstOrDefaultAsync(x => x.Id == item.Tuition.StudentId && x.Row != Common.Deleted);
 
-                var discount = (decimal)0;
-
+                var discount = (decimal)0; 
+             
                 if (studant is not null)
                 {
-                    if (studant.DiscountType == Student.DiscountPersonInCharge)
-                    {
-                        discount = 100;
-                    }
-                    else if (studant.DiscountType == Student.DiscountTeacher)
-                    {
-                        discount = 500;
-                    }
-
-                    item.PaymentWithoutVat = (getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount);
-                    item.VatOfPayment = VatCalc(item.PaymentWithoutVat);
-                    item.PaymentWithVat = item.VatOfPayment + item.PaymentWithoutVat;
+                    item.PaymentWithVat = item.Tuition.Enrollment.TuitionPrice;
+                    item.VatOfPayment = VatCalc(item.Tuition.Enrollment.TuitionPrice);
+                    item.PaymentWithoutVat = item.PaymentWithVat - item.VatOfPayment; 
 
                     db.PaymentTuitions.Update(item);
                     await db.SaveChangesAsync();
@@ -549,35 +496,27 @@ namespace logic.systems.school.managment.Services
                     var TuitionsToClean = new List<Tuition>();
                     foreach (Tuition tuition in Tuitions)
                     {
-                        // nao verificar adicionar multas se o estudante entrou no meio do ano
-                        if (tuition.StartDate >= tuition.Enrollment.CreatedDate)
+                        var tuituionStartDate_part_1 = tuition.StartDate.AddDays(15);
+                        var tuituionStartDate_part_2_a = tuition.StartDate.AddDays(14);
+                        var tuituionStartDate_part_2_b = tuition.StartDate.AddDays(24);
+
+                        if (now > tuituionStartDate_part_1)
                         {
-
-
-
-                            var tuituionStartDate_part_1 = tuition.StartDate.AddDays(15);
-                            var tuituionStartDate_part_2_a = tuition.StartDate.AddDays(14);
-                            var tuituionStartDate_part_2_b = tuition.StartDate.AddDays(24);
-
-                            if (now > tuituionStartDate_part_1)
-                            {
-                                if (now > tuituionStartDate_part_2_a && now <= tuituionStartDate_part_2_b)
-                                {   // cria mutla de 300 se pagar entre dia 15 a 25
-                                    //  Console.WriteLine("300 MT"); 
-                                    await CreateTuitionFine(tuition.Id, userid);
-                                }
-
-                                if (now > tuituionStartDate_part_2_b)
-                                {     // cria suspende se tiver passado 25 dias sem pagar a mensalidade
-                                      //  Console.WriteLine("Suspenso");
-                                    await CreateTuitionFine(tuition.Id, userid);
-
-                                    setSuspended = true;
-                                    student.Suspended = setSuspended;
-                                    await db.SaveChangesAsync();
-                                }
+                            if (now > tuituionStartDate_part_2_a && now <= tuituionStartDate_part_2_b)
+                            {   // cria mutla de 300 se pagar entre dia 15 a 25
+                                //  Console.WriteLine("300 MT"); 
+                                await CreateTuitionFine(tuition.Id, userid);
                             }
 
+                            if (now > tuituionStartDate_part_2_b)
+                            {     // cria suspende se tiver passado 25 dias sem pagar a mensalidade
+                                  //  Console.WriteLine("Suspenso");
+                                await CreateTuitionFine(tuition.Id, userid);
+
+                                setSuspended = true;
+                                student.Suspended = setSuspended;
+                                await db.SaveChangesAsync();
+                            }
                         }
                         else
                         {
@@ -615,52 +554,61 @@ namespace logic.systems.school.managment.Services
             // para nao duplicar multa principal de 300
             if (havetuitionFines == null)
             {
-                var tuitionFines = new TuitionFine()
+                var tuition = await db.Tuitions.Include(x => x.Enrollment).ThenInclude(x => x.SchoolLevel).FirstOrDefaultAsync(x => x.Id == tuitionId && !x.Paid);
+
+                if (tuition is not null)
                 {
-                    TuitionId = tuitionId,
-                    CreatedUSer = userid
+                    var tuitionFines = new TuitionFine()
+                    {
+                        TuitionId = tuitionId,
+                        CreatedUSer = userid,
+                        FinesValue = tuition.Enrollment.TuitionPrice * 0.2m,
 
                 };
                 await db.TuitionFines.AddAsync(tuitionFines);
                 await db.SaveChangesAsync();
             }
-
-            // criar multa diaria de 25mt
-            // tudo: daily fee 
-            var now = DateTime.Now;
-
-            var _havetuitionFines = await db.TuitionFines.FirstOrDefaultAsync(x => x.TuitionId == tuitionId);
-            var tuitionDate = _havetuitionFines.Tuition.StartDate.AddDays(24);
-
-            var listOfTuitionFineDaily = new List<TuitionFineDaily>();
-
-            if (now > tuitionDate)
+            else
             {
+                // criar multa diaria de 25mt
+                // tudo: daily fee 
+                var now = DateTime.Now;
 
-                for (var i = tuitionDate; i <= now; i = i.AddDays(1))
+                var tuitionDate = havetuitionFines.Tuition.StartDate.AddDays(24);
+
+                var listOfTuitionFineDaily = new List<TuitionFineDaily>();
+
+                if (now > tuitionDate)
                 {
 
-                    if (i.DayOfWeek != DayOfWeek.Saturday && i.DayOfWeek != DayOfWeek.Sunday)
+                    for (var i = tuitionDate; i <= now; i = i.AddDays(1))
                     {
-                        var NotExistForThisDay = await db.TuitionFineDailies.FirstOrDefaultAsync(x => x.TuitionFineId == _havetuitionFines.Id && x.FinesDate == i);
 
-                        if (NotExistForThisDay == null)
+                        if (i.DayOfWeek != DayOfWeek.Saturday && i.DayOfWeek != DayOfWeek.Sunday)
                         {
-                            await db.TuitionFineDailies.AddAsync(new TuitionFineDaily()
-                            {
-                                FinesDate = i,
-                                CreatedDate = now,
-                                CreatedUSer = userid,
-                                TuitionFineId = _havetuitionFines.Id
-                            });
+                            var NotExistForThisDay = await db.TuitionFineDailies.FirstOrDefaultAsync(x => x.TuitionFineId == havetuitionFines.Id && x.FinesDate == i);
 
-                            await db.SaveChangesAsync();
+                            if (NotExistForThisDay == null)
+                            {
+                                await db.TuitionFineDailies.AddAsync(new TuitionFineDaily()
+                                {
+                                    FinesDate = i,
+                                    CreatedDate = now,
+                                    CreatedUSer = userid,
+                                    TuitionFineId = havetuitionFines.Id
+                                });
+
+                                await db.SaveChangesAsync();
+                            }
+
+
                         }
 
-
                     }
-
                 }
+
+
+
             }
         }
 

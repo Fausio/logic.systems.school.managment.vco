@@ -59,6 +59,7 @@ namespace logic.systems.school.managment.Controllers
 
         public async Task<JsonResult> IndexPaymentByStudantId(getPaymentParamitersDTO id)
         {
+         
             var result = await _ITuitionService.GetPaymentsByStudantTuitionsId(id.StudantId);
             result = result.Where(x => x.TuitionYear == id.EnrollmentYear).ToList();
 
@@ -91,7 +92,7 @@ namespace logic.systems.school.managment.Controllers
                 foreach (var item in result)
                 {
                     var _schoolLevel = item.Enrollment.SchoolLevel.Description;
-                    var _tuitionValue = ( _ITuitionService.getTuitionValueByschoolLevel(_schoolLevel) - discount);
+                    var _tuitionValue = item.Enrollment.TuitionPrice;
                     resultDTO.Add(new MultiPaymentTuitionDTO()
                     {
                         id = item.Id,

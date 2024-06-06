@@ -1,0 +1,189 @@
+﻿@model logic.systems.school.managment.Dto.GradeConfigDTO
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/EditViewBen.css" />
+    <script src="~/js/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+
+
+    <form asp-action="YearViewGrade" asp-controller="grade" method="get" id="yourFormId">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+
+                    @if (ViewData.ModelState.IsValid)
+                    {
+
+                    }
+                    else
+                    {
+                        <div id="validation-summary" class="alert alert-danger" role="alert">
+                            <p><strong>Por favor, corrija os seguintes erros:</strong></p>
+                        </div>
+                    }
+
+                    <div class="alert alert-danger" role="alert" id="msg-summary" style="display: @(string.IsNullOrEmpty(ViewBag.MensagemError) ? "none" : "block")">
+                        <p><strong>@ViewBag.MensagemError</strong></p>
+                    </div>
+
+
+                    <fieldset class="border pt-0 mt-0 p-2 pb-0">
+                        <legend class="w-auto p-0 m-0 ">Filtro </legend>
+
+                        <div class="table-responsive  p-0 m-0">
+                            <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
+                                <thead>
+                                    <tr>
+                                        <th><center>Classe       </center>             </th>
+                                        <th><center>Turma     </center>             </th>
+                                        <th><center>Disciplina      </center>             </th>
+                                        <th><center>Ano </center>             </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+
+                                        <td>
+                                            <center>
+                                                <select class="select-control" style=" width: 100%;" asp-for="ClassLevel" id="SchoolLevels">
+                                                    <option selected>... selecione ...</option>
+                                                    @foreach (SimpleEntity item in ViewBag.SchoolLevels)
+                                                    {
+                                                        <option value="@item.Id">@item.Description</option>
+                                                    }
+                                                </select>
+                                                <span asp-validation-for="ClassLevel" class="text-danger"></span>
+                                            </center>
+                                        </td>
+
+                                        <td>
+                                            <center>
+                                                <select class="select-control" style=" width: 100%;" asp-for="ClassRoom" id="SchoolClassRooms">
+                                                    <option selected>... selecione ...</option>
+                                                    @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
+                                                    {
+                                                        <option value="@item.Id">@item.Description</option>
+                                                    }
+                                                </select>
+                                                <span asp-validation-for="ClassRoom" class="text-danger"></span>
+                                            </center>
+                                        </td>
+
+
+                                        <td>
+                                            <center>
+                                                <select class="select-control" style=" width: 100%;" asp-for="Subject" id="Subjects">
+                                                    <option selected>... selecione ...</option>
+                                                    @foreach (SimpleEntity item in ViewBag.Subjects)
+                                                    {
+                                                        <option value="@item.Id">@item.Description</option>
+                                                    }
+                                                </select>
+                                                <span asp-validation-for="Subject" class="text-danger"></span>
+                                            </center>
+                                        </td>
+ 
+                                        <td>
+                                            <center>
+                                                <select class="select-control" style=" width: 100%;" asp-for="EnrollmentYears" id="EnrollmentYears">
+                                                    <option selected>... selecione ...</option>
+                                                    @foreach (var item in ViewBag.EnrollmentYears)
+                                                    {
+                                                        <option value="@item">@item</option>
+                                                    }
+                                                </select>
+                                                <span asp-validation-for="EnrollmentYears" class="text-danger"></span>
+                                            </center>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="template-demo pb-2 m-0">
+                            <button type="submit" class="btn btn-sm btn-info btn-icon-text" id="submitBtn">
+                                ver notas
+                            </button>
+
+                        </div>
+                    </fieldset>
+
+
+                </div>
+            </div>
+        </div>
+
+
+    </form>
+
+
+
+    <!-- Your JavaScript code -->
+    <script>
+        $(document).ready(function () {
+            $('#submitBtn').on('click', function (e) {
+                e.preventDefault();
+
+                $('.text-danger').text('');
+                var isValid = true;
+
+                $('.select-control').each(function () {
+                    if ($(this).val() === '... selecione ...') {
+                        $(this).next('.text-danger').text('Por favor selecione um valor.');
+                        isValid = false;
+                    }
+                });
+
+                if (isValid) {
+                    // Submit the form with the correct form ID
+                    $('#yourFormId').submit();
+                }
+            });
+
+            $("#SchoolLevels").change(function () {
+                var ProvincesId = $(this).val(); // Use $(this) instead of $("#SchoolLevels")
+                $.ajax({
+                    url: '/admin/GetSubjects',
+                    type: 'GET',
+                    data: { Id: ProvincesId },
+                    success: function (districts) {
+                        $("#Subjects").empty().append($('<option>', {
+                            value: '... selecione ...',
+                            text: '... selecione ...',
+                            selected: true
+                        }));
+
+                        $.each(districts, function (index, result) {
+                            $("#Subjects").append($('<option>', {
+                                value: result.id,
+                                text: result.description
+                            }));
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -3,6 +3,7 @@
 @inject UserManager<IdentityUser> userManager
 
 <!DOCTYPE html>
+<html >
 <head>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -59,10 +60,10 @@
         <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                 <a class="navbar-brand brand-logo" asp-action="index" asp-controller="home">
-                    <img style="width:100%" src="~/celestial-admin/images/logo (2).svg" alt="logo" />
+                    <img style="width:100%" src="~/celestial-admin/images/_favicon.png" alt="logo" />
                 </a>
                 <a class="navbar-brand brand-logo-mini" asp-action="index" asp-controller="home">
-                    <label class="text-white">   <img style="width:100%" src="~/celestial-admin/images/topName.png" alt="logo" /> </label>
+                    <label class="text-white">   <img style="width:100%" src="~/celestial-admin/images/nav.jpeg" alt="logo" /> </label>
                 </a>
             </div>
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
@@ -70,7 +71,7 @@
 
                     <li class="nav-item  d-none d-lg-flex">
                         <a class="nav-link active" href="#">
-                            COOPERATIVA DE ENSINO KALIMANY
+                            ESCOLA PRIMÁRIA E SECUNDÁRIA PANDA ALEGRIA NACALA-PORTO
                         </a>
                     </li>
                 </ul>
@@ -179,20 +180,38 @@
                             </ul>
                         </div>
                     </li>
-
+ 
+                     
 
                     <li class="nav-item">
-
+                       
                         <a class="nav-link"
                            data-toggle="collapse"
-                           href="#ui-ped"
+                           href="#auth"
                            aria-expanded="false"
-                           aria-controls="ui-ped">
+                           aria-controls="auth">
                             <i class="typcn typcn-briefcase menu-icon"></i>
-                            <span class="menu-title">Lançamento de Notas</span>
-
+                            <span class="menu-title">
+                                Notas
+                            </span>
+                            <i class="menu-arrow"></i>
                         </a>
+                        <div class="collapse" id="auth">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-action="index" asp-controller="grade">
+                                        Lançamento de Notas
+                                    </a>
+                                </li> 
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-action="YearView" asp-controller="grade">
+                                        Visualizar Notas
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
+
                     <li class="nav-item">
 
                         <a class="nav-link"
@@ -261,7 +280,7 @@
                 </ul>
                 <ul class="sidebar-legend">
                     <li>
-                        <img src="~/celestial-admin/images/favicon.png" width="190" />
+                        <img src="~/celestial-admin/images/nav.jpeg" width="190" />
                     </li>
                     <li>
                         <center> <p class="sidebar-menu-title" style="color:white">versão 3.1.0.0</p></center>
@@ -284,9 +303,7 @@
                         <span class="text-center text-sm-left d-block d-sm-inline-block">
                             Copyright ©
                             <a href="https://logicsystems.co.mz/" target="_blank">Logic systems</a>
-                            and
-                            <a href="#" target="_blank">BestDeal.Mz</a>
-                            @DateTime.Now.Year.ToString()
+                               @DateTime.Now.Year.ToString()
                         </span>
 
                     </div>

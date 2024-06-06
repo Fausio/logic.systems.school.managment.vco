@@ -3,10 +3,14 @@
 namespace logic.systems.school.managment.Models
 {
     [Table("TuitionInvoice")]
-    public class TuitionInvoice : Invoice
+    public class TuitionInvoice : Common
     {
-        //public virtual Tuition? Tuition { get; set; }
-        //public int? TuitionId { get; set; }
+        public Invoice? Invoice { get; set; }
+        public int? InvoiceId { get; set; }
+
+        public DateTime Date { get; set; }
+        public string Type { get; set; }
+
         public TuitionInvoice()
         {
             this.Type = "TuitionInvoice";

@@ -10,6 +10,7 @@ using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.CookiePolicy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,10 +49,49 @@ builder.Services.AddScoped<IDashBoard, DashboardService>();
 builder.Services.AddScoped<IApp, AppService>();
 builder.Services.AddScoped<Idocument, DocumentService>();
 builder.Services.AddScoped<IEnrollment, EnrollmentService>();
+
+builder.Services.AddScoped<ISalesService, SalesService>();
+
+builder.Services.AddScoped<IGradeService, GradeService>();
 // Register DinkToPdf converter
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
+
+
+
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+    // Define o tempo de validade do token para um período longo ou indefinido
+    options.ValidationInterval = TimeSpan.FromDays(365); // Expira em 1 ano
+});
+
+
+
+
 var app = builder.Build();
+// cookie de autenticação para nunca expirar
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.Strict,
+    Secure = CookieSecurePolicy.Always,
+    HttpOnly = HttpOnlyPolicy.Always
+});
+
+
+// Configurar middleware para redirecionar para a tela de login em caso de erro 400
+app.Use(async (context, next) =>
+{
+    await next();
+
+    var statusCode = context.Response.StatusCode;
+
+    var statusCodeString = statusCode.ToString();
+    if (statusCode == 400 || statusCode == 403 || statusCodeString.Contains("40"))
+    {
+        context.Response.Redirect("Identity/Account/Login");
+    }
+});
+ 
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -69,9 +109,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
+
+
 
 app.MapControllerRoute(
     name: "default",
@@ -103,20 +144,43 @@ using (var scope = app.Services.CreateScope())
     var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
 
-    if (await UserManager.FindByEmailAsync("admin@Kalimany.com") is null)
+    if (await UserManager.FindByEmailAsync("admin@pandaalegria.com") is null)
     {
 
         var users = new List<IdentityUser>()
         {
                new IdentityUser()
             {
-                Email =  "admin@Kalimany.com",
-                NormalizedEmail = "admin@Kalimany.com",
-                UserName =  "admin@Kalimany.com",
-                NormalizedUserName = "admin", 
+                Email =  "admin@pandaalegria.com",
+                NormalizedEmail = "admin@pandaalegria.com",
+                UserName =  "admin@pandaalegria.com",
+                NormalizedUserName = "admin",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-            } 
+            }  ,   new IdentityUser()
+            {
+                Email =  "fausio.matsinhe@logicsystems.co.mz",
+                NormalizedEmail = "fausio.matsinhe@logicsystems.co.mz",
+                UserName =  "fausio.matsinhe@logicsystems.co.mz",
+                NormalizedUserName = "master",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            } ,    new IdentityUser()
+            {
+                Email =  "ronilson.cuco@logicsystems.co.mz",
+                NormalizedEmail = "ronilson.cuco@logicsystems.co.mz",
+                UserName =  "ronilson.cuco@logicsystems.co.mz",
+                NormalizedUserName = "master",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            } ,   new IdentityUser() {
+                Email =  "bernardete.paulino@pandaalegria.com",
+                NormalizedEmail = "bernardete.paulino@pandaalegria.com",
+                UserName =  "bernardete.paulino@pandaalegria.com",
+                NormalizedUserName = "Bernardete Paulino",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            }
         };
 
 
@@ -124,26 +188,34 @@ using (var scope = app.Services.CreateScope())
         {
             var email = item.Email;
 
-            if (email == "admin@Kalimany.com")
+            if (email == "admin@pandaalegria.com")
             {
                 var pass = "admin1234";
                 await UserManager.CreateAsync(item, pass);
                 await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
             }
 
-            if (email == "assane.sulemange@Kalimany.com")
+            if (email == "fausio.matsinhe@logicsystems.co.mz")
             {
-                var pass = "Assane1234";
+                var pass = "Madara1122";
                 await UserManager.CreateAsync(item, pass);
                 await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
             }
 
-            if (email == "nilza.rodrigues@Kalimany.com")
+            if (email == "ronilson.cuco@logicsystems.co.mz")
             {
-                var pass = "Nilza1234";
+                var pass = "Madara1122";
                 await UserManager.CreateAsync(item, pass);
                 await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
             }
+
+            if (email == "bernardete.paulino@pandaalegria.com")
+            {
+                var pass = "Bernardete1122";
+                await UserManager.CreateAsync(item, pass);
+                await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
+            }
+
         }
     }
 }
@@ -151,5 +223,7 @@ using (var scope = app.Services.CreateScope())
 
 await SeedOrgUnit.Run();
 await SeedSimpleEntity.Run();
+await SeedProducts.Run();
 
 app.Run();
+
