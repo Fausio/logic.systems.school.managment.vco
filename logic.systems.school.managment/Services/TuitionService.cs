@@ -438,9 +438,9 @@ namespace logic.systems.school.managment.Services
 
         private async Task CheckFeeZiro()
         {
-           var payments = await db.PaymentTuitions.Include(x => x.Tuition)
-                                                  .Where(x => x.PaymentWithoutVat == (decimal)0)
-                                                  .ToListAsync();
+            var payments = await db.PaymentTuitions.Include(x => x.Tuition)
+                                                   .Where(x => x.PaymentWithoutVat == (decimal)0)
+                                                   .ToListAsync();
 
             foreach (var item in payments)
             {
@@ -449,13 +449,13 @@ namespace logic.systems.school.managment.Services
                                            .Include(x => x.CurrentSchoolLevel)
                                            .FirstOrDefaultAsync(x => x.Id == item.Tuition.StudentId && x.Row != Common.Deleted);
 
-                var discount = (decimal)0; 
-             
+                var discount = (decimal)0;
+
                 if (studant is not null)
                 {
                     item.PaymentWithVat = item.Tuition.Enrollment.TuitionPrice;
                     item.VatOfPayment = VatCalc(item.Tuition.Enrollment.TuitionPrice);
-                    item.PaymentWithoutVat = item.PaymentWithVat - item.VatOfPayment; 
+                    item.PaymentWithoutVat = item.PaymentWithVat - item.VatOfPayment;
 
                     db.PaymentTuitions.Update(item);
                     await db.SaveChangesAsync();
@@ -564,51 +564,52 @@ namespace logic.systems.school.managment.Services
                         CreatedUSer = userid,
                         FinesValue = tuition.Enrollment.TuitionPrice * 0.2m,
 
-                };
-                await db.TuitionFines.AddAsync(tuitionFines);
-                await db.SaveChangesAsync();
-            }
-            else
-            {
-                // criar multa diaria de 25mt
-                // tudo: daily fee 
-                var now = DateTime.Now;
-
-                var tuitionDate = havetuitionFines.Tuition.StartDate.AddDays(24);
-
-                var listOfTuitionFineDaily = new List<TuitionFineDaily>();
-
-                if (now > tuitionDate)
+                    };
+                    await db.TuitionFines.AddAsync(tuitionFines);
+                    await db.SaveChangesAsync();
+                }
+                else
                 {
+                    // criar multa diaria de 25mt
+                    // tudo: daily fee 
+                    var now = DateTime.Now;
 
-                    for (var i = tuitionDate; i <= now; i = i.AddDays(1))
+                    var tuitionDate = havetuitionFines.Tuition.StartDate.AddDays(24);
+
+                    var listOfTuitionFineDaily = new List<TuitionFineDaily>();
+
+                    if (now > tuitionDate)
                     {
 
-                        if (i.DayOfWeek != DayOfWeek.Saturday && i.DayOfWeek != DayOfWeek.Sunday)
+                        for (var i = tuitionDate; i <= now; i = i.AddDays(1))
                         {
-                            var NotExistForThisDay = await db.TuitionFineDailies.FirstOrDefaultAsync(x => x.TuitionFineId == havetuitionFines.Id && x.FinesDate == i);
 
-                            if (NotExistForThisDay == null)
+                            if (i.DayOfWeek != DayOfWeek.Saturday && i.DayOfWeek != DayOfWeek.Sunday)
                             {
-                                await db.TuitionFineDailies.AddAsync(new TuitionFineDaily()
-                                {
-                                    FinesDate = i,
-                                    CreatedDate = now,
-                                    CreatedUSer = userid,
-                                    TuitionFineId = havetuitionFines.Id
-                                });
+                                var NotExistForThisDay = await db.TuitionFineDailies.FirstOrDefaultAsync(x => x.TuitionFineId == havetuitionFines.Id && x.FinesDate == i);
 
-                                await db.SaveChangesAsync();
+                                if (NotExistForThisDay == null)
+                                {
+                                    await db.TuitionFineDailies.AddAsync(new TuitionFineDaily()
+                                    {
+                                        FinesDate = i,
+                                        CreatedDate = now,
+                                        CreatedUSer = userid,
+                                        TuitionFineId = havetuitionFines.Id
+                                    });
+
+                                    await db.SaveChangesAsync();
+                                }
+
+
                             }
 
-
                         }
-
                     }
+
+
+
                 }
-
-
-
             }
         }
 
@@ -648,6 +649,7 @@ namespace logic.systems.school.managment.Services
         }
     }
 }
+
 
 //as mensalidades devem ser antecipadamente pagas no inicio de cada Mes, do dia 1 a dia15, apartir do dia 16 a 25 a multa é de 300
 
