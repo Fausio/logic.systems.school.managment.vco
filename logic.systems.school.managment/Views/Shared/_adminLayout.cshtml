@@ -1,9 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> signInManager
-@inject UserManager<IdentityUser> userManager
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var roles = await UserManager.GetRolesAsync(user);
+    bool isAdmin = roles.Contains("ADMINISTRATOR");
+}
 
 <!DOCTYPE html>
-<html >
+<html>
 <head>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -117,14 +120,14 @@
                             </div>
                             <div class="sidebar-profile-name">
 
-                                @{
-                                    var user = await userManager.GetUserAsync(User);
 
-                                    if (user is not null)
-                                    {
-                                        <p class="sidebar-designation" style="font-size:10px; color:white"> @user.NormalizedUserName  </p>
-                                    }
+
+
+                                @if (user is not null)
+                                {
+                                    <p class="sidebar-designation" style="font-size:10px; color:white"> @user.NormalizedUserName  </p>
                                 }
+
 
 
 
@@ -158,33 +161,36 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <p class="sidebar-menu-title">Pedagógia</p>
-                        <a class="nav-link"
-                           data-toggle="collapse"
-                           href="#ui-basic"
-                           aria-expanded="false"
-                           aria-controls="ui-basic">
-                            <i class="typcn typcn-briefcase menu-icon"></i>
-                            <span class="menu-title">Estudantes</span>
-                            <i class="typcn typcn-chevron-right menu-arrow"></i>
-                        </a>
-                        <div class="collapse" id="ui-basic">
-                            <ul class="nav flex-column sub-menu">
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-action="create" asp-controller="studant">Cadastrar</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-action="index" asp-controller="studant">Listar</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
- 
-                     
+
+                    @if (isAdmin)
+                    {
+
+                        <li class="nav-item">
+                            <p class="sidebar-menu-title">Pedagógia</p>
+                            <a class="nav-link"
+                               data-toggle="collapse"
+                               href="#ui-basic"
+                               aria-expanded="false"
+                               aria-controls="ui-basic">
+                                <i class="typcn typcn-briefcase menu-icon"></i>
+                                <span class="menu-title">Estudantes</span>
+                                <i class="typcn typcn-chevron-right menu-arrow"></i>
+                            </a>
+                            <div class="collapse" id="ui-basic">
+                                <ul class="nav flex-column sub-menu">
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-action="create" asp-controller="studant">Cadastrar</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-action="index" asp-controller="studant">Listar</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
 
                     <li class="nav-item">
-                       
+
                         <a class="nav-link"
                            data-toggle="collapse"
                            href="#auth"
@@ -202,7 +208,7 @@
                                     <a class="nav-link" asp-action="index" asp-controller="grade">
                                         Lançamento de Notas
                                     </a>
-                                </li> 
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" asp-action="YearView" asp-controller="grade">
                                         Visualizar Notas
@@ -237,45 +243,75 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <p class="sidebar-menu-title">Relatórios</p>
 
-                        <a class="nav-link"
-                           aria-expanded="false"
-                           aria-controls="ui-basic" asp-action="index" asp-controller="document">
-                            <i class="typcn typcn-briefcase menu-icon"></i>
-                            <span class="menu-title">Relatórios</span>
-                        </a>
-                    </li>
+                    @if (isAdmin)
+                    {
+                        <li class="nav-item">
+                            <p class="sidebar-menu-title">Relatórios</p>
+
+                            <a class="nav-link"
+                               aria-expanded="false"
+                               aria-controls="ui-basic" asp-action="index" asp-controller="document">
+                                <i class="typcn typcn-briefcase menu-icon"></i>
+                                <span class="menu-title">Relatórios</span>
+                            </a>
+                        </li>
 
 
+                        <li class="nav-item">
+                            <p class="sidebar-menu-title">Definições</p>
+                            <a class="nav-link"
+                               data-toggle="collapse"
+                               href="#auth"
+                               aria-expanded="false"
+                               aria-controls="auth">
+                                <i class="typcn typcn-briefcase menu-icon"></i>
+                                <span class="menu-title">
+                                    Utilizadores
+                                </span>
+                                <i class="menu-arrow"></i>
+                            </a>
+                            <div class="collapse" id="auth">
+                                <ul class="nav flex-column sub-menu">
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-action="create" asp-controller="users">
+                                            Cadastrar
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-action="index" asp-controller="users">
+                                            Listar
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
 
 
-
-                    <li class="nav-item">
-                        <p class="sidebar-menu-title">Definições</p>
-                        <a class="nav-link"
-                           data-toggle="collapse"
-                           href="#auth"
-                           aria-expanded="false"
-                           aria-controls="auth">
-                            <i class="typcn typcn-briefcase menu-icon"></i>
-                            <span class="menu-title">
-                                Configuração
-                            </span>
-                            <i class="menu-arrow"></i>
-                        </a>
-                        <div class="collapse" id="auth">
-                            <ul class="nav flex-column sub-menu">
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-action="createdistrict" asp-controller="setting">
-                                        Adicionar Distritos
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
+                        <li class="nav-item">
+                            <p class="sidebar-menu-title">Definições</p>
+                            <a class="nav-link"
+                               data-toggle="collapse"
+                               href="#auth"
+                               aria-expanded="false"
+                               aria-controls="auth">
+                                <i class="typcn typcn-briefcase menu-icon"></i>
+                                <span class="menu-title">
+                                    Configuração
+                                </span>
+                                <i class="menu-arrow"></i>
+                            </a>
+                            <div class="collapse" id="auth">
+                                <ul class="nav flex-column sub-menu">
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-action="createdistrict" asp-controller="setting">
+                                            Adicionar Distritos
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
 
                 </ul>
                 <ul class="sidebar-legend">
@@ -303,7 +339,7 @@
                         <span class="text-center text-sm-left d-block d-sm-inline-block">
                             Copyright ©
                             <a href="https://logicsystems.co.mz/" target="_blank">Logic systems</a>
-                               @DateTime.Now.Year.ToString()
+                            @DateTime.Now.Year.ToString()
                         </span>
 
                     </div>

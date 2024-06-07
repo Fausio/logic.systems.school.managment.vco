@@ -18,8 +18,8 @@ namespace logic.systems.school.managment.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private List<string> admins = new List<string>
             {
-                "admin@logicsystems.co.mz",
-                "admin@britam.co.mz"
+           
+                "admin@pandaalegria.com"
             };
 
         public UsersController(ISempleEntityService simpleEntityService, UserManager<IdentityUser> userManager)
@@ -48,6 +48,7 @@ namespace logic.systems.school.managment.Controllers
 
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
+                await _userManager.AddToRoleAsync(user, "EMPLOYEE".ToUpper());
                 if (result.Succeeded)
                 {
                     @TempData["success"] = "Utilizador criado com sucesso";

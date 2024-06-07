@@ -1,0 +1,59 @@
+﻿@model logic.systems.school.managment.Models.RegisterModel
+
+<div class="pageheader ">
+    <div class="pd-t-5">
+        <h1 class="pd-0 mg-0 tx-20 text-overflow">
+            CRIAR:  Nova conta
+        </h1>
+    </div>
+</div>
+
+
+<div class="col-12">
+    <div class="card mb-4 shadow-1">
+        <div class="card-header">
+            <h4 class="card-header-title"></h4>
+            <div class="card-header-btn">
+            </div>
+        </div>
+        <div class="card-body collapse show" id="collapse1">
+            <div class="form-layout form-layout-1">
+                <div class="row">
+                    <div class="col-12">
+                        @await Html.PartialAsync("~/Views/Shared/_Alerts.cshtml")
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <form id="registerForm" method="post">
+
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-floating">
+                                <label asp-for="Email"></label>
+                                <input asp-for="Email" name="Email" class="form-control" aria-required="true" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-floating">
+                                <label asp-for="Password"></label>
+                                <input asp-for="Password" name="Password" class="form-control" aria-required="true" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="form-floating">
+                                <label asp-for="ConfirmPassword"></label>
+                                <input asp-for="ConfirmPassword" name="ConfirmPassword" class="form-control" aria-required="true" />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                            <button id="registerSubmit" type="submit" class="mt-2  btn btn-lg btn-info">Gravar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
