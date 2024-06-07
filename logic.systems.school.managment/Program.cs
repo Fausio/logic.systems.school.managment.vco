@@ -259,10 +259,10 @@ using (var scope = app.Services.CreateScope())
             "V.Liquela"
         };
 
-         listOfTeacher.ForEach(item =>
-         {
-             item = item + "@pandaalegria.com";
-         });
+        listOfTeacher.ForEach(item =>
+        {
+            item = item + "@pandaalegria.com";
+        });
 
         var users = new List<AppUser>();
 
@@ -281,7 +281,7 @@ using (var scope = app.Services.CreateScope())
         {
             var pass = "panda1234";
             await UserManager.CreateAsync(item, pass);
-            await UserManager.AddToRoleAsync(item,  "PROFESSOR");
+            await UserManager.AddToRoleAsync(item, "PROFESSOR");
         }
     }
 }
