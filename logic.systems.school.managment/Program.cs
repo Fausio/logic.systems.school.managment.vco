@@ -151,8 +151,7 @@ using (var scope = app.Services.CreateScope())
 }
 using (var scope = app.Services.CreateScope())
 {
-    var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-
+    var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>(); 
 
     if (await UserManager.FindByEmailAsync("admin@pandaalegria.com") is null)
     {

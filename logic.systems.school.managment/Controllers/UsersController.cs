@@ -15,14 +15,14 @@ namespace logic.systems.school.managment.Controllers
     {
         private readonly ApplicationDbContext db;
         private readonly ISempleEntityService _SimpleEntityService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private List<string> admins = new List<string>
             {
            
                 "admin@pandaalegria.com"
             };
 
-        public UsersController(ISempleEntityService simpleEntityService, UserManager<IdentityUser> userManager)
+        public UsersController(ISempleEntityService simpleEntityService, UserManager<AppUser> userManager)
         {
             _userManager = userManager;
             _SimpleEntityService = simpleEntityService;
@@ -36,10 +36,10 @@ namespace logic.systems.school.managment.Controllers
         {
             if (ModelState.IsValid)
             {
-                var IdentityUser = await _userManager.GetUserAsync(User);
+                var AppUser = await _userManager.GetUserAsync(User);
                 var now = DateTime.Now;
 
-                var user = new IdentityUser
+                var user = new AppUser
                 {
                     UserName = model.Email,
                     Email = model.Email,
@@ -71,7 +71,7 @@ namespace logic.systems.school.managment.Controllers
         public async Task<IActionResult> Index()
         {
             var users_ = await _userManager.Users.ToListAsync();
-            List<IdentityUser> users = users_.Where(x => !admins.Contains(x.Email)).ToList();
+            List<AppUser> users = users_.Where(x => !admins.Contains(x.Email)).ToList();
             return View(users);
         }
 
@@ -129,7 +129,7 @@ namespace logic.systems.school.managment.Controllers
         public async Task<IActionResult> UpdatePassword(UpdateUserDTO model)
         {
 
-            var IdentityUser = await _userManager.GetUserAsync(User);
+            var AppUser = await _userManager.GetUserAsync(User);
             var now = DateTime.Now;
 
             var stringId = model.PasswordDTO.UserId.ToString();
@@ -167,7 +167,7 @@ namespace logic.systems.school.managment.Controllers
         {
 
 
-            var IdentityUser = await _userManager.GetUserAsync(User);
+            var AppUser = await _userManager.GetUserAsync(User);
             var now = DateTime.Now;
 
             var stringId = model.UserInfo.UserId.ToString();
