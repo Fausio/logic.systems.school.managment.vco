@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Office2010.Excel;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
+using logic.systems.school.managment.Models;
 using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -8,15 +9,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace logic.systems.school.managment.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "ADMINISTRATOR")]
     public class EnrollmentController : Controller
     {
         private IEnrollment _EnrollmentService;
         private IstudantService _StudentService;
         private ITuitionService _ITuitionService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
 
-        public EnrollmentController(IstudantService StudentService, IEnrollment enrollmentService, UserManager<IdentityUser> userManager, ITuitionService iTuitionService)
+        public EnrollmentController(IstudantService StudentService, IEnrollment enrollmentService, UserManager<AppUser> userManager, ITuitionService iTuitionService)
         {
             _EnrollmentService = enrollmentService;
             this._ITuitionService = iTuitionService;

@@ -1,8 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity;
 @using logic.systems.school.managment.Dto;
 @model logic.systems.school.managment.Dto.EditStudantDTO
-@inject SignInManager<IdentityUser> signInManager
-@inject UserManager<IdentityUser> userManager
+@inject SignInManager<AppUser> signInManager
+@inject UserManager<AppUser> userManager
 
 @{
     ViewData["Title"] = "Actualizar estudante";

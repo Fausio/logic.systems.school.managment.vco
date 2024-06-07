@@ -1,21 +1,22 @@
 ﻿using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
+using logic.systems.school.managment.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace logic.systems.school.managment.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "ADMINISTRATOR")]
     public class SalesController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private IstudantService _StudentService; 
         private ISalesService _SalesService;    
 
         public SalesController(IstudantService StudentService,
             ISalesService SalesService, 
-        UserManager<IdentityUser> userManager)
+        UserManager<AppUser> userManager)
         {
             this._StudentService = StudentService; 
             this._userManager = userManager;
