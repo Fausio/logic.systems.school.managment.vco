@@ -101,7 +101,7 @@ app.Use(async (context, next) =>
         context.Response.Redirect("Identity/Account/Login");
     }
 });
- 
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -151,7 +151,7 @@ using (var scope = app.Services.CreateScope())
 }
 using (var scope = app.Services.CreateScope())
 {
-    var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>(); 
+    var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
     if (await UserManager.FindByEmailAsync("admin@pandaalegria.com") is null)
     {
@@ -258,15 +258,19 @@ using (var scope = app.Services.CreateScope())
             "V.Liquela"
         };
 
+        var listOfTeacherMails = new List<string>();
+
         listOfTeacher.ForEach(item =>
         {
-            item = item + "@pandaalegria.com";
+            listOfTeacherMails.Add(item + "@pandaalegria.com");
         });
 
         var users = new List<AppUser>();
 
-        users = listOfTeacher.Select(item => new AppUser()
+        users = listOfTeacherMails.Select(item => new AppUser()
         {
+
+
             Email = item,
             NormalizedEmail = item,
             UserName = item,

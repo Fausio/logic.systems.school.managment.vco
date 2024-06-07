@@ -27,9 +27,8 @@
                 <table class="table table-hover table-responsive-sm  table-sm">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Email</th>
-                            <th>Localização</th>
+                            
+                            <th>Utilizadores</th> 
 
                         </tr>
                     </thead>
@@ -37,9 +36,8 @@
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <th scope="row"><a asp-action="Update" asp-controller="users" asp-route-id="@item.Id"> <i class="fa fa-search" aria-hidden="true"></i> </a></th>
-                                <td>@item.UserName</td>
- 
+                                <th scope="row"><a asp-action="Update" asp-controller="users" asp-route-id="@item.Id"> @item.UserName </a></th>
+                              
                             </tr>
                         }
                     </tbody>

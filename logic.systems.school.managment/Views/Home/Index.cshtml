@@ -1,6 +1,11 @@
 ﻿@model logic.systems.school.managment.Dto.StudentPageDto
+
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 @{
-    ViewData["Title"] = "Dashboard";
+    var user = await UserManager.GetUserAsync(User);
+    var roles = await UserManager.GetRolesAsync(user);
+    bool isAdmin = roles.Contains("ADMINISTRATOR");
 }
 
 <nav aria-label="breadcrumb">
@@ -9,47 +14,51 @@
     </ol>
 </nav>
 
-<form asp-action="search" asp-controller="studant">
-    <div class="col-lg-12 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-body pb-0">
-                <div class="row">
-                    <div class="col-md-4 col-sm-6">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Filtrar pelo pelo nome do estudante" asp-for="studentName">
 
+@if (isAdmin)
+{
+
+    <form asp-action="search" asp-controller="studant">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body pb-0">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Filtrar pelo pelo nome do estudante" asp-for="studentName">
+
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6">
-                        <div class="form-group">
-                            <div class="input-group">
+                        <div class="col-md-4 col-sm-6">
+                            <div class="form-group">
+                                <div class="input-group">
 
-                                <select class="form-control form-control-lg pb-3 pt-2" asp-for="CurrentSchoolLevelId" id="SelectSchoolLevel">
-                                    <option selected>... Filtrar pela classe do estudante</option>
-                                    @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
-                                    {
-                                        <option value="@item.Id">@item.Description</option>
-                                    }
-                                </select>
+                                    <select class="form-control form-control-lg pb-3 pt-2" asp-for="CurrentSchoolLevelId" id="SelectSchoolLevel">
+                                        <option selected>... Filtrar pela classe do estudante</option>
+                                        @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
+                                        {
+                                            <option value="@item.Id">@item.Description</option>
+                                        }
+                                    </select>
+                                </div>
                             </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-6">
+                            <button type="submit" class="btn btn-info btn-icon-text">
+                                Pesquisar
+                            </button>
                         </div>
                     </div>
 
-                    <div class="col-md-4 col-sm-6">
-                        <button type="submit" class="btn btn-info btn-icon-text">
-                            Pesquisar
-                        </button>
-                    </div>
                 </div>
-
             </div>
         </div>
-    </div>
-</form>
+    </form>
 
-
+}
 
 
 <div class="col-md-12 grid-margin stretch-card">
@@ -58,7 +67,7 @@
         <div class="card-body mb-0">
 
             <div class="row mb-0">
-                 
+
 
 
                 <div class="col-md-3 col-sm-12">
@@ -72,7 +81,7 @@
                         <p>Total de estudantes Resolvidos</p>
                         <footer class="blockquote-footer">@Model.studentTotals.TotalSolved</footer>
                     </blockquote>
-                </div> 
+                </div>
                 <div class="col-md-3 col-sm-12">
                     <blockquote class="blockquote blockquote-primary mb-0">
                         <p>Total de estudantes Suspensos</p>
@@ -95,15 +104,18 @@
 </div>
 
 
-<div class="col-lg-12 grid-margin stretch-card">
-    <div class="card">
-        <div class="card-body pb-0">
-            <label>Multas por meses (@DateTime.Now.Year)</label>
-            <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+@if (isAdmin)
+{
+
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body pb-0">
+                <label>Multas por meses (@DateTime.Now.Year)</label>
+                <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+            </div>
         </div>
     </div>
-</div>
-
+}
 
 
 
@@ -141,7 +153,7 @@
                 }
             });
         });
-         
+
     </script>
 
 
