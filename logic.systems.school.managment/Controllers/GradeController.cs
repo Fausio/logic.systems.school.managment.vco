@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace logic.systems.school.managment.Controllers
 {
-    [Authorize(Roles = "ADMINISTRATOR")]
+    [Authorize(Roles = "ADMINISTRATOR,EMPLOYEE,PROFESSOR")]
     public class GradeController : Controller
     {
         private readonly UserManager<AppUser> _userManager;

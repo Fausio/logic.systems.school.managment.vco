@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace logic.systems.school.managment.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "ADMINISTRATOR")]
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext db;
