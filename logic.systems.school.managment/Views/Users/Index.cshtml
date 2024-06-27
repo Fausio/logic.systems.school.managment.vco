@@ -27,9 +27,9 @@
                 <table class="table table-hover table-responsive-sm  table-sm">
                     <thead>
                         <tr>
-                            
-                            <th>Utilizadores</th> 
 
+                            <th>Utilizadores</th>
+                            <th>Perfil</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,7 +37,8 @@
                         {
                             <tr>
                                 <th scope="row"><a asp-action="Update" asp-controller="users" asp-route-id="@item.Id"> @item.UserName </a></th>
-                              
+                                <th scope="row"> @item.RoleName </th>
+
                             </tr>
                         }
                     </tbody>

@@ -23,6 +23,10 @@
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#navs-top-profile">Senha</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#navs-top-profile_">Perfil</a>
+                </li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane fade active show" id="navs-top-home">
@@ -44,7 +48,7 @@
                                         <span asp-validation-for="UserInfo.Email" class="text-danger"></span>
                                     </div>
 
-                                    <button id="registerSubmit" type="submit" class="mt-2  btn btn-lg btn-info">Alterado</button>
+                                    <button id="registerSubmit" type="submit" class="mt-2  btn btn-lg btn-info">Alterar</button>
                                 </form>
                             </div>
                         </div>
@@ -68,7 +72,7 @@
                                         <input asp-for="PasswordDTO.NewPassword" name="PasswordDTO.NewPassword" class="form-control" aria-required="true" />
                                         <span asp-validation-for="PasswordDTO.NewPassword" class="text-danger"></span>
                                     </div>
-                                    <button id="registerSubmit" type="submit" class="mt-2  btn btn-lg btn-info">Alterado</button>
+                                    <button id="registerSubmit" type="submit" class="mt-2  btn btn-lg btn-info">Alterar</button>
                                 </form>
                             </div>
                         </div>
@@ -76,7 +80,31 @@
                     </div>
                 </div>
 
+                <div class="tab-pane fade" id="navs-top-profile_">
+                    <div class="card-body">
 
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <form asp-action="UpdateProfile" method="post">
+                                    <input type="hidden" asp-for="PasswordDTO.UserId" name="PasswordDTO.UserId" id="PasswordDTO.UserId" />
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div> 
+                                    <div class="form-floating">
+                                        <label> Perfil </label>
+                                        <select asp-for="RoleName" name="RoleName" class="form-control form-control-lg pb-3 pt-3" id="RoleName">
+                                            @foreach (IdentityRole item in ViewBag.Roles)
+                                            {
+                                                <option value="@item.Name">@item.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <button id="RoleBtn" type="submit" class="mt-2  btn btn-lg btn-info">Alterar</button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
