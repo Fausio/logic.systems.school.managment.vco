@@ -136,8 +136,7 @@ using (var scope = app.Services.CreateScope())
                 var pass = "Assane1234";
                 await UserManager.CreateAsync(item, pass);
                 await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
-            }
-
+            } 
             if (email == "nilza.rodrigues@Kalimany.com")
             {
                 var pass = "Nilza1234";
