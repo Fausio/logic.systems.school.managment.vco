@@ -213,7 +213,12 @@ namespace logic.systems.school.managment.Controllers
                 TempData["error"] = "Usuário não encontrado.";
                 return RedirectToAction("Update", new { id = model.PasswordDTO.UserId });
             }
-
+            // remove roles
+            var roles = await _userManager.GetRolesAsync(user); 
+            foreach (var role in roles)
+            {
+                await _userManager.RemoveFromRoleAsync(user, role);
+            } 
             // update profile
             var result = await _userManager.AddToRoleAsync(user, model.RoleName.ToUpper());
             if (result.Succeeded)
