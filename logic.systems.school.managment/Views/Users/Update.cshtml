@@ -44,10 +44,10 @@
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="form-floating">
                                         <label asp-for="UserInfo.Email"></label>
-                                        <input asp-for="UserInfo.Email" name="UserInfo.Email" class="form-control" aria-required="true" />
+                                        <input asp-for="UserInfo.Email" name="UserInfo.Email" class="form-control form-control-sm" aria-required="true" />
                                         <span asp-validation-for="UserInfo.Email" class="text-danger"></span>
                                     </div>
-                                    <button type="submit" class="btn  btn-sm btn-info btn-icon-text">
+                                    <button type="submit" class="btn  btn-sm mt-2 btn-info btn-icon-text">
                                         Actualizar
                                         <i class="typcn typcn-edit btn-icon-append"></i>
                                     </button> 
@@ -71,10 +71,10 @@
 
                                     <div class="form-floating">
                                         <label> Nova senha</label>
-                                        <input asp-for="PasswordDTO.NewPassword" name="PasswordDTO.NewPassword" class="form-control" aria-required="true" />
+                                        <input asp-for="PasswordDTO.NewPassword" name="PasswordDTO.NewPassword" class="form-control form-control-sm " aria-required="true" />
                                         <span asp-validation-for="PasswordDTO.NewPassword" class="text-danger"></span>
                                     </div>
-                                    <button type="submit" class="btn  btn-sm btn-info btn-icon-text">
+                                    <button type="submit" class="btn  btn-sm mt-2 btn-info btn-icon-text">
                                         Actualizar
                                         <i class="typcn typcn-edit btn-icon-append"></i>
                                     </button>
@@ -96,14 +96,14 @@
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div> 
                                     <div class="form-floating">
                                         <label> Perfil </label>
-                                        <select asp-for="RoleName" name="RoleName" class="form-control form-control-lg pb-3 pt-3" id="RoleName">
+                                        <select asp-for="RoleName" name="RoleName" class="form-control form-control-sm pb-3 pt-3" id="RoleName">
                                             @foreach (IdentityRole item in ViewBag.Roles)
                                             {
                                                 <option value="@item.Name">@item.Name</option>
                                             }
                                         </select>
                                     </div>
-                                    <button type="submit" class="btn  btn-sm btn-info btn-icon-text">
+                                    <button type="submit" class="btn mt-2  btn-sm btn-info btn-icon-text">
                                         Actualizar
                                         <i class="typcn typcn-edit btn-icon-append"></i>
                                     </button>
@@ -117,3 +117,5 @@
         </div>
     </div>
 </div>
+
+
