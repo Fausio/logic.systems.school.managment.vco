@@ -1,50 +1,143 @@
 ﻿@model List<AppUser>
 
-<div class="pageheader ">
-    <div class="pd-t-5">
-        <h1 class="pd-0 mg-0 tx-20 text-overflow">Utilizadores</h1>
+
+<link rel="stylesheet" href="~/css/EditViewBen.css" />
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Lista de Utilizadores</li>
+    </ol>
+</nav>
+
+
+@await Html.PartialAsync("~/Views/Shared/_Alerts.cshtml")
+
+
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0">
+
+            <div class="row">
+                <div class="col-auto mr-auto">
+                    <h4 class="card-title">Lista</h4>
+                    <p class="card-description">   Utilizadores  </p>
+                </div>
+                <div class="col-auto">
+
+                    <a type="button" class="btn  btn-sm btn-info btn-icon-text" asp-action="create" asp-controller="User">
+                        Cadastrar novo Utilizadore
+                    </a>
+
+                </div>
+            </div>
+
+
+            <fieldset class="border pt-0 mt-0 p-2 pb-0">
+                <legend class="w-auto p-0 m-0 ">Filtro </legend>
+
+                <div class="table-responsive  p-0 m-0">
+                    <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
+                        <thead>
+
+                            <tr>
+
+                                <th><center> Utilizadores    </center>  </th>
+                                <th><center> Perfil    </center>  </th>
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td scope="row">  <center><a asp-action="Update" asp-controller="users" asp-route-id="@item.Id"> @item.UserName </a> </center>  </td>
+                                    <td scope="row">  <center> @item.RoleName  </center>  </td>
+
+                                </tr>
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </fieldset>
+        </div>
     </div>
 </div>
 
 
 
-<div class="col-md-12 col-lg-12">
-    <div class="card mb-4 shadow-1">
-        <div class="card-header">
-            <h4 class="card-header-title">
-                Utilizadores
-            </h4>
 
-        </div>
-        <div class="card-body collapse show" id="collapse3">
-
+@* <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-1 pt-4">
             <div class="row">
-                <div class="col-12">
-                    @await Html.PartialAsync("~/Views/Shared/_Alerts.cshtml")
+                <div class="col-md-4">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" asp-route-pageNumber="1" asp-action="index" asp-controller="studant">Primeira</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber-1)" asp-action="index" asp-controller="studant">Anterior</a>
+                            </li>
+
+                            @if (Model.indexPage.pageNumber > 3)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            }
+
+                            @for (int i = Math.Max(1, Model.indexPage.pageNumber - 2); i <= Math.Min(Model.indexPage.totalPages, Model.indexPage.pageNumber + 2); i++)
+                            {
+                                var btn_activ = "";
+                                if (i == Model.indexPage.pageNumber)
+                                {
+                                    btn_activ = "active";
+                                }
+
+                                <li class="page-item @btn_activ">
+                                    <a class="page-link" asp-route-pageNumber="@i" asp-action="index" asp-controller="studant">@i</a>
+                                </li>
+                            }
+
+                            @if (Model.indexPage.pageNumber < Model.indexPage.totalPages - 2)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            }
+
+                            <li class="page-item">
+                                <a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber+1)" asp-action="index" asp-controller="studant">Próximo</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" asp-route-pageNumber="@Model.indexPage.totalPages" asp-action="index" asp-controller="studant">Última</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
+
+                <div class="col-md-4 offset-md-4"><b>Mostrando</b> @Model.indexPage.pageSize entradas na pagina @Model.indexPage.pageNumber <b>de</b> @Model.indexPage.totalPages | <b>total de entradas</b> @Model.indexPage.totalRecords</div>
+
             </div>
-            <div class="row">
-                <table class="table table-hover table-responsive-sm  table-sm">
-                    <thead>
-                        <tr>
-
-                            <th>Utilizadores</th>
-                            <th>Perfil</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <th scope="row"><a asp-action="Update" asp-controller="users" asp-route-id="@item.Id"> @item.UserName </a></th>
-                                <th scope="row"> @item.RoleName </th>
-
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-
         </div>
     </div>
-</div>  
+</div>
+
+
+
+
+
+
+
+
+
+
+  *@
