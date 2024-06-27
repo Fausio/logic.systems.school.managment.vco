@@ -19,7 +19,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+builder.Services.AddDefaultIdentity<AppUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
@@ -39,6 +39,16 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 //);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy =>
+        policy.RequireRole("Administrator".ToUpper()));
+
+    options.AddPolicy("RequireEmployeeRole", policy =>
+        policy.RequireRole("employee".ToUpper()));
+
+    // Add more policies as needed for other roles
+});
 
 
 builder.Services.AddScoped<IstudantService, StudantService>();
@@ -61,7 +71,7 @@ builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new 
 
 builder.Services.Configure<SecurityStampValidatorOptions>(options =>
 {
-    // Define o tempo de validade do token para um período longo ou indefinido
+    // Define o tempo de validade do token para um perï¿½odo longo ou indefinido
     options.ValidationInterval = TimeSpan.FromDays(365); // Expira em 1 ano
 });
 
@@ -69,7 +79,7 @@ builder.Services.Configure<SecurityStampValidatorOptions>(options =>
 
 
 var app = builder.Build();
-// cookie de autenticação para nunca expirar
+// cookie de autenticaï¿½ï¿½o para nunca expirar
 app.UseCookiePolicy(new CookiePolicyOptions
 {
     MinimumSameSitePolicy = SameSiteMode.Strict,
@@ -130,7 +140,7 @@ using (var scope = app.Services.CreateScope())
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    string[] roles = new string[] { "Administrator".ToUpper(), "employee".ToUpper() };
+    string[] roles = new string[] { "Administrator".ToUpper(), "employee".ToUpper(), "professor".ToUpper() };
     foreach (string role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
@@ -141,15 +151,15 @@ using (var scope = app.Services.CreateScope())
 }
 using (var scope = app.Services.CreateScope())
 {
-    var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
 
     if (await UserManager.FindByEmailAsync("admin@pandaalegria.com") is null)
     {
 
-        var users = new List<IdentityUser>()
+        var users = new List<AppUser>()
         {
-               new IdentityUser()
+               new AppUser()
             {
                 Email =  "admin@pandaalegria.com",
                 NormalizedEmail = "admin@pandaalegria.com",
@@ -157,7 +167,7 @@ using (var scope = app.Services.CreateScope())
                 NormalizedUserName = "admin",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-            }  ,   new IdentityUser()
+            }  ,   new AppUser()
             {
                 Email =  "fausio.matsinhe@logicsystems.co.mz",
                 NormalizedEmail = "fausio.matsinhe@logicsystems.co.mz",
@@ -165,7 +175,7 @@ using (var scope = app.Services.CreateScope())
                 NormalizedUserName = "master",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-            } ,    new IdentityUser()
+            } ,    new AppUser()
             {
                 Email =  "ronilson.cuco@logicsystems.co.mz",
                 NormalizedEmail = "ronilson.cuco@logicsystems.co.mz",
@@ -173,7 +183,7 @@ using (var scope = app.Services.CreateScope())
                 NormalizedUserName = "master",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-            } ,   new IdentityUser() {
+            } ,   new AppUser() {
                 Email =  "bernardete.paulino@pandaalegria.com",
                 NormalizedEmail = "bernardete.paulino@pandaalegria.com",
                 UserName =  "bernardete.paulino@pandaalegria.com",
@@ -216,6 +226,62 @@ using (var scope = app.Services.CreateScope())
                 await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
             }
 
+        }
+
+
+
+    }
+
+
+    // seed Teacher users
+    if (true)
+    {
+        var listOfTeacher = new List<string>()
+        {
+            "A.Abacar"      ,
+            "A.Cesar"      ,
+            "A.Fonseca"     ,
+            "A.Maricoa"     ,
+            "D.Cumbane"     ,
+            "G.Cangunga"    ,
+            "H.Jamal"      ,
+            "J.Alvaro"      ,
+            "L.Lutano"      ,
+            "M.Caide"       ,
+            "M.Faquira"     ,
+            "M.Macuta"      ,
+            "P.Lassine"     ,
+            "P.Ntumba"      ,
+            "R.Patrocenio"  ,
+            "R.Sebastiao"   ,
+            "S.Juvencio"    ,
+            "S.Saide"       ,
+            "V.Liquela"
+        };
+
+        listOfTeacher.ForEach(item =>
+        {
+            item = item + "@pandaalegria.com";
+        });
+
+        var users = new List<AppUser>();
+
+        users = listOfTeacher.Select(item => new AppUser()
+        {
+            Email = item,
+            NormalizedEmail = item,
+            UserName = item,
+            NormalizedUserName = "Professor",
+            EmailConfirmed = true,
+            PhoneNumberConfirmed = true,
+
+        }).ToList();
+
+        foreach (var item in users)
+        {
+            var pass = "panda1234";
+            await UserManager.CreateAsync(item, pass);
+            await UserManager.AddToRoleAsync(item, "PROFESSOR");
         }
     }
 }

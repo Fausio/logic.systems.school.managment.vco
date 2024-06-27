@@ -1,0 +1,83 @@
+﻿@model logic.systems.school.managment.Dto.UpdateUserDTO
+
+<div class="pageheader ">
+    <div class="pd-t-5">
+        <h1 class="pd-0 mg-0 tx-20 text-overflow">VISIALUZAÇÃO: Utilizador</h1>
+    </div>
+</div>
+
+
+
+<div class="card mb-4 shadow-1">
+    <div class="card-header">
+        <h4 class="card-header-title">
+            Outras informações
+        </h4>
+    </div>
+    <div class="card-body collapse show" id="collapse9">
+        <div class="nav-tabs-top">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active show" data-toggle="tab" href="#navs-top-home">Dados Gerais</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#navs-top-profile">Senha</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade active show" id="navs-top-home">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                @await Html.PartialAsync("~/Views/Shared/_Alerts.cshtml")
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <form id="registerForm" method="post" asp-action="updateInfoUser">
+                                    <input type="hidden" asp-for="UserInfo.UserId" name="UserInfo.UserId" id="UserInfo.UserId" />
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <div class="form-floating">
+                                        <label asp-for="UserInfo.Email"></label>
+                                        <input asp-for="UserInfo.Email" name="UserInfo.Email" class="form-control" aria-required="true" />
+                                        <span asp-validation-for="UserInfo.Email" class="text-danger"></span>
+                                    </div>
+
+                                    <button id="registerSubmit" type="submit" class="mt-2  btn btn-lg btn-info">Alterado</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="tab-pane fade" id="navs-top-profile">
+                    <div class="card-body">
+
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <form id="registerForm" asp-action="UpdatePassword" method="post">
+                                    <input type="hidden" asp-for="PasswordDTO.UserId" name="PasswordDTO.UserId" id="PasswordDTO.UserId" />
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                                    <div class="form-floating">
+                                        <label> Nova senha</label>
+                                        <input asp-for="PasswordDTO.NewPassword" name="PasswordDTO.NewPassword" class="form-control" aria-required="true" />
+                                        <span asp-validation-for="PasswordDTO.NewPassword" class="text-danger"></span>
+                                    </div>
+                                    <button id="registerSubmit" type="submit" class="mt-2  btn btn-lg btn-info">Alterado</button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
