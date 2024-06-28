@@ -1,13 +1,12 @@
 ﻿@model logic.systems.school.managment.Models.RegisterModel
+ 
 
-<div class="pageheader ">
-    <div class="pd-t-5">
-        <h1 class="pd-0 mg-0 tx-20 text-overflow">
-            CRIAR:  Nova conta
-        </h1>
-    </div>
-</div>
-
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">CRIAR:  Nova conta</li>
+    </ol>
+</nav>
 
 <div class="col-12">
     <div class="card mb-4 shadow-1">
@@ -44,7 +43,18 @@
                                 <input asp-for="ConfirmPassword" name="ConfirmPassword" class="form-control" aria-required="true" />
                                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                             </div>
-                            <button id="registerSubmit" type="submit" class="mt-2  btn btn-lg btn-info">Gravar</button>
+                            
+                            <fieldset class="border p-2">
+                                <legend class="w-auto">Ações</legend>
+                                <div class="template-demo">
+                                    <button type="submit" class="btn mt-2  btn-sm btn-info btn-icon-text">
+                                        Gravar
+                                    </button>
+                                    <a class="btn  btn-sm btn-light btn-icon-text" href="/users">
+                                        Ir para lista
+                                    </a>
+                                </div>
+                            </fieldset>
                         </form>
                     </div>
                 </div>
