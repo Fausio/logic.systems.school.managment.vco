@@ -360,18 +360,42 @@
 
                     // Popula a tabela com os dados recebidos
                     $.each(data, function (index, item) {
+                        console.log(item);
                         var row = "<tr>" +
-                            "<td><center>" + item.classLevel + "</center></td>" +
-                            "<td><center>" + item.classRoom + "</center></td>" +
-                            "<td><center>" + item.subject + "</center></td>" +
+                            "<td><center>" + item.classLevel?.description + "</center></td>" +
+                            "<td><center>" + item.classRoom?.description + "</center></td>" +
+                            "<td><center>" + item.subject?.description + "</center></td>" +
                             "<td><center>" + item.enrollmentYears + "</center></td>" +
-                            "<td><center> Ações </center></td>" + // Adicione as ações desejadas aqui
+                            "<td style='text-align: center;'>" +
+                            "<button onclick='confirmDelete(" + item.id + ")' type='button' class='btn btn-sm btn-danger btn-icon-text text-white mb-0 mt-0'>Remover</button>" +
+                            "</td>" +
                             "</tr>";
                         $("#tabelaItens tbody").append(row);
                     });
                 },
                 error: function () {
                     alert("Erro ao carregar dados da tabela.");
+                }
+            });
+        }
+
+         function confirmDelete(id) {
+            if (confirm("Tem certeza que deseja remover esta relação do professor com a disciplina e turma?")) {
+                deleteProfessorConfig(id);
+            }
+        }
+
+         function deleteProfessorConfig(id) {
+            $.ajax({
+                url: "/users/DeleteProfessorConfig",
+                type: "POST",
+                data: { id: id },
+                success: function (result) {
+                    // Atualiza a tabela após a remoção
+                    populateTable('@Model.UserInfo.UserId');
+                },
+                error: function () {
+                    alert("Erro ao remover item.");
                 }
             });
         }

@@ -294,6 +294,23 @@ namespace logic.systems.school.managment.Controllers
             return Json(professorConfigs);
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteProfessorConfig(int id)
+        {
+            var professorConfig = await db.ProfessorConfig.FindAsync(id);
+            if (professorConfig == null)
+            {
+                return NotFound();
+            }
+
+            db.ProfessorConfig.Remove(professorConfig);
+            await db.SaveChangesAsync();
+
+            return Ok();
+        }
+
+
         private async Task ConfigView()
         {
 
