@@ -84,9 +84,7 @@ namespace logic.systems.school.managment.Data
 
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Payment> Payments { get; set; }
-
-
-
-
+        public DbSet<ProfessorConfig> ProfessorConfig { get; set; }
+          
     }
 }

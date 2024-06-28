@@ -69,7 +69,7 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="">Província</label>
-                                <select class="form-control form-control-lg pb-3 pt-3" id="provinces">
+                                <select class="form-control form-control-sm pb-3 pt-3" id="provinces">
 
 
                                     @foreach (OrgUnitProvince item in ViewBag.Provinces)
@@ -81,7 +81,7 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="">Distrito</label>
-                                <select class="form-control form-control-lg pb-3 pt-3" id="district" asp-for="DistrictId">
+                                <select class="form-control form-control-sm pb-3 pt-3" id="district" asp-for="DistrictId">
                                     <option selected>...</option>
 
                                     @foreach (OrgUnitProvince item in ViewBag.Provinces)
@@ -98,7 +98,7 @@
                         <div class="form-row mb-3">
                             <div class="col-md-4">
                                 <label for="">Sexo</label>     
-                                <select class="form-control form-control-lg pb-3 pt-3" asp-for="Gender">
+                                <select class="form-control form-control-sm pb-3 pt-3" asp-for="Gender">
                                     @foreach (string item in ViewBag.Gender)
                                     {
                                         <option value="@item">@item</option>
@@ -148,7 +148,7 @@
                             <div class="form-row mb-4">
                                 <div class="col-md-3">
                                     <label for="">Matricular na Classe </label>
-                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="CurrentSchoolLevelId" id="SelectSchoolLevel">
+                                    <select class="form-control form-control-sm pb-3 pt-3" asp-for="CurrentSchoolLevelId" id="SelectSchoolLevel">
                                         <option selected>...</option>
                                         @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
                                         {
@@ -159,7 +159,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="">Turma / Grupo</label>
-                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="SchoolClassRoomId" id="SchoolClassRoom">
+                                    <select class="form-control form-control-sm pb-3 pt-3" asp-for="SchoolClassRoomId" id="SchoolClassRoom">
                                         <option selected>...</option>
                                         @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
                                         {
@@ -170,7 +170,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="">Ano</label>
-                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="EnrollmentYear" id="EnrollmentYear">
+                                    <select class="form-control form-control-sm pb-3 pt-3" asp-for="EnrollmentYear" id="EnrollmentYear">
                                         <option selected>...</option>
                                         @foreach (var item in ViewBag.EnrollmentYears)
                                         {

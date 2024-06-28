@@ -4,6 +4,8 @@
     {
         public string RoleName { get; set; }
         public UpdateUserInfoDTO UserInfo { get; set; } = new UpdateUserInfoDTO();
-        public UpdatePasswordDTO PasswordDTO { get; set; } = new UpdatePasswordDTO();
+        public UpdatePasswordDTO PasswordDTO { get; set; } = new UpdatePasswordDTO(); 
+        public ProfessorConfigDTO ProfessorConfig { get; set;} = new ProfessorConfigDTO();
+
     }
 }

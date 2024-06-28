@@ -21,14 +21,16 @@ namespace logic.systems.school.managment.Controllers
         private readonly RoleManager<IdentityRole> _userRoleManager;
         private List<string> admins = new List<string> { "admin@pandaalegria.com" };
         private IUserSirvice _UserSirvice;
+        private ISempleEntityService _SempleEntityService;
 
-        public UsersController(ISempleEntityService simpleEntityService, UserManager<AppUser> userManager, RoleManager<IdentityRole> userRoleManager, IUserSirvice userSirvice)
+        public UsersController(ISempleEntityService simpleEntityService, UserManager<AppUser> userManager, RoleManager<IdentityRole> userRoleManager, IUserSirvice userSirvice, ISempleEntityService sempleEntityService)
         {
             _userManager = userManager;
             _SimpleEntityService = simpleEntityService;
             db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
             _userRoleManager = userRoleManager;
             _UserSirvice = userSirvice;
+            _SempleEntityService = sempleEntityService;
         }
 
 
@@ -74,7 +76,7 @@ namespace logic.systems.school.managment.Controllers
         public async Task<IActionResult> Index(int? pageNumber = 1, int? pageSize = 10)
         {
             try
-            { 
+            {
                 var result = await _UserSirvice.ReadPagenation(pageNumber.Value, pageSize.Value);
 
                 foreach (var item in result.records)
@@ -94,7 +96,7 @@ namespace logic.systems.school.managment.Controllers
             }
 
         }
-        
+
 
         public async Task<IActionResult> Update(string id)
         {
@@ -113,7 +115,7 @@ namespace logic.systems.school.managment.Controllers
             }
 
             ViewBag.Roles = await _userRoleManager.Roles.Where(x => x.Name != "administrator".ToUpper()).ToListAsync();
-             
+
             var userInfo = new UpdateUserInfoDTO()
             {
                 UserId = user.Id,
@@ -142,7 +144,7 @@ namespace logic.systems.school.managment.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-
+            await ConfigView();
             return View(model);
         }
 
@@ -230,11 +232,11 @@ namespace logic.systems.school.managment.Controllers
                 return RedirectToAction("Update", new { id = model.PasswordDTO.UserId });
             }
             // remove roles
-            var roles = await _userManager.GetRolesAsync(user); 
+            var roles = await _userManager.GetRolesAsync(user);
             foreach (var role in roles)
             {
                 await _userManager.RemoveFromRoleAsync(user, role);
-            } 
+            }
             // update profile
             var result = await _userManager.AddToRoleAsync(user, model.RoleName.ToUpper());
             if (result.Succeeded)
@@ -245,6 +247,16 @@ namespace logic.systems.school.managment.Controllers
 
             @TempData["error"] = "Erro ao actualizado o  utilizador";
             return RedirectToAction("Update", new { id = model.PasswordDTO.UserId });
+        }
+
+
+        private async Task ConfigView()
+        {
+
+            ViewBag.SchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
+            ViewBag.SchoolClassRooms = await _SempleEntityService.GetByTypeOrderById("SchoolClassRoom");
+            ViewBag.Subjects = await _SempleEntityService.GetByTypeOrderById("Subject");
+            ViewBag.EnrollmentYears = new List<int> { int.Parse(DateTime.Now.Year.ToString()), int.Parse(DateTime.Now.AddYears(-1).Year.ToString()), };
         }
     }
 }

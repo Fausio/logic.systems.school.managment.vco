@@ -46,7 +46,7 @@
                     <div class="form-row mb-4">
                         <div class="col-md-12">
                             <label for="">Classe</label>
-                            <select class="form-control form-control-lg pb-3 pt-3" asp-for="ClassLevel" id="SchoolLevels">
+                            <select class="form-control form-control-sm pb-3 pt-3" asp-for="ClassLevel" id="SchoolLevels">
                                 <option selected>...</option>
                                 @foreach (SimpleEntity item in ViewBag.SchoolLevels)
                                 {
@@ -60,7 +60,7 @@
                     <div class="form-row mb-4">
                         <div class="col-md-12">
                             <label for="">Turma</label>
-                            <select class="form-control form-control-lg pb-3 pt-3" asp-for="ClassRoom" id="SchoolClassRooms">
+                            <select class="form-control form-control-sm pb-3 pt-3" asp-for="ClassRoom" id="SchoolClassRooms">
                                 <option selected>...</option>
                                 @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
                                 {
@@ -75,7 +75,7 @@
                     <div class="form-row mb-4">
                         <div class="col-md-12">
                             <label for="">Disciplina</label>
-                            <select class="form-control form-control-lg pb-3 pt-3" asp-for="Subject" id="Subjects">
+                            <select class="form-control form-control-sm pb-3 pt-3" asp-for="Subject" id="Subjects">
                                 <option selected>...</option>
                                 @foreach (SimpleEntity item in ViewBag.Subjects)
                                 {
@@ -90,7 +90,7 @@
                     <div class="form-row mb-4">
                         <div class="col-md-12">
                             <label for="">Trimestre</label>
-                            <select class="form-control form-control-lg pb-3 pt-3" asp-for="Quarter" id="Quarter">
+                            <select class="form-control form-control-sm pb-3 pt-3" asp-for="Quarter" id="Quarter">
                                 <option selected>...</option>
                                 @foreach (var item in ViewBag.Quarters)
                                 {

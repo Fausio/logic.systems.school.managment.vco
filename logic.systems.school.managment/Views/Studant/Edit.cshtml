@@ -670,7 +670,7 @@
                         <div class="form-row mb-3">
                             <div class="col-md-12 col-sm-12">
                                 <label for="">Meses</label>
-                                <select class="form-control form-control-lg pb-3 pt-3" id="tuitionPayment">
+                                <select class="form-control form-control-sm pb-3 pt-3" id="tuitionPayment">
 
 
                                     @foreach (Tuition item in ViewBag.Tuitions)
@@ -731,7 +731,7 @@
                             <div class="form-row mb-3">
                                 <div class="col-md-12 col-sm-12">
                                     <label for="">Matricular na Classe</label>
-                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="CurrentSchoolLevelId" id="NextSchoolLevelId">
+                                    <select class="form-control form-control-sm pb-3 pt-3" asp-for="CurrentSchoolLevelId" id="NextSchoolLevelId">
 
                                         @foreach (SimpleEntity item in ViewBag.CurrentSchoolLevels)
                                         {
@@ -742,7 +742,7 @@
                                 </div>
                                 <div class="col-md-12 col-sm-12 mt-3">
                                     <label for="">Turma / Grupo</label>
-                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="SchoolClassRoomId" id="SchoolClassRoomId">
+                                    <select class="form-control form-control-sm pb-3 pt-3" asp-for="SchoolClassRoomId" id="SchoolClassRoomId">
                                         <option selected>...</option>
                                         @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
                                         {
@@ -753,7 +753,7 @@
                                 </div>
                                 <div class="col-md-12 col-sm-12 mt-3">
                                     <label for="">Ano</label>
-                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="EnrollmentYear" id="EnrollmentYear">
+                                    <select class="form-control form-control-sm pb-3 pt-3" asp-for="EnrollmentYear" id="EnrollmentYear">
                                         <option selected>...</option>
                                         @foreach (var item in ViewBag.EnrollmentYears)
                                         {
@@ -858,7 +858,7 @@
                     <div class="form-row">
                         <div class="col-12">
                             <label for=""> Descrição:</label>
-                            <textarea class="form-control form-control-lg  " id="deleteDiscription">
+                            <textarea class="form-control form-control-sm  " id="deleteDiscription">
 
                             </textarea>
                         </div>
@@ -950,7 +950,7 @@
                     <div class="form-row">
                         <div class="col-12">
                             <label for="">Matricular a ser retificada </label>
-                            <select class="form-control form-control-lg pb-3 pt-3" id="OldEnrollment">
+                            <select class="form-control form-control-sm pb-3 pt-3" id="OldEnrollment">
 
                                 @foreach (var item in Model.Enrollments)
                                 {
@@ -964,7 +964,7 @@
                     <div class="form-row">
                         <div class="col-12">
                             <label for="">Matricular na Classe </label>
-                            <select class="form-control form-control-lg pb-3 pt-3" id="NewSchoolLevelId">
+                            <select class="form-control form-control-sm pb-3 pt-3" id="NewSchoolLevelId">
 
                                 @foreach (SimpleEntity item in ViewBag.FixCurrentSchoolLevels)
                                 {
@@ -977,7 +977,7 @@
                     <div class="form-row">
                         <div class="col-12">
                             <label for="">Turma / Grupo</label>
-                            <select class="form-control form-control-lg pb-3 pt-3" id="NewSchoolClassRoomId">
+                            <select class="form-control form-control-sm pb-3 pt-3" id="NewSchoolClassRoomId">
 
                                 @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
                                 {
@@ -990,7 +990,7 @@
                     <div class="form-row">
                         <div class="col-12">
                             <label for="">Ano</label>
-                            <select class="form-control form-control-lg pb-3 pt-3" id="NewEnrollmentYear">
+                            <select class="form-control form-control-sm pb-3 pt-3" id="NewEnrollmentYear">
 
                                 @foreach (var item in ViewBag.FixEnrollmentYears)
                                 {
@@ -1070,7 +1070,7 @@
                                 </div>
                                 <div class="col-md-12 col-sm-12 ">
                                     <label for="">Turma / Grupo</label>
-                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="SchoolClassRoomId" id="SchoolClassRoomIdRepit">
+                                    <select class="form-control form-control-sm pb-3 pt-3" asp-for="SchoolClassRoomId" id="SchoolClassRoomIdRepit">
                                         <option selected>...</option>
                                         @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
                                         {
@@ -1081,7 +1081,7 @@
                                 </div>
                                 <div class="col-md-12 col-sm-12 mt-3">
                                     <label for="">Ano</label>
-                                    <select class="form-control form-control-lg pb-3 pt-3" asp-for="EnrollmentYear" id="EnrollmentYearRepit">
+                                    <select class="form-control form-control-sm pb-3 pt-3" asp-for="EnrollmentYear" id="EnrollmentYearRepit">
                                         <option selected>...</option>
                                         @foreach (var item in ViewBag.EnrollmentYears)
                                         {
@@ -1282,7 +1282,7 @@
                         <div class="form-row mb-3">
                             <div class="col-md-12 col-sm-12">
                                 <label for="">Meses</label>
-                                <select class="form-control form-control-lg pb-3 pt-3" id="tuitionFeePayment">
+                                <select class="form-control form-control-sm pb-3 pt-3" id="tuitionFeePayment">
                                     @foreach (TuitionFine item in ViewBag.TuitionsFee)
                                     {
                                         <option value="@item.Id">@item.Tuition.MonthNumber - @item.Tuition.MonthName - @item.Tuition.Year</option>
