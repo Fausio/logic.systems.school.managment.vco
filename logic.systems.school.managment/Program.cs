@@ -61,6 +61,7 @@ builder.Services.AddScoped<Idocument, DocumentService>();
 builder.Services.AddScoped<IEnrollment, EnrollmentService>();
 
 builder.Services.AddScoped<ISalesService, SalesService>();
+builder.Services.AddScoped<IUserSirvice, UserSirvice>();
 
 builder.Services.AddScoped<IGradeService, GradeService>();
 // Register DinkToPdf converter

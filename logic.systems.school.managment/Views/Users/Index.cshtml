@@ -1,4 +1,4 @@
-﻿@model List<AppUser>
+﻿@model logic.systems.school.managment.Dto.UserPageDto
 
 
 <link rel="stylesheet" href="~/css/EditViewBen.css" />
@@ -51,7 +51,7 @@
                         </thead>
                         <tbody>
 
-                            @foreach (var item in Model)
+                            @foreach (var item in Model.indexPage.records)
                             {
                                 <tr>
                                     <td scope="row">  <center><a asp-action="Update" asp-controller="users" asp-route-id="@item.Id"> @item.UserName </a> </center>  </td>
@@ -72,8 +72,7 @@
 
 
 
-
-@* <div class="col-lg-12 grid-margin stretch-card">
+<div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body pb-1 pt-4">
             <div class="row">
@@ -81,10 +80,10 @@
                     <nav aria-label="Page navigation example">
                         <ul class="pagination">
                             <li class="page-item">
-                                <a class="page-link" asp-route-pageNumber="1" asp-action="index" asp-controller="studant">Primeira</a>
+                                <a class="page-link" asp-route-pageNumber="1" asp-action="index">Primeira</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber-1)" asp-action="index" asp-controller="studant">Anterior</a>
+                                <a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber-1)" asp-action="index">Anterior</a>
                             </li>
 
                             @if (Model.indexPage.pageNumber > 3)
@@ -103,7 +102,7 @@
                                 }
 
                                 <li class="page-item @btn_activ">
-                                    <a class="page-link" asp-route-pageNumber="@i" asp-action="index" asp-controller="studant">@i</a>
+                                    <a class="page-link" asp-route-pageNumber="@i" asp-action="index">@i</a>
                                 </li>
                             }
 
@@ -115,10 +114,10 @@
                             }
 
                             <li class="page-item">
-                                <a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber+1)" asp-action="index" asp-controller="studant">Próximo</a>
+                                <a class="page-link" asp-route-pageNumber="@(Model.indexPage.pageNumber+1)" asp-action="index">Próximo</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" asp-route-pageNumber="@Model.indexPage.totalPages" asp-action="index" asp-controller="studant">Última</a>
+                                <a class="page-link" asp-route-pageNumber="@Model.indexPage.totalPages" asp-action="index">Última</a>
                             </li>
                         </ul>
                     </nav>
@@ -132,12 +131,3 @@
 </div>
 
 
-
-
-
-
-
-
-
-
-  *@

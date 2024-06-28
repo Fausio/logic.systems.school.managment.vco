@@ -47,10 +47,18 @@
                                         <input asp-for="UserInfo.Email" name="UserInfo.Email" class="form-control form-control-sm" aria-required="true" />
                                         <span asp-validation-for="UserInfo.Email" class="text-danger"></span>
                                     </div>
-                                    <button type="submit" class="btn  btn-sm mt-2 btn-info btn-icon-text">
-                                        Actualizar
-                                        <i class="typcn typcn-edit btn-icon-append"></i>
-                                    </button> 
+                                    <fieldset class="border p-2">
+                                        <legend class="w-auto">Ações</legend>
+                                        <div class="template-demo">
+                                            <button type="submit" class="btn mt-2  btn-sm btn-info btn-icon-text">
+                                                Actualizar
+                                                <i class="typcn typcn-edit btn-icon-append"></i>
+                                            </button>
+                                            <a class="btn  btn-sm btn-light btn-icon-text" href="/users">
+                                                Ir para lista
+                                            </a>
+                                        </div>
+                                    </fieldset>
                                 </form>
                             </div>
                         </div>
@@ -74,10 +82,18 @@
                                         <input asp-for="PasswordDTO.NewPassword" name="PasswordDTO.NewPassword" class="form-control form-control-sm " aria-required="true" />
                                         <span asp-validation-for="PasswordDTO.NewPassword" class="text-danger"></span>
                                     </div>
-                                    <button type="submit" class="btn  btn-sm mt-2 btn-info btn-icon-text">
-                                        Actualizar
-                                        <i class="typcn typcn-edit btn-icon-append"></i>
-                                    </button>
+                                    <fieldset class="border p-2">
+                                        <legend class="w-auto">Ações</legend>
+                                        <div class="template-demo">
+                                            <button type="submit" class="btn mt-2  btn-sm btn-info btn-icon-text">
+                                                Actualizar
+                                                <i class="typcn typcn-edit btn-icon-append"></i>
+                                            </button>
+                                            <a class="btn  btn-sm btn-light btn-icon-text" href="/users">
+                                                Ir para lista
+                                            </a>
+                                        </div>
+                                    </fieldset>
                                 </form>
                             </div>
                         </div>
@@ -103,10 +119,19 @@
                                             }
                                         </select>
                                     </div>
-                                    <button type="submit" class="btn mt-2  btn-sm btn-info btn-icon-text">
-                                        Actualizar
-                                        <i class="typcn typcn-edit btn-icon-append"></i>
-                                    </button>
+                                   
+                                    <fieldset class="border p-2">
+                                        <legend class="w-auto">Ações</legend>
+                                        <div class="template-demo">
+                                            <button type="submit" class="btn mt-2  btn-sm btn-info btn-icon-text">
+                                                Actualizar
+                                                <i class="typcn typcn-edit btn-icon-append"></i>
+                                            </button>
+                                            <a class="btn  btn-sm btn-light btn-icon-text" href="/users">
+                                                Ir para lista
+                                            </a> 
+                                        </div>
+                                    </fieldset>
                                 </form>
                             </div>
                         </div>

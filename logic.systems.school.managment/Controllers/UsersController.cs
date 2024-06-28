@@ -1,8 +1,10 @@
-﻿using logic.systems.school.managment.Areas.Identity.Pages.Account;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using logic.systems.school.managment.Areas.Identity.Pages.Account;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
+using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +20,15 @@ namespace logic.systems.school.managment.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _userRoleManager;
         private List<string> admins = new List<string> { "admin@pandaalegria.com" };
+        private IUserSirvice _UserSirvice;
 
-        public UsersController(ISempleEntityService simpleEntityService, UserManager<AppUser> userManager, RoleManager<IdentityRole> userRoleManager)
+        public UsersController(ISempleEntityService simpleEntityService, UserManager<AppUser> userManager, RoleManager<IdentityRole> userRoleManager, IUserSirvice userSirvice)
         {
             _userManager = userManager;
             _SimpleEntityService = simpleEntityService;
             db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
             _userRoleManager = userRoleManager;
+            _UserSirvice = userSirvice;
         }
 
 
@@ -66,19 +70,31 @@ namespace logic.systems.school.managment.Controllers
             return View(new Models.RegisterModel());
         }
 
-        public async Task<IActionResult> Index()
-        {
-            var users_ = await _userManager.Users.ToListAsync();
-            List<AppUser> users = users_.Where(x => !admins.Contains(x.Email)).ToList();
 
-            foreach (var item in users)
+        public async Task<IActionResult> Index(int? pageNumber = 1, int? pageSize = 10)
+        {
+            try
+            { 
+                var result = await _UserSirvice.ReadPagenation(pageNumber.Value, pageSize.Value);
+
+                foreach (var item in result.records)
+                {
+                    var role = await _userManager.GetRolesAsync(item);
+                    item.RoleName = role.FirstOrDefault();
+                }
+
+                return View(new UserPageDto()
+                {
+                    indexPage = result
+                });
+            }
+            catch (Exception)
             {
-                var role = await _userManager.GetRolesAsync(item);
-                item.RoleName = role.FirstOrDefault();
+                throw;
             }
 
-            return View(users);
         }
+        
 
         public async Task<IActionResult> Update(string id)
         {
