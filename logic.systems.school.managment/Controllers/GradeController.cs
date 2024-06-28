@@ -97,7 +97,10 @@ namespace logic.systems.school.managment.Controllers
         }
 
 
-
+        public async Task<IActionResult> GetProfessorConfigs(string userId)
+        {
+            return View();
+        }
 
         private async Task ConfigView()
         {

@@ -269,9 +269,7 @@ using (var scope = app.Services.CreateScope())
         var users = new List<AppUser>();
 
         users = listOfTeacherMails.Select(item => new AppUser()
-        {
-
-
+        { 
             Email = item,
             NormalizedEmail = item,
             UserName = item,

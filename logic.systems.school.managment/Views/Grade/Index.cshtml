@@ -1,4 +1,10 @@
 ﻿@model logic.systems.school.managment.Dto.GradeConfigDTO
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var roles = await UserManager.GetRolesAsync(user);
+    string CurrentUserId = user.Id;
+}
+
 <link rel="stylesheet" href="~/css/EditViewBen.css" />
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -14,6 +20,73 @@
         </div>
     </div>
 </div>
- 
+
 
 <partial name="_Filter" model="Model" />
+
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <fieldset class="border pt-0 mt-0 p-2 pb-0">
+                        <legend class="w-auto p-0 m-0 ">Turmas e Disciplinas do Professor (@user.UserName)</legend>
+
+                        <div class="table-responsive  p-0 m-0">
+                            <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
+                                <thead>
+                                    <tr>
+                                        <th><center> Classe    </center></th>
+                                        <th><center> Turma    </center></th>
+                                        <th><center> Disciplina    </center></th>
+                                        <th><center> Ano    </center></th>
+                                        <th><center> Ações    </center></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<label>@CurrentUserId</label>
+
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "/Users/GetProfessorConfigs",
+                type: "GET",
+                data: { userId: "@CurrentUserId" },
+                success: function (data) { 
+                    $("#tabelaItens tbody").empty(); 
+                    $.each(data, function (index, item) {
+                        console.log(item);
+                        var row = "<tr>" +
+                            "<td><center>" + item.classLevel?.description + "</center></td>" +
+                            "<td><center>" + item.classRoom?.description + "</center></td>" +
+                            "<td><center>" + item.subject?.description + "</center></td>" +
+                            "<td><center>" + item.enrollmentYears + "</center></td>" +
+                            "<td style='text-align: center;'>" +
+                            "<button onclick='confirmDelete(" + item.id + ")' type='button' class='btn btn-sm btn-danger btn-icon-text text-white mb-0 mt-0'>Remover</button>" +
+                            "</td>" +
+                            "</tr>";
+                        $("#tabelaItens tbody").append(row);
+                    });
+                },
+                error: function () {
+                    alert("Erro ao carregar dados da tabela.");
+                }
+            });
+        });
+    </script>
+}
