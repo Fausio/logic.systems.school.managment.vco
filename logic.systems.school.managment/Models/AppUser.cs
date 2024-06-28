@@ -7,5 +7,7 @@ namespace logic.systems.school.managment.Models
     {
         [NotMapped]
         public string RoleName { get; set; }
+
+        public List<ProfessorConfig> ProfessorConfigs { get; set; } = new List<ProfessorConfig>();
     }
 }
