@@ -8,7 +8,6 @@
     </ol>
 </nav>
 
-
 <div class="card mb-4 shadow-1">
     <div class="card-header">
         <h4 class="card-header-title">
@@ -29,15 +28,12 @@
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#navs-top-profile">Senha</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#navs-top-profile_">Perfil</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#navs-top-classRoom">Turmas e Disciplinas</a>
                 </li>
-
             </ul>
             <div class="tab-content" style="padding:0">
                 <div class="tab-pane fade active show" id="navs-top-home">
@@ -68,8 +64,6 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
 
                 <div class="tab-pane fade" id="navs-top-profile">
@@ -79,7 +73,6 @@
                                 <form id="registerForm" asp-action="UpdatePassword" method="post">
                                     <input type="hidden" asp-for="PasswordDTO.UserId" name="PasswordDTO.UserId" id="PasswordDTO.UserId" />
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
                                     <div class="form-floating">
                                         <label> Nova senha</label>
                                         <input asp-for="PasswordDTO.NewPassword" name="PasswordDTO.NewPassword" class="form-control form-control-sm " aria-required="true" />
@@ -100,7 +93,6 @@
                                 </form>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -135,7 +127,6 @@
                                 </form>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -143,7 +134,7 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-6 col-sm-12">
-                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#RelationModal" onclick="form_pay_btns()">
+                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#RelationModal">
                                     Adicionar Turmas e Disciplinas do professor
                                 </a>
                             </div>
@@ -156,22 +147,18 @@
                                     <div class="table-responsive  p-0 m-0">
                                         <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
                                             <thead>
-
                                                 <tr>
-
-                                                    <th><center> Classe    </center>  </th>
-                                                    <th><center> Turma    </center>  </th>
-                                                    <th><center> Disciplina    </center>  </th>
-                                                    <th><center> Ano    </center>  </th>
-                                                    <th><center> Ações    </center>  </th>
+                                                    <th><center> Classe    </center></th>
+                                                    <th><center> Turma    </center></th>
+                                                    <th><center> Disciplina    </center></th>
+                                                    <th><center> Ano    </center></th>
+                                                    <th><center> Ações    </center></th>
                                                 </tr>
-
                                             </thead>
                                             <tbody>
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </fieldset>
                             </div>
                         </div>
@@ -182,95 +169,79 @@
     </div>
 </div>
 
-
 <div class="modal fade" id="RelationModal">
     <div class="modal-dialog">
         <div class="modal-content">
-
             <!-- Conteúdo do modal -->
             <div class="modal-header">
                 <h4 class="modal-title">Turmas e Disciplinas do professor</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-
             <div class="modal-body">
-
                 <form id="configFilterForm">
                     <fieldset class="border pt-0 mt-0 p-2 pb-0">
                         <legend class="w-auto p-0 m-0 ">Filtro </legend>
-
-
-
-
-
-
-
                         <div class="form-row mb-3">
                             <div class="col-md-12 col-sm-12">
-                                <label for="">Classe</label>
-                                <select class="select-control  form-control  form-control-sm" style=" width: 100%;" asp-for="ProfessorConfig.ClassLevel" id="SchoolLevels">
+                                <label for="SchoolLevels">Classe</label>
+                                <select class="select-control form-control form-control-sm" style="width: 100%;" asp-for="ProfessorConfig.ClassLevel" id="SchoolLevels">
                                     <option selected>... selecione ...</option>
                                     @foreach (SimpleEntity item in ViewBag.SchoolLevels)
                                     {
                                         <option value="@item.Id">@item.Description</option>
                                     }
                                 </select>
-                                <span asp-validation-for="ProfessorConfig.ClassLevel" class="text-danger"></span>
+                                <span id="SchoolLevelsError" class="text-danger"></span>
                             </div>
                         </div>
-
-
                         <div class="form-row mb-3">
                             <div class="col-md-12 col-sm-12">
-                                <label for="">Turma</label>
-                                <select class="select-control form-control form-control-sm" style=" width: 100%;" asp-for="ProfessorConfig.ClassRoom" id="SchoolClassRooms">
+                                <label for="SchoolClassRooms">Turma</label>
+                                <select class="select-control form-control form-control-sm" style="width: 100%;" asp-for="ProfessorConfig.ClassRoom" id="SchoolClassRooms">
                                     <option selected>... selecione ...</option>
                                     @foreach (SimpleEntity item in ViewBag.SchoolClassRooms)
                                     {
                                         <option value="@item.Id">@item.Description</option>
                                     }
                                 </select>
-                                <span asp-validation-for="ProfessorConfig.ClassRoom" class="text-danger"></span>
+                                <span id="SchoolClassRoomsError" class="text-danger"></span>
                             </div>
                         </div>
-
                         <div class="form-row mb-3">
                             <div class="col-md-12 col-sm-12">
-                                <label for="">Disciplina</label>
-                                <select class="select-control form-control form-control-sm" style=" width: 100%;" asp-for="ProfessorConfig.Subject" id="Subjects">
+                                <label for="Subjects">Disciplina</label>
+                                <select class="select-control form-control form-control-sm" style="width: 100%;" asp-for="ProfessorConfig.Subject" id="Subjects">
                                     <option selected>... selecione ...</option>
                                     @foreach (SimpleEntity item in ViewBag.Subjects)
                                     {
                                         <option value="@item.Id">@item.Description</option>
                                     }
                                 </select>
-                                <span asp-validation-for="ProfessorConfig.Subject" class="text-danger"></span>
+                                <span id="SubjectsError" class="text-danger"></span>
                             </div>
                         </div>
-
                         <div class="form-row mb-3">
                             <div class="col-md-12 col-sm-12">
-                                <label for="">Ano</label>
-                                <select class="select-control form-control  form-control-sm" style=" width: 100%;" asp-for="ProfessorConfig.EnrollmentYears" id="EnrollmentYears">
+                                <label for="EnrollmentYears">Ano</label>
+                                <select class="select-control form-control form-control-sm" style="width: 100%;" asp-for="ProfessorConfig.EnrollmentYears" id="EnrollmentYears">
                                     <option selected>... selecione ...</option>
                                     @foreach (var item in ViewBag.EnrollmentYears)
                                     {
                                         <option value="@item">@item</option>
                                     }
                                 </select>
-                                <span asp-validation-for="ProfessorConfig.EnrollmentYears" class="text-danger"></span>
+                                <span id="EnrollmentYearsError" class="text-danger"></span>
                             </div>
                         </div>
-                          
                     </fieldset>
                     <fieldset class="border p-2">
                         <legend class="w-auto">Ações</legend>
-                        <div class="template-demo" id="form_pay_btns">
-                            <button type="button" class="btn btn-success btn-icon-text btn-sm" onclick="createPayment()">
+                        <div class="template-demo" id="form_btns">
+                            <button type="button" class="btn btn-success btn-icon-text btn-sm" id="addConfigButton" onclick="AddConfig()">
                                 Efectuar pagamento
                             </button>
                         </div>
-                        <div id="form_pay_spinner">
+                        <div id="form_spinner" style="display: none;">
                             <div class="d-flex justify-content-center">
                                 <div class="spinner-border" role="status">
                                     <span class="sr-only">Loading...</span>
@@ -280,8 +251,129 @@
                     </fieldset>
                 </form>
             </div>
-
         </div>
     </div>
 </div>
 
+@section scripts {
+    <script>
+
+        function AddConfig() {
+
+
+            var isValid = true;
+
+            var schoolLevels = $("#SchoolLevels").val();
+            var schoolClassRooms = $("#SchoolClassRooms").val();
+            var subjects = $("#Subjects").val();
+            var enrollmentYears = $("#EnrollmentYears").val();
+
+            if (schoolLevels === "... selecione ..." || !schoolLevels) {
+                $("#SchoolLevelsError").text("campo obrigatório");
+                isValid = false;
+            } else {
+                $("#SchoolLevelsError").text("");
+            }
+
+            if (schoolClassRooms === "... selecione ..." || !schoolClassRooms) {
+                $("#SchoolClassRoomsError").text("campo obrigatório");
+                isValid = false;
+            } else {
+                $("#SchoolClassRoomsError").text("");
+            }
+
+            if (subjects === "... selecione ..." || !subjects) {
+                $("#SubjectsError").text("campo obrigatório");
+                isValid = false;
+            } else {
+                $("#SubjectsError").text("");
+            }
+
+            if (enrollmentYears === "... selecione ..." || !enrollmentYears) {
+                $("#EnrollmentYearsError").text("campo obrigatório");
+                isValid = false;
+            } else {
+                $("#EnrollmentYearsError").text("");
+            }
+
+            if (!isValid) {
+                return;
+            }
+            console.log("AddConfig", data);
+            var data = {
+                UserId: "@Model.UserInfo.UserId.ToString()",
+                SchoolLevels: schoolLevels,
+                SchoolClassRooms: schoolClassRooms,
+                Subjects: subjects,
+                EnrollmentYears: enrollmentYears
+            };
+            console.log("AddConfig", data);
+            form_btns_hide();
+            $.ajax({
+                url: "/users/AddConfig",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (result) {
+                    if (result.success) {
+                        form_btns_show();
+                        populateTable("@Model.UserInfo.UserId.ToString()");
+                        $('#RelationModal').modal('hide');
+                    } else {
+                        alert(result.message);
+                        form_btns_show();
+                    }
+                },
+                error: function () {
+                    alert("Erro ao enviar os dados.");
+                    form_btns_show();
+                }
+            });
+        }
+
+        function form_btns_show() {
+            $("#form_btns").show();
+            $("#form_spinner").hide();
+        }
+
+        function form_btns_hide() {
+            $("#form_btns").hide();
+            $("#form_spinner").show();
+        }
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Chama a função para popular a tabela assim que a página carregar
+            var userId = '@Model.UserInfo.UserId'; // Obtém o UserId da sua Model
+            populateTable(userId);
+        });
+
+        function populateTable(userId) {
+            $.ajax({
+                url: "/users/GetProfessorConfigs",
+                type: "GET",
+                data: { userId: userId },
+                success: function (data) {
+                    // Limpa o conteúdo da tabela
+                    $("#tabelaItens tbody").empty();
+
+                    // Popula a tabela com os dados recebidos
+                    $.each(data, function (index, item) {
+                        var row = "<tr>" +
+                            "<td><center>" + item.classLevel + "</center></td>" +
+                            "<td><center>" + item.classRoom + "</center></td>" +
+                            "<td><center>" + item.subject + "</center></td>" +
+                            "<td><center>" + item.enrollmentYears + "</center></td>" +
+                            "<td><center> Ações </center></td>" + // Adicione as ações desejadas aqui
+                            "</tr>";
+                        $("#tabelaItens tbody").append(row);
+                    });
+                },
+                error: function () {
+                    alert("Erro ao carregar dados da tabela.");
+                }
+            });
+        }
+    </script>
+}

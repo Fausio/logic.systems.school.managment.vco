@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml.InkML;
+using DocumentFormat.OpenXml.Spreadsheet;
 using logic.systems.school.managment.Areas.Identity.Pages.Account;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
@@ -249,6 +250,49 @@ namespace logic.systems.school.managment.Controllers
             return RedirectToAction("Update", new { id = model.PasswordDTO.UserId });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddConfig([FromBody] ProfessorConfigCreateDTO data)
+        {
+            if (ModelState.IsValid)
+            {
+                var AppUser = await _userManager.GetUserAsync(User);
+                if (AppUser == null)
+                {
+                    return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                }
+                var entity = data.GetProfessorConfig(AppUser.Id);
+
+                if (entity == null)
+                {
+                    return NotFound($"Unable to loadentity");
+                }
+
+                await db.ProfessorConfig.AddAsync(entity);
+                await db.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Configuração adicionada com sucesso." });
+            }
+
+            return Json(new { success = false, message = "Erro ao adicionar configuração." });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProfessorConfigs(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("UserId não fornecido.");
+            }
+
+            var professorConfigs = await db.ProfessorConfig
+                .Include(x => x.ClassLevel)
+                 .Include(x => x.ClassRoom)
+                 .Include(x => x.Subject) 
+                .Where(pc => pc.UserId == userId)
+                .ToListAsync();
+
+            return Json(professorConfigs);
+        }
 
         private async Task ConfigView()
         {
