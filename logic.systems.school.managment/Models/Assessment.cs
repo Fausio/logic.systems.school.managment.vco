@@ -58,9 +58,8 @@ namespace logic.systems.school.managment.Models
 
         public decimal GetACSAverage()
         {
-            decimal totalACS = Grades.Where(x => x.Type == Grade.GradeType_ACS).Sum(x => x.Value.Value);
+            decimal totalACS = Grades.Where(x => x.Type == Grade.GradeType_ACS).Sum(x => x.Value != null ? x.Value.Value : 0);
             var result = Math.Round((totalACS == 0 ? 0 : totalACS / 3), 2);
-
             return result;
         }
 
@@ -77,7 +76,7 @@ namespace logic.systems.school.managment.Models
             return result;
         }
 
- 
+
 
     }
 }

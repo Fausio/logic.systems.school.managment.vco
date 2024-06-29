@@ -13,7 +13,7 @@ namespace logic.systems.school.managment.Models
         public int? AssessmentId { get; set; } 
 
         public DateTime? Date { get; set; }
-        public decimal? Value { get; set; } 
+        public decimal? Value { get; set; } = 0;
         public string Type { get; set; }
         public int Number { get; set; }
     }

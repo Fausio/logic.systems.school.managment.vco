@@ -15,10 +15,6 @@
     </div>
 </div>
 
-
-<partial name="_FilterYearView" model="@ViewBag.Filter" />
-
-
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body">
@@ -47,21 +43,21 @@
                         <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
                             <thead>
                                 <tr>
-                                  
+
                                     <th><center>Classe     </center>             </th>
                                     <th><center>Turma      </center>             </th>
-                                    <th><center>Disciplina </center>             </th> 
+                                    <th><center>Disciplina </center>             </th>
                                     <th><center>Ano  </center>             </th>
                                     <th><center>Professor  </center>             </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                
+
                                     <td><center>@ViewBag.GradeHeader.ClassLevel     </center>       </td>
                                     <td><center>@ViewBag.GradeHeader.ClassRoom      </center>       </td>
                                     <td><center>@ViewBag.GradeHeader.Subject        </center>       </td>
-                                      <td><center>@ViewBag.GradeHeader.EnrollmentYears        </center>       </td>
+                                    <td><center>@ViewBag.GradeHeader.EnrollmentYears        </center>       </td>
                                     <td><center> "n/a"                              </center>       </td>
                                 </tr>
                             </tbody>
@@ -87,7 +83,7 @@
                                         <th style="border: 1px solid black;" colspan="6"><center> 2º Trimestre </center></th>
 
                                         <th style="border: 1px solid black;" colspan="6"><center> 3º Trimestre </center></th>
-                                        <th style="border: 1px solid black; background-color:white;"  > </th>
+                                        <th style="border: 1px solid black; background-color:white;"> </th>
                                     </tr>
                                     <!-- Cabeçalhos ACS e AP -->
                                     <tr>
@@ -140,25 +136,38 @@
                                         <tr>
                                             @for (int j = i; j < i + 3 && j < Model.Assessments.Count; j++)
                                             {
-                                                <!-- Exibir o nome apenas uma vez no grupo -->
                                                 @if (j == i)
                                                 {
                                                     <td class="nwrap"><center>@Model.Assessments[j].Quarter.Enrollment.Student.Id</center></td>
                                                     <td class="nwrap"><center>@Model.Assessments[j].Quarter.Enrollment.Student.Name</center></td>
                                                 }
-                                                <td><input disabled value="@Model.Assessments[j].Grades[0].Value" type="number" style="width: 100%; min-width: 50px; @(Model.Assessments[j].Grades[0].Value == 0 ? "" : Model.Assessments[j].Grades[0].Value < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
-                                                <td><input disabled value="@Model.Assessments[j].Grades[1].Value" type="number" style="width: 100%; min-width: 50px; @(Model.Assessments[j].Grades[1].Value == 0 ? "" : Model.Assessments[j].Grades[1].Value < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
-                                                <td><input disabled value="@Model.Assessments[j].Grades[2].Value" type="number" style="width: 100%; min-width: 50px; @(Model.Assessments[j].Grades[2].Value == 0 ? "" : Model.Assessments[j].Grades[2].Value < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
-                                                <td><input disabled type="number" value="@Model.Assessments[j].GetACSAverage()" style="width: 100%; min-width: 50px; @(Model.Assessments[j].GetACSAverage() == 0 ? "" : Model.Assessments[j].GetACSAverage() < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
-                                                <td><input disabled value="@Model.Assessments[j].Grades[3].Value" type="number" style="width: 100%; min-width: 50px; @(Model.Assessments[j].Grades[3].Value == 0 ? "" : Model.Assessments[j].Grades[3].Value < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
-                                                <td><input disabled type="number" value="@Model.Assessments[j].GetQuarterAverage()" style="width: 100%; min-width: 50px; @(Model.Assessments[j].GetQuarterAverage() == 0 ? "" : Model.Assessments[j].GetQuarterAverage() < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
+
+                                                var Grades_0 = @Model.Assessments[j].Grades[0].Value.HasValue ? @Model.Assessments[j].Grades[0].Value.Value.ToString() : "";
+                                                var Grades_1 = @Model.Assessments[j].Grades[1].Value.HasValue ? @Model.Assessments[j].Grades[1].Value.Value.ToString() : "";
+                                                var Grades_2 = @Model.Assessments[j].Grades[2].Value.HasValue ? @Model.Assessments[j].Grades[2].Value.Value.ToString() : "";
+                                                var Grades_3 = @Model.Assessments[j].Grades[3].Value.HasValue ? Model.Assessments[j].Grades[3].Value.Value.ToString() : "";
+
+
+                                                <td> <input disabled value="@Grades_0" type="text" style="width: 100%; min-width: 50px; @((int.TryParse(Grades_0, out int grade0)) ? (grade0 == 0 ? "" : (grade0 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")) : "")" /> </td>
+                                                <td> <input disabled value="@Grades_1" type="text" style="width: 100%; min-width: 50px; @((int.TryParse(Grades_1, out int grade1)) ? (grade1 == 0 ? "" : (grade1 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")) : "")" /> </td>
+                                                <td> <input disabled value="@Grades_2" type="text" style="width: 100%; min-width: 50px; @((int.TryParse(Grades_2, out int grade2)) ? (grade2 == 0 ? "" : (grade2 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")) : "")" /> </td>
+                                                <td><input disabled type="text" value="@Model.Assessments[j].GetACSAverage()" style="width: 100%; min-width: 50px; @(Model.Assessments[j].GetACSAverage() == 0 ? "" : Model.Assessments[j].GetACSAverage() < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
+                                                <td> <input disabled value="@Grades_3" type="text" style="width: 100%; min-width: 50px; @((int.TryParse(Grades_3, out int grade3)) ? (grade3 == 0 ? "" : (grade3 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")) : "")" /> </td>
+                                                <td><input disabled type="text" value="@Model.Assessments[j].GetQuarterAverage()" style="width: 100%; min-width: 50px; @(Model.Assessments[j].GetQuarterAverage() == 0 ? "" : Model.Assessments[j].GetQuarterAverage() < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
+
+                                             @*    <td><input disabled value="@Grades_0" type="text" style="width: 100%; min-width: 50px; @(int.TryParse(Grades_0) == 0 ? "" : Grades_0 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
+                                                <td><input disabled value="@Grades_1" type="text" style="width: 100%; min-width: 50px; @(Grades_1 == 0 ? "" : Grades_1 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
+                                                <td><input disabled value="@Grades_2" type="text" style="width: 100%; min-width: 50px; @(Grades_2 == 0 ? "" : Grades_2 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td> *@
+                                                
+                                               @*  <td><input disabled value="@Grades_3" type="text" style="width: 100%; min-width: 50px; @(Grades_3 == 0 ? "" : Grades_3 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td> *@
+                                              
                                             }
-                                           
-                                            <td><input disabled value="@Model.Assessments[i].Quarter.Enrollment.GetYearQuartersAverage()" type="number" style="width: 100%; min-width: 50px; @(@Model.Assessments[i].Quarter.Enrollment.GetYearQuartersAverage() == 0 ? "" : @Model.Assessments[i].Quarter.Enrollment.GetYearQuartersAverage() < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
+
+                                            <td><input disabled value="@Model.Assessments[i].Quarter.Enrollment.GetYearQuartersAverage()" type="text" style="width: 100%; min-width: 50px; @(@Model.Assessments[i].Quarter.Enrollment.GetYearQuartersAverage() == 0 ? "" : @Model.Assessments[i].Quarter.Enrollment.GetYearQuartersAverage() < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
                                         </tr>
                                     }
 
-       
+
                                 </tbody>
                             </table>
 
@@ -167,7 +176,7 @@
 
                     </fieldset>
 
-                   
+
                 </form>
             }
 
