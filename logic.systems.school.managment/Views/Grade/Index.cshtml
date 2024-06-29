@@ -5,6 +5,7 @@
     string CurrentUserId = user.Id;
 }
 
+
 <link rel="stylesheet" href="~/css/EditViewBen.css" />
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -22,16 +23,13 @@
 </div>
 
 
-<partial name="_Filter" model="Model" />
-
-
 <div class="col-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body">
             <div class="row">
                 <div class="col-12">
                     <fieldset class="border pt-0 mt-0 p-2 pb-0">
-                        <legend class="w-auto p-0 m-0 ">Turmas e Disciplinas do Professor (@user.UserName)</legend>
+                        <legend class="w-auto p-0 m-0 ">Turmas e Disciplinas do Professor ( @user.UserName )</legend>
 
                         <div class="table-responsive  p-0 m-0">
                             <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
@@ -40,6 +38,7 @@
                                         <th><center> Classe    </center></th>
                                         <th><center> Turma    </center></th>
                                         <th><center> Disciplina    </center></th>
+                                        <th><center> Trimestre    </center></th>
                                         <th><center> Ano    </center></th>
                                         <th><center> Ações    </center></th>
                                     </tr>
@@ -56,7 +55,16 @@
     </div>
 </div>
 
-<label>@CurrentUserId</label>
+<div id="spinner" style="display: none;">
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div id="content"></div>
+
 
 
 
@@ -64,20 +72,35 @@
     <script>
         $(document).ready(function () {
             $.ajax({
-                url: "/Users/GetProfessorConfigs",
+                url: "/Grade/GetProfessorConfigs",
                 type: "GET",
                 data: { userId: "@CurrentUserId" },
-                success: function (data) { 
-                    $("#tabelaItens tbody").empty(); 
+                success: function (data) {
+                    $("#tabelaItens tbody").empty();
                     $.each(data, function (index, item) {
                         console.log(item);
+                        var spinnerId = "spinner_" + item.id;
+                        var buttonId = "button_" + item.id;
+                        var selectId = "select_" + item.id;
                         var row = "<tr>" +
                             "<td><center>" + item.classLevel?.description + "</center></td>" +
                             "<td><center>" + item.classRoom?.description + "</center></td>" +
                             "<td><center>" + item.subject?.description + "</center></td>" +
+                            "<td><center>" +
+                            "<select class='select-control valid' style='width: 100%;' id='" + selectId + "' name='Quarter'>" + 
+                            "<option value='1'>1</option>" +
+                            "<option value='2'>2</option>" +
+                            "<option value='3'>3</option>" +
+                            "</select>" + 
+                            "</center></td>" +
                             "<td><center>" + item.enrollmentYears + "</center></td>" +
-                            "<td style='text-align: center;'>" +
-                            "<button onclick='confirmDelete(" + item.id + ")' type='button' class='btn btn-sm btn-danger btn-icon-text text-white mb-0 mt-0'>Remover</button>" +
+                            "<td style='text-align: center; position: relative;'>" +
+                            "<button id='" + buttonId + "' onclick='GotoGrade(" + item.id + ")' type='button' class='btn btn-sm btn-info btn-icon-text text-white mb-0 mt-0'>Lançar notas</button>" +
+                            "<div id='" + spinnerId + "' class='spinner-container' style='display: none;'>" +
+                            "<div class='spinner-border' role='status'>" +
+                            "<span class='sr-only'>Loading...</span>" +
+                            "</div>" +
+                            "</div>" +
                             "</td>" +
                             "</tr>";
                         $("#tabelaItens tbody").append(row);
@@ -88,5 +111,29 @@
                 }
             });
         });
+
+        function GotoGrade(id) {
+            var spinnerId = "#spinner_" + id;
+            var buttonId = "#button_" + id;
+            var selectId = "#select_" + id;
+            var trimestre = $(selectId).val();
+
+            if (!trimestre) {
+                alert("Por favor, selecione um trimestre.");
+                return;
+            }
+
+            $(buttonId).hide();
+            $(spinnerId).show();
+            $("button").prop("disabled", true);
+
+            if (id > 0) {
+                window.location.href = "/Grade/Create?id=" + id + "&quarter=" + trimestre;
+            } else {
+                $(buttonId).show();
+                $(spinnerId).hide();
+                $("button").prop("disabled", false);
+            }
+        }
     </script>
 }

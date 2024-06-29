@@ -91,9 +91,16 @@ namespace logic.systems.school.managment.Services
                                                    x.Quarter.Enrollment.Student.Suspended
                                           )
                                    .ToListAsync();
+           
+            results.ForEach(async x =>
+            {
 
-
-
+                if (x.CreatedUSer != null && x.CreatedUSer != "logicsystems.co.mz")
+                {
+                    var user = await db.Users.FirstAsync(u => u.Id == x.CreatedUSer);
+                    x.CreatedUSer = user.UserName; 
+                } 
+            }); 
 
             return results;
         }
@@ -116,6 +123,20 @@ namespace logic.systems.school.managment.Services
         public Task<Grade> Update(Grade model, string UpdatedById)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<GradeConfigDTO>? ReadGradeConfig(int professorConfigId, int quarter, string ProfessorAccountId)
+        {
+            return await db.ProfessorConfig.Where(x => x.Id == professorConfigId && x.UserId == ProfessorAccountId)
+                           .Select(x => new GradeConfigDTO()
+                           {
+                               ClassLevel = x.ClassLevelId.Value,
+                               ClassRoom = x.ClassRoomId.Value,
+                               Subject = x.SubjectId.Value,
+                               Quarter = quarter,
+                               EnrollmentYears = x.EnrollmentYears, 
+
+                           }).FirstOrDefaultAsync();
         }
     }
 }

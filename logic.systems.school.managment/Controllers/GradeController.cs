@@ -9,17 +9,19 @@ using Newtonsoft.Json;
 namespace logic.systems.school.managment.Controllers
 {
     [Authorize(Roles = "ADMINISTRATOR,EMPLOYEE,PROFESSOR")]
-    public class GradeController : Controller
+    public class GradeController : CommonController
     {
+        private readonly SignInManager<AppUser> _SignInManager;
         private readonly UserManager<AppUser> _userManager;
         private ISempleEntityService _SempleEntityService;
         private IGradeService _IGradeService;
 
-        public GradeController(UserManager<AppUser> _userManager, ISempleEntityService SempleEntityService, IGradeService iGradeService)
+        public GradeController(UserManager<AppUser> _userManager, ISempleEntityService SempleEntityService, IGradeService iGradeService, SignInManager<AppUser> SignInManager)
         {
             this._userManager = _userManager;
             this._SempleEntityService = SempleEntityService;
             _IGradeService = iGradeService;
+            _SignInManager = SignInManager;
 
         }
         public async Task<IActionResult> Index()
@@ -47,6 +49,7 @@ namespace logic.systems.school.managment.Controllers
         }
 
 
+
         [HttpGet]
         public async Task<IActionResult> YearViewGrade(GradeConfigDTO param)
         {
@@ -62,15 +65,32 @@ namespace logic.systems.school.managment.Controllers
         }
 
 
+
+
+
         [HttpGet]
-        public async Task<IActionResult> Create(GradeConfigDTO param)
+        public async Task<IActionResult> Create(int id, int quarter)
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                await _SignInManager.SignOutAsync();
+                return RedirectToAction("index", "Home");
+            }
+
+            GradeConfigDTO param = await _IGradeService.ReadGradeConfig(id, quarter, currentUser.Id);
             await ConfigView();
             ViewBag.Filter = new GradeConfigDTO();
             ViewBag.GradeHeader = await GetGradeHeader(param);
             var data = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectQuarter(param);
 
-            await GetAuditData(data[0]);
+
+            if (data.Count() > 0)
+            {
+                await GetAuditData(data[0]);
+            }
+
+
             return View(new AssessmentCreateDTO()
             {
                 dto = param,
@@ -90,17 +110,17 @@ namespace logic.systems.school.managment.Controllers
             TempData["MensagemSucess"] = "Lançamento de notas bem-sucedida!";
             ViewBag.Mensagem = TempData["MensagemSucess"];
             CreateDTO.Assessments = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectQuarter(CreateDTO.dto);
-            await GetAuditData(CreateDTO.Assessments[0]);
+            if (CreateDTO.Assessments.Count() > 0)
+            {
+                await GetAuditData(CreateDTO.Assessments[0]);
+            }
+
             return View(CreateDTO);
 
 
         }
 
 
-        public async Task<IActionResult> GetProfessorConfigs(string userId)
-        {
-            return View();
-        }
 
         private async Task ConfigView()
         {
@@ -142,18 +162,25 @@ namespace logic.systems.school.managment.Controllers
         {
             if (data is not null)
             {
-                ViewBag.CreatedDate = data.CreatedDate;
-                ViewBag.CreatedUSer = "logicsystems.co.mz";
+                ViewBag.CreatedDate = "";
+                ViewBag.CreatedUSer = "";
 
+                if (data.CreatedDate != null)
+                {
+                    ViewBag.CreatedDate = data.CreatedDate;
+                }
 
+                if (data.CreatedUSer != null)
+                {
+                    ViewBag.CreatedUSer = data.CreatedUSer;
+                }
+                   
                 var createdUser = await _userManager.FindByIdAsync(data.CreatedUSer);
                 if (createdUser is not null)
                 {
                     ViewBag.CreatedUSer = createdUser.UserName;
                 }
-
-
-
+                 
 
                 if (data.UpdatedDate is not null)
                 {

@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 namespace logic.systems.school.managment.Controllers
 {
     [Authorize(Roles = "ADMINISTRATOR")]
-    public class UsersController : Controller
+    public class UsersController : CommonController
     {
         private readonly ApplicationDbContext db;
         private readonly ISempleEntityService _SimpleEntityService;
@@ -276,25 +276,7 @@ namespace logic.systems.school.managment.Controllers
             return Json(new { success = false, message = "Erro ao adicionar configuração." });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetProfessorConfigs(string userId)
-        {
-            if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("UserId não fornecido.");
-            }
-
-            var professorConfigs = await db.ProfessorConfig
-                .Include(x => x.ClassLevel)
-                 .Include(x => x.ClassRoom)
-                 .Include(x => x.Subject) 
-                .Where(pc => pc.UserId == userId)
-                .ToListAsync();
-
-            return Json(professorConfigs);
-        }
-
-
+        
         [HttpPost]
         public async Task<IActionResult> DeleteProfessorConfig(int id)
         {
