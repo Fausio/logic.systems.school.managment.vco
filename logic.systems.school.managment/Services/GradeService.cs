@@ -12,28 +12,31 @@ namespace logic.systems.school.managment.Services
 
         public async Task Create(List<Grade> models, string userId)
         {
-            //   
+            var now = DateTime.Now;
             var listOfGrades = new List<Grade>();
+
             foreach (var item in models)
             {
                 var model = await Read(item.Id);
-                model.UpdatedDate = DateTime.Now;
+                model.UpdatedDate = now;
                 model.UpdatedUSer = userId;
+
                 model.Value = item.Value;
                 listOfGrades.Add(model);
 
                 var assessment = await db.Assessments.FirstOrDefaultAsync(x => x.Id == item.AssessmentId);
-                assessment.UpdatedDate = DateTime.Now;
-                assessment.UpdatedUSer = userId;
-                db.Assessments.Update(assessment);
 
+                if (assessment is not null)
+                {
+                    assessment.UpdatedDate = now;
+                    assessment.UpdatedUSer = userId;
+
+                    db.Assessments.Update(assessment);
+                }
             }
 
             db.Grades.UpdateRange(listOfGrades);
             await db.SaveChangesAsync();
-
-
-
         }
 
         public Task<Grade> Create(Grade model, string CreatedById)
@@ -91,16 +94,16 @@ namespace logic.systems.school.managment.Services
                                                    x.Quarter.Enrollment.Student.Suspended
                                           )
                                    .ToListAsync();
-           
+
             results.ForEach(async x =>
             {
 
                 if (x.CreatedUSer != null && x.CreatedUSer != "logicsystems.co.mz")
                 {
                     var user = await db.Users.FirstAsync(u => u.Id == x.CreatedUSer);
-                    x.CreatedUSer = user.UserName; 
-                } 
-            }); 
+                    x.CreatedUSer = user.UserName;
+                }
+            });
 
             return results;
         }
@@ -134,7 +137,7 @@ namespace logic.systems.school.managment.Services
                                ClassRoom = x.ClassRoomId.Value,
                                Subject = x.SubjectId.Value,
                                Quarter = quarter,
-                               EnrollmentYears = x.EnrollmentYears, 
+                               EnrollmentYears = x.EnrollmentYears,
 
                            }).FirstOrDefaultAsync();
         }
