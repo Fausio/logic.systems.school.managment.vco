@@ -103,21 +103,22 @@ namespace logic.systems.school.managment.Controllers
         public async Task<IActionResult> Create(AssessmentCreateDTO CreateDTO)
         {
             ViewBag.Filter = CreateDTO.dto;
-            ViewBag.GradeHeader = GetGradeHeader(CreateDTO.dto).Result;
+            ViewBag.GradeHeader = await GetGradeHeader(CreateDTO.dto);
             await ConfigView();
+
             var currentUser = await _userManager.GetUserAsync(User);
             await _IGradeService.Create(CreateDTO.Assessments.SelectMany(x => x.Grades).ToList(), currentUser.Id);
+            CreateDTO.Assessments = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectQuarter(CreateDTO.dto);
+
             TempData["MensagemSucess"] = "Lançamento de notas bem-sucedida!";
             ViewBag.Mensagem = TempData["MensagemSucess"];
-            CreateDTO.Assessments = await _IGradeService.ReadAssessmentsByClassLevelClassRoomSubjectQuarter(CreateDTO.dto);
+
             if (CreateDTO.Assessments.Count() > 0)
             {
                 await GetAuditData(CreateDTO.Assessments[0]);
             }
 
             return View(CreateDTO);
-
-
         }
 
 
@@ -174,13 +175,13 @@ namespace logic.systems.school.managment.Controllers
                 {
                     ViewBag.CreatedUSer = data.CreatedUSer;
                 }
-                   
+
                 var createdUser = await _userManager.FindByIdAsync(data.CreatedUSer);
                 if (createdUser is not null)
                 {
                     ViewBag.CreatedUSer = createdUser.UserName;
                 }
-                 
+
 
                 if (data.UpdatedDate is not null)
                 {
