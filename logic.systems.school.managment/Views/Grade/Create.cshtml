@@ -44,7 +44,6 @@
                         <table class="MytabelaItens  p-0 m-0" id="tabelaItens" border="1">
                             <thead>
                                 <tr>
-                                    <th><center>Data       </center>             </th>
                                     <th><center>Classe     </center>             </th>
                                     <th><center>Turma      </center>             </th>
                                     <th><center>Disciplina </center>             </th>
@@ -55,7 +54,6 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><input style=" width: 100%;" type="date" /></td>
                                     <td><center>@ViewBag.GradeHeader.ClassLevel     </center>       </td>
                                     <td><center>@ViewBag.GradeHeader.ClassRoom      </center>       </td>
                                     <td><center>@ViewBag.GradeHeader.Subject        </center>       </td>
@@ -117,7 +115,7 @@
                                             @Html.HiddenFor(x => x.Assessments[i].Grades[j].AssessmentId)
                                             @Html.HiddenFor(x => x.Assessments[i].Grades[j].Number)
                                         }
-
+  
                                         <tr>
                                             <td class="nwrap"><center>@Model.Assessments[i].Quarter.Enrollment.Student.Id</center></td>
                                             <td class="nwrap"><center>@Model.Assessments[i].Quarter.Enrollment.Student.Name</center></td>
@@ -126,9 +124,7 @@
                                             <td><input asp-for="@Model.Assessments[i].Grades[2].Value" type="number" style=" width: 100%;" /></td>
                                             <td><input disabled type="number" value="@Model.Assessments[i].GetACSAverage()" style=" width: 100%;" /></td>
                                             <td><input asp-for="@Model.Assessments[i].Grades[3].Value" type="number" style=" width: 100%;" /></td>
-                                            <td><input disabled type="number" value="@Model.Assessments[i].GetQuarterAverage()" style=" width: 100%;" /></td>
-
-
+                                            <td><input disabled type="number" value="@Model.Assessments[i].GetQuarterAverage()" style=" width: 100%;" /></td> 
                                         </tr>
                                     }
                                 </tbody>
@@ -158,7 +154,7 @@
                 <legend class="w-auto  p-0 m-0">Ações</legend>
                 <div class="template-demo  p-0 m-0">
                     <a type="submit" class="btn btn-sm btn-light  btn-icon-text" href="/grade">
-                        Voltar para lista 
+                        Voltar para lista
                     </a>
 
                 </div>
@@ -203,7 +199,7 @@
                                     <li><strong>Data de Actulização:</strong> @ViewBag.UpdatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
 
                                 }
-                            
+
                             }
                         }
 
