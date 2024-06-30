@@ -154,13 +154,7 @@
                                                 <td><input disabled type="text" value="@Model.Assessments[j].GetACSAverage()" style="width: 100%; min-width: 50px; @(Model.Assessments[j].GetACSAverage() == 0 ? "" : Model.Assessments[j].GetACSAverage() < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
                                                 <td> <input disabled value="@Grades_3" type="text" style="width: 100%; min-width: 50px; @((int.TryParse(Grades_3, out int grade3)) ? (grade3 == 0 ? "" : (grade3 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")) : "")" /> </td>
                                                 <td><input disabled type="text" value="@Model.Assessments[j].GetQuarterAverage()" style="width: 100%; min-width: 50px; @(Model.Assessments[j].GetQuarterAverage() == 0 ? "" : Model.Assessments[j].GetQuarterAverage() < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
-
-                                             @*    <td><input disabled value="@Grades_0" type="text" style="width: 100%; min-width: 50px; @(int.TryParse(Grades_0) == 0 ? "" : Grades_0 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
-                                                <td><input disabled value="@Grades_1" type="text" style="width: 100%; min-width: 50px; @(Grades_1 == 0 ? "" : Grades_1 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
-                                                <td><input disabled value="@Grades_2" type="text" style="width: 100%; min-width: 50px; @(Grades_2 == 0 ? "" : Grades_2 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td> *@
-                                                
-                                               @*  <td><input disabled value="@Grades_3" type="text" style="width: 100%; min-width: 50px; @(Grades_3 == 0 ? "" : Grades_3 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td> *@
-                                              
+ 
                                             }
 
                                             <td><input disabled value="@Model.Assessments[i].Quarter.Enrollment.GetYearQuartersAverage()" type="text" style="width: 100%; min-width: 50px; @(@Model.Assessments[i].Quarter.Enrollment.GetYearQuartersAverage() == 0 ? "" : @Model.Assessments[i].Quarter.Enrollment.GetYearQuartersAverage() < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
