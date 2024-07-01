@@ -2,7 +2,7 @@
 {
     public static class Appsettings
     {
-        public const string DefaultConnection = "Server=localhost;Database=school-management-system;Trusted_Connection=True;MultipleActiveResultSets=true;Persist Security Info=true;User ID=sa;Password=0l0ga;Integrated Security=false";
+        public const string DefaultConnection = "Server=51.91.14.5;Database=logicsys_school-management-system;Trusted_Connection=false;MultipleActiveResultSets=true;Persist Security Info=true;User Id=AmeconAssociation;Password=5hbXx5%02;";
     }
 }
  
