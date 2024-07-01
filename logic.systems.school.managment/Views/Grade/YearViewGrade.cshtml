@@ -139,7 +139,7 @@
                                                 @if (j == i)
                                                 {
                                                     <td class="nwrap"><center>@Model.Assessments[j].Quarter.Enrollment.Student.Id</center></td>
-                                                    <td class="nwrap"><center>@Model.Assessments[j].Quarter.Enrollment.Student.Name</center></td>
+                                                    <td class="nwrap" style="width: 100%; min-width:200px;"><center>@Model.Assessments[j].Quarter.Enrollment.Student.Name</center></td>
                                                 }
 
                                                 var Grades_0 = @Model.Assessments[j].Grades[0].Value.HasValue ? @Model.Assessments[j].Grades[0].Value.Value.ToString() : "";
@@ -147,14 +147,13 @@
                                                 var Grades_2 = @Model.Assessments[j].Grades[2].Value.HasValue ? @Model.Assessments[j].Grades[2].Value.Value.ToString() : "";
                                                 var Grades_3 = @Model.Assessments[j].Grades[3].Value.HasValue ? Model.Assessments[j].Grades[3].Value.Value.ToString() : "";
 
-
                                                 <td> <input disabled value="@Grades_0" type="text" style="width: 100%; min-width: 50px; @((int.TryParse(Grades_0, out int grade0)) ? (grade0 == 0 ? "" : (grade0 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")) : "")" /> </td>
                                                 <td> <input disabled value="@Grades_1" type="text" style="width: 100%; min-width: 50px; @((int.TryParse(Grades_1, out int grade1)) ? (grade1 == 0 ? "" : (grade1 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")) : "")" /> </td>
                                                 <td> <input disabled value="@Grades_2" type="text" style="width: 100%; min-width: 50px; @((int.TryParse(Grades_2, out int grade2)) ? (grade2 == 0 ? "" : (grade2 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")) : "")" /> </td>
                                                 <td><input disabled type="text" value="@Model.Assessments[j].GetACSAverage()" style="width: 100%; min-width: 50px; @(Model.Assessments[j].GetACSAverage() == 0 ? "" : Model.Assessments[j].GetACSAverage() < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
                                                 <td> <input disabled value="@Grades_3" type="text" style="width: 100%; min-width: 50px; @((int.TryParse(Grades_3, out int grade3)) ? (grade3 == 0 ? "" : (grade3 < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")) : "")" /> </td>
                                                 <td><input disabled type="text" value="@Model.Assessments[j].GetQuarterAverage()" style="width: 100%; min-width: 50px; @(Model.Assessments[j].GetQuarterAverage() == 0 ? "" : Model.Assessments[j].GetQuarterAverage() < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
- 
+
                                             }
 
                                             <td><input disabled value="@Model.Assessments[i].Quarter.Enrollment.GetYearQuartersAverage()" type="text" style="width: 100%; min-width: 50px; @(@Model.Assessments[i].Quarter.Enrollment.GetYearQuartersAverage() == 0 ? "" : @Model.Assessments[i].Quarter.Enrollment.GetYearQuartersAverage() < 10 ? "background-color: lightcoral;" : "background-color: lightgreen;")" /></td>
