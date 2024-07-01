@@ -139,7 +139,7 @@
                                                 @if (j == i)
                                                 {
                                                     <td class="nwrap"><center>@Model.Assessments[j].Quarter.Enrollment.Student.Id</center></td>
-                                                    <td class="nwrap" style="width: 100%; min-width:200px;"><center>@Model.Assessments[j].Quarter.Enrollment.Student.Name</center></td>
+                                                    <td class="nwrap" style="min-width:200px;"><center>@Model.Assessments[j].Quarter.Enrollment.Student.Name</center></td>
                                                 }
 
                                                 var Grades_0 = @Model.Assessments[j].Grades[0].Value.HasValue ? @Model.Assessments[j].Grades[0].Value.Value.ToString() : "";
