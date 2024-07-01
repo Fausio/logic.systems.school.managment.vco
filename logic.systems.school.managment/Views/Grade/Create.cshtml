@@ -15,12 +15,9 @@
     </div>
 </div>
 
-
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body">
-
-
 
             @if (Model.Assessments.Count <= 0)
             {
@@ -31,11 +28,9 @@
             }
             else
             {
-
                 <div class="alert alert-success" role="alert" id="msg-summary" style="display: @(string.IsNullOrEmpty(ViewBag.Mensagem) ? "none" : "block")">
                     <p><strong>@ViewBag.Mensagem</strong></p>
                 </div>
-
 
                 <fieldset class="border pt-0 mt-0 p-2 pb-0">
                     <legend class="w-auto p-0 m-0 ">Cabeçalho </legend>
@@ -64,12 +59,9 @@
                             </tbody>
                         </table>
                     </div>
-
                 </fieldset>
-                <form asp-action="Create" method="post">
 
-
-
+                <form asp-action="Create" method="post" id="assessmentForm">
                     <fieldset class="border pt-0 mt-0 p-2 pb-0">
                         <legend class="w-auto p-0 m-0 ">Lista </legend>
 
@@ -103,7 +95,6 @@
 
                                     @for (int i = 0; i < Model.Assessments.Count; i++)
                                     {
-
                                         @Html.HiddenFor(x => x.Assessments[i].Id)
                                         @Html.HiddenFor(x => x.Assessments[i].QuarterId)
                                         @Html.HiddenFor(x => x.Assessments[i].SubjectId)
@@ -115,16 +106,21 @@
                                             @Html.HiddenFor(x => x.Assessments[i].Grades[j].AssessmentId)
                                             @Html.HiddenFor(x => x.Assessments[i].Grades[j].Number)
                                         }
-  
+
+                                        var grades_0 = Model.Assessments[i].Grades[0].Value <= 0 ? false : true;
+                                        var grades_1 = Model.Assessments[i].Grades[1].Value <= 0 ? false : true;
+                                        var grades_2 = Model.Assessments[i].Grades[2].Value <= 0 ? false : true;
+                                        var grades_3 = Model.Assessments[i].Grades[3].Value <= 0 ? false : true;
+
                                         <tr>
                                             <td class="nwrap"><center>@Model.Assessments[i].Quarter.Enrollment.Student.Id</center></td>
                                             <td class="nwrap"><center>@Model.Assessments[i].Quarter.Enrollment.Student.Name</center></td>
-                                            <td><input asp-for="@Model.Assessments[i].Grades[0].Value" type="number" style=" width: 100%;" /></td>
-                                            <td><input asp-for="@Model.Assessments[i].Grades[1].Value" type="number" style=" width: 100%;" /></td>
-                                            <td><input asp-for="@Model.Assessments[i].Grades[2].Value" type="number" style=" width: 100%;" /></td>
-                                            <td><input disabled type="number" value="@Model.Assessments[i].GetACSAverage()" style=" width: 100%;" /></td>
-                                            <td><input asp-for="@Model.Assessments[i].Grades[3].Value" type="number" style=" width: 100%;" /></td>
-                                            <td><input disabled type="number" value="@Model.Assessments[i].GetQuarterAverage()" style=" width: 100%;" /></td> 
+                                            <td><input min="0" max="20" step="0.01" disabled="@grades_0" asp-for="@Model.Assessments[i].Grades[0].Value" type="number" style=" width: 100%;" class="grade-input" /></td>
+                                            <td><input min="0" max="20" step="0.01" disabled="@grades_1" asp-for="@Model.Assessments[i].Grades[1].Value" type="number" style=" width: 100%;" class="grade-input" /></td>
+                                            <td><input min="0" max="20" step="0.01" disabled="@grades_2" asp-for="@Model.Assessments[i].Grades[2].Value" type="number" style=" width: 100%;" class="grade-input" /></td>
+                                            <td><input min="0" max="20" step="0.01" disabled type="number" value="@Model.Assessments[i].GetACSAverage()" style=" width: 100%;" class="grade-input" /></td>
+                                            <td><input min="0" max="20" step="0.01" disabled="@grades_3" asp-for="@Model.Assessments[i].Grades[3].Value" type="number" style=" width: 100%;" class="grade-input" /></td>
+                                            <td><input min="0" max="20" step="0.01" disabled type="number" value="@Model.Assessments[i].GetQuarterAverage()" style=" width: 100%;" class="grade-input" /></td>
                                         </tr>
                                     }
                                 </tbody>
@@ -140,15 +136,10 @@
                                 Lançar notas
                                 <i class="typcn typcn-edit btn-icon-append"></i>
                             </button>
-
                         </div>
                     </fieldset>
                 </form>
             }
-
-
-
-
 
             <fieldset class="border pt-0 mb-0">
                 <legend class="w-auto  p-0 m-0">Ações</legend>
@@ -156,15 +147,12 @@
                     <a type="submit" class="btn btn-sm btn-light  btn-icon-text" href="/grade">
                         Voltar para lista
                     </a>
-
                 </div>
             </fieldset>
 
         </div>
     </div>
 </div>
-
-
 
 <div class="card">
     <div class="card-body ">
@@ -175,7 +163,6 @@
                     <legend class="w-auto">Dados de Auditoria</legend>
                     <ul class="list-unstyled  ">
 
-
                         @{
                             if (ViewBag.CreatedUSer is not null && !string.IsNullOrEmpty(ViewBag.CreatedUSer))
                             {
@@ -183,33 +170,20 @@
                                 if (ViewBag.CreatedDate is not null)
                                 {
                                     <li><strong>Data de Criação:</strong> @ViewBag.CreatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
-
                                 }
-
                             }
-
-
 
                             if (ViewBag.UpdatedUSer is not null && !string.IsNullOrEmpty(ViewBag.UpdatedUSer))
                             {
                                 <li><strong>Actulizado por:</strong> @ViewBag.UpdatedUSer</li>
-
                                 if (ViewBag.UpdatedDate is not null)
                                 {
                                     <li><strong>Data de Actulização:</strong> @ViewBag.UpdatedDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
-
                                 }
-
                             }
                         }
-
-
-
-
                     </ul>
                 </fieldset>
-
-
             </div>
         </div>
     </div>
@@ -222,6 +196,32 @@
             setTimeout(function () {
                 $('#msg-summary').fadeOut('slow');
             }, 5000);
+
+            document.getElementById('assessmentForm').addEventListener('submit', function (event) {
+                var gradeInputs = document.querySelectorAll('.grade-input');
+                for (var i = 0; i < gradeInputs.length; i++) {
+                    var value = parseFloat(gradeInputs[i].value);
+                    if (isNaN(value) || value < 0 || value > 20) {
+                        event.preventDefault();
+                        alert('A nota deve ser entre 0 e 20.');
+                        gradeInputs[i].classList.add('invalid-input');
+                    } else {
+                        gradeInputs[i].classList.remove('invalid-input');
+                    }
+                }
+            });
+
+            var gradeInputs = document.querySelectorAll('.grade-input');
+            gradeInputs.forEach(function (input) {
+                input.addEventListener('input', function () {
+                    var value = parseFloat(this.value);
+                    if (!isNaN(value) && value >= 0 && value <= 20) {
+                        this.classList.remove('invalid-input');
+                    } else {
+                        this.classList.add('invalid-input');
+                    }
+                });
+            });
         });
     </script>
 }
