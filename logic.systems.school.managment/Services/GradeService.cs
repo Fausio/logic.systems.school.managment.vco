@@ -93,6 +93,7 @@ namespace logic.systems.school.managment.Services
                                                    x.Quarter.Enrollment.Student.Row != Common.Deleted ||
                                                    x.Quarter.Enrollment.Student.Suspended
                                           )
+                                   .OrderBy(x => x.Quarter.Enrollment.Student.Name)
                                    .ToListAsync();
 
             results.ForEach(async x =>
