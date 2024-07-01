@@ -141,7 +141,7 @@ using (var scope = app.Services.CreateScope())
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    string[] roles = new string[] { "Administrator".ToUpper(), "employee".ToUpper(), "professor".ToUpper(), "Estudante".ToUpper() };
+    string[] roles = new string[] { "Administrator".ToUpper(), "professor".ToUpper(), "Estudante".ToUpper() };
     foreach (string role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
@@ -154,16 +154,16 @@ using (var scope = app.Services.CreateScope())
 {
     var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
-    if (await UserManager.FindByEmailAsync("admin@pandaalegria.com") is null)
+    if (await UserManager.FindByEmailAsync("admin@logicsystems.co.mz") is null)
     {
 
         var users = new List<AppUser>()
         {
                new AppUser()
             {
-                Email =  "admin@pandaalegria.com",
-                NormalizedEmail = "admin@pandaalegria.com",
-                UserName =  "admin@pandaalegria.com",
+                Email =  "admin@logicsystems.co.mz",
+                NormalizedEmail = "admin@logicsystems.co.mz",
+                UserName =  "admin@logicsystems.co.mz",
                 NormalizedUserName = "admin",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
@@ -184,9 +184,9 @@ using (var scope = app.Services.CreateScope())
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
             } ,   new AppUser() {
-                Email =  "bernardete.paulino@pandaalegria.com",
-                NormalizedEmail = "bernardete.paulino@pandaalegria.com",
-                UserName =  "bernardete.paulino@pandaalegria.com",
+                Email =  "bernardete.paulino@logicsystems.co.mz",
+                NormalizedEmail = "bernardete.paulino@logicsystems.co.mz",
+                UserName =  "bernardete.paulino@logicsystems.co.mz",
                 NormalizedUserName = "Bernardete Paulino",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
@@ -198,7 +198,7 @@ using (var scope = app.Services.CreateScope())
         {
             var email = item.Email;
 
-            if (email == "admin@pandaalegria.com")
+            if (email == "admin@logicsystems.co.mz")
             {
                 var pass = "admin1234";
                 await UserManager.CreateAsync(item, pass);
@@ -219,7 +219,7 @@ using (var scope = app.Services.CreateScope())
                 await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
             }
 
-            if (email == "bernardete.paulino@pandaalegria.com")
+            if (email == "bernardete.paulino@logicsystems.co.mz")
             {
                 var pass = "Bernardete1122";
                 await UserManager.CreateAsync(item, pass);
@@ -263,13 +263,13 @@ using (var scope = app.Services.CreateScope())
 
         listOfTeacher.ForEach(item =>
         {
-            listOfTeacherMails.Add(item + "@pandaalegria.com");
+            listOfTeacherMails.Add(item + "@logicsystems.co.mz");
         });
 
         var users = new List<AppUser>();
 
         users = listOfTeacherMails.Select(item => new AppUser()
-        { 
+        {
             Email = item,
             NormalizedEmail = item,
             UserName = item,
