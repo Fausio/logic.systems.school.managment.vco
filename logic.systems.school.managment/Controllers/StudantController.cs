@@ -12,7 +12,7 @@ using System.Diagnostics.Metrics;
 
 namespace logic.systems.school.managment.Controllers
 {
-    [Authorize(Roles = "ADMINISTRATOR")]  
+    [Authorize(Roles = "ADMINISTRATOR")]
     public class StudantController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -22,6 +22,7 @@ namespace logic.systems.school.managment.Controllers
         private ITuitionService _ITuitionService;
         private IEnrollment _IEnrollmentService;
         private IApp _IAppService;
+        private IUserSirvice _userSirvice;
 
 
         public StudantController(IstudantService StudentService,
@@ -30,6 +31,7 @@ namespace logic.systems.school.managment.Controllers
             IEnrollment IEnrollment,
             IApp IAppService,
         ITuitionService iTuitionService,
+        IUserSirvice userSirvice,
         UserManager<AppUser> userManager)
         {
             this._StudentService = StudentService;
@@ -39,6 +41,7 @@ namespace logic.systems.school.managment.Controllers
             this._IEnrollmentService = IEnrollment;
             this._IAppService = IAppService;
             this._userManager = userManager;
+            this._userSirvice = userSirvice;
         }
 
         public async Task<IActionResult> Index(int? pageNumber = 1, int? pageSize = 10)
@@ -241,6 +244,19 @@ namespace logic.systems.school.managment.Controllers
                 }).ToList();
 
                 result.SalesProduct = SalesProducts;
+
+
+                #region ger account
+                var user = await _userSirvice.ReadUserByStudentId(result.id);
+                if (user is not null)
+                {
+                    result.Acount = user.UserName;
+                    result.password = user.PasswordHash;
+                }
+
+
+                #endregion
+
                 return View(result);
             }
             catch (Exception)

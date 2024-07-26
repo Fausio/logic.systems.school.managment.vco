@@ -99,6 +99,16 @@ namespace logic.systems.school.managment.Controllers
         }
 
 
+
+        public async Task<ActionResult> GenerateStudentAccount(int id)
+        {
+            await _UserSirvice.GenerateStudentAccount(id);
+            TempData["success"] = "Conta de Usuário Gerado com sucesso.";
+            return RedirectToAction("Update", new { id = id });
+
+        }
+
+
         public async Task<IActionResult> Update(string id)
         {
 
@@ -276,7 +286,7 @@ namespace logic.systems.school.managment.Controllers
             return Json(new { success = false, message = "Erro ao adicionar configuração." });
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> DeleteProfessorConfig(int id)
         {

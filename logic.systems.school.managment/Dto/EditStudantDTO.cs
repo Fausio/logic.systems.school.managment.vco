@@ -15,5 +15,10 @@ namespace logic.systems.school.managment.Dto
         public SalesProductDTO SalesProduct { get; set; } = new SalesProductDTO();
 
 
+        #region account
+        public string Acount { get; set; }
+        public string password { get; set; }
+        #endregion
+
     }
 }

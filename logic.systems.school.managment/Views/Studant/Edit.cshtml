@@ -159,7 +159,33 @@
                             </table>
                         </div>
                     </fieldset>
+                    <fieldset class="p-2">
+                        <legend class="w-auto">Dados do conta</legend>
+                        <div class="table-responsive">
+                            <table class="Mytable w-75">
+                                <tr>
+                                    <td>Email</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <td>Senha</td>
+                                    <td>@Model.SponsorAddress</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <form asp-action="GenerateStudentAccount" asp-controller="Users" asp-route-Id="@Model.id">
+                                            <a class="btn btn-sm btn-success btn-icon-text text-white">
+                                                gerar conta
+                                            </a>
+                                        </form>
+                                     
+                                    </td>
+                                </tr> 
 
+                            </table>
+                        </div>
+                    </fieldset>
                 </div>
             </div>
 
