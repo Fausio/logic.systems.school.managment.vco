@@ -165,19 +165,19 @@
                             <table class="Mytable w-75">
                                 <tr>
                                     <td>Email</td>
-                                    <td>---</td>
+                                    <td>@Model.Acount</td>
                                 </tr>
                                 <tr>
                                     <td>Senha</td>
-                                    <td>@Model.SponsorAddress</td>
+                                    <td>@Model.password</td>
                                 </tr>
                                 <tr>
                                     <td></td>
                                     <td>
                                         <form asp-action="GenerateStudentAccount" asp-controller="Users" asp-route-Id="@Model.id">
-                                            <a class="btn btn-sm btn-success btn-icon-text text-white">
+                                            <button type="submit" class="btn btn-sm btn-success btn-icon-text text-white">
                                                 gerar conta
-                                            </a>
+                                            </button>
                                         </form>
                                      
                                     </td>

@@ -104,7 +104,7 @@ namespace logic.systems.school.managment.Controllers
         {
             await _UserSirvice.GenerateStudentAccount(id);
             TempData["success"] = "Conta de Usuário Gerado com sucesso.";
-            return RedirectToAction("Update", new { id = id });
+            return RedirectToAction("Edit","Studant", new { id = id });
 
         }
 
