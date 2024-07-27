@@ -11,7 +11,7 @@ using System.Security.Claims;
 namespace logic.systems.school.managment.Controllers
 {
 
-    [Authorize(Roles = "ADMINISTRATOR,EMPLOYEE,PROFESSOR")]
+    [Authorize(Roles = "ADMINISTRATOR,ESTUDANTE,PROFESSOR")]
     public class HomeController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -34,7 +34,11 @@ namespace logic.systems.school.managment.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser.RoleName == "ESTUDANTE")
+            {
+                return RedirectToAction("edit", "studant", new { id = currentUser.studentId });
+            }
             // update  multas
             ViewBag.CurrentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
  

@@ -163,25 +163,33 @@
                         <legend class="w-auto">Dados do conta</legend>
                         <div class="table-responsive">
                             <table class="Mytable w-75">
-                                <tr>
-                                    <td>Email</td>
-                                    <td>@Model.Acount</td>
-                                </tr>
-                                <tr>
-                                    <td>Senha</td>
-                                    <td>@Model.password</td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        <form asp-action="GenerateStudentAccount" asp-controller="Users" asp-route-Id="@Model.id">
-                                            <button type="submit" class="btn btn-sm btn-success btn-icon-text text-white">
-                                                gerar conta
-                                            </button>
-                                        </form>
-                                     
-                                    </td>
-                                </tr> 
+
+
+                                @if (string.IsNullOrEmpty(@Model.Acount))
+                                {
+                                    <tr> 
+                                        <td>
+                                            <form asp-action="GenerateStudentAccount" asp-controller="Users" asp-route-Id="@Model.id">
+                                                <button type="submit" class="btn btn-sm btn-success btn-icon-text text-white">
+                                                    gerar conta
+                                                </button>
+                                            </form> 
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td>Email</td>
+                                        <td>@Model.Acount</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Senha</td>
+                                        <td>@Model.password</td>
+                                    </tr>
+                                }
+
+
 
                             </table>
                         </div>
@@ -254,13 +262,13 @@
 
                                         if (!Model.Transferred)
                                         {
-                                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
-                                                    Adicionar Pagamento de mensalidade
-                                                </a>
+                                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
+                                                Adicionar Pagamento de mensalidade
+                                            </a>
 
-                                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#multipayments" onclick="form_multi_pay_btns()">
-                                                    Adicionar Multiplus Pagamentos de mensalidade
-                                                </a>
+                                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#multipayments" onclick="form_multi_pay_btns()">
+                                                Adicionar Multiplus Pagamentos de mensalidade
+                                            </a>
                                         }
 
                                     }
@@ -386,44 +394,44 @@
                             else
                             if (!Model.Transferred && Model.Suspended)
                             {
-                                    <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                        Matricular
-                                    </a>
+                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                    Matricular
+                                </a>
 
-                                    <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                        Matrícular como repetente
-                                    </a>
+                                <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                    Matrícular como repetente
+                                </a>
 
 
                                 if (user is not null)
                                 {
                                     if (user.Email == "admin@pandaalegria.com")
                                     {
-                                            <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                                Retificar Matricula
-                                            </a>
+                                        <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                            Retificar Matricula
+                                        </a>
                                     }
 
                                 }
                             }
                             else if (!Model.Transferred && !Model.Suspended)
                             {
-                                    <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
-                                        Matricular
-                                    </a>
+                                <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentModal" onclick="form_Enrollment_btns()">
+                                    Matricular
+                                </a>
 
-                                    <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
-                                        Matrícular como repetente
-                                    </a>
+                                <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
+                                    Matrícular como repetente
+                                </a>
 
 
                                 if (user is not null)
                                 {
                                     if (user.Email == "admin@pandaalegria.com")
                                     {
-                                            <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#FixEnrollmentRepitModal" onclick="form_FixEnrollmentRepit_btns()">
-                                                Retificar Matricula
-                                            </a>
+                                        <a class="ml-3  btn btn-sm btn-dark btn-icon-text text-white" data-toggle="modal" data-target="#FixEnrollmentRepitModal" onclick="form_FixEnrollmentRepit_btns()">
+                                            Retificar Matricula
+                                        </a>
                                     }
 
                                 }
@@ -478,16 +486,16 @@
                             if (!Model.Transferred && Model.Suspended)
                             {
 
-                                    <a class="btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
-                                        Vender Material escolar
-                                    </a>
+                                <a class="btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#SuspendedModal">
+                                    Vender Material escolar
+                                </a>
                             }
                             else if (!Model.Transferred && !Model.Suspended)
                             {
-                                 
-                                    <a class="   btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#MaterialModal">
-                                        Vender Material escolar
-                                    </a>
+
+                                <a class="   btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#MaterialModal">
+                                    Vender Material escolar
+                                </a>
 
                             }
 
@@ -533,18 +541,18 @@
 
                         if (!Model.Transferred)
                         {
-                                <button class="btn btn-sm btn-warning btn-icon-text text-white" data-toggle="modal" data-target="#TransferModal" onclick="form_pay_btns()">
-                                    Transferir studante
-                                </button>
+                            <button class="btn btn-sm btn-warning btn-icon-text text-white" data-toggle="modal" data-target="#TransferModal" onclick="form_pay_btns()">
+                                Transferir studante
+                            </button>
                         }
 
 
 
 
 
-                            <a class="btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#DeleteStudent" onclick="form_FixEnrollmentRepit_btns()">
-                                Apagar estudante
-                            </a>
+                        <a class="btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#DeleteStudent" onclick="form_FixEnrollmentRepit_btns()">
+                            Apagar estudante
+                        </a>
 
 
 
@@ -572,15 +580,15 @@
                         @{
                             if (Model.CreatedUSer is not null && !string.IsNullOrEmpty(Model.CreatedUSer))
                             {
-                                    <li><strong>Criado por:</strong> @Model.CreatedUSer</li>
-                                    <li><strong>Data de Criação:</strong> @Model.CreatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
+                                <li><strong>Criado por:</strong> @Model.CreatedUSer</li>
+                                <li><strong>Data de Criação:</strong> @Model.CreatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
 
                             }
 
                             if (Model.UpdatedUSer is not null && !string.IsNullOrEmpty(Model.UpdatedUSer))
                             {
-                                    <li><strong>Actulizado por:</strong> @Model.UpdatedUSer</li>
-                                    <li><strong>Data de Actulização:</strong> @Model.UpdatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
+                                <li><strong>Actulizado por:</strong> @Model.UpdatedUSer</li>
+                                <li><strong>Data de Actulização:</strong> @Model.UpdatedDate.Value.ToString("dd-MM-yyyy HH:mm:ss")</li>
 
                             }
                         }
@@ -1218,7 +1226,7 @@
                 <fieldset class="border p-2">
                     <legend class="w-auto">Ações</legend>
 
-                   
+
                     <div id="btn_Comprar">
                         <a class="btn btn-sm btn-success btn-icon-text text-white" id="comprarBtn">
                             Comprar
@@ -1383,7 +1391,7 @@
 
                 $("#btn_Comprar").hide();
                 $("#spinner_Comprar").show();
-            
+
 
 
                 var products = [];
@@ -1407,7 +1415,7 @@
                     contentType: "application/json; charset=utf-8",
                     data: JSON.stringify(products),
                     success: function (result) {
-                        alert("Compra efetuada com sucesso!"); 
+                        alert("Compra efetuada com sucesso!");
                         // Fechar o modal
                         getProducts(@Model.id);
                         $("#MaterialModal").modal("hide");
@@ -1415,7 +1423,7 @@
 
                         $("#btn_Comprar").show();
                         $("#spinner_Comprar").hide();
-                         
+
                     },
                     error: function (error) {
                         // Handle the error response
@@ -2033,7 +2041,7 @@
 
         function getProducts(id) {
 
-      
+
             $.ajax({
                 url: "/admin/GetgetProducts?id=" + id,
                 type: "GET",
@@ -2042,17 +2050,17 @@
 
                     console.log("MyList", MyList);
 
-                       $.each(MyList, function (index, item) {
-                           var newRow = $("<tr>");
-                           
-                           newRow.append("<td>" + item.id + "</td>");
-                           newRow.append("<td>" + item.date + "</td>");
-                           newRow.append("<td>" + item.description + "</td>");
-                           newRow.append("<td>" + item.paymentWithVat + "</td>");
-                           newRow.append("<td>" + " <div id='enrolls_btns' > <button onclick='PrintProductInvoice(" + item.id + " )'   type='button'  class='btn btn-sm btn-dark btn-block btn-icon-text text-white  mb-0 mt-0 ' >  Imprimir </button>      </div>   <div id='Product_spinner' style='display:none'><div class='d-flex justify-content-center'><div class='spinner-border spinner-border-sm' role='status'><span class='sr-only'>Loading...</span></div></div></div> " + "</td>");
-                     
-                           $("#ProductsTables tbody").append(newRow);
-                       });
+                    $.each(MyList, function (index, item) {
+                        var newRow = $("<tr>");
+
+                        newRow.append("<td>" + item.id + "</td>");
+                        newRow.append("<td>" + item.date + "</td>");
+                        newRow.append("<td>" + item.description + "</td>");
+                        newRow.append("<td>" + item.paymentWithVat + "</td>");
+                        newRow.append("<td>" + " <div id='enrolls_btns' > <button onclick='PrintProductInvoice(" + item.id + " )'   type='button'  class='btn btn-sm btn-dark btn-block btn-icon-text text-white  mb-0 mt-0 ' >  Imprimir </button>      </div>   <div id='Product_spinner' style='display:none'><div class='d-flex justify-content-center'><div class='spinner-border spinner-border-sm' role='status'><span class='sr-only'>Loading...</span></div></div></div> " + "</td>");
+
+                        $("#ProductsTables tbody").append(newRow);
+                    });
 
                 }
             });

@@ -10,6 +10,7 @@ namespace logic.systems.school.managment.Models
 
         public int? studentId { get; set; }
 
-        public List<ProfessorConfig> ProfessorConfigs { get; set; } = new List<ProfessorConfig>();
+        public List<ProfessorConfig> ProfessorConfigs { get; set; } = new List<ProfessorConfig>(); 
+        public int? PlainTextPassword { get; set; }
     }
 }

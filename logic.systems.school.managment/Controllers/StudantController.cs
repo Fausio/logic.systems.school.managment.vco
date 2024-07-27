@@ -12,7 +12,7 @@ using System.Diagnostics.Metrics;
 
 namespace logic.systems.school.managment.Controllers
 {
-    [Authorize(Roles = "ADMINISTRATOR")]
+    [Authorize(Roles = "ADMINISTRATOR,ESTUDANTE")]
     public class StudantController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -251,10 +251,8 @@ namespace logic.systems.school.managment.Controllers
                 if (user is not null)
                 {
                     result.Acount = user.UserName;
-                    result.password = user.PasswordHash;
+                    result.password = user.PlainTextPassword.Value;
                 }
-
-
                 #endregion
 
                 return View(result);

@@ -17,7 +17,7 @@ namespace logic.systems.school.managment.Dto
 
         #region account
         public string Acount { get; set; }
-        public string password { get; set; }
+        public int password { get; set; }
         #endregion
 
     }
