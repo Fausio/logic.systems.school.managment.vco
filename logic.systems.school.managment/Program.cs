@@ -135,7 +135,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     // Here is the migration executed
-    dbContext.Database.Migrate();
+     dbContext.Database.Migrate();
 }
 
 using (var scope = app.Services.CreateScope())

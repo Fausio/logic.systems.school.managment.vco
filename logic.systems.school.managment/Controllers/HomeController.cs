@@ -14,6 +14,7 @@ namespace logic.systems.school.managment.Controllers
     [Authorize(Roles = "ADMINISTRATOR,ESTUDANTE,PROFESSOR")]
     public class HomeController : Controller
     {
+        private readonly RoleManager<IdentityRole> _userRoleManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<HomeController> _logger;
         private ITuitionService _ITuitionService;
@@ -23,19 +24,21 @@ namespace logic.systems.school.managment.Controllers
              ITuitionService iTuitionService,
              UserManager<AppUser> userManager,
                 ISempleEntityService SempleEntityService,
-             IDashBoard iDashBoard)
+             IDashBoard iDashBoard,  RoleManager<IdentityRole> userRoleManager)
         {
             this._logger = logger;
             this._ITuitionService = iTuitionService;
             this._IDashBoard = iDashBoard;
             this._SempleEntityService = SempleEntityService;
             this._userManager = userManager;
+            this._userRoleManager = userRoleManager;
         }
 
         public async Task<IActionResult> Index()
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser.RoleName == "ESTUDANTE")
+            var role = await _userManager.GetRolesAsync(currentUser);
+            if (role[0] == "ESTUDANTE")
             {
                 return RedirectToAction("edit", "studant", new { id = currentUser.studentId });
             }
