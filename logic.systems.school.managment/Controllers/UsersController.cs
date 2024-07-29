@@ -4,6 +4,7 @@ using logic.systems.school.managment.Areas.Identity.Pages.Account;
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
+using logic.systems.school.managment.Migrations;
 using logic.systems.school.managment.Models;
 using logic.systems.school.managment.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -103,7 +104,35 @@ namespace logic.systems.school.managment.Controllers
         public async Task<ActionResult> GenerateStudentAccount(int id)
         {
             await _UserSirvice.GenerateStudentAccount(id);
-            TempData["success"] = "Conta de Usuário Gerado com sucesso.";
+     
+            var studanteRole = "Estudante".ToUpper();
+            var now = DateTime.Now;
+            var student = await db.Students.FirstOrDefaultAsync(x => x.Id == id);
+            var domainName = "logicSystems.co.mz";
+            var passWord = new Random().Next(1000, 10000);
+            var account = $"{passWord}@{domainName}";
+
+            if (student is not null)
+            {
+                var user = new AppUser
+                {
+                    UserName = account,
+                    Email = account,
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = true,
+                    studentId = id,
+                    PlainTextPassword = passWord
+
+
+                };
+
+                var result = await _userManager.CreateAsync(user, passWord.ToString());
+                await _userManager.AddToRoleAsync(user, studanteRole);
+                TempData["success"] = "Conta de Usuário Gerado com sucesso.";
+
+            }
+
+
             return RedirectToAction("Edit","Studant", new { id = id });
 
         }

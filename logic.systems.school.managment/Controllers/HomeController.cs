@@ -11,9 +11,10 @@ using System.Security.Claims;
 namespace logic.systems.school.managment.Controllers
 {
 
-    [Authorize(Roles = "ADMINISTRATOR,EMPLOYEE,PROFESSOR")]
+    [Authorize(Roles = "ADMINISTRATOR,ESTUDANTE,PROFESSOR")]
     public class HomeController : Controller
     {
+        private readonly RoleManager<IdentityRole> _userRoleManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<HomeController> _logger;
         private ITuitionService _ITuitionService;
@@ -23,18 +24,24 @@ namespace logic.systems.school.managment.Controllers
              ITuitionService iTuitionService,
              UserManager<AppUser> userManager,
                 ISempleEntityService SempleEntityService,
-             IDashBoard iDashBoard)
+             IDashBoard iDashBoard,  RoleManager<IdentityRole> userRoleManager)
         {
             this._logger = logger;
             this._ITuitionService = iTuitionService;
             this._IDashBoard = iDashBoard;
             this._SempleEntityService = SempleEntityService;
             this._userManager = userManager;
+            this._userRoleManager = userRoleManager;
         }
 
         public async Task<IActionResult> Index()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUser = await _userManager.GetUserAsync(User);
+            var role = await _userManager.GetRolesAsync(currentUser);
+            if (role[0] == "ESTUDANTE")
+            {
+                return RedirectToAction("edit", "studant", new { id = currentUser.studentId });
+            }
             // update  multas
             ViewBag.CurrentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
  

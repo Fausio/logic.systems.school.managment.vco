@@ -3,6 +3,8 @@
     var user = await UserManager.GetUserAsync(User);
     var roles = await UserManager.GetRolesAsync(user);
     bool isAdmin = roles.Contains("ADMINISTRATOR");
+    bool isStor = roles.Contains("professor".ToUpper());
+    bool isStudent = roles.Contains("Estudante".ToUpper());
 }
 
 <!DOCTYPE html>
@@ -167,20 +169,45 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="sidebar-menu-title">Dash menu</p>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-action="index" asp-controller="home">
-                            <i class="typcn typcn-device-desktop menu-icon"></i>
-                            <span class="menu-title">
-                                Dashboard
-                            </span>
-                        </a>
+                        <p class="sidebar-menu-title"> menu</p>
                     </li>
 
+                    @if (isStudent)
+                    {
+                         <li class="nav-item"> 
+                            <a class="nav-link"
+                               data-toggle="collapse"
+                               asp-action="index" asp-controller="home"
+                               aria-expanded="false"
+                               aria-controls="ui-ped">
+                                <i class="typcn typcn-briefcase menu-icon"></i>
+                                <span class="menu-title">Minha informaçao</span> 
+                            </a>
+                        </li>
+
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               data-toggle="collapse" 
+                               aria-expanded="false"
+                               aria-controls="ui-ped">
+                                <i class="typcn typcn-briefcase menu-icon"></i>
+                                <span class="menu-title">Visualizar Notas</span>
+                            </a>
+                        </li>
+                    }
 
                     @if (isAdmin)
                     {
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="index" asp-controller="home">
+                                <i class="typcn typcn-device-desktop menu-icon"></i>
+                                <span class="menu-title">
+                                    Dashboard
+                                </span>
+                            </a>
+                        </li>
 
                         <li class="nav-item">
                             <p class="sidebar-menu-title">Pedagógia</p>
@@ -204,65 +231,63 @@
                                 </ul>
                             </div>
                         </li>
-                    }
-
-                    <li class="nav-item">
-
-                        <a class="nav-link"
-                           data-toggle="collapse"
-                           href="#auth"
-                           aria-expanded="false"
-                           aria-controls="auth">
-                            <i class="typcn typcn-briefcase menu-icon"></i>
-                            <span class="menu-title">
-                                Notas
-                            </span>
-                            <i class="menu-arrow"></i>
-                        </a>
-                        <div class="collapse" id="auth">
-                            <ul class="nav flex-column sub-menu">
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-action="index" asp-controller="grade">
-                                        Lançamento de Notas
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-action="YearView" asp-controller="grade">
-                                        Visualizar Notas
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li class="nav-item">
-
-                        <a class="nav-link"
-                           data-toggle="collapse"
-                           href="#ui-ped"
-                           aria-expanded="false"
-                           aria-controls="ui-ped">
-                            <i class="typcn typcn-briefcase menu-icon"></i>
-                            <span class="menu-title">Controle de Faltas</span>
-
-                        </a>
-                    </li>
-                    <li class="nav-item">
-
-                        <a class="nav-link"
-                           data-toggle="collapse"
-                           href="#ui-ped"
-                           aria-expanded="false"
-                           aria-controls="ui-ped">
-                            <i class="typcn typcn-briefcase menu-icon"></i>
-                            <span class="menu-title">Consulta de Desempenho</span>
-
-                        </a>
-                    </li>
 
 
-                    @if (isAdmin)
-                    {
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               data-toggle="collapse"
+                               href="#auth"
+                               aria-expanded="false"
+                               aria-controls="auth">
+                                <i class="typcn typcn-briefcase menu-icon"></i>
+                                <span class="menu-title">
+                                    Notas
+                                </span>
+                                <i class="menu-arrow"></i>
+                            </a>
+                            <div class="collapse" id="auth">
+                                <ul class="nav flex-column sub-menu">
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-action="index" asp-controller="grade">
+                                            Lançamento de Notas
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-action="YearView" asp-controller="grade">
+                                            Visualizar Notas
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               data-toggle="collapse"
+                               href="#ui-ped"
+                               aria-expanded="false"
+                               aria-controls="ui-ped">
+                                <i class="typcn typcn-briefcase menu-icon"></i>
+                                <span class="menu-title">Controle de Faltas</span>
+
+                            </a>
+                        </li>
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               data-toggle="collapse"
+                               href="#ui-ped"
+                               aria-expanded="false"
+                               aria-controls="ui-ped">
+                                <i class="typcn typcn-briefcase menu-icon"></i>
+                                <span class="menu-title">Consulta de Desempenho</span>
+
+                            </a>
+                        </li>
+
+
                         <li class="nav-item">
                             <p class="sidebar-menu-title">Relatórios</p>
 
@@ -273,8 +298,6 @@
                                 <span class="menu-title">Relatórios</span>
                             </a>
                         </li>
-
-
                         <li class="nav-item">
                             <p class="sidebar-menu-title">Contas</p>
                             <a class="nav-link"
@@ -303,8 +326,6 @@
                                 </ul>
                             </div>
                         </li>
-
-
                         <li class="nav-item">
                             <p class="sidebar-menu-title">Definições</p>
                             <a class="nav-link"

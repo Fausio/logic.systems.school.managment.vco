@@ -12,9 +12,10 @@ using System.Diagnostics.Metrics;
 
 namespace logic.systems.school.managment.Controllers
 {
-    [Authorize(Roles = "ADMINISTRATOR")]
+    [Authorize(Roles = "ADMINISTRATOR,ESTUDANTE")]
     public class StudantController : Controller
     {
+        private readonly RoleManager<IdentityRole> _userRoleManager;
         private readonly UserManager<AppUser> _userManager;
         private IstudantService _StudentService;
         private IOrgUnit _IOrgUnitServiceService;
@@ -32,6 +33,7 @@ namespace logic.systems.school.managment.Controllers
             IApp IAppService,
         ITuitionService iTuitionService,
         IUserSirvice userSirvice,
+        RoleManager<IdentityRole> _userRoleManager,
         UserManager<AppUser> userManager)
         {
             this._StudentService = StudentService;
@@ -251,10 +253,8 @@ namespace logic.systems.school.managment.Controllers
                 if (user is not null)
                 {
                     result.Acount = user.UserName;
-                    result.password = user.PasswordHash;
+                    result.password = user.PlainTextPassword.Value;
                 }
-
-
                 #endregion
 
                 return View(result);
