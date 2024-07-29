@@ -90,10 +90,8 @@ namespace logic.systems.school.managment.Services
 
                 var result = await _userManager.CreateAsync(user, passWord.ToString());
                 await _userManager.AddToRoleAsync(user, studanteRole);
-            }
-
-        }
-
+            } 
+        } 
         public async Task<AppUser> ReadUserByStudentId(int studentId) => await db.Users.FirstOrDefaultAsync(x => x.studentId == studentId);
     }
 }
