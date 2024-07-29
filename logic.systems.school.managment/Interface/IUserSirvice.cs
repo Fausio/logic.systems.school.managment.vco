@@ -6,8 +6,7 @@ namespace logic.systems.school.managment.Interface
     public interface IUserSirvice
     {
         public Task<PaginationDTO<AppUser>> SearchRecord(string searchString);
-        public Task<PaginationDTO<AppUser>> ReadPagenation(int pageNumber = 1, int pageSize = 10); 
-        public Task GenerateStudentAccount(int studentId); 
+        public Task<PaginationDTO<AppUser>> ReadPagenation(int pageNumber = 1, int pageSize = 10);  
         public Task<AppUser> ReadUserByStudentId(int studentId);
     }
 }
