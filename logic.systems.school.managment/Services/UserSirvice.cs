@@ -8,10 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace logic.systems.school.managment.Services
 {
     public class UserSirvice : IUserSirvice
-    {
-
-        private readonly ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>());
-
+    { 
+        private readonly ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>()); 
         public Task<PaginationDTO<AppUser>> SearchRecord(string searchString)
         {
             throw new NotImplementedException();
@@ -57,8 +55,7 @@ namespace logic.systems.school.managment.Services
 
 
             return records;
-        }
-
+        } 
         public async Task<AppUser> ReadUserByStudentId(int studentId) => await db.Users.FirstOrDefaultAsync(x => x.studentId == studentId);
     }
 }
