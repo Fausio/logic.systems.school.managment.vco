@@ -260,7 +260,10 @@ namespace logic.systems.school.managment.Services
                                     discount = 500;
                                 }
                             }
-                            var _MonthTuitionValue = (getTuitionValueByschoolLevel(associatedLeve.Description) - discount); ;
+
+                            var tuitionValue = await db.TuitionPrices.FirstOrDefaultAsync(x => x.Description == associatedLeve.Description);
+
+                            var _MonthTuitionValue = (tuitionValue.Price - discount); ;
 
                             suspendedInfo.Add(new BeneficiariesSuspededReportItemDTO()
                             {
@@ -287,70 +290,7 @@ namespace logic.systems.school.managment.Services
             }
         }
 
-
-        private decimal getTuitionValueByschoolLevel(string schoolLevel)
-        {
-
-            #region a logica da KALIMANY
-            //3500-- Pré - escola A
-            //3500-- Pré - escola B
-            //3500-- Pré - escola C
-            //-------------------- -
-            //4000-- 1ª classe
-            //---------------------
-            //3700-- 2ª classe
-            //3700-- 3ª classe
-            //3700-- 4ª classe
-            //3700-- 5ª classe
-            //3700-- 6ª classe
-            //3700-- 7ª classe
-            //---------------------
-            //3800-- 8ª classe
-            //3800-- 9ª classe
-            //3800-- 10ª classe
-            //---------------------
-            //4200-- 11ª classe
-            //4200-- 12ª classe
-            #endregion
-
-
-            var Price_3500 = new List<string>()
-            {
-                "Pré-escola"
-            };
-            var Price_4000 = new List<string>() { "1ª classe" };
-            var Price_3700 = new List<string>()
-            {
-                "2ª classe"     ,
-                "3ª classe"     ,
-                "4ª classe"     ,
-                "5ª classe"     ,
-                "6ª classe"     ,
-                "7ª classe"
-            };
-            var Price_3800 = new List<string>()
-            {
-                "8ª classe"      ,
-                "9ª classe"     ,
-                "10ª classe"
-
-            };
-            var Price_4200 = new List<string>()
-            {
-                "11ª classe"    ,
-                "12ª classe"
-            };
-
-            if (Price_3500.Contains(schoolLevel)) { return 3500; }
-            else if (Price_4000.Contains(schoolLevel)) { return 4000; }
-            else if (Price_3700.Contains(schoolLevel)) { return 3700; }
-            else if (Price_3800.Contains(schoolLevel)) { return 3800; }
-            else if (Price_4200.Contains(schoolLevel)) { return 4200; }
-            else
-            {
-                return 0;
-            }
-        }
+         
 
 
 

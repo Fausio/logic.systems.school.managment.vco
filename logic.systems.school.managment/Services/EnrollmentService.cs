@@ -6,6 +6,7 @@ using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
 using logic.systems.school.managment.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
@@ -109,8 +110,8 @@ namespace logic.systems.school.managment.Services
                               level = level.Description,
                               year = e.EnrollmentYear,
                               items = getEnrollmentItems(e.EnrollmentItems).Result,
-                              value = (pay.PaymentWithoutVat - getotalItems(e.EnrollmentItems).Result).ToString(),
-                              Total = pay.PaymentWithoutVat.ToString(),
+                              value = pay.PaymentWithoutVat.ToString(),
+                              Total = (pay.PaymentWithoutVat + getotalItems(e.EnrollmentItems).Result).ToString(),
                           }).ToList();
 
                 return result;
@@ -193,141 +194,34 @@ namespace logic.systems.school.managment.Services
                 // 12 - 4200 matricula   
                 #endregion
 
-                switch (level.Description)
+
+                var enrolmentPrice = await ReadEnrolmentPriceByDescription(level.Description);
+
+                if (enrolmentPrice is not null)
                 {
-                    case "Pré-escola":
-                        enrollment = new Enrollment()
+                    enrollment = new Enrollment()
+                    {
+                        StudentId = studantId,
+                        PaymentEnrollment = new EnrollmentPayment()
                         {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 3500,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Fichas",
-                                        Price = 1000,
-                                    }
-                                }
-                        };
-                        break;
-                    case "1ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 4000,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Fichas",
-                                        Price = 1000,
-                                    },
-                                }
-                        };
-                        break;
-                    case "2ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 3700,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Fichas",
-                                        Price = 1000,
-                                    }
-                                }
-                        };
-                        break;
+                            PaymentWithoutVat = enrolmentPrice.Price,
+                        },
 
-                    case "3ª classe":
-                    case "4ª classe":
-                    case "5ª classe":
-                    case "6ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 3700,
-                            }
-                        };
-                        break;
-                    case "7ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
+                    };
 
-                                PaymentWithoutVat = 3700,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
+                    if (enrolmentPrice.EnrollmentItemstPrice.Count() > 0)
+                    {
+                        enrollment.EnrollmentItems = new List<EnrollmentItem>()
                                 {
                                     new EnrollmentItem()
                                     {
-                                        Description = "Certidão",
-                                        Price = 1500,
+                                        Description = enrolmentPrice.EnrollmentItemstPrice[0].Description,
+                                        Price = enrolmentPrice.EnrollmentItemstPrice[0].Price,
                                     }
-                                }
-                        };
-                        break;
-
-                    case "8ª classe":
-                    case "9ª classe":
-                    case "10ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 3800,
-                            }
-                        };
-                        break;
-                    case "11ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 4200,
-                            },
-                            EnrollmentItems = new List<EnrollmentItem>()
-                                {
-                                    new EnrollmentItem()
-                                    {
-                                        Description = "Certidão",
-                                        Price = 1500,
-                                    }
-                                }
-                        };
-                        break;
-                    case "12ª classe":
-                        enrollment = new Enrollment()
-                        {
-                            StudentId = studantId,
-                            PaymentEnrollment = new EnrollmentPayment()
-                            {
-                                PaymentWithoutVat = 4200,
-                            }
-                        };
-                        break;
-
-                    default:
-                        Console.WriteLine("Class");
-                        break;
+                                };
+                    }
                 }
+                  
                 enrollment.SchoolLevelId = SchoolLevelId;
                 enrollment.PaymentEnrollment.Paid = true;
                 enrollment.PaymentEnrollment.PaymentDate = DateTime.Now;
@@ -476,11 +370,28 @@ namespace logic.systems.school.managment.Services
             }
 
 
-            if (result.EnrollmentItemstPrice.Count <=0)
+            if (result.EnrollmentItemstPrice.Count <= 0)
             {
                 List<EnrollmentItemstPrice> findItens = await db.EnrollmentItemstPrices.Where(x => x.EnrollmentPriceId == id).ToListAsync();
 
-                if (findItens.Count > 0 )
+                if (findItens.Count > 0)
+                {
+                    result.EnrollmentItemstPrice = findItens;
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<EnrollmentPrice> ReadEnrolmentPriceByDescription(string description)
+        {
+            var result = await db.EnrollmentPrices.FirstOrDefaultAsync(x => x.Description == description);
+
+            if (result.EnrollmentItemstPrice.Count <= 0)
+            {
+                List<EnrollmentItemstPrice> findItens = await db.EnrollmentItemstPrices.Where(x => x.EnrollmentPriceId == result.Id).ToListAsync();
+
+                if (findItens.Count > 0)
                 {
                     result.EnrollmentItemstPrice = findItens;
                 }
@@ -504,7 +415,7 @@ namespace logic.systems.school.managment.Services
             if (result is not null)
             {
 
-                var historyDescription = @$"Utilizador {entity.UpdatedUSer} altertou a mensalidade da {result.Description} de {result.Price.ToString("N2")} para {entity.Price.ToString("N2")} em {DateTime.Now.ToString("dd/MM/yyyy")}";
+                var historyDescription = @$"Utilizador {entity.UpdatedUSer} altertou a matricula da {result.Description} de {result.Price.ToString("N2")} para {entity.Price.ToString("N2")} em {DateTime.Now.ToString("dd/MM/yyyy")}";
 
                 result.EnrollmentPriceHistory.Add(new EnrollmentPriceHistory()
                 {

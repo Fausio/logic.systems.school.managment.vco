@@ -14,6 +14,7 @@ namespace logic.systems.school.managment.Interface
 
         public  Task<List<EnrollmentPrice>> ReadEnrolmentPrices();
         public Task<EnrollmentPrice> ReadEnrolmentPriceById(int id);
+        public Task<EnrollmentPrice> ReadEnrolmentPriceByDescription(string descriprion );
         public Task<EnrollmentPrice> UpdateEnrollmentPrice(EnrollmentPrice entity);
     }
 }

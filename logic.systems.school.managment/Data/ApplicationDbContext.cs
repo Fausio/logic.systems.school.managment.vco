@@ -80,6 +80,7 @@ namespace logic.systems.school.managment.Data
         public DbSet<TuitionPriceHistory> TuitionPriceHistorys { get; set; }
         public DbSet<EnrollmentPriceHistory> EnrollmentPriceHistorys { get; set; }
         public DbSet<EnrollmentItemstPrice> EnrollmentItemstPrices { get; set; }
+        public DbSet<RevertTuition> RevertTuitions { get; set; }
 
     }
 }
