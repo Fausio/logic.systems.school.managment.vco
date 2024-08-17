@@ -248,6 +248,22 @@ namespace logic.systems.school.managment.Services
             try
             {
                 var nowTimeStep = DateTime.UtcNow;
+                decimal discaountByNumberOfMonths = 0;
+
+                if (dtos.Count >= 3 && dtos.Count <= 5)
+                {
+                    discaountByNumberOfMonths = Math.Ceiling(200m / dtos.Count * 100) / 100;
+                }
+                else if (dtos.Count >= 6 && dtos.Count <= 11)
+                {
+                    discaountByNumberOfMonths = Math.Ceiling(500m / dtos.Count * 100) / 100;
+                }
+                else if (dtos.Count == 12)
+                {
+                    discaountByNumberOfMonths = Math.Ceiling(1000m / dtos.Count * 100) / 100;
+                }
+
+
 
                 foreach (var dto in dtos)
                 {
@@ -281,7 +297,7 @@ namespace logic.systems.school.managment.Services
                             CreatedUSer = userid,
                         };
                         payment.VatOfPayment = VatCalc(payment.PaymentWithoutVat);
-                        payment.PaymentWithVat = payment.VatOfPayment + payment.PaymentWithoutVat;
+                        payment.PaymentWithVat = payment.VatOfPayment + payment.PaymentWithoutVat - discaountByNumberOfMonths;
 
                         var invoice = new TuitionInvoice()
                         {
@@ -615,7 +631,7 @@ namespace logic.systems.school.managment.Services
         }
 
         public async Task RevertTuitionPayment(int id, string user)
-        { 
+        {
             var paymentTuition = await db.PaymentTuitions.FirstOrDefaultAsync(x => x.TuitionId == id);
             var tuition = await db.Tuitions.FirstOrDefaultAsync(x => x.Id == paymentTuition.TuitionId);
 
@@ -642,7 +658,7 @@ namespace logic.systems.school.managment.Services
                 PaymentWithVat = paymentTuition.PaymentWithVat,
                 VatOfPayment = paymentTuition.VatOfPayment,
                 PaymentDate = paymentTuition.PaymentDate,
-                CreatedUSer = user 
+                CreatedUSer = user
             };
 
             await db.RevertTuitions.AddAsync(RevertTuition);
@@ -654,7 +670,7 @@ namespace logic.systems.school.managment.Services
 
         public async Task<List<RevertTuition>> GetRevertPaymentsByStudantTuitionsId(int studantId, int enrollmentYear)
         {
-            var  result = await db.RevertTuitions.Where(x => x.StudentId == studantId && x.Year == enrollmentYear).ToListAsync();
+            var result = await db.RevertTuitions.Where(x => x.StudentId == studantId && x.Year == enrollmentYear).ToListAsync();
 
             foreach (var item in result)
             {

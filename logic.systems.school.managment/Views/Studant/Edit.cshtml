@@ -621,16 +621,11 @@
                         <div class="form-row mb-3">
                             <div class="col-md-12 col-sm-12">
                                 <label for="">Meses</label>
-                                <select class="form-control form-control-lg pb-3 pt-3" id="tuitionPayment">
-
-
+                                <select class="form-control form-control-lg pb-3 pt-3" id="tuitionPayment"> 
                                     @foreach (Tuition item in ViewBag.Tuitions)
                                     {
                                         <option value="@item.Id">@item.MonthNumber - @item.MonthName - @item.Year</option>
-                                    }
-
-
-
+                                    } 
                                 </select>
                             </div>
                         </div>
@@ -1841,8 +1836,8 @@
                         newRow.append("<td>" + item.paymentWithoutVat + ",00 MT" + "</td>");
                         newRow.append("<td>" + item.vatOfPayment + ",00 MT" + "</td>");
                         newRow.append("<td>" + item.paymentWithVat + ",00 MT" + "</td>");
-                        newRow.append("<td>" + item.createdUSer + ",00 MT" + "</td>");
-                        newRow.append("<td>" + item._CreatedDate + ",00 MT" + "</td>");
+                        newRow.append("<td>" + item.createdUSer    + "</td>");
+                        newRow.append("<td>" + item._CreatedDate   + "</td>");
                         $("#tabelaItensRevertPayments tbody").append(newRow);
                     });
                 }
