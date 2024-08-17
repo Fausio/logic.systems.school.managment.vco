@@ -1,0 +1,66 @@
+﻿@model List<logic.systems.school.managment.Models.TuitionPrice>
+
+<link rel="stylesheet" href="~/css/EditViewBen.css" />
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="studant">Configurações</a><</li>
+        <li class="breadcrumb-item active" aria-current="page">Configuração de propinas</li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0 pt-2">
+            <h2>Configuração de propinas</h2>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0 pt-2">
+            <div class="row">
+                <div class="col-auto mr-auto">
+                    <h4 class="card-title">Lista</h4>
+                    <p class="card-description">   estudantes  </p>
+                </div>
+            </div>
+
+
+            <div class="table-responsive">
+                <table class=" MytabelaItens wideTable w-100">
+
+                    <thead>
+                        <tr>
+
+                            <th scope="col">Classe</th>
+                            <th scope="col">Preço</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    <a asp-action="EditTuitionPrice" asp-controller="Setting" asp-route-id="@item.Id">
+                                        @item.Description
+                                    </a>
+                                </td>
+                                <td>@item.Price.ToString("N2")</td>
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>

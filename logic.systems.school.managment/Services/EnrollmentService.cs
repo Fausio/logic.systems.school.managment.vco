@@ -27,6 +27,13 @@ namespace logic.systems.school.managment.Services
 
         }
 
+        public async Task<List<EnrollmentPrice>> ReadEnrolmentPrices()
+        {
+            var result = await db.EnrollmentPrices.Include(x => x.EnrollmentItemstPrice).ToListAsync();
+
+            return result;
+        }
+
         public async Task<Enrollment> EnrollmentByStudantId(int studantId, int CurrentSchoolLevelId, int EnrollmentYear, int SchoolClassRoomId)
         {
             try
@@ -452,6 +459,68 @@ namespace logic.systems.school.managment.Services
 
 
         }
+
+        public async Task<EnrollmentPrice> ReadEnrolmentPriceById(int id)
+        {
+            var result = await db.EnrollmentPrices.FirstOrDefaultAsync(x => x.Id == id);
+
+
+            if (result.EnrollmentPriceHistory.Count <= 0)
+            {
+                List<EnrollmentPriceHistory> findIhistory = await db.EnrollmentPriceHistorys.Where(x => x.EnrollmentPriceeId == id).OrderByDescending(x => x.Id).ToListAsync();
+
+                if (findIhistory.Count > 0)
+                {
+                    result.EnrollmentPriceHistory = findIhistory;
+                }
+            }
+
+
+            if (result.EnrollmentItemstPrice.Count <=0)
+            {
+                List<EnrollmentItemstPrice> findItens = await db.EnrollmentItemstPrices.Where(x => x.EnrollmentPriceId == id).ToListAsync();
+
+                if (findItens.Count > 0 )
+                {
+                    result.EnrollmentItemstPrice = findItens;
+                }
+            }
+
+            return result;
+        }
+
+
+
+
+        public async Task<EnrollmentPrice> UpdateEnrollmentPrice(EnrollmentPrice entity)
+        {
+            var result = await ReadEnrolmentPriceById(entity.Id);
+
+            if (result.Price == entity.Price)
+            {
+                return await ReadEnrolmentPriceById(entity.Id);
+            }
+
+            if (result is not null)
+            {
+
+                var historyDescription = @$"Utilizador {entity.UpdatedUSer} altertou a mensalidade da {result.Description} de {result.Price.ToString("N2")} para {entity.Price.ToString("N2")} em {DateTime.Now.ToString("dd/MM/yyyy")}";
+
+                result.EnrollmentPriceHistory.Add(new EnrollmentPriceHistory()
+                {
+                    Description = historyDescription,
+                    EnrollmentPriceeId = result.Id,
+
+                });
+
+                result.Price = entity.Price;
+                db.EnrollmentPrices.Update(result);
+                await db.SaveChangesAsync();
+            }
+
+            return await ReadEnrolmentPriceById(entity.Id);
+        }
+
     }
 
 }

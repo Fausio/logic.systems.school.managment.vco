@@ -87,7 +87,7 @@ namespace logic.systems.school.managment.Services
             }
         }
 
-        public async Task<PaginationDTO<Student>> ReadPagenation(int pageNumber = 1, int pageSize = 10)
+        public async Task<PaginationDTO<Student>> ReadPagenation(int pageNumber = 1, int pageSize = 20)
         {
             pageNumber = (pageNumber <= 0) ? 1 : pageNumber;
             pageSize = (pageSize <= 0) ? 10 : pageSize;

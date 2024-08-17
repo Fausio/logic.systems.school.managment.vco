@@ -150,5 +150,7 @@ using (var scope = app.Services.CreateScope())
 
 await SeedOrgUnit.Run();
 await SeedSimpleEntity.Run();
+await SeedEnrollmentPrice.Run();
+await SeedTuitionPrice.Run();
 
 app.Run();

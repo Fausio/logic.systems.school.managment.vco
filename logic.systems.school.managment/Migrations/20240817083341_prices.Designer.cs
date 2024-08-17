@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using logic.systems.school.managment.Data;
 
@@ -11,9 +12,10 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240817083341_prices")]
+    partial class prices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -351,9 +353,6 @@ namespace logic.systems.school.managment.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EnrollmentPriceId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("EnrollmentPriceeId")
                         .HasColumnType("int");
 
@@ -368,8 +367,6 @@ namespace logic.systems.school.managment.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EnrollmentPriceId1");
 
                     b.HasIndex("EnrollmentPriceeId");
 
@@ -924,9 +921,6 @@ namespace logic.systems.school.managment.Migrations
                     b.Property<int>("TuitionPriceId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TuitionPriceId1")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -936,8 +930,6 @@ namespace logic.systems.school.managment.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("TuitionPriceId");
-
-                    b.HasIndex("TuitionPriceId1");
 
                     b.ToTable("TuitionPriceHistory");
                 });
@@ -1220,10 +1212,6 @@ namespace logic.systems.school.managment.Migrations
 
             modelBuilder.Entity("logic.systems.school.managment.Models.EnrollmentPriceHistory", b =>
                 {
-                    b.HasOne("logic.systems.school.managment.Models.EnrollmentPrice", null)
-                        .WithMany("EnrollmentPriceHistory")
-                        .HasForeignKey("EnrollmentPriceId1");
-
                     b.HasOne("logic.systems.school.managment.Models.EnrollmentPrice", "EnrollmentPrice")
                         .WithMany()
                         .HasForeignKey("EnrollmentPriceeId")
@@ -1337,10 +1325,6 @@ namespace logic.systems.school.managment.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("logic.systems.school.managment.Models.TuitionPrice", null)
-                        .WithMany("TuitionPriceHistory")
-                        .HasForeignKey("TuitionPriceId1");
-
                     b.Navigation("TuitionPrice");
                 });
 
@@ -1408,8 +1392,6 @@ namespace logic.systems.school.managment.Migrations
             modelBuilder.Entity("logic.systems.school.managment.Models.EnrollmentPrice", b =>
                 {
                     b.Navigation("EnrollmentItemstPrice");
-
-                    b.Navigation("EnrollmentPriceHistory");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.Sponsor", b =>
@@ -1430,11 +1412,6 @@ namespace logic.systems.school.managment.Migrations
             modelBuilder.Entity("logic.systems.school.managment.Models.TuitionFine", b =>
                 {
                     b.Navigation("TuitionFineDailies");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.TuitionPrice", b =>
-                {
-                    b.Navigation("TuitionPriceHistory");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Humanizer;
 using logic.systems.school.managment.Data;
@@ -43,7 +44,10 @@ namespace logic.systems.school.managment.Services
             return dtfi.GetMonthName(month);
         }
 
-
+        public async Task<List<TuitionPrice>> ReaTuitionPrices()
+        {
+            return await db.TuitionPrices.Include(x => x.TuitionPriceHistory).ToListAsync();
+        }
 
 
         public async Task CreateByClassOfStudant(Student model, Enrollment enrollment, string userid)
@@ -325,7 +329,7 @@ namespace logic.systems.school.managment.Services
                                         item.UpdatedUSer = userid;
                                         item.Row = Common.Modified;
                                         item.PaidDate = payment.PaymentDate;
-                                        item.Paid = true; 
+                                        item.Paid = true;
                                     }
                                 }
 
@@ -431,9 +435,9 @@ namespace logic.systems.school.managment.Services
 
         private async Task CheckFeeZiro()
         {
-           var payments = await db.PaymentTuitions.Include(x => x.Tuition)
-                                                  .Where(x => x.PaymentWithoutVat == (decimal)0)
-                                                  .ToListAsync();
+            var payments = await db.PaymentTuitions.Include(x => x.Tuition)
+                                                   .Where(x => x.PaymentWithoutVat == (decimal)0)
+                                                   .ToListAsync();
 
             foreach (var item in payments)
             {
@@ -442,8 +446,8 @@ namespace logic.systems.school.managment.Services
                                            .Include(x => x.CurrentSchoolLevel)
                                            .FirstOrDefaultAsync(x => x.Id == item.Tuition.StudentId);
 
-                var discount = (decimal)0; 
-             
+                var discount = (decimal)0;
+
                 if (studant is not null)
                 {
                     if (studant.DiscountType == Student.DiscountPersonInCharge)
@@ -459,11 +463,11 @@ namespace logic.systems.school.managment.Services
                     item.VatOfPayment = VatCalc(item.PaymentWithoutVat);
                     item.PaymentWithVat = item.VatOfPayment + item.PaymentWithoutVat;
 
-                      db.PaymentTuitions.Update(item);
+                    db.PaymentTuitions.Update(item);
                     await db.SaveChangesAsync();
                 }
 
-            
+
             }
 
         }
@@ -627,6 +631,39 @@ namespace logic.systems.school.managment.Services
                 student.Suspended = false;
                 await db.SaveChangesAsync();
             }
+        }
+
+        public async Task<TuitionPrice> ReadTuitionPriceById(int id)
+        => await db.TuitionPrices.Include(x => x.TuitionPriceHistory)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        public async Task<TuitionPrice> UpdateTuitionPrice(TuitionPrice entity)
+        {
+            var result = await ReadTuitionPriceById(entity.Id);
+
+            if (result.Price == entity.Price)
+            {
+                return await ReadTuitionPriceById(entity.Id);
+            }
+
+            if (result is not null)
+            {
+                
+                var historyDescription = @$"Utilizador {entity.UpdatedUSer} altertou a propina da {result.Description} de {result.Price.ToString("N2")} para {entity.Price.ToString("N2")} em {DateTime.Now.ToString("dd/MM/yyyy")}";
+
+                result.TuitionPriceHistory.Add(new TuitionPriceHistory()
+                {
+                    Description = historyDescription,
+                    TuitionPriceId = result.Id,
+
+                });
+
+                result.Price = entity.Price;
+                db.TuitionPrices.Update(result);
+                await db.SaveChangesAsync();
+            }
+             
+            return await ReadTuitionPriceById(entity.Id);
         }
     }
 }
