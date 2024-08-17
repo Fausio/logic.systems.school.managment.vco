@@ -621,11 +621,11 @@
                         <div class="form-row mb-3">
                             <div class="col-md-12 col-sm-12">
                                 <label for="">Meses</label>
-                                <select class="form-control form-control-lg pb-3 pt-3" id="tuitionPayment"> 
+                                <select class="form-control form-control-lg pb-3 pt-3" id="tuitionPayment">
                                     @foreach (Tuition item in ViewBag.Tuitions)
                                     {
                                         <option value="@item.Id">@item.MonthNumber - @item.MonthName - @item.Year</option>
-                                    } 
+                                    }
                                 </select>
                             </div>
                         </div>
@@ -1206,28 +1206,37 @@
 
 
         function RevertTuition(id) {
-            $('#revert_' + id).hide();
-            $('#revert_spinner_' + id).show();
 
-            $.ajax({
-                type: "GET",
-                url: "/Tuition/revertTuition?id=" + id,
-                dataType: 'json',
-                success: function (data) {
-                    // Atualizar as tabelas de pagamentos e propinas
-                    getPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
-                    getTuitions(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+            var userConfirmation = confirm("Tem certeza de que deseja reverter a mensalidade? A aplicação guardará o registro para possíveis futuras auditorias.");
 
-                    $('#revert_' + id).show();
-                    $('#revert_spinner_' + id).hide();
-                },
-                error: function (error) {
-                    console.error('Erro ao reverter mensalidade:', error);
+            if (userConfirmation) {
 
-                    $('#revert_' + id).show();
-                    $('#revert_spinner_' + id).hide();
-                }
-            });
+                $('#revert_' + id).hide();
+                $('#revert_spinner_' + id).show();
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Tuition/revertTuition?id=" + id,
+                    dataType: 'json',
+                    success: function (data) {
+                        // Atualizar as tabelas de pagamentos e propinas
+                        getPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+                        getTuitions(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+                          getRevertPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+
+                        alert("Mensalidade revertida com sucesso !")
+
+                        $('#revert_' + id).show();
+                        $('#revert_spinner_' + id).hide();
+                    },
+                    error: function (error) {
+                        console.error('Erro ao reverter mensalidade:', error);
+
+                        $('#revert_' + id).show();
+                        $('#revert_spinner_' + id).hide();
+                    }
+                });
+            }
         }
 
         function PrintEnrollmentInvoice(id) {
@@ -1578,6 +1587,7 @@
                 url: "/tuition/IndexByStudantIdFines?id=" + id,
                 type: "GET",
                 success: function (MyList) {
+                    console.log("ok", MyList);
                     $("#tabelaItenFines tbody").empty();
                     $('#tuitionFeePayment').empty();
                     $.each(MyList, function (index, item) {
@@ -1611,9 +1621,7 @@
                     });
 
                     $('#menu_2_info').show();
-                    $('#menu_2_spinner').show();
-                    $("#add-multi-palyment").show();
-                    $("#add-payment").show();
+                    $('#menu_2_spinner').hide(); 
                 }
             });
 
@@ -1797,7 +1805,7 @@
                         newRow.append("<td>" + item.vatOfPayment + ",00 MT" + "</td>");
                         newRow.append("<td>" + item.paymentWithVat + ",00 MT" + "</td>");
                         newRow.append("<td>" + " <div id='enrolls_btns' > <button onclick='PrintTuitionInvoice(" + item.id + " )'   type='button'  class='btn btn-sm btn-dark btn-block btn-icon-text text-white  mb-0 mt-0 ' >  Imprimir </button>  </div>   <div id='enrolls_spinner' style='display:none'><div class='d-flex justify-content-center'><div class='spinner-border spinner-border-sm' role='status'><span class='sr-only'>Loading...</span></div></div></div> " + "</td>");
-                         
+
                         // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
 
                         $("#tabelaItensPayments tbody").append(newRow);
@@ -1813,6 +1821,11 @@
 
         function getRevertPayments(id, EnrollmentYear) {
 
+
+
+
+
+
             var data = {
                 StudantId: @Model.id,
                 EnrollmentYear: EnrollmentYear,
@@ -1825,7 +1838,7 @@
                 success: function (MyList) {
 
                     $("#tabelaItensRevertPayments tbody").empty();
-                            
+
                     $.each(MyList, function (index, item) {
 
                         var newRow = $("<tr>");
@@ -1836,13 +1849,12 @@
                         newRow.append("<td>" + item.paymentWithoutVat + ",00 MT" + "</td>");
                         newRow.append("<td>" + item.vatOfPayment + ",00 MT" + "</td>");
                         newRow.append("<td>" + item.paymentWithVat + ",00 MT" + "</td>");
-                        newRow.append("<td>" + item.createdUSer    + "</td>");
-                        newRow.append("<td>" + item._CreatedDate   + "</td>");
+                        newRow.append("<td>" + item.createdUSer + "</td>");
+                        newRow.append("<td>" + item._CreatedDate + "</td>");
                         $("#tabelaItensRevertPayments tbody").append(newRow);
                     });
                 }
             });
-
 
 
 

@@ -642,6 +642,33 @@ namespace logic.systems.school.managment.Services
 
                 db.Tuitions.Update(tuition);
                 await db.SaveChangesAsync();
+
+
+                // reverter as multas
+                var tuitionFine = await db.TuitionFines.Include(x => x.TuitionFineDailies).FirstOrDefaultAsync(x => x.TuitionId == tuition.Id);
+
+                if (tuitionFine is not null)
+                {
+                    tuitionFine.UpdatedDate = DateTime.UtcNow;
+                    tuitionFine.PaidDate = null;
+                    tuitionFine.Paid = false;
+
+                    db.TuitionFines.Update(tuitionFine);
+                    await db.SaveChangesAsync();
+
+                    foreach (var item in tuitionFine.TuitionFineDailies)
+                    {
+
+                        item.UpdatedDate = DateTime.UtcNow;
+                        item.Paid = false;
+                        item.PaidDate = null;
+
+
+                        db.TuitionFineDailies.Update(item);
+                        await db.SaveChangesAsync();
+                    }
+                }
+                 
             }
 
             var RevertTuition = new RevertTuition()
@@ -665,6 +692,9 @@ namespace logic.systems.school.managment.Services
 
             db.PaymentTuitions.Remove(paymentTuition);
             await db.SaveChangesAsync();
+
+
+          
 
         }
 
