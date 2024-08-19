@@ -287,131 +287,139 @@ namespace logic.systems.school.managment.Services
                         }
                     }
 
-                    if (dto.StudantId > 0 && dto.TuitionId > 0 && studant is not null)
+                    var tuitionYear = await db.Tuitions.Include(x => x.Enrollment).FirstOrDefaultAsync(x => x.Id == dto.TuitionId); 
+                    var yearDefinition = await db.YearDefinitions.FirstOrDefaultAsync(x => x.Year == tuitionYear.Enrollment.EnrollmentYear);
+
+                    if (yearDefinition is not null)
                     {
-                        var payment = new TuitionPayment()
+                        if (dto.StudantId > 0 && dto.TuitionId > 0 && studant is not null)
                         {
-                            TuitionId = dto.TuitionId,
-                            PaymentDate = dto.PaymentDate,
-                            PaymentWithoutVat = (await getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount),
-                            CreatedDate = nowTimeStep,
-                            CreatedUSer = userid,
-                        };
-                        payment.VatOfPayment = VatCalc(payment.PaymentWithoutVat);
-                        payment.PaymentWithVat = payment.VatOfPayment + payment.PaymentWithoutVat - discaountByNumberOfMonths;
-
-                        var invoice = new TuitionInvoice()
-                        {
-                            Date = payment.PaymentDate,
-                            CreatedDate = nowTimeStep,
-                            CreatedUSer = userid
-                        };
-
-                        await db.TuitionInvoices.AddAsync(invoice);
-                        await db.SaveChangesAsync();
-
-                        studant.UpdatedDate = DateTime.Now;
-                        studant.Row = Common.Modified;
-                        studant.UpdatedUSer = userid;
-
-                        payment.TuitionInvoice = invoice;
-                        await db.PaymentTuitions.AddAsync(payment);
-                        await db.SaveChangesAsync();
-
-                        var tuitionPayed = db.Tuitions.Include(x => x.TuitionFines).ThenInclude(x => x.TuitionFineDailies).FirstOrDefault(x => x.Id == dto.TuitionId);
-
-                        if (tuitionPayed != null)
-                        {
-                            tuitionPayed.Row = Common.Modified;
-                            tuitionPayed.UpdatedDate = DateTime.Now;
-                            tuitionPayed.PaidDate = dto.PaymentDate;
-                            tuitionPayed.Paid = true;
-                            tuitionPayed.UpdatedUSer = userid;
-
-                            db.Tuitions.Update(tuitionPayed);
-                            await db.SaveChangesAsync();
-                            // remove as multas depois da data de pagamento
-                            if (tuitionPayed.TuitionFines is not null)
+                            var payment = new TuitionPayment()
                             {
-                                if (tuitionPayed.PaidDate <= tuitionPayed.StartDate.AddDays(14))
-                                {
-                                    var tuitionFinesTODelete = await db.TuitionFines
-                                    .Include(x => x.TuitionFineDailies)
-                                    .FirstOrDefaultAsync(x => x.Id == tuitionPayed.TuitionFines.Id);
+                                TuitionId = dto.TuitionId,
+                                PaymentDate = dto.PaymentDate,
+                                PaymentWithoutVat = (await getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description, yearDefinition.Id) - discount),
+                                CreatedDate = nowTimeStep,
+                                CreatedUSer = userid,
+                            };
+                            payment.VatOfPayment = VatCalc(payment.PaymentWithoutVat);
+                            payment.PaymentWithVat = payment.VatOfPayment + payment.PaymentWithoutVat - discaountByNumberOfMonths;
 
-                                    var TuitionFineDailies = tuitionFinesTODelete?.TuitionFineDailies;
-                                    if (TuitionFineDailies?.Count > 0)
+                            var invoice = new TuitionInvoice()
+                            {
+                                Date = payment.PaymentDate,
+                                CreatedDate = nowTimeStep,
+                                CreatedUSer = userid
+                            };
+
+                            await db.TuitionInvoices.AddAsync(invoice);
+                            await db.SaveChangesAsync();
+
+                            studant.UpdatedDate = DateTime.Now;
+                            studant.Row = Common.Modified;
+                            studant.UpdatedUSer = userid;
+
+                            payment.TuitionInvoice = invoice;
+                            await db.PaymentTuitions.AddAsync(payment);
+                            await db.SaveChangesAsync();
+
+                            var tuitionPayed = db.Tuitions.Include(x => x.TuitionFines).ThenInclude(x => x.TuitionFineDailies).FirstOrDefault(x => x.Id == dto.TuitionId);
+
+                            if (tuitionPayed != null)
+                            {
+                                tuitionPayed.Row = Common.Modified;
+                                tuitionPayed.UpdatedDate = DateTime.Now;
+                                tuitionPayed.PaidDate = dto.PaymentDate;
+                                tuitionPayed.Paid = true;
+                                tuitionPayed.UpdatedUSer = userid;
+
+                                db.Tuitions.Update(tuitionPayed);
+                                await db.SaveChangesAsync();
+                                // remove as multas depois da data de pagamento
+                                if (tuitionPayed.TuitionFines is not null)
+                                {
+                                    if (tuitionPayed.PaidDate <= tuitionPayed.StartDate.AddDays(14))
                                     {
-                                        db.TuitionFineDailies.RemoveRange(TuitionFineDailies);
+                                        var tuitionFinesTODelete = await db.TuitionFines
+                                        .Include(x => x.TuitionFineDailies)
+                                        .FirstOrDefaultAsync(x => x.Id == tuitionPayed.TuitionFines.Id);
+
+                                        var TuitionFineDailies = tuitionFinesTODelete?.TuitionFineDailies;
+                                        if (TuitionFineDailies?.Count > 0)
+                                        {
+                                            db.TuitionFineDailies.RemoveRange(TuitionFineDailies);
+                                            await db.SaveChangesAsync();
+                                        }
+
+                                        db.TuitionFines.Remove(tuitionFinesTODelete);
                                         await db.SaveChangesAsync();
                                     }
 
-                                    db.TuitionFines.Remove(tuitionFinesTODelete);
-                                    await db.SaveChangesAsync();
-                                }
-
-                                // remove as multas diarias depois da data de pagamento
-                                if (tuitionPayed.TuitionFines is not null)
-                                {
-
-                                    if (tuitionPayed.TuitionFines.TuitionFineDailies.Count > 0)
+                                    // remove as multas diarias depois da data de pagamento
+                                    if (tuitionPayed.TuitionFines is not null)
                                     {
-                                        var ListTuitionFineDailiesToDelete = new List<TuitionFineDaily>();
 
-                                        foreach (var daily in tuitionPayed.TuitionFines.TuitionFineDailies)
+                                        if (tuitionPayed.TuitionFines.TuitionFineDailies.Count > 0)
                                         {
-                                            if (daily.FinesDate > tuitionPayed.PaidDate)
+                                            var ListTuitionFineDailiesToDelete = new List<TuitionFineDaily>();
+
+                                            foreach (var daily in tuitionPayed.TuitionFines.TuitionFineDailies)
                                             {
-                                                ListTuitionFineDailiesToDelete.Add(daily);
+                                                if (daily.FinesDate > tuitionPayed.PaidDate)
+                                                {
+                                                    ListTuitionFineDailiesToDelete.Add(daily);
+                                                }
+                                            }
+
+                                            if (ListTuitionFineDailiesToDelete.Count() > 0)
+                                            {
+
+                                                db.TuitionFineDailies.RemoveRange(ListTuitionFineDailiesToDelete);
+                                                await db.SaveChangesAsync();
                                             }
                                         }
 
-                                        if (ListTuitionFineDailiesToDelete.Count() > 0)
-                                        {
 
-                                            db.TuitionFineDailies.RemoveRange(ListTuitionFineDailiesToDelete);
-                                            await db.SaveChangesAsync();
+                                    }
+                                }
+
+
+
+                                tuitionPayed = db.Tuitions.Include(x => x.TuitionFines).ThenInclude(x => x.TuitionFineDailies).FirstOrDefault(x => x.Id == dto.TuitionId);
+
+                                // create Fee Payment if Tuition have it  
+                                if (tuitionPayed.TuitionFines is not null)
+                                {
+
+                                    var DailyFees = (decimal)0;
+
+                                    if (tuitionPayed.TuitionFines.TuitionFineDailies.Count > 0)
+                                    {
+                                        DailyFees = tuitionPayed.TuitionFines.TuitionFineDailies.Sum(x => x.FinesValue);
+
+                                        foreach (var item in tuitionPayed.TuitionFines.TuitionFineDailies)
+                                        {
+                                            item.UpdatedUSer = userid;
+                                            item.Row = Common.Modified;
+                                            item.PaidDate = payment.PaymentDate;
+                                            item.Paid = true;
                                         }
                                     }
 
+                                    tuitionPayed.TuitionFines.FinesValue += DailyFees;
+                                    tuitionPayed.TuitionFines.Paid = true;
+                                    tuitionPayed.TuitionFines.PaidDate = payment.PaymentDate;
+                                    tuitionPayed.UpdatedUSer = userid;
+                                    tuitionPayed.Row = Common.Modified;
 
+                                    db.TuitionFines.Update(tuitionPayed.TuitionFines);
+                                    await db.SaveChangesAsync();
                                 }
-                            }
-
-
-
-                            tuitionPayed = db.Tuitions.Include(x => x.TuitionFines).ThenInclude(x => x.TuitionFineDailies).FirstOrDefault(x => x.Id == dto.TuitionId);
-
-                            // create Fee Payment if Tuition have it  
-                            if (tuitionPayed.TuitionFines is not null)
-                            {
-
-                                var DailyFees = (decimal)0;
-
-                                if (tuitionPayed.TuitionFines.TuitionFineDailies.Count > 0)
-                                {
-                                    DailyFees = tuitionPayed.TuitionFines.TuitionFineDailies.Sum(x => x.FinesValue);
-
-                                    foreach (var item in tuitionPayed.TuitionFines.TuitionFineDailies)
-                                    {
-                                        item.UpdatedUSer = userid;
-                                        item.Row = Common.Modified;
-                                        item.PaidDate = payment.PaymentDate;
-                                        item.Paid = true;
-                                    }
-                                }
-
-                                tuitionPayed.TuitionFines.FinesValue += DailyFees;
-                                tuitionPayed.TuitionFines.Paid = true;
-                                tuitionPayed.TuitionFines.PaidDate = payment.PaymentDate;
-                                tuitionPayed.UpdatedUSer = userid;
-                                tuitionPayed.Row = Common.Modified;
-
-                                db.TuitionFines.Update(tuitionPayed.TuitionFines);
-                                await db.SaveChangesAsync();
                             }
                         }
                     }
+
+                   
                 }
             }
             catch (Exception ex)
@@ -435,9 +443,9 @@ namespace logic.systems.school.managment.Services
         }
 
 
-        public async Task<decimal> getTuitionValueByschoolLevel(string schoolLevel)
+        public async Task<decimal> getTuitionValueByschoolLevel(string schoolLevel, int yearId)
         {
-            var result = await db.TuitionPrices.FirstOrDefaultAsync(x => x.Description == schoolLevel);
+            var result = await db.TuitionPrices.FirstOrDefaultAsync(x => x.Description == schoolLevel && x.YearDefinitionId == yearId);
 
             if (result == null)
             {
@@ -450,7 +458,7 @@ namespace logic.systems.school.managment.Services
 
         private async Task CheckFeeZiro()
         {
-            var payments = await db.PaymentTuitions.Include(x => x.Tuition)
+            var payments = await db.PaymentTuitions.Include(x => x.Tuition).ThenInclude(x => x.Enrollment)
                                                    .Where(x => x.PaymentWithoutVat == (decimal)0)
                                                    .ToListAsync();
 
@@ -461,9 +469,11 @@ namespace logic.systems.school.managment.Services
                                            .Include(x => x.CurrentSchoolLevel)
                                            .FirstOrDefaultAsync(x => x.Id == item.Tuition.StudentId && x.Row != Common.Deleted);
 
+                var yearDefinition = await db.YearDefinitions.FirstOrDefaultAsync(x => x.Year == item.Tuition.Enrollment.EnrollmentYear);
+
                 var discount = (decimal)0;
 
-                if (studant is not null)
+                if (studant is not null && yearDefinition is not null)
                 {
                     if (studant.DiscountType == Student.DiscountPersonInCharge)
                     {
@@ -474,17 +484,14 @@ namespace logic.systems.school.managment.Services
                         discount = 500;
                     }
 
-                    item.PaymentWithoutVat = (await getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount);
+                    item.PaymentWithoutVat = (await getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description, yearDefinition.Id) - discount);
                     item.VatOfPayment = VatCalc(item.PaymentWithoutVat);
                     item.PaymentWithVat = item.VatOfPayment + item.PaymentWithoutVat;
 
                     db.PaymentTuitions.Update(item);
                     await db.SaveChangesAsync();
-                }
-
-
-            }
-
+                } 
+            } 
         }
 
 
