@@ -11,5 +11,10 @@ namespace logic.systems.school.managment.Interface
         public Task<bool> CheckIfHaveEnrollmentIntheYear(EnrollmentCreateDTO model);
 
         public Task DeleteParmanentyById(int Id);
+
+        public  Task<List<EnrollmentPrice>> ReadEnrolmentPrices();
+        public Task<EnrollmentPrice> ReadEnrolmentPriceById(int id);
+        public Task<EnrollmentPrice> ReadEnrolmentPriceByDescription(string descriprion );
+        public Task<EnrollmentPrice> UpdateEnrollmentPrice(EnrollmentPrice entity);
     }
 }

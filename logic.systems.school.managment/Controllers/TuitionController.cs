@@ -13,7 +13,7 @@ namespace logic.systems.school.managment.Controllers
         private IstudantService _StudentService;
         private ITuitionService _ITuitionService;
         private UserManager<IdentityUser> _userManager;
-        public TuitionController(IstudantService StudentService,ITuitionService ITuitionService, UserManager<IdentityUser> userManager)
+        public TuitionController(IstudantService StudentService, ITuitionService ITuitionService, UserManager<IdentityUser> userManager)
         {
             this._StudentService = StudentService;
             this._ITuitionService = ITuitionService;
@@ -59,8 +59,16 @@ namespace logic.systems.school.managment.Controllers
 
         public async Task<JsonResult> IndexPaymentByStudantId(getPaymentParamitersDTO id)
         {
+
             var result = await _ITuitionService.GetPaymentsByStudantTuitionsId(id.StudantId);
             result = result.Where(x => x.TuitionYear == id.EnrollmentYear).ToList();
+
+            return Json(result);
+        }
+
+        public async Task<JsonResult> IndexRevertPaymentByStudantId(getPaymentParamitersDTO id)
+        {
+            var result = await _ITuitionService.GetRevertPaymentsByStudantTuitionsId(id.StudantId, id.EnrollmentYear);
 
             return Json(result);
         }
@@ -91,7 +99,7 @@ namespace logic.systems.school.managment.Controllers
                 foreach (var item in result)
                 {
                     var _schoolLevel = item.Enrollment.SchoolLevel.Description;
-                    var _tuitionValue = ( _ITuitionService.getTuitionValueByschoolLevel(_schoolLevel) - discount);
+                    var _tuitionValue = (await _ITuitionService.getTuitionValueByschoolLevel(_schoolLevel) - discount);
                     resultDTO.Add(new MultiPaymentTuitionDTO()
                     {
                         id = item.Id,
@@ -135,7 +143,7 @@ namespace logic.systems.school.managment.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
 
             await _ITuitionService.CreatePayment(data, currentUser.Id);
-             
+
             return Json("");
         }
 
@@ -146,6 +154,13 @@ namespace logic.systems.school.managment.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             await _ITuitionService.CreateFeePayment(data, currentUser.Id);
             return Json("");
+        }
+
+        public async Task<IActionResult> revertTuition(int id)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            await _ITuitionService.RevertTuitionPayment(id, currentUser.Email);
+            return Json("OK");
         }
     }
 }

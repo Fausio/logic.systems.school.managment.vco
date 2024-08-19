@@ -136,8 +136,7 @@ using (var scope = app.Services.CreateScope())
                 var pass = "Assane1234";
                 await UserManager.CreateAsync(item, pass);
                 await UserManager.AddToRoleAsync(item, "ADMINISTRATOR");
-            }
-
+            } 
             if (email == "nilza.rodrigues@Kalimany.com")
             {
                 var pass = "Nilza1234";
@@ -151,5 +150,7 @@ using (var scope = app.Services.CreateScope())
 
 await SeedOrgUnit.Run();
 await SeedSimpleEntity.Run();
+await SeedEnrollmentPrice.Run();
+await SeedTuitionPrice.Run();
 
 app.Run();

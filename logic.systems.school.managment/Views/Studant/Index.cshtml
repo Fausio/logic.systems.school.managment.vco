@@ -4,6 +4,7 @@
     ViewData["Title"] = "Estudantes";
 }
 
+<link rel="stylesheet" href="~/css/EditViewBen.css" />
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
@@ -71,11 +72,11 @@
            
 
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="MytabelaItens wideTable w-100 mb-2">
 
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
+                            
                             <th scope="col">Estudante</th>
                             <th scope="col">Classe actual</th>
                             <th scope="col">Turma </th>
@@ -88,11 +89,7 @@
                         @foreach (var item in Model.indexPage.records)
                         {
                             <tr>
-                                <th scope="row">
-                                
-                                        @item.Id
-                                
-                                </th>
+                               
                                 <td>
                                     <a asp-action="edit" asp-controller="studant" asp-route-id="@item.Id"> 
                                         @item.Name

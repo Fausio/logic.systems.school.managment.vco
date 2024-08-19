@@ -43,7 +43,7 @@ namespace logic.systems.school.managment.Controllers
             this._userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(int? pageNumber = 1, int? pageSize = 10)
+        public async Task<IActionResult> Index(int? pageNumber = 1, int? pageSize = 20)
         {
             try
             {

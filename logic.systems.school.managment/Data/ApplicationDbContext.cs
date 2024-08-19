@@ -33,6 +33,14 @@ namespace logic.systems.school.managment.Data
              .HasForeignKey(s => s.SchoolClassRoomId)
              .OnDelete(DeleteBehavior.Restrict);
 
+             
+
+            modelBuilder.Entity<EnrollmentItemstPrice>().HasOne(s => s.EnrollmentPrice).WithMany().HasForeignKey(s => s.EnrollmentPriceId).OnDelete(DeleteBehavior.Restrict); 
+
+            modelBuilder.Entity<TuitionPriceHistory>().HasOne(s => s.TuitionPrice).WithMany().HasForeignKey(s => s.TuitionPriceId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<EnrollmentPriceHistory>().HasOne(s => s.EnrollmentPrice).WithMany().HasForeignKey(s => s.EnrollmentPriceeId).OnDelete(DeleteBehavior.Restrict);
+
+
             base.OnModelCreating(modelBuilder);
 
         }
@@ -67,6 +75,13 @@ namespace logic.systems.school.managment.Data
         public DbSet<IdentityUser> IdentityUsers { get; set; }
         public DbSet<TuitionFineDaily> TuitionFineDailies { get; set; }
   public DbSet<Audit> Audits { get; set; }
+
+        public DbSet<EnrollmentPrice> EnrollmentPrices { get; set; }
+        public DbSet<TuitionPrice> TuitionPrices { get; set; }
+        public DbSet<TuitionPriceHistory> TuitionPriceHistorys { get; set; }
+        public DbSet<EnrollmentPriceHistory> EnrollmentPriceHistorys { get; set; }
+        public DbSet<EnrollmentItemstPrice> EnrollmentItemstPrices { get; set; }
+        public DbSet<RevertTuition> RevertTuitions { get; set; }
 
     }
 }

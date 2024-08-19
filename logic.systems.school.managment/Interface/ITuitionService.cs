@@ -17,9 +17,11 @@ namespace logic.systems.school.managment.Interface
          
         public Task CheckFee(int? studentId, string userid);       
         public Task AutomaticRegularization(int? studentId);
-
-        public decimal getTuitionValueByschoolLevel(string schoolLevel);
-
-
+        public Task<List<TuitionPrice>> ReaTuitionPrices();
+        public Task<decimal> getTuitionValueByschoolLevel(string schoolLevel);
+        public Task<TuitionPrice> ReadTuitionPriceById(int id);
+        public Task<TuitionPrice> UpdateTuitionPrice(TuitionPrice entity); 
+        Task RevertTuitionPayment(int id, string user);
+        public Task<List<RevertTuition>> GetRevertPaymentsByStudantTuitionsId(int studantId, int enrollmentYear);
     }
 }

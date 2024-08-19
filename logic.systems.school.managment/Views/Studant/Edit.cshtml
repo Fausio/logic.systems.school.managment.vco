@@ -179,21 +179,23 @@
 
             <!-- Tab panes -->
             <div class="tab-content">
-                <div id="home" class=" tab-pane active">
 
-                    <div id="menu_1_spinner">
-                        <div class="d-flex justify-content-center">
-                            <div class="spinner-border" role="status">
-                                <span class="sr-only">Loading...</span>
-                            </div>
+                <div id="menu_1_spinner">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
                         </div>
                     </div>
+                </div>
+
+                <div id="home" class=" tab-pane active">
+
+
 
 
 
 
                     <div id="menu_1_info">
-
 
                         <ul class="nav nav-tabs" role="tablist">
 
@@ -223,11 +225,11 @@
                                     @{
                                         if (!Model.Transferred)
                                         {
-                                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
+                                            <a id="add-payment" class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#meuModal" onclick="form_pay_btns()">
                                                 Adicionar Pagamento de mensalidade
                                             </a>
 
-                                            <a class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#multipayments" onclick="form_multi_pay_btns()">
+                                            <a id="add-multi-palyment" class="btn btn-sm btn-success btn-icon-text text-white" data-toggle="modal" data-target="#multipayments" onclick="form_multi_pay_btns()">
                                                 Adicionar Multiplus Pagamentos de mensalidade
                                             </a>
                                         }
@@ -239,10 +241,9 @@
 
 
                                     <div class="row">
-
-                                        <div class="col-md-7 col-sm-12">
+                                        <div class="col-md-6 col-sm-12">
                                             <div class="table-responsive">
-                                                <table class="MytabelaItens wideTable" id="tabelaItensPayments" border="1">
+                                                <table class="MytabelaItens" id="tabelaItensPayments" border="1">
                                                     <thead>
                                                         <tr>
                                                             <th>Mensalidade</th>
@@ -260,7 +261,7 @@
                                                 </table>
                                             </div>
                                         </div>
-                                        <div class="col-md-5 col-sm-12">
+                                        <div class="col-md-6 col-sm-12">
                                             <div class="table-responsive">
                                                 <table class="MytabelaItens" id="tabelaItens" border="1">
                                                     <thead>
@@ -268,7 +269,7 @@
                                                             <th>Mensalidades a pagar (@ViewBag.CurrentSchoolLevel)</th>
                                                             <th>Data</th>
                                                             <th>Estado</th>
-                                                            <!-- Adicione mais colunas conforme necessário -->
+                                                            <th>reverter pagamento</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -279,6 +280,29 @@
                                         </div>
                                     </div>
 
+                                    <div>
+
+                                        <div class="table-responsive">
+                                            <label>Mensalidades revertidas</label>
+                                            <table class="MytabelaItens wideTable mt-0" id="tabelaItensRevertPayments" border="1">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Mensalidade</th>
+                                                        <th>Data de Pagamento</th>
+                                                        <th>Propina</th>
+                                                        <th>Iva (5%)</th>
+                                                        <th>Total (+ Iva 5%)</th>
+                                                        <th>Revertido por</th>
+                                                        <th>Data de reversão</th>
+                                                        <!-- Adicione mais colunas conforme necessário -->
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Os itens da lista serão adicionados aqui -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             }
                         </div>
@@ -290,8 +314,6 @@
 
 
                     </div>
-
-
 
 
                 </div>
@@ -366,6 +388,9 @@
                                 </a>
 
 
+
+                                var user = await userManager.GetUserAsync(User);
+
                                 if (user is not null)
                                 {
                                     if (user.Email == "admin@Kalimany.com")
@@ -386,6 +411,8 @@
                                 <a class="ml-3  btn btn-sm btn-danger btn-icon-text text-white" data-toggle="modal" data-target="#EnrollmentRepitModal" onclick="form_EnrollmentRepit_btns()">
                                     Matrícular como repetente
                                 </a>
+
+                                var user = await userManager.GetUserAsync(User);
 
 
                                 if (user is not null)
@@ -622,12 +649,10 @@
                             <div class="col-md-12 col-sm-12">
                                 <label for="">Meses</label>
                                 <select class="form-control form-control-lg pb-3 pt-3" id="tuitionPayment">
-
                                     @foreach (Tuition item in ViewBag.Tuitions)
                                     {
                                         <option value="@item.Id">@item.MonthNumber - @item.MonthName - @item.Year</option>
                                     }
-
                                 </select>
                             </div>
                         </div>
@@ -1205,11 +1230,13 @@
 
         $(document).ready(function () {
             getPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+            getRevertPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
             getTuitions(@Model.id, @Model.Enrollments[0].EnrollmentYear);
         });
 
         function GetDataByEnrollmentYear(EnrollmentYear) {
             getPayments(@Model.id, EnrollmentYear);
+            getRevertPayments(@Model.id, EnrollmentYear);
             getTuitions(@Model.id, EnrollmentYear);
         }
 
@@ -1309,6 +1336,40 @@
 
 
 
+
+        function RevertTuition(id) {
+
+            var userConfirmation = confirm("Tem certeza de que deseja reverter a mensalidade? A aplicação guardará o registro para possíveis futuras auditorias.");
+
+            if (userConfirmation) {
+
+                $('#revert_' + id).hide();
+                $('#revert_spinner_' + id).show();
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Tuition/revertTuition?id=" + id,
+                    dataType: 'json',
+                    success: function (data) {
+                        // Atualizar as tabelas de pagamentos e propinas
+                        getPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+                        getTuitions(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+                          getRevertPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+
+                        alert("Mensalidade revertida com sucesso !")
+
+                        $('#revert_' + id).show();
+                        $('#revert_spinner_' + id).hide();
+                    },
+                    error: function (error) {
+                        console.error('Erro ao reverter mensalidade:', error);
+
+                        $('#revert_' + id).show();
+                        $('#revert_spinner_' + id).hide();
+                    }
+                });
+            }
+        }
 
         function PrintEnrollmentInvoice(id) {
 
@@ -1505,6 +1566,7 @@
                 };
 
 
+
                 $("#fix_EnrollmentRepit_btns_repit").hide();
                 $("#fix_EnrollmentRepit_spinner_repit").show();
 
@@ -1639,6 +1701,8 @@
 
             $("#menu_1_spinner").show();
             $("#menu_1_info").hide();
+            $("#home").hide();
+
             $.ajax({
                 url: "/tuition/IndexByStudantId",
                 type: "GET",
@@ -1657,18 +1721,43 @@
 
                         if (item.paid) {
                             // Se verdadeiro, adicione a célula com a classe verde
-                            newRow.append("<td><label class='badge badge-success mt-0 mb-0'>Pago</label></td>");
+                            newRow.append("<td><label class='badge badge-success w-100 mt-0 mb-0'>Pago</label></td>");
                         } else {
                             // Se falso, adicione a célula com a classe vermelha
-                            newRow.append("<td><label class='badge badge-danger mt-0 mb-0'>Não Pago</label></td>");
+                            newRow.append("<td><label class='badge badge-danger w-100 mt-0 mb-0'>Não Pago</label></td>");
                             $('#tuitionPayment').append('<option value="' + item.id + '">' + item.monthNumber + ' - ' + item.monthName + ' - ' + item.year + '</option>');
                         }
+
+                        if (item.paid) {
+                            newRow.append(
+                                "<td>" +
+                                "<div id='revert_tuition_btns'>" +
+                                "<label onclick='RevertTuition(" + item.id + ")' id='revert_" + item.id + "' class='badge badge-dark w-100 text-white mb-0 mt-0'>" +
+                                "Reverter" +
+                                "</label>" +
+                                "</div>" +
+                                "<div id='revert_spinner_" + item.id + "' style='display:none'>" +
+                                "<div class='d-flex justify-content-center'>" +
+                                "<div class='spinner-border spinner-border-sm' role='status'>" +
+                                "<span class='sr-only'>Loading...</span>" +
+                                "</div>" +
+                                "</div>" +
+                                "</div>" +
+                                "</td>"
+                            );
+
+
+                        } else {
+                            newRow.append("<td>" + '' + "</td>");
+                        }
+
                         // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
                         $("#tabelaItens tbody").append(newRow);
                     });
 
                     $("#menu_1_spinner").hide();
                     $("#menu_1_info").show();
+                    $("#home").show();
                 }
             });
         }
@@ -1682,6 +1771,7 @@
                 url: "/tuition/IndexByStudantIdFines?id=" + id,
                 type: "GET",
                 success: function (MyList) {
+                    console.log("ok", MyList);
                     $("#tabelaItenFines tbody").empty();
                     $('#tuitionFeePayment').empty();
                     $.each(MyList, function (index, item) {
@@ -1715,7 +1805,7 @@
                     });
 
                     $('#menu_2_info').show();
-                    $('#menu_2_spinner').hide();
+                    $('#menu_2_spinner').hide(); 
                 }
             });
 
@@ -1895,7 +1985,7 @@
                     $("#tabelaItensPayments tbody").empty();
                     // Adicione os novos itens à tabela na sua página
                     $.each(MyList, function (index, item) {
-                        console.log(MyList);
+
                         var newRow = $("<tr>");
                         // Formata a data no formato "dd-mm-aaaa"
 
@@ -1907,8 +1997,6 @@
                         newRow.append("<td>" + item.paymentWithVat + ",00 MT" + "</td>");
                         newRow.append("<td>" + " <div id='enrolls_btns' > <button onclick='PrintTuitionInvoice(" + item.id + " )'   type='button'  class='btn btn-sm btn-dark btn-block btn-icon-text text-white  mb-0 mt-0 ' >  Imprimir </button>  </div>   <div id='enrolls_spinner' style='display:none'><div class='d-flex justify-content-center'><div class='spinner-border spinner-border-sm' role='status'><span class='sr-only'>Loading...</span></div></div></div> " + "</td>");
 
-
-
                         // Adapte conforme necessário para refletir a estrutura do seu objeto e adicione mais colunas se necessário
 
                         $("#tabelaItensPayments tbody").append(newRow);
@@ -1916,6 +2004,48 @@
                 }
             });
 
+
+
+
+        }
+
+
+        function getRevertPayments(id, EnrollmentYear) {
+
+
+
+
+
+
+            var data = {
+                StudantId: @Model.id,
+                EnrollmentYear: EnrollmentYear,
+            };
+
+            $.ajax({
+                url: "/tuition/IndexRevertPaymentByStudantId",
+                type: "GET",
+                data: data,
+                success: function (MyList) {
+
+                    $("#tabelaItensRevertPayments tbody").empty();
+
+                    $.each(MyList, function (index, item) {
+
+                        var newRow = $("<tr>");
+                        // Formata a data no formato "dd-mm-aaaa"
+
+                        newRow.append("<td>" + item.monthName + "</td>");
+                        newRow.append("<td>" + item._PaymentDate + "</td>");
+                        newRow.append("<td>" + item.paymentWithoutVat + ",00 MT" + "</td>");
+                        newRow.append("<td>" + item.vatOfPayment + ",00 MT" + "</td>");
+                        newRow.append("<td>" + item.paymentWithVat + ",00 MT" + "</td>");
+                        newRow.append("<td>" + item.createdUSer + "</td>");
+                        newRow.append("<td>" + item._CreatedDate + "</td>");
+                        $("#tabelaItensRevertPayments tbody").append(newRow);
+                    });
+                }
+            });
 
 
 

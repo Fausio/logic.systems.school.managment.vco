@@ -10,11 +10,14 @@ namespace logic.systems.school.managment.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private IOrgUnit _IOrgUnitServiceService;
-
-        public SettingController(IOrgUnit IOrgUnitServiceService, UserManager<IdentityUser> userManager)
+        private ITuitionService _ITuitionService;
+        private IEnrollment _IEnrollmentService;
+        public SettingController(IOrgUnit IOrgUnitServiceService, UserManager<IdentityUser> userManager, ITuitionService iTuitionService, IEnrollment iEnrollmentService)
         {
             this._IOrgUnitServiceService = IOrgUnitServiceService;
             this._userManager = userManager;
+            _ITuitionService = iTuitionService;
+            _IEnrollmentService = iEnrollmentService;
         }
 
 
@@ -47,7 +50,7 @@ namespace logic.systems.school.managment.Controllers
                     return View(dto);
                 }
             }
-         
+
             return View(new OrgUnitDistrictCreateDTO());
         }
 
@@ -74,9 +77,50 @@ namespace logic.systems.school.managment.Controllers
             return View(new OrgUnitDistrictCreateDTO());
         }
 
-        private async Task PopulateForm ()
+        private async Task PopulateForm()
         {
             ViewBag.Provinces = await _IOrgUnitServiceService.GetOrgUnitProvinces();
         }
+
+
+        public async Task<IActionResult> tuitionConfiguration()
+        {
+            return View(await _ITuitionService.ReaTuitionPrices());
+        }
+        public async Task<IActionResult> EnrollmentConfiguration()
+        {
+            return View(await _IEnrollmentService.ReadEnrolmentPrices());
+        }
+
+
+
+        public async Task<IActionResult> EditEnrollmentPrice(int id)
+        {
+            return View(await _IEnrollmentService.ReadEnrolmentPriceById(id));
+        }
+        public async Task<IActionResult> EditTuitionPrice(int id)
+        {
+            return View(await _ITuitionService.ReadTuitionPriceById(id));
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditEnrollmentPrice(EnrollmentPrice entity)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            entity.UpdatedUSer = currentUser.Email;
+            ViewBag.Mensagem = "Matricula actualizada com sucesso!"; 
+            return View(await _IEnrollmentService.UpdateEnrollmentPrice(entity));
+        }   
+        
+        [HttpPost]
+        public async Task<IActionResult> EditTuitionPrice(TuitionPrice entity)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            entity.UpdatedUSer = currentUser.Email;
+            ViewBag.Mensagem = "Propina actualizada com sucesso!";
+            return View(await _ITuitionService.UpdateTuitionPrice(entity));
+        }
+
     }
 }

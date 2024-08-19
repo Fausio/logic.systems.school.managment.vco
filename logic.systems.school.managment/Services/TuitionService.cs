@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Humanizer;
 using logic.systems.school.managment.Data;
@@ -43,7 +44,10 @@ namespace logic.systems.school.managment.Services
             return dtfi.GetMonthName(month);
         }
 
-
+        public async Task<List<TuitionPrice>> ReaTuitionPrices()
+        {
+            return await db.TuitionPrices.Include(x => x.TuitionPriceHistory).ToListAsync();
+        }
 
 
         public async Task CreateByClassOfStudant(Student model, Enrollment enrollment, string userid)
@@ -244,6 +248,22 @@ namespace logic.systems.school.managment.Services
             try
             {
                 var nowTimeStep = DateTime.UtcNow;
+                decimal discaountByNumberOfMonths = 0;
+
+                if (dtos.Count >= 3 && dtos.Count <= 5)
+                {
+                    discaountByNumberOfMonths = Math.Ceiling(200m / dtos.Count * 100) / 100;
+                }
+                else if (dtos.Count >= 6 && dtos.Count <= 11)
+                {
+                    discaountByNumberOfMonths = Math.Ceiling(500m / dtos.Count * 100) / 100;
+                }
+                else if (dtos.Count == 12)
+                {
+                    discaountByNumberOfMonths = Math.Ceiling(1000m / dtos.Count * 100) / 100;
+                }
+
+
 
                 foreach (var dto in dtos)
                 {
@@ -273,12 +293,12 @@ namespace logic.systems.school.managment.Services
                         {
                             TuitionId = dto.TuitionId,
                             PaymentDate = dto.PaymentDate,
-                            PaymentWithoutVat = (getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount),
+                            PaymentWithoutVat = (await getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount),
                             CreatedDate = nowTimeStep,
                             CreatedUSer = userid,
                         };
                         payment.VatOfPayment = VatCalc(payment.PaymentWithoutVat);
-                        payment.PaymentWithVat = payment.VatOfPayment + payment.PaymentWithoutVat;
+                        payment.PaymentWithVat = payment.VatOfPayment + payment.PaymentWithoutVat - discaountByNumberOfMonths;
 
                         var invoice = new TuitionInvoice()
                         {
@@ -415,68 +435,16 @@ namespace logic.systems.school.managment.Services
         }
 
 
-        public decimal getTuitionValueByschoolLevel(string schoolLevel)
+        public async Task<decimal> getTuitionValueByschoolLevel(string schoolLevel)
         {
+            var result = await db.TuitionPrices.FirstOrDefaultAsync(x => x.Description == schoolLevel);
 
-            #region a logica da KALIMANY
-            //3500-- Pré - escola A
-            //3500-- Pré - escola B
-            //3500-- Pré - escola C
-            //-------------------- -
-            //4000-- 1ª classe
-            //---------------------
-            //3700-- 2ª classe
-            //3700-- 3ª classe
-            //3700-- 4ª classe
-            //3700-- 5ª classe
-            //3700-- 6ª classe
-            //3700-- 7ª classe
-            //---------------------
-            //3800-- 8ª classe
-            //3800-- 9ª classe
-            //3800-- 10ª classe
-            //---------------------
-            //4200-- 11ª classe
-            //4200-- 12ª classe
-            #endregion
-
-
-            var Price_3500 = new List<string>()
-            {
-                "Pré-escola"
-            };
-            var Price_4000 = new List<string>() { "1ª classe" };
-            var Price_3700 = new List<string>()
-            {
-                "2ª classe"     ,
-                "3ª classe"     ,
-                "4ª classe"     ,
-                "5ª classe"     ,
-                "6ª classe"     ,
-                "7ª classe"
-            };
-            var Price_3800 = new List<string>()
-            {
-                "8ª classe"      ,
-                "9ª classe"     ,
-                "10ª classe"
-
-            };
-            var Price_4200 = new List<string>()
-            {
-                "11ª classe"    ,
-                "12ª classe"
-            };
-
-            if (Price_3500.Contains(schoolLevel)) { return 3500; }
-            else if (Price_4000.Contains(schoolLevel)) { return 4000; }
-            else if (Price_3700.Contains(schoolLevel)) { return 3700; }
-            else if (Price_3800.Contains(schoolLevel)) { return 3800; }
-            else if (Price_4200.Contains(schoolLevel)) { return 4200; }
-            else
+            if (result == null)
             {
                 return 0;
             }
+
+            return result.Price;
         }
 
 
@@ -506,7 +474,7 @@ namespace logic.systems.school.managment.Services
                         discount = 500;
                     }
 
-                    item.PaymentWithoutVat = (getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount);
+                    item.PaymentWithoutVat = (await getTuitionValueByschoolLevel(studant.CurrentSchoolLevel.Description) - discount);
                     item.VatOfPayment = VatCalc(item.PaymentWithoutVat);
                     item.PaymentWithVat = item.VatOfPayment + item.PaymentWithoutVat;
 
@@ -697,6 +665,121 @@ namespace logic.systems.school.managment.Services
                 student.Suspended = false;
                 await db.SaveChangesAsync();
             }
+        }
+
+        public async Task<TuitionPrice> ReadTuitionPriceById(int id)
+        => await db.TuitionPrices.Include(x => x.TuitionPriceHistory)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        public async Task<TuitionPrice> UpdateTuitionPrice(TuitionPrice entity)
+        {
+            var result = await ReadTuitionPriceById(entity.Id);
+
+            if (result.Price == entity.Price)
+            {
+                return await ReadTuitionPriceById(entity.Id);
+            }
+
+            if (result is not null)
+            {
+
+                var historyDescription = @$"Utilizador {entity.UpdatedUSer} altertou a propina da {result.Description} de {result.Price.ToString("N2")} para {entity.Price.ToString("N2")} em {DateTime.Now.ToString("dd/MM/yyyy")}";
+
+                result.TuitionPriceHistory.Add(new TuitionPriceHistory()
+                {
+                    Description = historyDescription,
+                    TuitionPriceId = result.Id,
+
+                });
+
+                result.Price = entity.Price;
+                db.TuitionPrices.Update(result);
+                await db.SaveChangesAsync();
+            }
+
+            return await ReadTuitionPriceById(entity.Id);
+        }
+
+        public async Task RevertTuitionPayment(int id, string user)
+        {
+            var paymentTuition = await db.PaymentTuitions.FirstOrDefaultAsync(x => x.TuitionId == id);
+            var tuition = await db.Tuitions.FirstOrDefaultAsync(x => x.Id == paymentTuition.TuitionId);
+
+            if (tuition is not null)
+            {
+                tuition.UpdatedDate = DateTime.UtcNow;
+                tuition.Paid = false;
+
+                db.Tuitions.Update(tuition);
+                await db.SaveChangesAsync();
+
+
+                // reverter as multas
+                var tuitionFine = await db.TuitionFines.Include(x => x.TuitionFineDailies).FirstOrDefaultAsync(x => x.TuitionId == tuition.Id);
+
+                if (tuitionFine is not null)
+                {
+                    tuitionFine.UpdatedDate = DateTime.UtcNow;
+                    tuitionFine.PaidDate = null;
+                    tuitionFine.Paid = false;
+
+                    db.TuitionFines.Update(tuitionFine);
+                    await db.SaveChangesAsync();
+
+                    foreach (var item in tuitionFine.TuitionFineDailies)
+                    {
+
+                        item.UpdatedDate = DateTime.UtcNow;
+                        item.Paid = false;
+                        item.PaidDate = null;
+
+
+                        db.TuitionFineDailies.Update(item);
+                        await db.SaveChangesAsync();
+                    }
+                }
+                 
+            }
+
+            var RevertTuition = new RevertTuition()
+            {
+                AssociatedLevelId = tuition.AssociatedLevelId,
+                StartDate = tuition.StartDate,
+                EndDate = tuition.EndDate,
+                EnrollmentId = tuition.EnrollmentId,
+                MonthName = tuition.MonthName,
+                MonthNumber = tuition.MonthNumber,
+                StudentId = tuition.StudentId,
+                Year = tuition.Year,
+                PaymentWithoutVat = paymentTuition.PaymentWithoutVat,
+                PaymentWithVat = paymentTuition.PaymentWithVat,
+                VatOfPayment = paymentTuition.VatOfPayment,
+                PaymentDate = paymentTuition.PaymentDate,
+                CreatedUSer = user
+            };
+
+            await db.RevertTuitions.AddAsync(RevertTuition);
+
+            db.PaymentTuitions.Remove(paymentTuition);
+            await db.SaveChangesAsync();
+
+
+          
+
+        }
+
+        public async Task<List<RevertTuition>> GetRevertPaymentsByStudantTuitionsId(int studantId, int enrollmentYear)
+        {
+            var result = await db.RevertTuitions.Where(x => x.StudentId == studantId && x.Year == enrollmentYear).ToListAsync();
+
+            foreach (var item in result)
+            {
+
+                item._CreatedDate = item.CreatedDate.ToString("dd/MM/yyyy");
+                item._PaymentDate = item.PaymentDate.ToString("dd/MM/yyyy");
+            }
+
+            return result;
         }
     }
 }

@@ -1,0 +1,123 @@
+﻿@model logic.systems.school.managment.Models.TuitionPrice
+
+
+<link rel="stylesheet" href="~/css/EditViewBen.css" />
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="studant">Configurações</a><</li>
+        <li class="breadcrumb-item active" aria-current="page">Configuração de propina</li>
+    </ol>
+</nav>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0 pt-2">
+            <h2>Configuração da Propina de @Model.Description</h2>
+            <div class="alert alert-success" role="alert" id="msg-summary" style="display: @(string.IsNullOrEmpty(ViewBag.Mensagem) ? "none" : "block")">
+                <p><strong>@ViewBag.Mensagem</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body pb-0 pt-2">
+            <div class="row">
+                <div class="col-auto mr-auto">
+                    <h4 class="card-title">Lista</h4>
+                    <p class="card-description"> Propina: @Model.Description </p>
+                </div>
+            </div>
+            <div class="row" style="display:contents">
+                <form asp-action="EditTuitionPrice" asp-controller="Setting" method="post">
+                    <fieldset class="border p-2">
+                        <legend class="w-auto">Dados da Propina</legend>
+                        <div class="form-row">
+                            <div class="col-md-6 col-sm-6">
+                                <label for="">Classe</label>
+                                <input disabled type="text" class="form-control" asp-for="Description"> 
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <label for="">Preço</label>
+                                <input class="form-control" asp-for="Price">
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <fieldset class="border p-2">
+                            <legend class="w-auto">Ações</legend>
+                            <div class="template-demo">
+                                <button type="submit" class="btn btn-info btn-icon-text" onclick="DisableSubmit()" id="submitBtn">
+                                    Alterar
+                                    <i class="typcn typcn-edit btn-icon-append"></i>
+                                </button>
+                                <a asp-action="tuitionConfiguration" asp-controller="setting" class="btn btn-light btn-icon-text">
+                                    Ir para lista
+                                </a>
+                            </div>
+                        </fieldset>
+
+
+                        <div class="row">
+                            <div class="col-12">
+                                <fieldset class="border p-2">
+                                    <legend class="w-auto">Histórico de alterações</legend>
+                                    <div class="table-responsive" style="overflow-x:hidden"> 
+                                        <table class="MytabelaItens wideTable w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Histórico de alterações</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                @foreach (var item in Model.TuitionPriceHistory.OrderByDescending(x => x.Id))
+                                                {
+                                                    <tr>
+
+                                                        <td>
+                                                            @item.Description
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+
+
+            <hr />
+            <p>Historico de actualizações</p>
+
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Verifique se a mensagem está definida
+            var mensagem = '@ViewBag.Mensagem';
+            if (mensagem) {
+                // Exiba a mensagem
+                $("#msg-summary").css("display", "block");
+
+                // Remova a mensagem após 5 segundos
+                setTimeout(function () {
+                    $("#msg-summary").css("display", "none");
+                }, 3000000);
+            }
+        });
+    </script>
+}
