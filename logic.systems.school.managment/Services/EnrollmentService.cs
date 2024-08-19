@@ -41,7 +41,7 @@ namespace logic.systems.school.managment.Services
             {
                 if (studantId > 0 && CurrentSchoolLevelId > 0)
                 {
-                    var enrollment = await GenerateEnrollmentDataByLevel(studantId, CurrentSchoolLevelId);
+                    var enrollment = await GenerateEnrollmentDataByLevel(studantId, CurrentSchoolLevelId, EnrollmentYear);
                     if (enrollment is not null)
                     {
                         var PaymentEnrollment = enrollment.PaymentEnrollment;
@@ -174,12 +174,14 @@ namespace logic.systems.school.managment.Services
             }
         }
 
-        private async Task<Enrollment> GenerateEnrollmentDataByLevel(int studantId, int SchoolLevelId)
+        private async Task<Enrollment> GenerateEnrollmentDataByLevel(int studantId, int SchoolLevelId, int year)
         {
 
             var level = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Id == SchoolLevelId);
+            var enrolment = await db.Students.Include(x => x.Enrollments).FirstOrDefaultAsync(x => x.Id == studantId);
+            var yearDefinition = await db.YearDefinitions.FirstOrDefaultAsync(x => x.Year == year);
 
-            if (level is not null)
+            if (level is not null && yearDefinition is not null)
             {
                 var enrollment = new Enrollment();
 
@@ -195,7 +197,7 @@ namespace logic.systems.school.managment.Services
                 #endregion
 
 
-                var enrolmentPrice = await ReadEnrolmentPriceByDescription(level.Description);
+                var enrolmentPrice = await ReadEnrolmentPriceByDescription(level.Description, yearDefinition.Id);
 
                 if (enrolmentPrice is not null)
                 {
@@ -329,9 +331,9 @@ namespace logic.systems.school.managment.Services
             return result;
         }
 
-        public async Task<EnrollmentPrice> ReadEnrolmentPriceByDescription(string description)
+        public async Task<EnrollmentPrice> ReadEnrolmentPriceByDescription(string description, int yearId)
         {
-            var result = await db.EnrollmentPrices.FirstOrDefaultAsync(x => x.Description == description);
+            var result = await db.EnrollmentPrices.FirstOrDefaultAsync(x => x.Description == description && x.YearDefinitionId == yearId);
 
             if (result.EnrollmentItemstPrice.Count <= 0)
             {
