@@ -23,5 +23,8 @@ namespace logic.systems.school.managment.Interface
         public Task<TuitionPrice> UpdateTuitionPrice(TuitionPrice entity); 
         Task RevertTuitionPayment(int id, string user);
         public Task<List<RevertTuition>> GetRevertPaymentsByStudantTuitionsId(int studantId, int enrollmentYear);
+
+        public Task<List<YearDefinition>> ReadYearDefinitions();
+        public Task generateTuitionPrice(int id);
     }
 }

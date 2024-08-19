@@ -5,6 +5,9 @@ namespace logic.systems.school.managment.Models
     [Table("TuitionPrice")]
     public class TuitionPrice : Common
     {
+        public YearDefinition? YearDefinition { get; set; }
+        public int? YearDefinitionId { get; set; }
+
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; } 
         public string Description { get; set; }

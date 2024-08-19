@@ -16,5 +16,9 @@ namespace logic.systems.school.managment.Interface
         public Task<EnrollmentPrice> ReadEnrolmentPriceById(int id);
         public Task<EnrollmentPrice> ReadEnrolmentPriceByDescription(string descriprion );
         public Task<EnrollmentPrice> UpdateEnrollmentPrice(EnrollmentPrice entity);
+
+        public Task<List<YearDefinition>> ReadYearDefinitions();
+
+        public Task generateEnrolmentPrice(int YearIdid);
     }
 }

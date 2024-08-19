@@ -152,5 +152,6 @@ await SeedOrgUnit.Run();
 await SeedSimpleEntity.Run();
 await SeedEnrollmentPrice.Run();
 await SeedTuitionPrice.Run();
+await SeedYearDefinition.Run();
 
 app.Run();

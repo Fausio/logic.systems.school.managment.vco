@@ -46,7 +46,7 @@ namespace logic.systems.school.managment.Services
 
         public async Task<List<TuitionPrice>> ReaTuitionPrices()
         {
-            return await db.TuitionPrices.Include(x => x.TuitionPriceHistory).ToListAsync();
+            return await db.TuitionPrices.Include(x => x.YearDefinition).Include(x => x.TuitionPriceHistory).ToListAsync();
         }
 
 
@@ -668,7 +668,7 @@ namespace logic.systems.school.managment.Services
         }
 
         public async Task<TuitionPrice> ReadTuitionPriceById(int id)
-        => await db.TuitionPrices.Include(x => x.TuitionPriceHistory)
+        => await db.TuitionPrices.Include(x => x.YearDefinition).Include(x => x.TuitionPriceHistory)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<TuitionPrice> UpdateTuitionPrice(TuitionPrice entity)
@@ -781,6 +781,63 @@ namespace logic.systems.school.managment.Services
 
             return result;
         }
+
+        public async Task<List<YearDefinition>> ReadYearDefinitions()
+        {
+
+            List<YearDefinition> result = await db.YearDefinitions.Include(x => x.TuitionPrices).ThenInclude(x => x.TuitionPriceHistory)
+                                             .ToListAsync();
+
+            return result;
+        }
+
+        public async Task generateTuitionPrice(int id)
+        {
+
+            var year = await db.YearDefinitions.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (year is not null && year.TuitionPrices.Count <= 0)
+            {
+                var listOfSchoolLevel = new List<string>()
+                {
+                    "Pré-escola",
+                    "1ª classe",
+                    "2ª classe",
+                    "3ª classe",
+                    "4ª classe",
+                    "5ª classe",
+                    "6ª classe",
+                    "7ª classe",
+                    "8ª classe",
+                    "9ª classe",
+                    "10ª classe",
+                    "11ª classe",
+                    "12ª classe",
+                };
+
+                var listOfTuitionPrice = new List<TuitionPrice>();
+ 
+ 
+
+                listOfSchoolLevel.ForEach(  x =>
+                {
+                    listOfTuitionPrice.Add(new TuitionPrice()
+                    {
+                        Price = 0,
+                        Description = x,
+                        YearDefinitionId = year.Id
+                    });
+
+                });
+
+                await db.TuitionPrices.AddRangeAsync(listOfTuitionPrice);
+                await db.SaveChangesAsync();
+            }
+
+          
+        }
+
+        
     }
 }
 
