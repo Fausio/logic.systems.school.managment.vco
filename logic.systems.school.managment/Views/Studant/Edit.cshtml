@@ -6,7 +6,7 @@
 @{
     ViewData["Title"] = "Actualizar estudante";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
-    var user = await userManager.GetUserAsync(User);
+    var user = await userManager.GetUserAsync(User); 
 }
 
 
@@ -389,7 +389,7 @@
 
 
 
-                                var user = await userManager.GetUserAsync(User);
+                               
 
                                 if (user is not null)
                                 {
@@ -412,7 +412,7 @@
                                     Matrícular como repetente
                                 </a>
 
-                                var user = await userManager.GetUserAsync(User);
+                              
 
 
                                 if (user is not null)
