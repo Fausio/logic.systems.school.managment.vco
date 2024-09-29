@@ -251,9 +251,22 @@ namespace logic.systems.school.managment.Controllers
 
                 var tuitionFines = result.Where(x => x.Tuition.TuitionFines is not null).Select(x => x.Tuition.TuitionFines);
 
+
+
                 if (tuitionFines.Count() > 0)
                 {
-                    TotaltuitionFines = tuitionFines.Sum(p => p.Tuition.TuitionFines.FinesValue);
+                    var dailyFInes = (decimal)0;
+                    var dayOfRefactTuition = new DateTime(2024, 9, 28);
+                    foreach (var item in tuitionFines)
+                    {
+                        if (item.CreatedDate >= dayOfRefactTuition)
+                        {
+                            dailyFInes += dailyFInes = item.TuitionFineDailies.Sum(x => x.FinesValue);
+                        }
+                    }
+
+
+                    TotaltuitionFines = tuitionFines.Sum(p => p.Tuition.TuitionFines.FinesValue) + dailyFInes;
 
                     TableLines.Add(
                        InvoiceTableLineDTO.Line
@@ -652,9 +665,9 @@ namespace logic.systems.school.managment.Controllers
                 worksheet.Cell(currentRow, 1).Value = item.InvoiceId;
                 worksheet.Cell(currentRow, 2).Value = item.Type;
                 worksheet.Cell(currentRow, 3).Value = item.Student;
-                worksheet.Cell(currentRow, 4).Value = item.InvoicePrice ;
-                worksheet.Cell(currentRow, 5).Value = item.InvoiceVat ;
-                worksheet.Cell(currentRow, 6).Value = item.InvoicePriceWithVat ;
+                worksheet.Cell(currentRow, 4).Value = item.InvoicePrice;
+                worksheet.Cell(currentRow, 5).Value = item.InvoiceVat;
+                worksheet.Cell(currentRow, 6).Value = item.InvoicePriceWithVat;
 
 
                 worksheet.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
@@ -672,9 +685,9 @@ namespace logic.systems.school.managment.Controllers
             worksheet.Cell(currentRow, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             worksheet.Cell(currentRow, 1).Style.Font.SetBold();
 
-            worksheet.Cell(currentRow, 4).Value = results.TotalInvoicePrice ;
-            worksheet.Cell(currentRow, 5).Value = results.TotalInvoiceVat ;
-            worksheet.Cell(currentRow, 6).Value = results.TotalInvoicePriceWithVat ;
+            worksheet.Cell(currentRow, 4).Value = results.TotalInvoicePrice;
+            worksheet.Cell(currentRow, 5).Value = results.TotalInvoiceVat;
+            worksheet.Cell(currentRow, 6).Value = results.TotalInvoicePriceWithVat;
 
             worksheet.Cell(currentRow, 4).Style.NumberFormat.Format = "#,##0.00";
             worksheet.Cell(currentRow, 5).Style.NumberFormat.Format = "#,##0.00";

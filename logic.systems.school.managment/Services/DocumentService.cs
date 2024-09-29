@@ -33,6 +33,7 @@ namespace logic.systems.school.managment.Services
             var result = await db.PaymentTuitions.Include(x => x.Tuition)
                                                  .ThenInclude(x => x.Enrollment).ThenInclude(x => x.Student)
                                                  .Include(x => x.Tuition.TuitionFines)
+                                                 .ThenInclude(x => x.TuitionFineDailies)
                                                  .FirstOrDefaultAsync(x => x.Id == payementId);
 
             var student = await db.Students.FirstOrDefaultAsync(x => x.Id == result.Tuition.StudentId);

@@ -287,7 +287,7 @@ namespace logic.systems.school.managment.Services
                         }
                     }
 
-                    var tuitionYear = await db.Tuitions.Include(x => x.Enrollment).FirstOrDefaultAsync(x => x.Id == dto.TuitionId); 
+                    var tuitionYear = await db.Tuitions.Include(x => x.Enrollment).FirstOrDefaultAsync(x => x.Id == dto.TuitionId);
                     var yearDefinition = await db.YearDefinitions.FirstOrDefaultAsync(x => x.Year == tuitionYear.Enrollment.EnrollmentYear);
 
                     if (yearDefinition is not null)
@@ -377,9 +377,7 @@ namespace logic.systems.school.managment.Services
                                                 db.TuitionFineDailies.RemoveRange(ListTuitionFineDailiesToDelete);
                                                 await db.SaveChangesAsync();
                                             }
-                                        }
-
-
+                                        } 
                                     }
                                 }
 
@@ -406,7 +404,7 @@ namespace logic.systems.school.managment.Services
                                         }
                                     }
 
-                                    tuitionPayed.TuitionFines.FinesValue += DailyFees;
+                                    //tuitionPayed.TuitionFines.FinesValue += DailyFees; 
                                     tuitionPayed.TuitionFines.Paid = true;
                                     tuitionPayed.TuitionFines.PaidDate = payment.PaymentDate;
                                     tuitionPayed.UpdatedUSer = userid;
@@ -419,7 +417,7 @@ namespace logic.systems.school.managment.Services
                         }
                     }
 
-                   
+
                 }
             }
             catch (Exception ex)
@@ -490,8 +488,8 @@ namespace logic.systems.school.managment.Services
 
                     db.PaymentTuitions.Update(item);
                     await db.SaveChangesAsync();
-                } 
-            } 
+                }
+            }
         }
 
 
@@ -583,6 +581,70 @@ namespace logic.systems.school.managment.Services
             }
         }
 
+
+        public async Task RevertTuitionPayment(int id, string user)
+        {
+
+            try
+            {
+                var paymentTuition = await db.PaymentTuitions.Include(x => x.TuitionInvoice).FirstOrDefaultAsync(x => x.TuitionId == id);
+                var tuition = await db.Tuitions.FirstOrDefaultAsync(x => x.Id == paymentTuition.TuitionId);
+
+                if (tuition is not null)
+                {
+                    tuition.UpdatedDate = DateTime.UtcNow;
+                    tuition.Paid = false;
+
+                    db.Tuitions.Update(tuition);
+                    await db.SaveChangesAsync();
+
+
+                    // reverter as multas
+                    var tuitionFine = await db.TuitionFines.Include(x => x.TuitionFineDailies).FirstOrDefaultAsync(x => x.TuitionId == tuition.Id);
+
+                    if (tuitionFine is not null)
+                    { 
+                        db.TuitionFines.Remove(tuitionFine);
+                        await db.SaveChangesAsync(); 
+                    }
+                     
+                    // apagar recibo e pagamento 
+                    if (paymentTuition.TuitionInvoice is not null)
+                    {
+                        db.TuitionInvoices.Remove(paymentTuition.TuitionInvoice);
+                    } 
+
+                }
+
+                var RevertTuition = new RevertTuition()
+                {
+                    AssociatedLevelId = tuition.AssociatedLevelId,
+                    StartDate = tuition.StartDate,
+                    EndDate = tuition.EndDate,
+                    EnrollmentId = tuition.EnrollmentId,
+                    MonthName = tuition.MonthName,
+                    MonthNumber = tuition.MonthNumber,
+                    StudentId = tuition.StudentId,
+                    Year = tuition.Year,
+                    PaymentWithoutVat = paymentTuition.PaymentWithoutVat,
+                    PaymentWithVat = paymentTuition.PaymentWithVat,
+                    VatOfPayment = paymentTuition.VatOfPayment,
+                    PaymentDate = paymentTuition.PaymentDate,
+                    CreatedUSer = user
+                };
+
+                await db.RevertTuitions.AddAsync(RevertTuition); 
+                db.PaymentTuitions.Remove(paymentTuition);  
+                await db.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+
+        }
         private async Task CreateTuitionFine(int tuitionId, string userid)
         {
 
@@ -707,73 +769,6 @@ namespace logic.systems.school.managment.Services
             return await ReadTuitionPriceById(entity.Id);
         }
 
-        public async Task RevertTuitionPayment(int id, string user)
-        {
-            var paymentTuition = await db.PaymentTuitions.FirstOrDefaultAsync(x => x.TuitionId == id);
-            var tuition = await db.Tuitions.FirstOrDefaultAsync(x => x.Id == paymentTuition.TuitionId);
-
-            if (tuition is not null)
-            {
-                tuition.UpdatedDate = DateTime.UtcNow;
-                tuition.Paid = false;
-
-                db.Tuitions.Update(tuition);
-                await db.SaveChangesAsync();
-
-
-                // reverter as multas
-                var tuitionFine = await db.TuitionFines.Include(x => x.TuitionFineDailies).FirstOrDefaultAsync(x => x.TuitionId == tuition.Id);
-
-                if (tuitionFine is not null)
-                {
-                    tuitionFine.UpdatedDate = DateTime.UtcNow;
-                    tuitionFine.PaidDate = null;
-                    tuitionFine.Paid = false;
-
-                    db.TuitionFines.Update(tuitionFine);
-                    await db.SaveChangesAsync();
-
-                    foreach (var item in tuitionFine.TuitionFineDailies)
-                    {
-
-                        item.UpdatedDate = DateTime.UtcNow;
-                        item.Paid = false;
-                        item.PaidDate = null;
-
-
-                        db.TuitionFineDailies.Update(item);
-                        await db.SaveChangesAsync();
-                    }
-                }
-                 
-            }
-
-            var RevertTuition = new RevertTuition()
-            {
-                AssociatedLevelId = tuition.AssociatedLevelId,
-                StartDate = tuition.StartDate,
-                EndDate = tuition.EndDate,
-                EnrollmentId = tuition.EnrollmentId,
-                MonthName = tuition.MonthName,
-                MonthNumber = tuition.MonthNumber,
-                StudentId = tuition.StudentId,
-                Year = tuition.Year,
-                PaymentWithoutVat = paymentTuition.PaymentWithoutVat,
-                PaymentWithVat = paymentTuition.PaymentWithVat,
-                VatOfPayment = paymentTuition.VatOfPayment,
-                PaymentDate = paymentTuition.PaymentDate,
-                CreatedUSer = user
-            };
-
-            await db.RevertTuitions.AddAsync(RevertTuition);
-
-            db.PaymentTuitions.Remove(paymentTuition);
-            await db.SaveChangesAsync();
-
-
-          
-
-        }
 
         public async Task<List<RevertTuition>> GetRevertPaymentsByStudantTuitionsId(int studantId, int enrollmentYear)
         {
@@ -823,10 +818,10 @@ namespace logic.systems.school.managment.Services
                 };
 
                 var listOfTuitionPrice = new List<TuitionPrice>();
- 
- 
 
-                listOfSchoolLevel.ForEach(  x =>
+
+
+                listOfSchoolLevel.ForEach(x =>
                 {
                     listOfTuitionPrice.Add(new TuitionPrice()
                     {
@@ -841,10 +836,10 @@ namespace logic.systems.school.managment.Services
                 await db.SaveChangesAsync();
             }
 
-          
+
         }
 
-        
+
     }
 }
 
