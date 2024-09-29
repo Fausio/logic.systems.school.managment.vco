@@ -6,7 +6,7 @@
 @{
     ViewData["Title"] = "Actualizar estudante";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
-    var user = await userManager.GetUserAsync(User); 
+    var user = await userManager.GetUserAsync(User);
 }
 
 
@@ -389,7 +389,7 @@
 
 
 
-                               
+
 
                                 if (user is not null)
                                 {
@@ -412,7 +412,7 @@
                                     Matrícular como repetente
                                 </a>
 
-                              
+
 
 
                                 if (user is not null)
@@ -1250,6 +1250,7 @@
             $("#form_payfee_btns").show();
             $("#form_payfee_spinner").hide();
         }
+
         function form_Enrollment_btns() {
 
             $("#form_Enrollment_btns").show();
@@ -1267,7 +1268,6 @@
             $("#form_EnrollmentRepit_btns_repit").show();
             $("#form_EnrollmentRepit_spinner_repit").hide();
         }
-
 
         function DonloadEnrollmentInvoice(id) {
 
@@ -1301,7 +1301,6 @@
             });
         }
 
-
         function DonloadTuitionInvoice(id) {
 
             $('#enrolls_btns').hide();
@@ -1334,9 +1333,6 @@
             });
         }
 
-
-
-
         function RevertTuition(id) {
 
             var userConfirmation = confirm("Tem certeza de que deseja reverter a mensalidade? A aplicação guardará o registro para possíveis futuras auditorias.");
@@ -1354,12 +1350,13 @@
                         // Atualizar as tabelas de pagamentos e propinas
                         getPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
                         getTuitions(@Model.id, @Model.Enrollments[0].EnrollmentYear);
-                          getRevertPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
+                        getRevertPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
 
                         alert("Mensalidade revertida com sucesso !")
 
                         $('#revert_' + id).show();
                         $('#revert_spinner_' + id).hide();
+                        location.reload();
                     },
                     error: function (error) {
                         console.error('Erro ao reverter mensalidade:', error);
@@ -1397,8 +1394,6 @@
             });
         }
 
-
-
         function PrintTuitionInvoice(id) {
 
             $('#enrolls_btns').hide();
@@ -1426,7 +1421,6 @@
         }
 
         function displayHtmlForPrinting(htmlContent) {
-
 
             // Abre uma nova janela com o conteúdo HTML
             var printWindow = window.open('', '_blank');
@@ -1461,8 +1455,7 @@
                 type: "POST",
                 data: data,
                 success: function (result) {
-                    // Lógica após o envio bem-sucedido, se necessário
-                    // Por exemplo, fechar o modal ou atualizar a página
+
                     getPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
                     getTuitions(@Model.id, @Model.Enrollments[0].EnrollmentYear);
 
@@ -1548,8 +1541,6 @@
         }
 
         function fixEnrollmentRepit() {
-
-
 
             var confirmacao = confirm("Tem certeza de que deseja prosseguir com a retificação da matrícula?");
 
@@ -1805,13 +1796,12 @@
                     });
 
                     $('#menu_2_info').show();
-                    $('#menu_2_spinner').hide(); 
+                    $('#menu_2_spinner').hide();
                 }
             });
 
 
         }
-
 
         function getEnrollments(id) {
 
@@ -1879,12 +1869,15 @@
                 }
             });
         }
+
         var TotalToPay = 0;
+
         function form_multi_pay_btns() {
             TotalToPay = 0;
             $("#TotalPayAllTabelaIten").text("Total a pagar: ");
             getMultiPayments(@Model.id, @Model.Enrollments[0].EnrollmentYear);
         }
+
         function SumMonthToPay(itemId, event) {
 
             var checkbox = event.target;
@@ -1900,6 +1893,7 @@
 
             $("#TotalPayAllTabelaIten").text("Total a pagar: " + TotalToPay + ".00 MT");
         }
+
         function confirmarMultiPayment() {
 
             if ($("#MultiPaymentDate").val() == null || $("#MultiPaymentDate").val() == "") {
@@ -1967,9 +1961,6 @@
             }
         }
 
-
-
-
         function getPayments(id, EnrollmentYear) {
 
             var data = {
@@ -2009,13 +2000,7 @@
 
         }
 
-
         function getRevertPayments(id, EnrollmentYear) {
-
-
-
-
-
 
             var data = {
                 StudantId: @Model.id,
