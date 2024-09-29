@@ -9,6 +9,8 @@ namespace logic.systems.school.managment.Models
         public decimal Price { get; set; } 
         public string Description { get; set; }
 
+        public int Year { get; set; }
+
         public List<TuitionPriceHistory> TuitionPriceHistory { get; set; } = new List<TuitionPriceHistory>();
 
     }
