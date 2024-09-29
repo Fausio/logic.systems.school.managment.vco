@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using logic.systems.school.managment.Data;
 
@@ -11,9 +12,10 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240206214901_audit")]
+    partial class audit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,53 +230,6 @@ namespace logic.systems.school.managment.Migrations
                     b.ToTable("EnrollmentItem");
                 });
 
-            modelBuilder.Entity("logic.systems.school.managment.Models.EnrollmentItemstPrice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUSer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EnrollmentPriceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("EnrollmentPriceId1")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Row")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUSer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EnrollmentPriceId");
-
-                    b.HasIndex("EnrollmentPriceId1");
-
-                    b.ToTable("EnrollmentItemstPrice");
-                });
-
             modelBuilder.Entity("logic.systems.school.managment.Models.EnrollmentPayment", b =>
                 {
                     b.Property<int>("Id")
@@ -324,92 +279,6 @@ namespace logic.systems.school.managment.Migrations
                         .IsUnique();
 
                     b.ToTable("EnrollmentPayment");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.EnrollmentPrice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUSer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Row")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUSer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("YearDefinitionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("YearDefinitionId");
-
-                    b.ToTable("EnrollmentPrice");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.EnrollmentPriceHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUSer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("EnrollmentPriceId1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EnrollmentPriceeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Row")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUSer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EnrollmentPriceId1");
-
-                    b.HasIndex("EnrollmentPriceeId");
-
-                    b.ToTable("EnrollmentPriceHistory");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.OrgUnitDistrict", b =>
@@ -483,73 +352,6 @@ namespace logic.systems.school.managment.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OrgUnitProvince");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.RevertTuition", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("AssociatedLevelId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUSer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("EnrollmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MonthName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MonthNumber")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("PaymentWithVat")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("PaymentWithoutVat")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Row")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUSer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("VatOfPayment")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RevertTuition");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.SimpleEntity", b =>
@@ -964,125 +766,6 @@ namespace logic.systems.school.managment.Migrations
                     b.ToTable("TuitionPayment");
                 });
 
-            modelBuilder.Entity("logic.systems.school.managment.Models.TuitionPrice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUSer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Row")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUSer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("YearDefinitionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("YearDefinitionId");
-
-                    b.ToTable("TuitionPrice");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.TuitionPriceHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUSer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Row")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TuitionPriceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TuitionPriceId1")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUSer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TuitionPriceId");
-
-                    b.HasIndex("TuitionPriceId1");
-
-                    b.ToTable("TuitionPriceHistory");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.YearDefinition", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUSer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Row")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUSer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("YearDefinition");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -1333,21 +1016,6 @@ namespace logic.systems.school.managment.Migrations
                         .HasForeignKey("EnrollmentId");
                 });
 
-            modelBuilder.Entity("logic.systems.school.managment.Models.EnrollmentItemstPrice", b =>
-                {
-                    b.HasOne("logic.systems.school.managment.Models.EnrollmentPrice", "EnrollmentPrice")
-                        .WithMany()
-                        .HasForeignKey("EnrollmentPriceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("logic.systems.school.managment.Models.EnrollmentPrice", null)
-                        .WithMany("EnrollmentItemstPrice")
-                        .HasForeignKey("EnrollmentPriceId1");
-
-                    b.Navigation("EnrollmentPrice");
-                });
-
             modelBuilder.Entity("logic.systems.school.managment.Models.EnrollmentPayment", b =>
                 {
                     b.HasOne("logic.systems.school.managment.Models.Enrollment", "Enrollment")
@@ -1357,30 +1025,6 @@ namespace logic.systems.school.managment.Migrations
                         .IsRequired();
 
                     b.Navigation("Enrollment");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.EnrollmentPrice", b =>
-                {
-                    b.HasOne("logic.systems.school.managment.Models.YearDefinition", "YearDefinition")
-                        .WithMany("EnrollmentPrices")
-                        .HasForeignKey("YearDefinitionId");
-
-                    b.Navigation("YearDefinition");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.EnrollmentPriceHistory", b =>
-                {
-                    b.HasOne("logic.systems.school.managment.Models.EnrollmentPrice", null)
-                        .WithMany("EnrollmentPriceHistory")
-                        .HasForeignKey("EnrollmentPriceId1");
-
-                    b.HasOne("logic.systems.school.managment.Models.EnrollmentPrice", "EnrollmentPrice")
-                        .WithMany()
-                        .HasForeignKey("EnrollmentPriceeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("EnrollmentPrice");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.OrgUnitDistrict", b =>
@@ -1479,30 +1123,6 @@ namespace logic.systems.school.managment.Migrations
                     b.Navigation("TuitionInvoice");
                 });
 
-            modelBuilder.Entity("logic.systems.school.managment.Models.TuitionPrice", b =>
-                {
-                    b.HasOne("logic.systems.school.managment.Models.YearDefinition", "YearDefinition")
-                        .WithMany("TuitionPrices")
-                        .HasForeignKey("YearDefinitionId");
-
-                    b.Navigation("YearDefinition");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.TuitionPriceHistory", b =>
-                {
-                    b.HasOne("logic.systems.school.managment.Models.TuitionPrice", "TuitionPrice")
-                        .WithMany()
-                        .HasForeignKey("TuitionPriceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("logic.systems.school.managment.Models.TuitionPrice", null)
-                        .WithMany("TuitionPriceHistory")
-                        .HasForeignKey("TuitionPriceId1");
-
-                    b.Navigation("TuitionPrice");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1564,13 +1184,6 @@ namespace logic.systems.school.managment.Migrations
                     b.Navigation("Tuitions");
                 });
 
-            modelBuilder.Entity("logic.systems.school.managment.Models.EnrollmentPrice", b =>
-                {
-                    b.Navigation("EnrollmentItemstPrice");
-
-                    b.Navigation("EnrollmentPriceHistory");
-                });
-
             modelBuilder.Entity("logic.systems.school.managment.Models.Sponsor", b =>
                 {
                     b.Navigation("Contacts");
@@ -1589,18 +1202,6 @@ namespace logic.systems.school.managment.Migrations
             modelBuilder.Entity("logic.systems.school.managment.Models.TuitionFine", b =>
                 {
                     b.Navigation("TuitionFineDailies");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.TuitionPrice", b =>
-                {
-                    b.Navigation("TuitionPriceHistory");
-                });
-
-            modelBuilder.Entity("logic.systems.school.managment.Models.YearDefinition", b =>
-                {
-                    b.Navigation("EnrollmentPrices");
-
-                    b.Navigation("TuitionPrices");
                 });
 #pragma warning restore 612, 618
         }

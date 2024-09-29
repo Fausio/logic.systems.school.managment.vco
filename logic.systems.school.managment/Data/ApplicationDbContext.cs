@@ -74,6 +74,7 @@ namespace logic.systems.school.managment.Data
         public DbSet<TuitionInvoice> TuitionInvoices { get; set; }
         public DbSet<IdentityUser> IdentityUsers { get; set; }
         public DbSet<TuitionFineDaily> TuitionFineDailies { get; set; }
+  public DbSet<Audit> Audits { get; set; }
 
         public DbSet<EnrollmentPrice> EnrollmentPrices { get; set; }
         public DbSet<TuitionPrice> TuitionPrices { get; set; }
@@ -81,6 +82,7 @@ namespace logic.systems.school.managment.Data
         public DbSet<EnrollmentPriceHistory> EnrollmentPriceHistorys { get; set; }
         public DbSet<EnrollmentItemstPrice> EnrollmentItemstPrices { get; set; }
         public DbSet<RevertTuition> RevertTuitions { get; set; }
+        public DbSet<YearDefinition> YearDefinitions { get; set; }
 
     }
 }

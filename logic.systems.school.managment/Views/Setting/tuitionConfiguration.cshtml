@@ -1,4 +1,4 @@
-﻿@model List<logic.systems.school.managment.Models.TuitionPrice>
+﻿@model List<logic.systems.school.managment.Models.YearDefinition>
 
 <link rel="stylesheet" href="~/css/EditViewBen.css" />
 
@@ -24,42 +24,98 @@
             <div class="row">
                 <div class="col-auto mr-auto">
                     <h4 class="card-title">Lista</h4>
-                    <p class="card-description">   estudantes  </p>
+                    <p class="card-description">   Propinas  </p>
                 </div>
             </div>
+            <ul class="nav nav-tabs" role="tablist">
+
+                @foreach (var item in Model)
+                {
+                    var activeTab = "";
+                    if (item.Id == Model[0].Id)
+                    {
+                        activeTab = "active";
+                    }
+                    var tab_id = "Tab_" + item.Year;
+
+                    <!-- Nav tabs -->
+
+                    <li class="nav-item">
+                        <a class="nav-link  @activeTab  nav-info" data-toggle="tab" href="#@tab_id">Propinas (@item.Year) </a>
+                    </li>
 
 
-            <div class="table-responsive">
-                <table class=" MytabelaItens wideTable w-100">
+                }
+            </ul>
 
-                    <thead>
-                        <tr>
+            <div class="tab-content">
+                @foreach (var item in Model)
+                {
+                    var activeTab = "";
+                    if (item.Id == Model[0].Id)
+                    {
+                        activeTab = "active";
+                    }
+                    var tab_id = "Tab_" + item.Year;
 
-                            <th scope="col">Classe</th>
-                            <th scope="col">Preço</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                    <div id="@tab_id" class=" tab-pane @activeTab">
 
-                        @foreach (var item in Model)
+
+                        @if (item.TuitionPrices.Count <= 0)
                         {
-                            <tr>
-
-                                <td>
-                                    <a asp-action="EditTuitionPrice" asp-controller="Setting" asp-route-id="@item.Id">
-                                        @item.Description
-                                    </a>
-                                </td>
-                                <td>@item.Price.ToString("N2")</td>
-                            </tr>
+                            <div class="row">
+                                <a class="btn btn-sm btn-success btn-icon-text text-white" asp-action="generateTuitionPrice" asp-controller="Setting" asp-route-id="@item.Id">
+                                    Gerar Preços de Propinas para o ano de @item.Year
+                                </a>
+                            </div>
                         }
+                    
+
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class=" MytabelaItens wideTable w-100">
+
+                                    <thead>
+                                        <tr>
+
+                                            <th scope="col">Classe</th>
+                                            <th scope="col">Ano</th>
+                                            <th scope="col">Preço</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var _item in item.TuitionPrices)
+                                        {
+                                            <tr>
+
+                                                <td>
+                                                    <a asp-action="EditTuitionPrice" asp-controller="Setting" asp-route-id="@_item.Id">
+                                                        @_item.Description
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    @_item.YearDefinition.Year
+                                                </td>
+
+                                                <td>@_item.Price.ToString("N2")</td>
+                                            </tr>
+                                        }
 
 
-                    </tbody>
-                </table>
+                                    </tbody>
+                                </table>
 
 
+                            </div>
+                        </div>
+
+                      
+                    </div>
+                }
             </div>
+
+        
 
         </div>
     </div>

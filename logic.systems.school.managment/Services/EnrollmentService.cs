@@ -30,7 +30,7 @@ namespace logic.systems.school.managment.Services
 
         public async Task<List<EnrollmentPrice>> ReadEnrolmentPrices()
         {
-            var result = await db.EnrollmentPrices.Include(x => x.EnrollmentItemstPrice).ToListAsync();
+            var result = await db.EnrollmentPrices.Include(x => x.YearDefinition).Include(x => x.EnrollmentItemstPrice).ToListAsync();
 
             return result;
         }
@@ -41,7 +41,7 @@ namespace logic.systems.school.managment.Services
             {
                 if (studantId > 0 && CurrentSchoolLevelId > 0)
                 {
-                    var enrollment = await GenerateEnrollmentDataByLevel(studantId, CurrentSchoolLevelId);
+                    var enrollment = await GenerateEnrollmentDataByLevel(studantId, CurrentSchoolLevelId, EnrollmentYear);
                     if (enrollment is not null)
                     {
                         var PaymentEnrollment = enrollment.PaymentEnrollment;
@@ -174,12 +174,14 @@ namespace logic.systems.school.managment.Services
             }
         }
 
-        private async Task<Enrollment> GenerateEnrollmentDataByLevel(int studantId, int SchoolLevelId)
+        private async Task<Enrollment> GenerateEnrollmentDataByLevel(int studantId, int SchoolLevelId, int year)
         {
 
             var level = await db.SimpleEntitys.FirstOrDefaultAsync(x => x.Id == SchoolLevelId);
+            var enrolment = await db.Students.Include(x => x.Enrollments).FirstOrDefaultAsync(x => x.Id == studantId);
+            var yearDefinition = await db.YearDefinitions.FirstOrDefaultAsync(x => x.Year == year);
 
-            if (level is not null)
+            if (level is not null && yearDefinition is not null)
             {
                 var enrollment = new Enrollment();
 
@@ -195,7 +197,7 @@ namespace logic.systems.school.managment.Services
                 #endregion
 
 
-                var enrolmentPrice = await ReadEnrolmentPriceByDescription(level.Description);
+                var enrolmentPrice = await ReadEnrolmentPriceByDescription(level.Description, yearDefinition.Id);
 
                 if (enrolmentPrice is not null)
                 {
@@ -221,7 +223,7 @@ namespace logic.systems.school.managment.Services
                                 };
                     }
                 }
-                  
+
                 enrollment.SchoolLevelId = SchoolLevelId;
                 enrollment.PaymentEnrollment.Paid = true;
                 enrollment.PaymentEnrollment.PaymentDate = DateTime.Now;
@@ -295,60 +297,6 @@ namespace logic.systems.school.managment.Services
                 // throw; // Pode ser removido ou mantido, dependendo da necessidade.
             }
 
-            //try
-            //{
-            //    var obj = await db.Enrollments.FirstOrDefaultAsync(x => x.Id == Id);
-
-            //    if (obj is not null)
-            //    {
-            //        var tuitions = await db.Tuitions.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
-
-            //        if (tuitions.Count() > 0)
-            //        {
-            //            db.Tuitions.RemoveRange(tuitions);
-            //            await db.SaveChangesAsync();
-            //        }
-
-            //        var invoice = await db.EnrollmentInvoices.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
-            //        if (invoice.Count() > 0)
-            //        {
-            //            db.EnrollmentInvoices.RemoveRange(invoice);
-            //            await db.SaveChangesAsync();
-            //        }
-
-
-            //        var payments = await db.PaymentEnrollments.Where(x => x.EnrollmentId == obj.Id).ToListAsync();
-            //        if (payments.Count() > 0)
-            //        {
-            //            db.PaymentEnrollments.RemoveRange(payments);
-            //            await db.SaveChangesAsync();
-            //        }
-
-            //        if (obj.EnrollmentItems.Count > 0)
-            //        {
-            //            var itens = obj.EnrollmentItems;
-            //            db.EnrollmentItems.RemoveRange(itens);
-            //            await db.SaveChangesAsync();
-            //        }
-
-
-            //        db.Enrollments.Remove(obj);
-            //        await db.SaveChangesAsync();
-            //    }
-
-
-
-            //}
-            //catch (Exception ex)
-            //{
-
-            //    throw;
-            //    //}
-
-
-
-            //}
-
 
 
 
@@ -356,7 +304,7 @@ namespace logic.systems.school.managment.Services
 
         public async Task<EnrollmentPrice> ReadEnrolmentPriceById(int id)
         {
-            var result = await db.EnrollmentPrices.FirstOrDefaultAsync(x => x.Id == id);
+            var result = await db.EnrollmentPrices.Include(x => x.YearDefinition).FirstOrDefaultAsync(x => x.Id == id);
 
 
             if (result.EnrollmentPriceHistory.Count <= 0)
@@ -383,9 +331,9 @@ namespace logic.systems.school.managment.Services
             return result;
         }
 
-        public async Task<EnrollmentPrice> ReadEnrolmentPriceByDescription(string description)
+        public async Task<EnrollmentPrice> ReadEnrolmentPriceByDescription(string description, int yearId)
         {
-            var result = await db.EnrollmentPrices.FirstOrDefaultAsync(x => x.Description == description);
+            var result = await db.EnrollmentPrices.FirstOrDefaultAsync(x => x.Description == description && x.YearDefinitionId == yearId);
 
             if (result.EnrollmentItemstPrice.Count <= 0)
             {
@@ -432,6 +380,137 @@ namespace logic.systems.school.managment.Services
             return await ReadEnrolmentPriceById(entity.Id);
         }
 
+
+        public async Task<List<YearDefinition>> ReadYearDefinitions()
+        {
+
+            List<YearDefinition> result = await db.YearDefinitions
+                                           .Include(x => x.EnrollmentPrices).ThenInclude(x => x.EnrollmentPriceHistory)
+                                           .Include(x => x.EnrollmentPrices).ThenInclude(x => x.EnrollmentItemstPrice)
+                                           .ToListAsync();
+
+            return result;
+        }
+
+        public async Task generateEnrolmentPrice(int YearIdid)
+        {
+
+            var year = await db.YearDefinitions.FirstOrDefaultAsync(x => x.Id == YearIdid);
+
+            if (year is not null && year.EnrollmentPrices.Count <= 0)
+            {
+
+                var listOfSchoolLevel = new List<string>()
+                {
+                    "Pré-escola",
+                    "1ª classe",
+                    "2ª classe",
+                    "3ª classe",
+                    "4ª classe",
+                    "5ª classe",
+                    "6ª classe",
+                    "7ª classe",
+                    "8ª classe",
+                    "9ª classe",
+                    "10ª classe",
+                    "11ª classe",
+                    "12ª classe",
+                };
+
+                var listOfEnrollmentPrices = new List<EnrollmentPrice>();
+
+                // Primeira parte: Gravar os EnrollmentPrice
+                listOfSchoolLevel.ForEach(schoolLevel =>
+                {
+                    listOfEnrollmentPrices.Add(new EnrollmentPrice()
+                    {
+                        Price = 0,
+                        Description = schoolLevel,
+                        YearDefinitionId = year.Id,
+                    });
+
+                });
+
+                await db.EnrollmentPrices.AddRangeAsync(listOfEnrollmentPrices);
+                await db.SaveChangesAsync();
+
+                // Segunda parte: Gravar os EnrollmentItemstPrice com os EnrollmentPriceId
+                foreach (var enrollmentPrice in listOfEnrollmentPrices)
+                {
+                    List<EnrollmentItemstPrice> enrollmentItemstPrices = null;
+
+                    switch (enrollmentPrice.Description)
+                    {
+                        case "Pré-escola":
+                            enrollmentItemstPrices = new List<EnrollmentItemstPrice>
+                            {
+                                new EnrollmentItemstPrice
+                                {
+                                    Description = "Fichas",
+                                    Price = 1000,
+                                    EnrollmentPriceId = enrollmentPrice.Id
+                                }
+                            };
+                            break;
+
+                        case "1ª classe":
+                            enrollmentItemstPrices = new List<EnrollmentItemstPrice>
+                            {
+                                new EnrollmentItemstPrice
+                                {
+                                    Description = "Fichas",
+                                    Price = 1000,
+                                    EnrollmentPriceId = enrollmentPrice.Id
+                                }
+                            };
+                            break;
+
+                        case "2ª classe":
+                            enrollmentItemstPrices = new List<EnrollmentItemstPrice>
+                            {
+                                new EnrollmentItemstPrice
+                                {
+                                    Description = "Fichas",
+                                    Price = 1000,
+                                    EnrollmentPriceId = enrollmentPrice.Id
+                                }
+                            };
+                            break;
+
+                        case "7ª classe":
+                            enrollmentItemstPrices = new List<EnrollmentItemstPrice>
+                            {
+                                new EnrollmentItemstPrice
+                                {
+                                    Description = "Certidão",
+                                    Price = 1500,
+                                    EnrollmentPriceId = enrollmentPrice.Id
+                                }
+                            };
+                            break;
+
+                        case "11ª classe":
+                            enrollmentItemstPrices = new List<EnrollmentItemstPrice>
+                            {
+                                new EnrollmentItemstPrice
+                                {
+                                    Description = "Certidão",
+                                    Price = 1500,
+                                    EnrollmentPriceId = enrollmentPrice.Id
+                                }
+                            };
+                            break;
+                    }
+
+                    if (enrollmentItemstPrices != null)
+                    {
+                        await db.EnrollmentItemstPrices.AddRangeAsync(enrollmentItemstPrices);
+                    }
+                }
+
+                await db.SaveChangesAsync();
+            }
+        }
     }
 
 }

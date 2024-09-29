@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using logic.systems.school.managment.Data;
 
@@ -11,9 +12,10 @@ using logic.systems.school.managment.Data;
 namespace logic.systems.school.managment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240819102833_YearDefinitions")]
+    partial class YearDefinitions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1361,11 +1363,9 @@ namespace logic.systems.school.managment.Migrations
 
             modelBuilder.Entity("logic.systems.school.managment.Models.EnrollmentPrice", b =>
                 {
-                    b.HasOne("logic.systems.school.managment.Models.YearDefinition", "YearDefinition")
+                    b.HasOne("logic.systems.school.managment.Models.YearDefinition", null)
                         .WithMany("EnrollmentPrices")
                         .HasForeignKey("YearDefinitionId");
-
-                    b.Navigation("YearDefinition");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.EnrollmentPriceHistory", b =>
@@ -1481,11 +1481,9 @@ namespace logic.systems.school.managment.Migrations
 
             modelBuilder.Entity("logic.systems.school.managment.Models.TuitionPrice", b =>
                 {
-                    b.HasOne("logic.systems.school.managment.Models.YearDefinition", "YearDefinition")
+                    b.HasOne("logic.systems.school.managment.Models.YearDefinition", null)
                         .WithMany("TuitionPrices")
                         .HasForeignKey("YearDefinitionId");
-
-                    b.Navigation("YearDefinition");
                 });
 
             modelBuilder.Entity("logic.systems.school.managment.Models.TuitionPriceHistory", b =>

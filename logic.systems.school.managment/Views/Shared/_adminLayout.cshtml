@@ -56,11 +56,10 @@
         <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                 <a class="navbar-brand brand-logo" asp-action="index" asp-controller="home">
-                    @*   <img src="~/celestial-admin/images/logo.svg" alt="logo" /> *@
-                    <label class="text-white"> KALIMANY </label>
+                    <img style="width:100%" src="~/celestial-admin/images/logo (2).svg" alt="logo" />
                 </a>
                 <a class="navbar-brand brand-logo-mini" asp-action="index" asp-controller="home">
-                    <label class="text-white"> KA </label>
+                    <label class="text-white">   <img style="width:100%" src="~/celestial-admin/images/topName.png" alt="logo" /> </label>
                 </a>
             </div>
             <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
@@ -156,6 +155,7 @@
                     </li>
 
                     <li class="nav-item">
+                        <p class="sidebar-menu-title">Pedagógia</p>
                         <a class="nav-link"
                            data-toggle="collapse"
                            href="#ui-basic"
@@ -177,7 +177,47 @@
                         </div>
                     </li>
 
+
                     <li class="nav-item">
+
+                        <a class="nav-link"
+                           data-toggle="collapse"
+                           href="#ui-ped"
+                           aria-expanded="false"
+                           aria-controls="ui-ped">
+                            <i class="typcn typcn-briefcase menu-icon"></i>
+                            <span class="menu-title">Lançamento de Notas</span>
+
+                        </a>
+                    </li>
+                    <li class="nav-item">
+
+                        <a class="nav-link"
+                           data-toggle="collapse"
+                           href="#ui-ped"
+                           aria-expanded="false"
+                           aria-controls="ui-ped">
+                            <i class="typcn typcn-briefcase menu-icon"></i>
+                            <span class="menu-title">Controle de Faltas</span>
+
+                        </a>
+                    </li>
+                    <li class="nav-item">
+
+                        <a class="nav-link"
+                           data-toggle="collapse"
+                           href="#ui-ped"
+                           aria-expanded="false"
+                           aria-controls="ui-ped">
+                            <i class="typcn typcn-briefcase menu-icon"></i>
+                            <span class="menu-title">Consulta de Desempenho</span>
+
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <p class="sidebar-menu-title">Relatórios</p>
+
                         <a class="nav-link"
                            aria-expanded="false"
                            aria-controls="ui-basic" asp-action="index" asp-controller="document">
@@ -191,6 +231,7 @@
 
 
                     <li class="nav-item">
+                        <p class="sidebar-menu-title">Definições</p>
                         <a class="nav-link"
                            data-toggle="collapse"
                            href="#auth"
@@ -230,7 +271,7 @@
                         <img src="~/celestial-admin/images/favicon.png" width="190" />
                     </li>
                     <li>
-                        <center> <p class="sidebar-menu-title" style="color:white">versão 3.0.0.0</p></center>
+                        <center> <p class="sidebar-menu-title" style="color:white">versão 4.1.0.0</p></center>
                     </li>
 
                 </ul>

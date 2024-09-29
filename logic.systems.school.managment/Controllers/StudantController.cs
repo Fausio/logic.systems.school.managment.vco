@@ -200,8 +200,8 @@ namespace logic.systems.school.managment.Controllers
             try
             {
                 var currentUser = await _userManager.GetUserAsync(User);
-                await _ITuitionService.CheckFee(id, currentUser.Id);
-
+                await _ITuitionService.CheckFee(id, currentUser.Id); 
+               
                 var model = await _StudentService.Read(id);
                 var result = StudantProfile.ToDTO(model);
 
@@ -363,6 +363,14 @@ namespace logic.systems.school.managment.Controllers
             ViewBag.CurrentSchoolLevel = Student.CurrentSchoolLevel.Description;
             ViewBag.Tuitions = Student.Enrollments.SelectMany(x => x.Tuitions.Where(x => !x.Paid));
             ViewBag.TuitionsFee = await _ITuitionService.GetByStudantIdFinesBy(Student.Id);
+        }
+
+
+        public async Task<IActionResult> delete(DeleteStudentDTO dto)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            await _StudentService.Delete(dto, currentUser.Id);
+            return RedirectToAction("index");
         }
     }
 }

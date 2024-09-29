@@ -85,11 +85,13 @@ namespace logic.systems.school.managment.Controllers
 
         public async Task<IActionResult> tuitionConfiguration()
         {
-            return View(await _ITuitionService.ReaTuitionPrices());
+            var result = await _ITuitionService.ReadYearDefinitions();
+            return View(result);
         }
         public async Task<IActionResult> EnrollmentConfiguration()
-        {
-            return View(await _IEnrollmentService.ReadEnrolmentPrices());
+        { 
+            var result = await _IEnrollmentService.ReadYearDefinitions();
+            return View(result);
         }
 
 
@@ -109,10 +111,10 @@ namespace logic.systems.school.managment.Controllers
         {
             var currentUser = await _userManager.GetUserAsync(User);
             entity.UpdatedUSer = currentUser.Email;
-            ViewBag.Mensagem = "Matricula actualizada com sucesso!"; 
+            ViewBag.Mensagem = "Matricula actualizada com sucesso!";
             return View(await _IEnrollmentService.UpdateEnrollmentPrice(entity));
-        }   
-        
+        }
+
         [HttpPost]
         public async Task<IActionResult> EditTuitionPrice(TuitionPrice entity)
         {
@@ -120,6 +122,20 @@ namespace logic.systems.school.managment.Controllers
             entity.UpdatedUSer = currentUser.Email;
             ViewBag.Mensagem = "Propina actualizada com sucesso!";
             return View(await _ITuitionService.UpdateTuitionPrice(entity));
+        }
+
+
+        public async Task<IActionResult> generateTuitionPrice(int id)
+        {
+            await _ITuitionService.generateTuitionPrice(id);
+            ViewBag.Mensagem = "Propina geradas com sucesso!";
+            return RedirectToAction("tuitionConfiguration");
+        }    
+        public async Task<IActionResult> generateEnrollmentPrice(int id)
+        {
+            await _IEnrollmentService.generateEnrolmentPrice(id);
+            ViewBag.Mensagem = "Matriculas geradas com sucesso!";
+            return RedirectToAction("EnrollmentConfiguration");
         }
 
     }
