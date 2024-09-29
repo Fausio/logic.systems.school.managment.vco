@@ -103,7 +103,7 @@ namespace logic.systems.school.managment.Controllers
 
         public async Task<ActionResult> GenerateStudentAccount(int id)
         {
-            await _UserSirvice.GenerateStudentAccount(id);
+            //await _UserSirvice.GenerateStudentAccount(id);
      
             var studanteRole = "Estudante".ToUpper();
             var now = DateTime.Now;
