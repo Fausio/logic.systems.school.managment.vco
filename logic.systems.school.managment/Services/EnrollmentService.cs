@@ -83,9 +83,7 @@ namespace logic.systems.school.managment.Services
         {
 
 
-            var enrollment = await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId);
-
-
+            var enrollment = await EnrollmentByStudantId(model.StudantId, model.SchoolLevelId, model.EnrollmentYear, model.SchoolClassRoomId); 
             await _ITuitionService.CreateByClassOfStudant(await _StudentService.Read(model.StudantId), enrollment, userId);
             var student = await db.Students.FirstOrDefaultAsync(x => x.Id == model.StudantId);
             student.CurrentSchoolLevelId = model.SchoolLevelId;

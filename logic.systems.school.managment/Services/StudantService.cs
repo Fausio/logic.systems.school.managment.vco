@@ -2,6 +2,7 @@
 using logic.systems.school.managment.Data;
 using logic.systems.school.managment.Dto;
 using logic.systems.school.managment.Interface;
+using logic.systems.school.managment.Migrations;
 using logic.systems.school.managment.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -97,10 +98,26 @@ namespace logic.systems.school.managment.Services
             {
 
                 throw;
-            }
-        
-             
+            } 
         }
+
+        public async Task MakeStudentFromDbInternal()
+        {
+            var studentsToUpdate = await db.Students
+                .Where(x => !x.Internal)
+                .ToListAsync();
+
+            if (studentsToUpdate.Any())
+            { 
+                foreach (var student in studentsToUpdate)
+                {
+                    student.Internal = true;
+                }
+
+                await db.SaveChangesAsync();
+            }
+        }
+
 
         public async Task<Student> Read(int modelID)
         {
@@ -109,7 +126,7 @@ namespace logic.systems.school.managment.Services
                 // pegar sempre o mais recente
                 var result = await db.Students.Include(x => x.CurrentSchoolLevel)
                                         .Include(x => x.District).ThenInclude(x => x.OrgUnitProvince)
-                                        .Include(x => x.Enrollments).ThenInclude(t => t.SchoolLevel) 
+                                        .Include(x => x.Enrollments).ThenInclude(t => t.SchoolLevel)
                                         .Include(x => x.Enrollments).ThenInclude(t => t.Tuitions)
                                         .Include(x => x.Sponsor)
                                         .ThenInclude(x => x.Contacts)
@@ -252,9 +269,9 @@ namespace logic.systems.school.managment.Services
             {
                 Student student = await Read(id);
                 student.Transferred = true;
-           await     Update(student, userId);
+                await Update(student, userId);
 
-               
+
             }
             catch (Exception)
             {
@@ -272,7 +289,7 @@ namespace logic.systems.school.managment.Services
 
                     model.UpdatedDate = DateTime.UtcNow;
                     model.UpdatedUSer = UpdatedById;
-                    model.Row = Common.Modified; 
+                    model.Row = Common.Modified;
                     db.Students.Update(model);
                     await db.SaveChangesAsync();
                     return model;
@@ -293,13 +310,13 @@ namespace logic.systems.school.managment.Services
 
             if (result is not null)
             {
-                result.CurrentSchoolLevelId = int.Parse( dto.NewSchoolLevelId); 
+                result.CurrentSchoolLevelId = int.Parse(dto.NewSchoolLevelId);
                 result.Internal = dto.NewchkInternal;
                 result.SchoolClassRoomId = int.Parse(dto.NewSchoolClassRoomId);
 
                 await Update(result, updatedUser);
             }
-           
+
         }
     }
 }

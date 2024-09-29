@@ -47,6 +47,8 @@ namespace logic.systems.school.managment.Controllers
         {
             try
             {
+                await _StudentService.MakeStudentFromDbInternal();
+
                 #region temp fix
                 var currentUser = await _userManager.GetUserAsync(User);
                 var studentToSeedTuition = await db.Enrollments.Include(x => x.Student)
@@ -54,8 +56,7 @@ namespace logic.systems.school.managment.Controllers
                                                                .Include(x => x.Tuitions)
                                                                .Include(x => x.SchoolLevel)
                                                                .ToListAsync();
-
-
+ 
                 foreach (var item in studentToSeedTuition)
                 {
                     if (item.Tuitions.Count <= 0)
@@ -72,8 +73,7 @@ namespace logic.systems.school.managment.Controllers
                 }
 
                 #endregion
-
-
+                 
                 var result = await _StudentService.ReadPagenation(pageNumber.Value, pageSize.Value);
                 ViewBag.CurrentSchoolLevels = await _SempleEntityService.GetByTypeOrderById("SchoolLevel");
                 return View(new StudentPageDto()
@@ -200,8 +200,8 @@ namespace logic.systems.school.managment.Controllers
             try
             {
                 var currentUser = await _userManager.GetUserAsync(User);
-                await _ITuitionService.CheckFee(id, currentUser.Id); 
-               
+                await _ITuitionService.CheckFee(id, currentUser.Id);
+
                 var model = await _StudentService.Read(id);
                 var result = StudantProfile.ToDTO(model);
 
